@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<project name="vaadin" basedir="." default="uploadAll" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	
+	<property environment="env"/>
+	<property name="result.dir" value="${basedir}/result/artifacts/${vaadin.version}"/>
+	<artifact:install-provider artifactId="wagon-http" version="2.3"/>
+		
+	<artifact:remoteRepository id="haulmont.repository" url="http://repository.haulmont.com:8587/nexus/content/repositories/releases">
+		<authentication username="${env.HAULMONT_REPOSITORY_USER}" password="${env.HAULMONT_REPOSITORY_PASSWORD}"/>
+	</artifact:remoteRepository>
+	
+	<!-- vaadin-client -->
+	
+	<target name="uploadArtifact">
+		<artifact:pom id="${artifact.name}-pom" file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.pom" />
+		<artifact:deploy file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.jar">
+			<pom refid="${artifact.name}-pom"/>
+			<remoteRepository refid="haulmont.repository"/>
+		</artifact:deploy>
+	</target>
+	
+	<target name="uploadArtifactWithSources">
+		<artifact:pom id="${artifact.name}-pom" file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.pom" />
+		<artifact:deploy file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.jar">
+			<pom refid="${artifact.name}-pom"/>
+			<attach file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}-sources.jar" type="jar" classifier="sources"/>
+			<remoteRepository refid="haulmont.repository"/>
+		</artifact:deploy>
+	</target>
+	
+	<target name="uploadAll">
+		<antcall target="uploadArtifactWithSources">
+			<param name="artifact.name" value="vaadin-client"/>
+		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-client-compiled"/>
+		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-client-compiler"/>
+		</antcall>
+		<antcall target="uploadArtifactWithSources">
+			<param name="artifact.name" value="vaadin-server"/>
+		</antcall>
+		<antcall target="uploadArtifactWithSources">
+			<param name="artifact.name" value="vaadin-shared"/>
+		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-theme-compiler"/>
+		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-themes"/>
+		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-buildhelpers"/>
+		</antcall>
+	</target>
+	
+</project>
