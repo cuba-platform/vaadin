@@ -71,15 +71,17 @@ public class VTextField extends TextBoxBase implements Field, ChangeHandler,
      * trusted when determining whether a text change even should be sent.
      */
     private boolean valueBeforeEditIsSynced = true;
-
-    private boolean immediate = false;
+    
+	//Haulmont API
+    protected boolean immediate = false;
     private int maxLength = -1;
 
     private static final String CLASSNAME_PROMPT = "prompt";
     private static final String TEXTCHANGE_MODE_TIMEOUT = "TIMEOUT";
 
     private String inputPrompt = null;
-    private boolean prompting = false;
+    //Haulmont API
+	protected boolean prompting = false;
     private int lastCursorPos = -1;
 
     // used while checking if FF has set input prompt as value
