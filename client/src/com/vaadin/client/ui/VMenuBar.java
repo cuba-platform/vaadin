@@ -946,6 +946,10 @@ public class VMenuBar extends SimpleFocusablePanel implements
                 addStyleDependentName(styleName);
             }
 
+            if (parentMenu.moreItem == this) {
+                addStyleDependentName("more-item");
+            }
+
             if (enabled) {
                 removeStyleDependentName("disabled");
             } else {
