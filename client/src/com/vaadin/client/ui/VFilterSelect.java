@@ -297,7 +297,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
                     setPopupPosition(x, topPosition);
 
-                    int nullOffset = (nullSelectionAllowed
+                    int nullOffset = (isShowNullItem()
                             && "".equals(lastFilter) ? 1 : 0);
                     boolean firstPage = (currentPage == 0);
                     final int first = currentPage * pageLength + 1
@@ -972,7 +972,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         }
 
-        private MenuItem getKeyboardSelectedItem() {
+        // Haulmont API dependency
+        public MenuItem getKeyboardSelectedItem() {
             return keyboardSelectedItem;
         }
 
@@ -1177,7 +1178,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     /** For internal use only. May be removed or replaced in the future. */
     public boolean updateSelectionWhenReponseIsReceived = false;
 
-    private boolean tabPressedWhenPopupOpen = false;
+    // Haulmont API
+    protected boolean tabPressedWhenPopupOpen = false;
 
     /** For internal use only. May be removed or replaced in the future. */
     public boolean initDone = false;
@@ -1400,7 +1402,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Filters the options at certain page using the given filter
-     * 
+     *
+     * Haulmont API dependency
+     *
      * @param page
      *            The page to filter
      * @param filter
@@ -1408,14 +1412,14 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * @param immediate
      *            Whether to send the options request immediately
      */
-    private void filterOptions(int page, String filter, boolean immediate) {
+    protected void filterOptions(int page, String filter, boolean immediate) {
         debug("VFS: filterOptions(" + page + ", " + filter + ", " + immediate
                 + ")");
 
         if (filter.equals(lastFilter) && currentPage == page) {
             if (!suggestionPopup.isAttached()) {
-                suggestionPopup.showSuggestions(currentSuggestions,
-                        currentPage, totalMatches);
+                // Haulmont API extracted method
+                applyNewSuggestions();
             }
             return;
         }
@@ -1437,6 +1441,16 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         lastFilter = filter;
         currentPage = page;
 
+    }
+
+    // Haulmont API
+    protected boolean isShowNullItem() {
+        return nullSelectionAllowed;
+    }
+
+    // Haulmont API
+    public void applyNewSuggestions() {
+        suggestionPopup.showSuggestions(currentSuggestions, currentPage, totalMatches);
     }
 
     /** For internal use only. May be removed or replaced in the future. */
@@ -1691,11 +1705,13 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Triggered when a key is pressed in the text box
-     * 
+     *
+     * Haulmont API dependency
+     *
      * @param event
      *            The KeyDownEvent
      */
-    private void inputFieldKeyDown(KeyDownEvent event) {
+    protected void inputFieldKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VFS: inputFieldKeyDown(" + event.getNativeKeyCode() + ")");
         }
@@ -1736,11 +1752,13 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Triggered when a key was pressed in the suggestion popup.
-     * 
+     *
+     * Haulmont API dependency
+     *
      * @param event
      *            The KeyDownEvent of the key
      */
-    private void popupKeyDown(KeyDownEvent event) {
+    protected void popupKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VFS: popupKeyDown(" + event.getNativeKeyCode() + ")");
         }
@@ -1871,8 +1889,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Resets the Select to its initial state
+     * Haulmont API dependency
      */
-    private void reset() {
+    protected void reset() {
         debug("VFS: reset()");
         if (currentSuggestion != null) {
             String text = currentSuggestion.getReplacementString();
@@ -2067,19 +2086,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         focused = false;
         if (!readonly) {
-            // much of the TAB handling takes place here
-            if (tabPressedWhenPopupOpen) {
-                tabPressedWhenPopupOpen = false;
-                waitingForFilteringResponse = false;
-                suggestionPopup.menu.doSelectedItemAction();
-                suggestionPopup.hide();
-            } else if ((!suggestionPopup.isAttached() && waitingForFilteringResponse)
-                    || suggestionPopup.isJustClosed()) {
-                // typing so fast the popup was never opened, or it's just
-                // closed
-                waitingForFilteringResponse = false;
-                suggestionPopup.menu.doSelectedItemAction();
-            }
+            // Haulmont API extracted method
+            handleSelectionOnBlur();
+
             if (selectedOptionKey == null) {
                 setPromptingOn();
             } else if (currentSuggestion != null) {
@@ -2091,6 +2100,23 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         if (client.hasEventListeners(this, EventId.BLUR)) {
             client.updateVariable(paintableId, EventId.BLUR, "", true);
             afterUpdateClientVariables();
+        }
+    }
+
+    // Haulmont API dependency
+    protected void handleSelectionOnBlur() {
+        // much of the TAB handling takes place here
+        if (tabPressedWhenPopupOpen) {
+            tabPressedWhenPopupOpen = false;
+            waitingForFilteringResponse = false;
+            suggestionPopup.menu.doSelectedItemAction();
+            suggestionPopup.hide();
+        } else if ((!suggestionPopup.isAttached() && waitingForFilteringResponse)
+                || suggestionPopup.isJustClosed()) {
+            // typing so fast the popup was never opened, or it's just
+            // closed
+            waitingForFilteringResponse = false;
+            suggestionPopup.menu.doSelectedItemAction();
         }
     }
 

@@ -177,9 +177,8 @@ public class ComboBoxConnector extends AbstractFieldConnector implements
                 .toLowerCase().equals(uidl.getStringVariable("filter")))
                 || popupOpenAndCleared) {
 
-            getWidget().suggestionPopup.showSuggestions(
-                    getWidget().currentSuggestions, getWidget().currentPage,
-                    getWidget().totalMatches);
+            // Haulmont API
+            getWidget().applyNewSuggestions();
 
             getWidget().waitingForFilteringResponse = false;
 
