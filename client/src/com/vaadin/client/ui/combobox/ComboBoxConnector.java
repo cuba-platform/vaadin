@@ -244,7 +244,8 @@ public class ComboBoxConnector extends AbstractFieldConnector implements
         // VFilterSelect.Select.NONE; // reset
     }
 
-    private void performSelection(String selectedKey) {
+    // Haulmont API dependency
+    protected void performSelection(String selectedKey) {
         // some item selected
         for (FilterSelectSuggestion suggestion : getWidget().currentSuggestions) {
             String suggestionKey = suggestion.getOptionKey();
@@ -280,7 +281,8 @@ public class ComboBoxConnector extends AbstractFieldConnector implements
                         getWidget().tb.getText());
     }
 
-    private void resetSelection() {
+    // Haulmont API dependency
+    protected void resetSelection() {
         if (!getWidget().waitingForFilteringResponse
                 || getWidget().popupOpenerClicked) {
             // select nulled
