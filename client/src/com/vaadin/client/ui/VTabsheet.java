@@ -1105,7 +1105,7 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
         if (!isDynamicHeight()) {
             int contentHeight = getOffsetHeight();
             contentHeight -= DOM.getElementPropertyInt(deco, "offsetHeight");
-            contentHeight -= tb.getOffsetHeight();
+            contentHeight -= tabs.getOffsetHeight();
             if (contentHeight < 0) {
                 contentHeight = 0;
             }
