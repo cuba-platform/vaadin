@@ -5979,7 +5979,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 return info;
             }
 
-            private Element getTdOrTr(Element target) {
+            // Haulmont API dependency
+            protected Element getTdOrTr(Element target) {
                 Element thisTrElement = getElement();
                 if (target == thisTrElement) {
                     // This was a on the TR element
@@ -6521,12 +6522,14 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
              * target of the event should not be handled. If the event target is
              * the row directly this method returns the TR element instead of
              * the TD.
-             * 
+             *
+             * Haulmont API dependency
+             *
              * @param event
              * @return TD or TR element that the event targets (the actual event
              *         target is this element or a child of it)
              */
-            private Element getEventTargetTdOrTr(Event event) {
+            protected Element getEventTargetTdOrTr(Event event) {
                 final Element eventTarget = event.getEventTarget().cast();
                 return getElementTdOrTr(eventTarget);
             }
