@@ -3973,8 +3973,28 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     final int top = DOM.getAbsoluteTop(columnSelector)
                             + DOM.getElementPropertyInt(columnSelector,
                                     "offsetHeight");
-                    client.getContextMenu().showAt(this, left, top);
+                    final VContextMenu columnSelectorMenu = client.getContextMenu();
+                    new ColumnSelectorMenuDetails(columnSelectorMenu);
+                    columnSelectorMenu.showAt(this, left, top);
                 }
+            }
+        }
+
+        protected class ColumnSelectorMenuDetails implements CloseHandler<PopupPanel> {
+
+            private final HandlerRegistration handlerRegistration;
+            private final VContextMenu menu;
+
+            public ColumnSelectorMenuDetails(VContextMenu menu) {
+                this.menu = menu;
+                this.menu.addStyleName("v-table-column-selector-popup");
+                handlerRegistration = menu.addCloseHandler(this);
+            }
+
+            @Override
+            public void onClose(CloseEvent<PopupPanel> event) {
+                menu.removeStyleName("v-table-column-selector-popup");
+                handlerRegistration.removeHandler();
             }
         }
 
