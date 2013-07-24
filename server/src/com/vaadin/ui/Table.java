@@ -496,13 +496,17 @@ public class Table extends AbstractSelect implements Action.Container,
 
     /**
      * Current sorting direction.
+     *
+     * Haulmont API dependency
      */
-    private boolean sortAscending = true;
+    protected boolean sortAscending = true;
 
     /**
      * Currently table is sorted on this propertyId.
+     *
+     * Haulmont API dependency
      */
-    private Object sortContainerPropertyId = null;
+    protected Object sortContainerPropertyId = null;
 
     /**
      * Is table sorting by the user enabled.
