@@ -470,8 +470,9 @@ public class Table extends AbstractSelect implements Action.Container,
 
     /**
      * Set of visible components - the is used for needsRepaint calculation.
+     * Haulmont API dependency
      */
-    private HashSet<Component> visibleComponents = null;
+    protected HashSet<Component> visibleComponents = null;
 
     /**
      * List of action handlers.
