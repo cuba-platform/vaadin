@@ -63,7 +63,9 @@ public abstract class AbstractSplitPanel extends AbstractComponentContainer {
 
         @Override
         public void setSplitterPosition(float position) {
+            float previousPosition = getSplitterState().position;
             getSplitterState().position = position;
+            onPositionUpdate(previousPosition, position);
         }
     };
 
@@ -556,6 +558,10 @@ public abstract class AbstractSplitPanel extends AbstractComponentContainer {
     @Override
     protected AbstractSplitPanelState getState(boolean markAsDirty) {
         return (AbstractSplitPanelState) super.getState(markAsDirty);
+    }
+
+    // Haulmont API
+    protected void onPositionUpdate(float previousPosition, float newPosition) {
     }
 
     private SplitterState getSplitterState() {
