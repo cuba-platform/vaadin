@@ -16,12 +16,6 @@
 
 package com.vaadin.client.ui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import com.google.gwt.aria.client.Id;
 import com.google.gwt.aria.client.RelevantValue;
 import com.google.gwt.aria.client.Roles;
@@ -46,6 +40,7 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
@@ -53,14 +48,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.Focusable;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.Util;
+import com.vaadin.client.*;
 import com.vaadin.client.debug.internal.VDebugWindow;
 import com.vaadin.client.ui.ShortcutActionHandler.ShortcutActionHandlerOwner;
 import com.vaadin.client.ui.aria.AriaHelper;
@@ -70,6 +60,8 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.EventId;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.shared.ui.window.WindowRole;
+
+import java.util.*;
 
 /**
  * "Sub window" component.
@@ -1268,14 +1260,52 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                     if (w instanceof VDebugWindow) {
                         return true; // allow debug-window clicks
                     } else if (ConnectorMap.get(client).isConnector(w)) {
-                        return false;
+                        return isChildOfTopPopup(target);
                     }
                     w = w.getParent();
                 }
-                return false;
+
+                return isChildOfTopPopup(target);
             }
         }
         return true;
+    }
+
+    // Haulmont API
+    protected boolean isChildOfTopPopup(Element target) {
+        VWindow topmostWindow = getTopmostWindow();
+        String topmostZIndex = topmostWindow.getElement().getStyle().getZIndex();
+
+        Widget w = Util.findWidget(target, null);
+        if (w != null) {
+            PopupPanel popupPanel = findPopupPanel(w);
+            if (popupPanel != null) {
+                String popupZIndex = popupPanel.getElement().getStyle().getZIndex();
+                try {
+                    if (Integer.parseInt(topmostZIndex) < Integer.parseInt(popupZIndex)) {
+                        return true;
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // Haulmont API
+    protected PopupPanel findPopupPanel(Widget w) {
+        Widget parent = w;
+        while (parent != null && !(parent instanceof PopupPanel)) {
+            parent = parent.getParent();
+        }
+
+        if (parent != null) {
+            return (PopupPanel) parent;
+        }
+
+        return null;
     }
 
     @Override
