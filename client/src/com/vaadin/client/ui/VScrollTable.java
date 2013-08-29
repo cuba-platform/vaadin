@@ -963,18 +963,26 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
     }
 
+    // Haulmont API
+    protected boolean checkColumnForUpdateWidth(HeaderCell cell) {
+        return true;
+    }
+
     /**
      * Non-immediate variable update of column widths for a collection of
      * columns.
-     * 
+     *
      * @param columns
      *            the columns to trigger the events for.
      */
-    private void sendColumnWidthUpdates(Collection<HeaderCell> columns) {
+    protected void sendColumnWidthUpdates(Collection<HeaderCell> columns) {
         String[] newSizes = new String[columns.size()];
         int ix = 0;
         for (HeaderCell cell : columns) {
-            newSizes[ix++] = cell.getColKey() + ":" + cell.getWidth();
+            // Haulmont API call
+            if (checkColumnForUpdateWidth(cell)) {
+                newSizes[ix++] = cell.getColKey() + ":" + cell.getWidth();
+            }
         }
         client.updateVariable(paintableId, "columnWidthUpdates", newSizes,
                 false);
