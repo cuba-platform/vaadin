@@ -24,5 +24,6 @@ public class TextFieldConstants implements Serializable {
     public static final String VAR_CURSOR = "c";
     public static final String ATTR_TEXTCHANGE_EVENTMODE = "iem";
     public static final String TEXTCHANGE_MODE_EAGER = "EAGER";
+    public static final String TEXTCHANGE_MODE_COMMIT = "COMMIT";
 
 }

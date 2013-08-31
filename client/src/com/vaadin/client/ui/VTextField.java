@@ -78,6 +78,7 @@ public class VTextField extends TextBoxBase implements Field, ChangeHandler,
 
     private static final String CLASSNAME_PROMPT = "prompt";
     private static final String TEXTCHANGE_MODE_TIMEOUT = "TIMEOUT";
+    private static final String TEXTCHANGE_MODE_COMMIT = "COMMIT";
 
     private String inputPrompt = null;
     //Haulmont API
@@ -189,6 +190,9 @@ public class VTextField extends TextBoxBase implements Field, ChangeHandler,
     public int textChangeEventTimeout;
 
     private void deferTextChangeEvent() {
+        if (textChangeEventMode.equals(TEXTCHANGE_MODE_COMMIT))
+            return;
+
         if (textChangeEventMode.equals(TEXTCHANGE_MODE_TIMEOUT) && scheduled) {
             return;
         } else {

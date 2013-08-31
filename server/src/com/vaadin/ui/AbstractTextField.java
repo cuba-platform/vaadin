@@ -63,7 +63,8 @@ public abstract class AbstractTextField extends AbstractField<String> implements
 
     private boolean isFiringTextChangeEvent = false;
 
-    private TextChangeEventMode textChangeEventMode = TextChangeEventMode.LAZY;
+    // Haulmont modified default MODE to COMMIT
+    private TextChangeEventMode textChangeEventMode = TextChangeEventMode.COMMIT;
 
     private final int DEFAULT_TEXTCHANGE_TIMEOUT = 400;
 
@@ -524,7 +525,12 @@ public abstract class AbstractTextField extends AbstractField<String> implements
          * <p>
          * This is the default mode.
          */
-        LAZY
+        LAZY,
+        /**
+         * Haulmont API default mode
+         * An event is triggered when user pressed Enter or on blur event
+         */
+        COMMIT
     }
 
     @Override
