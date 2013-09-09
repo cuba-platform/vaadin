@@ -111,6 +111,8 @@ public class VButton extends FocusWidget implements ClickHandler {
         setStyleName(CLASSNAME);
 
         addClickHandler(this);
+
+        addStyleDependentName("empty-caption");
     }
 
     @Override
@@ -128,6 +130,11 @@ public class VButton extends FocusWidget implements ClickHandler {
     }
 
     public void setText(String text) {
+        if (text == null || "".equals(text)) {
+            addStyleDependentName("empty-caption");
+        } else {
+            removeStyleDependentName("empty-caption");
+        }
         captionElement.setInnerText(text);
     }
 
