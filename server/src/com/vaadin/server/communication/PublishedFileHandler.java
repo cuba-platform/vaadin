@@ -97,8 +97,12 @@ public class PublishedFileHandler implements RequestHandler {
             return true;
         }
 
-        // Resolve file relative to the location of the context class
-        InputStream in = context.getResourceAsStream(fileName);
+        // Haulmont API hook
+        InputStream in = getApplicationResourceAsStream(context, fileName);
+        if (in == null) {
+            // Resolve file relative to the location of the context class
+            in = context.getResourceAsStream(fileName);
+        }
         if (in == null) {
             getLogger().warning(
                     fileName + " published by " + context.getName()
@@ -150,6 +154,11 @@ public class PublishedFileHandler implements RequestHandler {
         }
 
         return true;
+    }
+
+    // Haulmont API
+    protected InputStream getApplicationResourceAsStream(Class<?> contextClass, String fileName) {
+        return null;
     }
 
     private static final Logger getLogger() {
