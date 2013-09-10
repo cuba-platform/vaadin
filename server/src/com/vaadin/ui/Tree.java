@@ -742,26 +742,7 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
         }
 
         // Actions
-        if (!actionSet.isEmpty()) {
-            target.addVariable(this, "action", "");
-            target.startTag("actions");
-            final Iterator<Action> i = actionSet.iterator();
-            while (i.hasNext()) {
-                final Action a = i.next();
-                target.startTag("action");
-                if (a.getCaption() != null) {
-                    target.addAttribute(TreeConstants.ATTRIBUTE_ACTION_CAPTION,
-                            a.getCaption());
-                }
-                if (a.getIcon() != null) {
-                    target.addAttribute(TreeConstants.ATTRIBUTE_ACTION_ICON,
-                            a.getIcon());
-                }
-                target.addAttribute("key", actionMapper.key(a));
-                target.endTag("action");
-            }
-            target.endTag("actions");
-        }
+        paintActions(target, actionSet);
 
         if (partialUpdate) {
             partialUpdate = false;
@@ -780,6 +761,26 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
             if (dropHandler != null) {
                 dropHandler.getAcceptCriterion().paint(target);
             }
+        }
+    }
+
+    //Haulmont API
+    protected void paintActions(PaintTarget target, final Set<Action> actionSet) throws PaintException {
+        if (!actionSet.isEmpty()) {
+            target.addVariable(this, "action", "");
+            target.startTag("actions");
+            for (Action a : actionSet) {
+                target.startTag("action");
+                if (a.getCaption() != null) {
+                    target.addAttribute("caption", a.getCaption());
+                }
+                if (a.getIcon() != null) {
+                    target.addAttribute("icon", a.getIcon());
+                }
+                target.addAttribute("key", actionMapper.key(a));
+                target.endTag("action");
+            }
+            target.endTag("actions");
         }
     }
 
