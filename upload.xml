@@ -4,10 +4,13 @@
 	
 	<property environment="env"/>
 	<property name="result.dir" value="${basedir}/result/artifacts/${vaadin.version}"/>
+	<property name="repo.url" value="http://repository.haulmont.com:8587/nexus/content/repositories/releases"/>
+	<property name="repo.user" value="${env.HAULMONT_REPOSITORY_USER}"/>
+	<property name="repo.passw" value="${env.HAULMONT_REPOSITORY_PASSWORD}"/>
+
 	<artifact:install-provider artifactId="wagon-http" version="2.3"/>
-		
-	<artifact:remoteRepository id="haulmont.repository" url="http://repository.haulmont.com:8587/nexus/content/repositories/releases">
-		<authentication username="${env.HAULMONT_REPOSITORY_USER}" password="${env.HAULMONT_REPOSITORY_PASSWORD}"/>
+	<artifact:remoteRepository id="haulmont.repository" url="${repo.url}">
+		<authentication username="${repo.user}" password="${repo.passw}"/>
 	</artifact:remoteRepository>
 	
 	<!-- vaadin-client -->
