@@ -44,7 +44,6 @@ import com.vaadin.shared.ui.AlignmentInfo;
  * Haulmont API dependency
  */
 public class Slot extends SimplePanel {
-
     private static final String ALIGN_CLASS_PREFIX = "v-align-";
 
     // this must be set at construction time and not changed afterwards
@@ -52,13 +51,20 @@ public class Slot extends SimplePanel {
 
     public static final String SLOT_CLASSNAME = "v-slot";
 
-    private Element spacer;
-    private Element captionWrap;
-    private Element caption;
-    private Element captionText;
-    private Icon icon;
-    private Element errorIcon;
-    private Element requiredIcon;
+    // Haulmont API dependency
+    protected Element spacer;
+    // Haulmont API dependency
+    protected Element captionWrap;
+    // Haulmont API dependency
+    protected Element caption;
+    // Haulmont API dependency
+    protected Element captionText;
+    // Haulmont API dependency
+    protected Icon icon;
+    // Haulmont API dependency
+    protected Element errorIcon;
+    // Haulmont API dependency
+    protected Element requiredIcon;
 
     private ElementResizeListener captionResizeListener;
 
