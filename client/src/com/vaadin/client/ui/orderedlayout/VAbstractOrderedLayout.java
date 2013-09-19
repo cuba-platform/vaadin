@@ -629,7 +629,13 @@ public class VAbstractOrderedLayout extends FlowPanel {
                             if (slot.hasCaption()) {
                                 int max2 = layoutManager.getOuterWidth(slot
                                         .getCaptionElement());
-                                max = Math.max(max, max2);
+                                // Haulmont API quick check position
+                                if (slot.getCaptionPosition() == CaptionPosition.LEFT ||
+                                        slot.getCaptionPosition() == CaptionPosition.RIGHT) {
+                                    max += max2;
+                                } else {
+                                    max = Math.max(max, max2);
+                                }
                             }
                             if (max > 0) {
                                 totalSize += max;
