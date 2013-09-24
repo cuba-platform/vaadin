@@ -91,7 +91,11 @@ public class TreeConnector extends AbstractComponentConnector implements
         if (uidl.hasAttribute("alb")) {
             getWidget().bodyActionKeys = uidl.getStringArrayAttribute("alb");
         }
-
+        //Haulmont API
+        if (isPopupSelection(uidl)) {
+            getWidget().rendering = false;
+            return;
+        }
         getWidget().body.clear();
         // clear out any references to nodes that no longer are attached
         getWidget().clearNodeToKeyMap();
@@ -189,6 +193,11 @@ public class TreeConnector extends AbstractComponentConnector implements
 
         getWidget().rendering = false;
 
+    }
+
+    //Haulmont API
+    protected boolean isPopupSelection(UIDL uidl){
+        return false;
     }
 
     // Haulmont API

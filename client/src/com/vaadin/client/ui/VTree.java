@@ -638,6 +638,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
             }
         }
 
+        //Haulmont API dependency
         /**
          * Handles mouse selection
          * 
@@ -647,7 +648,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
          *            Was the shift-key pressed
          * @return Returns true if event was handled, else false
          */
-        private boolean handleClickSelection(final boolean ctrl,
+        protected boolean handleClickSelection(final boolean ctrl,
                 final boolean shift) {
 
             // always when clicking an item, focus it
