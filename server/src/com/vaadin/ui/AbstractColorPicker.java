@@ -105,14 +105,18 @@ public abstract class AbstractColorPicker extends AbstractComponent implements
 
     protected PopupStyle popupStyle = PopupStyle.POPUP_NORMAL;
 
-    /** The popup window. */
-    private ColorPickerPopup window;
+    /** The popup window.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPopup window;
 
     /** The color. */
     protected Color color;
 
-    /** The UI. */
-    private UI parent;
+    /** The UI.
+     * Haulmont API dependency
+     * */
+    protected UI parent;
 
     protected String popupCaption = null;
     private int positionX = 0;
