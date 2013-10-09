@@ -405,6 +405,12 @@ public class VNotification extends VOverlay {
             }
             if (temporaryStyle == STYLE_SYSTEM) {
                 return true;
+            } else if (type == Event.ONKEYDOWN
+                    && ((event.getKeyCode() == KeyCodes.KEY_BACKSPACE)
+                    || (event.getAltKey() && event.getKeyCode() == KeyCodes.KEY_LEFT))) {
+                // Haulmont API
+                hide();
+                return false;
             } else {
                 return false;
             }
@@ -550,5 +556,13 @@ public class VNotification extends VOverlay {
             DOM.removeEventPreview(notification);
             DOM.addEventPreview(notification);
         }
+    }
+
+    // Haulmont API
+    public static VNotification getLastNotification() {
+        if (!notifications.isEmpty()) {
+            return notifications.get(notifications.size() - 1);
+        }
+        return null;
     }
 }
