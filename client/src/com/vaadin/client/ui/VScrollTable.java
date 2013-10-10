@@ -2490,8 +2490,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 // int bodyHeight = scrollBody.getOffsetHeight();
                 bodyHeight = scrollBody.getRequiredHeight();
             } else {
-                bodyHeight = (int) Math.round(scrollBody.getRowHeight(true)
-                        * pageLength);
+                // Haulmont API extracted method
+                bodyHeight = getDynamicBodyHeight();
             }
             boolean needsSpaceForHorizontalSrollbar = (total > availW);
             if (needsSpaceForHorizontalSrollbar) {
@@ -2532,6 +2532,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         Util.runWebkitOverflowAutoFixDeferred(scrollBodyPanel.getElement());
 
         hadScrollBars = willHaveScrollbarz;
+    }
+
+    // Haulmont API
+    protected int getDynamicBodyHeight() {
+        return (int) Math.round(scrollBody.getRowHeight(true)
+                * pageLength);
     }
 
     /**
