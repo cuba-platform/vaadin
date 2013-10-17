@@ -72,25 +72,31 @@ public class ColorPickerPopup extends Window implements ClickListener,
 
     private Component hsvTab;
 
-    private Component swatchesTab;
+    //Haulmont API
+    protected Component swatchesTab;
 
     /** The layout. */
-    private final VerticalLayout layout;
+    //Haulmont API
+    protected final VerticalLayout layout;
 
     /** The ok button. */
-    private final Button ok = new Button("OK");
+    //Haulmont API
+    protected final Button ok = new Button("OK");
 
     /** The cancel button. */
-    private final Button cancel = new Button("Cancel");
+    //Haulmont API
+    protected final Button cancel = new Button("Cancel");
 
     /** The resize button. */
     private final Button resize = new Button("show/hide history");
 
     /** The selected color. */
-    private Color selectedColor = Color.WHITE;
+    //Haulmont API
+    protected Color selectedColor = Color.WHITE;
 
     /** The history. */
-    private ColorPickerHistory history;
+    //Haulmont API
+    protected ColorPickerHistory history;
 
     /** The history container. */
     private Layout historyContainer;
@@ -126,13 +132,15 @@ public class ColorPickerPopup extends Window implements ClickListener,
     private ColorPickerPreview hsvPreview;
 
     /** The preview on the swatches tab. */
-    private ColorPickerPreview selPreview;
+    //Haulmont API
+    protected ColorPickerPreview selPreview;
 
     /** The color select. */
     private ColorPickerSelect colorSelect;
 
     /** The selectors. */
-    private final Set<ColorSelector> selectors = new HashSet<ColorSelector>();
+    //Haulmont API
+    protected final Set<ColorSelector> selectors = new HashSet<ColorSelector>();
 
     /**
      * Set true while the slider values are updated after colorChange. When
@@ -169,7 +177,8 @@ public class ColorPickerPopup extends Window implements ClickListener,
         initContents();
     }
 
-    private void initContents() {
+    //Haulmont API
+    protected void initContents() {
         // Create the preview on the rgb tab
         rgbPreview = new ColorPickerPreview(selectedColor);
         rgbPreview.setWidth("240px");

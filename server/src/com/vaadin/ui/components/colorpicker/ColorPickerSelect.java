@@ -24,7 +24,7 @@ import com.vaadin.ui.VerticalLayout;
 
 /**
  * A component that represents color selection swatches within a color picker.
- * 
+ *
  * @since 7.0.0
  */
 public class ColorPickerSelect extends CustomComponent implements
@@ -34,7 +34,8 @@ public class ColorPickerSelect extends CustomComponent implements
     private final ComboBox range;
 
     /** The grid. */
-    private final ColorPickerGrid grid;
+    //Haulmont API
+    protected final ColorPickerGrid grid;
 
     /**
      * The Enum ColorRangePropertyId.
@@ -48,7 +49,7 @@ public class ColorPickerSelect extends CustomComponent implements
 
         /**
          * Instantiates a new color range property id.
-         * 
+         *
          * @param caption
          *            the caption
          */
@@ -64,7 +65,7 @@ public class ColorPickerSelect extends CustomComponent implements
 
     /**
      * Instantiates a new color picker select.
-     * 
+     *
      * @param rows
      *            the rows
      * @param columns
@@ -101,12 +102,12 @@ public class ColorPickerSelect extends CustomComponent implements
 
     /**
      * Creates the all colors.
-     * 
+     *
      * @param rows
      *            the rows
      * @param columns
      *            the columns
-     * 
+     *
      * @return the color[][]
      */
     private Color[][] createAllColors(int rows, int columns) {
@@ -151,14 +152,14 @@ public class ColorPickerSelect extends CustomComponent implements
 
     /**
      * Creates the color.
-     * 
+     *
      * @param color
      *            the color
      * @param rows
      *            the rows
      * @param columns
      *            the columns
-     * 
+     *
      * @return the color[][]
      */
     private Color[][] createColors(Color color, int rows, int columns) {
