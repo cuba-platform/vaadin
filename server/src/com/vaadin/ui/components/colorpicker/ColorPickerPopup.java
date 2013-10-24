@@ -51,7 +51,8 @@ import com.vaadin.ui.Window;
 public class ColorPickerPopup extends Window implements ClickListener,
         ColorChangeListener, ColorSelector {
 
-    private static final String STYLENAME = "v-colorpicker-popup";
+    // Haulmont API dependency
+    protected static final String STYLENAME = "v-colorpicker-popup";
 
     private static final Method COLOR_CHANGE_METHOD;
     static {
@@ -77,7 +78,7 @@ public class ColorPickerPopup extends Window implements ClickListener,
 
     /** The layout. */
     //Haulmont API
-    protected final VerticalLayout layout;
+    protected VerticalLayout layout;
 
     /** The ok button. */
     //Haulmont API
@@ -136,7 +137,8 @@ public class ColorPickerPopup extends Window implements ClickListener,
     protected ColorPickerPreview selPreview;
 
     /** The color select. */
-    private ColorPickerSelect colorSelect;
+    //Haulmont API
+    protected ColorPickerSelect colorSelect;
 
     /** The selectors. */
     //Haulmont API

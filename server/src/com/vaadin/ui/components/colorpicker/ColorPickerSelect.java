@@ -35,7 +35,7 @@ public class ColorPickerSelect extends CustomComponent implements
 
     /** The grid. */
     //Haulmont API
-    protected final ColorPickerGrid grid;
+    protected ColorPickerGrid grid;
 
     /**
      * The Enum ColorRangePropertyId.
