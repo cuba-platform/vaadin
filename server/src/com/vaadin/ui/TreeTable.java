@@ -362,7 +362,8 @@ public class TreeTable extends Table implements Hierarchical {
      * partial update from rendering the correct result, e.g. rows added or
      * removed during an expand operation.
      */
-    private Object toggledItemId;
+//    Haulmont API
+    protected Object toggledItemId;
     private boolean animationsEnabled;
     private boolean clearFocusedRowPending;
 
