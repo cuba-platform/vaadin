@@ -21,18 +21,11 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.DirectionalManagedLayout;
-import com.vaadin.client.Paintable;
-import com.vaadin.client.ServerConnector;
-import com.vaadin.client.TooltipInfo;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.Util;
+import com.vaadin.client.*;
 import com.vaadin.client.ui.AbstractHasComponentsConnector;
+import com.vaadin.client.ui.ManagedLayout;
 import com.vaadin.client.ui.PostLayoutListener;
 import com.vaadin.client.ui.VScrollTable;
 import com.vaadin.client.ui.VScrollTable.ContextMenuDetails;
@@ -365,6 +358,22 @@ public class TableConnector extends AbstractHasComponentsConnector implements
                     }
                     getLayoutManager().setNeedsVerticalLayout(
                             TableConnector.this);
+
+                    // Fix for #VAADIN-12970, initial layout for cell widgets
+                    // Haulmont API
+                    for (Widget w : getWidget().scrollBody) {
+                        HasWidgets row = (HasWidgets) w;
+                        for (Widget child : row) {
+                            ComponentConnector childConnector =
+                                    Util.findConnectorFor(child);
+                            if (childConnector instanceof ManagedLayout) {
+                                LayoutManager lm = getLayoutManager();
+                                lm.setNeedsMeasure(childConnector);
+                                lm.setNeedsLayout((ManagedLayout) childConnector);
+                            }
+                        }
+                    }
+
                     getLayoutManager().layoutNow();
                 }
             });
