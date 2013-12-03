@@ -158,7 +158,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
     /** For internal use only. May be removed or replaced in the future. */
     public int dragMode;
 
-    private boolean selectionHasChanged = false;
+    // Haulmont API dependency
+    protected boolean selectionHasChanged = false;
 
     /*
      * to fix #14388. The cause of defect #14388: event 'clickEvent' is sent to
@@ -475,6 +476,9 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
      * Sends the selection to the server
      */
     private void sendSelectionToServer() {
+        // Haulmont API
+        final boolean immediateValue = immediate;
+
         Command command = new Command() {
             @Override
             public void execute() {
@@ -485,7 +489,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                  */
                 client.updateVariable(paintableId, "selected",
                         selectedIds.toArray(new String[selectedIds.size()]),
-                        sendClickEventNow || immediate);
+                        sendClickEventNow || immediateValue);
                 sendClickEventNow = false;
                 selectionHasChanged = false;
             }
@@ -658,6 +662,10 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
 
                 @Override
                 public void execute() {
+                    // Haulmont API
+                    boolean needToHandleClick = isNeedToHandleClick();
+                    if (!needToHandleClick)
+                        return;
 
                     if (multiSelectMode == MultiSelectMode.SIMPLE
                             || !isMultiselect) {
@@ -692,6 +700,11 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                 }
             });
 
+            return true;
+        }
+
+        // Haulmont API
+        protected boolean isNeedToHandleClick() {
             return true;
         }
 
@@ -818,7 +831,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                     .getElement()));
         }
 
-        private void fireClick(final Event evt) {
+        // Haulmont API dependency
+        protected void fireClick(final Event evt) {
             /*
              * Ensure we have focus in tree before sending variables. Otherwise
              * previously modified field may contain dirty variables.
@@ -837,6 +851,10 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
 
             final MouseEventDetails details = MouseEventDetailsBuilder
                     .buildMouseEventDetails(evt);
+
+            // Haulmont API
+            final int eventType = DOM.eventGetType(evt);
+            prepareToFireClick(eventType);
 
             executeEventCommand(new ScheduledCommand() {
 
@@ -881,15 +899,33 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                                 details.toString(), sendClickEventNow);
                         sendClickEventNow = false; // reset it
                     }
+
+                    // Haulmont API
+                    sendClickEventNow = isNeedToSendDoubleClick(eventType, sendClickEventNow);
+
+                    client.updateVariable(paintableId, "clickedKey", key, false);
+                    client.updateVariable(paintableId, "clickEvent",
+                            details.toString(), sendClickEventNow);
                 }
             });
+        }
+
+        // Haulmont API
+        protected void prepareToFireClick(int eventType) {
+        }
+
+        // Haulmont API
+        protected boolean isNeedToSendDoubleClick(int eventType, boolean sendClickEventNow) {
+            return sendClickEventNow;
         }
 
         /*
          * Must wait for Safari to focus before sending click and value change
          * events (see #6373, #6374)
+         *
+         * Haulmont API dependency
          */
-        private void executeEventCommand(ScheduledCommand command) {
+        protected void executeEventCommand(ScheduledCommand command) {
             if (BrowserInfo.get().isWebkit() && !treeHasFocus) {
                 Scheduler.get().scheduleDeferred(command);
             } else {
@@ -897,7 +933,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
             }
         }
 
-        private void toggleSelection() {
+        // Haulmont API dependency
+        protected void toggleSelection() {
             if (selectable) {
                 VTree.this.setSelected(this, !isSelected());
             }
