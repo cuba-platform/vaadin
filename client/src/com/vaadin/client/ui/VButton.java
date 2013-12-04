@@ -412,7 +412,10 @@ public class VButton extends FocusWidget implements ClickHandler {
 
     @Override
     public final void setTabIndex(int index) {
-        super.setTabIndex(index);
+        // Haulmont API
+        if (isEnabled()) {
+            super.setTabIndex(index);
+        }
         tabIndex = index;
     }
 
@@ -428,6 +431,7 @@ public class VButton extends FocusWidget implements ClickHandler {
         }
     }
 
+    /*
     private static native int getHorizontalBorderAndPaddingWidth(Element elem)
     /*-{
         // THIS METHOD IS ONLY USED FOR INTERNET EXPLORER, IT DOESN'T WORK WITH OTHERS
@@ -477,6 +481,6 @@ public class VButton extends FocusWidget implements ClickHandler {
         }
 
     	return ret;
-    }-*/;
+    }-*//*;  */
 
 }
