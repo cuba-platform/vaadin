@@ -6378,7 +6378,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                                 .addNativePreviewHandler(mouseUpPreviewHandler);
 
                         if (targetCellOrRowFound) {
-                            setRowFocus(this);
+                            // Haulmont API
+                            if (isNeedToSetRowFocus())
+                                setRowFocus(this);
                             ensureFocus();
                             if (dragmode != 0
                                     && (event.getButton() == NativeEvent.BUTTON_LEFT)) {
@@ -6411,6 +6413,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     }
                 }
                 super.onBrowserEvent(event);
+            }
+
+            // Haulmont API
+            protected boolean isNeedToSetRowFocus() {
+                return true;
             }
 
             private boolean isSignificantMove(Event event) {
@@ -6616,6 +6623,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                                 .next();
                         setRowFocus(endRow);
                     }
+
+                    // Haulmont API
+                    updateSelectionStartIfNeeded(startRow);
                 } else if (!startRow.isSelected()) {
                     // The start row is no longer selected (probably removed)
                     // and so we select from above
@@ -6651,6 +6661,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 if (startRow != endRow) {
                     selectedRowRanges.add(range);
                 }
+            }
+
+            // Haulmont API
+            protected void updateSelectionStartIfNeeded(VScrollTableRow startRow) {
             }
 
             /*
