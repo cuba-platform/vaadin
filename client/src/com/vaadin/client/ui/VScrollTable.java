@@ -1013,14 +1013,25 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 return setRowFocus((VScrollTableRow) scrollBody.iterator()
                         .next());
             } else {
-                VScrollTableRow next = getNextRow(focusedRow, offset);
+                // Haulmont API
+                VScrollTableRow next = getNextRowToFocus(focusedRow, offset);
                 if (next != null) {
-                    return setRowFocus(next);
+                    return setRowFocus(next) || needToSelectFocused(next);
                 }
             }
         }
 
         return false;
+    }
+
+    // Haulmont API
+    protected boolean needToSelectFocused(VScrollTableRow currentRow) {
+        return false;
+    }
+
+    // Haulmont API
+    protected VScrollTableRow getNextRowToFocus(VScrollTableRow currentRow, int offset) {
+        return getNextRow(currentRow, offset);
     }
 
     /**
@@ -6457,7 +6468,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                                 .addNativePreviewHandler(mouseUpPreviewHandler);
 
                         if (targetCellOrRowFound) {
-                            setRowFocus(this);
+                            // Haulmont API
+                            if (isNeedToSetRowFocus())
+                                setRowFocus(this);
                             ensureFocus();
                             if (dragmode != 0
                                     && (event.getButton() == NativeEvent.BUTTON_LEFT)) {
@@ -6490,6 +6503,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     }
                 }
                 super.onBrowserEvent(event);
+            }
+
+            // Haulmont API
+            protected boolean isNeedToSetRowFocus() {
+                return true;
             }
 
             private boolean isSignificantMove(Event event) {
@@ -6702,6 +6720,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     setRowFocus(endRow);
                 }
 
+                // Haulmont API
+                updateSelectionStartIfNeeded(startRow);
+
                 // Deselect previous items if so desired
                 if (deselectPrevious) {
                     deselectAll();
@@ -6730,6 +6751,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 if (startRow != endRow) {
                     selectedRowRanges.add(range);
                 }
+            }
+
+            // Haulmont API
+            protected void updateSelectionStartIfNeeded(VScrollTableRow startRow) {
             }
 
             /*
