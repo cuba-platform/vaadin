@@ -1012,14 +1012,25 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 return setRowFocus((VScrollTableRow) scrollBody.iterator()
                         .next());
             } else {
-                VScrollTableRow next = getNextRow(focusedRow, offset);
+                // Haulmont API
+                VScrollTableRow next = getNextRowToFocus(focusedRow, offset);
                 if (next != null) {
-                    return setRowFocus(next);
+                    return setRowFocus(next) || needToSelectFocused(next);
                 }
             }
         }
 
         return false;
+    }
+
+    // Haulmont API
+    protected boolean needToSelectFocused(VScrollTableRow currentRow) {
+        return false;
+    }
+
+    // Haulmont API
+    protected VScrollTableRow getNextRowToFocus(VScrollTableRow currentRow, int offset) {
+        return getNextRow(currentRow, offset);
     }
 
     /**
@@ -6623,15 +6634,15 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                                 .next();
                         setRowFocus(endRow);
                     }
-
-                    // Haulmont API
-                    updateSelectionStartIfNeeded(startRow);
                 } else if (!startRow.isSelected()) {
                     // The start row is no longer selected (probably removed)
                     // and so we select from above
                     startRow = (VScrollTableRow) scrollBody.iterator().next();
                     setRowFocus(endRow);
                 }
+
+                // Haulmont API
+                updateSelectionStartIfNeeded(startRow);
 
                 // Deselect previous items if so desired
                 if (deselectPrevious) {
