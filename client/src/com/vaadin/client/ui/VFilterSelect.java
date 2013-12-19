@@ -31,22 +31,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.i18n.client.HasDirection.Direction;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -89,7 +78,7 @@ import com.vaadin.shared.ui.combobox.FilteringMode;
 public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         KeyUpHandler, ClickHandler, FocusHandler, BlurHandler, Focusable,
         SubPartAware, HandlesAriaCaption, HandlesAriaInvalid,
-        HandlesAriaRequired {
+        HandlesAriaRequired, HasFocusHandlers {
 
     /**
      * Represents a suggestion in the suggestion popup box
@@ -1105,6 +1094,12 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     private boolean enableDebug = false;
 
     private final FlowPanel panel = new FlowPanel();
+
+    // Haulmont API
+    @Override
+    public HandlerRegistration addFocusHandler(FocusHandler handler) {
+        return tb.addFocusHandler(handler);
+    }
 
     /**
      * The text box where the filter is written
