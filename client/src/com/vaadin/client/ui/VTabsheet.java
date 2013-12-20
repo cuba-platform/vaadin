@@ -1127,6 +1127,11 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
          * and tabs won't be too narrow in certain browsers
          */
         tab.recalculateCaptionWidth();
+
+        // Haulmont API
+        if (tabState.cubaId != null) {
+            tab.getElement().setAttribute("cuba-id", tabState.cubaId);
+        }
     }
 
     /**
