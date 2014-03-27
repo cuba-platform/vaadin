@@ -281,10 +281,21 @@ public class FileUploadHandler implements RequestHandler {
 
         String contentType = request.getContentType();
         if (contentType.contains("boundary")) {
+            String boundary = null;
+
+            String[] contentTypes = contentType.split("[;]");
+
+            for (String tempType : contentTypes) {
+                if (tempType.contains("boundary")) {
+                    boundary = tempType.split("boundary=")[1];
+                    break;
+                }
+            }
+
             // Multipart requests contain boundary string
             doHandleSimpleMultipartFileUpload(session, request, response,
                     streamVariable, variableName, source,
-                    contentType.split("boundary=")[1]);
+                    boundary);
         } else {
             // if boundary string does not exist, the posted file is from
             // XHR2.post(File)
