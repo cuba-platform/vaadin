@@ -2256,7 +2256,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
         return paintableId;
     }
 
-    private void handleBodyContextMenu(ContextMenuEvent event) {
+    // Haulmont API dependency
+    protected void handleBodyContextMenu(ContextMenuEvent event) {
         if (!readonly && !disabled) {
             if (bodyActionKeys != null) {
                 int left = event.getNativeEvent().getClientX();
