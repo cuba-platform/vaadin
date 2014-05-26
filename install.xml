@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<project name="vaadin" basedir="." default="installAll" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	
+	<property environment="env"/>
+	<property name="result.dir" value="${basedir}/result/artifacts/${vaadin.version}"/>
+				
+	<target name="installArtifact">
+		<artifact:pom id="${artifact.name}-pom" file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.pom" />
+		<artifact:install file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.jar">
+			<pom refid="${artifact.name}-pom"/>
+		</artifact:install>
+	</target>
+	
+	<target name="installArtifactWithSources">
+		<artifact:pom id="${artifact.name}-pom" file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.pom" />
+		<artifact:install file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}.jar">
+			<pom refid="${artifact.name}-pom"/>
+			<attach file="${result.dir}/${artifact.name}/${artifact.name}-${vaadin.version}-sources.jar" type="jar" classifier="sources"/>
+		</artifact:install>
+	</target>
+	
+	<target name="installAll">
+		<antcall target="installArtifactWithSources">
+			<param name="artifact.name" value="vaadin-client"/>
+		</antcall>
+		<antcall target="installArtifact">
+			<param name="artifact.name" value="vaadin-client-compiled"/>
+		</antcall>
+		<antcall target="installArtifact">
+			<param name="artifact.name" value="vaadin-client-compiler"/>
+		</antcall>
+		<antcall target="installArtifactWithSources">
+			<param name="artifact.name" value="vaadin-server"/>
+		</antcall>
+		<antcall target="installArtifactWithSources">
+			<param name="artifact.name" value="vaadin-shared"/>
+		</antcall>
+		<antcall target="installArtifact">
+			<param name="artifact.name" value="vaadin-themes"/>
+		</antcall>
+		<antcall target="installArtifact">
+			<param name="artifact.name" value="vaadin-buildhelpers"/>
+		</antcall>
+	</target>
+	
+</project>
