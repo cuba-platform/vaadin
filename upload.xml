@@ -49,9 +49,6 @@
 			<param name="artifact.name" value="vaadin-shared"/>
 		</antcall>
 		<antcall target="uploadArtifact">
-			<param name="artifact.name" value="vaadin-theme-compiler"/>
-		</antcall>
-		<antcall target="uploadArtifact">
 			<param name="artifact.name" value="vaadin-themes"/>
 		</antcall>
 		<antcall target="uploadArtifact">
