@@ -218,6 +218,8 @@ public class TableConnector extends AbstractFieldConnector implements
                     getWidget().initializeRows(uidl, rowData);
                 }
             }
+
+            updateAdditionalRowData(uidl);
         }
 
         boolean keyboardSelectionOverRowFetchInProgress = getWidget()
@@ -326,6 +328,10 @@ public class TableConnector extends AbstractFieldConnector implements
         getWidget().rendering = false;
         getWidget().headerChangedDuringUpdate = false;
 
+    }
+
+    // Haulmont API dependency
+    protected void updateAdditionalRowData(UIDL uidl) {
     }
 
     @Override

@@ -539,8 +539,10 @@ public class Table extends AbstractSelect implements Action.Container,
      * Index of the first rows explicitly requested by the client to be painted.
      * This is -1 if no request by the client is made. Painting the component
      * will automatically reset this to -1.
+     *
+     * Haulmont API dependency
      */
-    private int reqFirstRowToPaint = -1;
+    protected int reqFirstRowToPaint = -1;
 
     private int firstToBeRenderedInClient = -1;
 
@@ -3336,6 +3338,9 @@ public class Table extends AbstractSelect implements Action.Container,
 
         paintVisibleColumnOrder(target);
 
+        // Haulmont API
+        paintAdditionalData(target);
+
         // Rows
         if (isPartialRowUpdate() && painted && !target.isFullRepaint()) {
             paintPartialRowUpdate(target, actionSet);
@@ -3380,6 +3385,11 @@ public class Table extends AbstractSelect implements Action.Container,
         }
 
         painted = true;
+    }
+
+    // Haulmont API
+    // Used for aggregation painting
+    protected void paintAdditionalData(PaintTarget target) throws PaintException {
     }
 
     private void setRowCacheInvalidated(boolean invalidated) {
