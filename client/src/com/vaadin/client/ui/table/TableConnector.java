@@ -209,6 +209,8 @@ public class TableConnector extends AbstractHasComponentsConnector implements
                     getWidget().initializeRows(uidl, rowData);
                 }
             }
+
+            updateAdditionalRowData(uidl);
         }
 
         boolean keyboardSelectionOverRowFetchInProgress = getWidget()
@@ -317,6 +319,10 @@ public class TableConnector extends AbstractHasComponentsConnector implements
         getWidget().rendering = false;
         getWidget().headerChangedDuringUpdate = false;
 
+    }
+
+    // Haulmont API dependency
+    protected void updateAdditionalRowData(UIDL uidl) {
     }
 
     @Override
