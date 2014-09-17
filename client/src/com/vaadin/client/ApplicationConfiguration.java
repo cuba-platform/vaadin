@@ -219,6 +219,9 @@ public class ApplicationConfiguration implements EntryPoint {
     private ErrorMessage sessionExpiredError;
     private int heartbeatInterval;
 
+    // Haulmont API application version support
+    private String applicationVersion = "DEBUG";
+
     private HashMap<Integer, String> unknownComponents;
 
     private Map<Integer, Class<? extends ServerConnector>> classes = new HashMap<Integer, Class<? extends ServerConnector>>();
@@ -347,6 +350,11 @@ public class ApplicationConfiguration implements EntryPoint {
         return heartbeatInterval;
     }
 
+    // Haulmont API application version support
+    public String getApplicationVersion() {
+        return applicationVersion;
+    }
+
     public JavaScriptObject getVersionInfoJSObject() {
         return getJsoConfiguration(id).getVersionInfoJSObject();
     }
@@ -403,6 +411,12 @@ public class ApplicationConfiguration implements EntryPoint {
         communicationError = jsoConfiguration.getConfigError("comErrMsg");
         authorizationError = jsoConfiguration.getConfigError("authErrMsg");
         sessionExpiredError = jsoConfiguration.getConfigError("sessExpMsg");
+
+        // Haulmont API application version support
+        String appVersionConfigValue = jsoConfiguration.getConfigString("applicationVersion");
+        if (appVersionConfigValue != null) {
+            applicationVersion = appVersionConfigValue;
+        }
     }
 
     /**

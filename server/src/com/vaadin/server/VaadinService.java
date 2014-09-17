@@ -1855,4 +1855,8 @@ public abstract class VaadinService implements Serializable {
         eventRouter.fireEvent(new ServiceDestroyEvent(this));
     }
 
+    // Haulmont API application version support
+    public String getApplicationVersion() {
+        return "DEBUG";
+    }
 }

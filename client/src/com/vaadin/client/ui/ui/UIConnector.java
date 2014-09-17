@@ -1014,6 +1014,14 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
      * @return The URL the theme can be loaded from
      */
     private String getThemeUrl(String theme) {
+        // Haulmont API
+        String applicationVersion = getConnection().getConfiguration().getApplicationVersion();
+        if (applicationVersion != null) {
+            return getConnection().translateVaadinUri(
+                    ApplicationConstants.VAADIN_PROTOCOL_PREFIX + "themes/" + theme
+                            + "/styles" + ".css" + "?v=" + applicationVersion);
+        }
+
         return getConnection().translateVaadinUri(
                 ApplicationConstants.VAADIN_PROTOCOL_PREFIX + "themes/" + theme
                         + "/styles" + ".css");

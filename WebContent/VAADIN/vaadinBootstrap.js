@@ -17,14 +17,21 @@
     	//In IE, its a native function for which apply is not defined, but it works without a proper 'this' reference
     	log = console.log;
     }
-	
-	var loadTheme = function(url) {
+
+    // Haulmont API for theme versioning
+	var loadTheme = function(url, appVersion) {
 		if(!themesLoaded[url]) {
 			log("loadTheme", url);
+            log("themeVersion", appVersion);
 			var stylesheet = document.createElement('link');
 			stylesheet.setAttribute('rel', 'stylesheet');
 			stylesheet.setAttribute('type', 'text/css');
-			stylesheet.setAttribute('href', url + "/styles.css");
+            // Haulmont API
+            if (appVersion) {
+                stylesheet.setAttribute('href', url + "/styles.css?v=" + appVersion);
+            } else {
+                stylesheet.setAttribute('href', url + "/styles.css");
+            }
 			document.getElementsByTagName('head')[0].appendChild(stylesheet);
 			themesLoaded[url] = true;
 		}		
@@ -201,7 +208,12 @@
 				var vaadinDir = getConfig('vaadinDir');
 				
 				var themeUri = vaadinDir + 'themes/' + getConfig('theme');
-				loadTheme(themeUri);
+                // Haulmont API
+                var applicationVersion = getConfig('applicationVersion');
+                if (!applicationVersion) {
+                    applicationVersion = "default";
+                }
+				loadTheme(themeUri, applicationVersion);
 				
 				var widgetset = getConfig('widgetset');
 				var widgetsetUrl = getConfig('widgetsetUrl');
