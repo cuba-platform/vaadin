@@ -38,23 +38,29 @@ public class VCaption extends HTML {
 
     private final ComponentConnector owner;
 
-    private Element errorIndicatorElement;
+    // Haulmont API dependency
+    protected Element errorIndicatorElement;
 
-    private Element requiredFieldIndicator;
+    // Haulmont API dependency
+    protected Element requiredFieldIndicator;
 
-    private Icon icon;
+    // Haulmont API dependency
+    protected Icon icon;
 
     private String iconAltText = "";
 
-    private Element captionText;
+    // Haulmont API dependency
+    protected Element captionText;
 
     private final ApplicationConnection client;
 
-    private boolean placedAfterComponent = false;
+    // Haulmont API dependency
+    protected boolean placedAfterComponent = false;
 
     private int maxWidth = -1;
 
-    private enum InsertPosition {
+    // Haulmont API dependency
+    protected enum InsertPosition {
         ICON, CAPTION, REQUIRED, ERROR
     }
 
@@ -276,7 +282,8 @@ public class VCaption extends HTML {
         return (wasPlacedAfterComponent != placedAfterComponent);
     }
 
-    private int getInsertPosition(InsertPosition element) {
+    // Haulmont API dependency
+    protected int getInsertPosition(InsertPosition element) {
         int pos = 0;
         if (InsertPosition.ICON.equals(element)) {
             return pos;
