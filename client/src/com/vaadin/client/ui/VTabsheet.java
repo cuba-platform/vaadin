@@ -33,21 +33,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasBlurHandlers;
-import com.google.gwt.event.dom.client.HasFocusHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
-import com.google.gwt.event.dom.client.HasMouseDownHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -193,6 +179,11 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
             this.closeHandler = closeHandler;
         }
 
+        // Haulmont API
+        public void addContextMenuHandler(ContextMenuHandler handler) {
+            tabCaption.addDomHandler(handler, ContextMenuEvent.getType());
+        }
+
         /**
          * Toggles the style names for the Tab
          *
@@ -327,6 +318,8 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
             this.tab = tab;
 
             AriaHelper.ensureHasId(getElement());
+            // Haulmont API
+            sinkEvents(VTooltip.TOOLTIP_EVENTS | Event.ONCONTEXTMENU);
         }
 
         private boolean update(TabState tabState) {
@@ -423,7 +416,8 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
     }
 
-    static class TabBar extends ComplexPanel implements VCloseHandler {
+    // Haulmont API dependency, implements ContextMenuHandler
+    static class TabBar extends ComplexPanel implements VCloseHandler, ContextMenuHandler {
 
         private final Element tr = DOM.createTR();
 
@@ -492,6 +486,8 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
             getTabsheet().selectionHandler.registerTab(t);
 
             t.setCloseHandler(this);
+            // Haulmont API
+            t.addContextMenuHandler(this);
 
             return t;
         }
@@ -652,6 +648,19 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
                 getTab(i).recalculateCaptionWidth();
             }
         }
+
+        // Haulmont API
+        @Override
+        public void onContextMenu(ContextMenuEvent event) {
+            TabCaption caption = (TabCaption) event.getSource();
+            int index = getWidgetIndex(caption.getParent());
+            getTabsheet().onTabContextMenu(index, event);
+        }
+    }
+
+    // Haulmont API
+    protected void onTabContextMenu(final int tabIndex, ContextMenuEvent event) {
+        // to implement in descendant
     }
 
     // TODO using the CLASSNAME directly makes primaryStyleName for TabSheet of
