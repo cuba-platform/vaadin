@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/all" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/buildhelpers" />
+      <excludeFolder url="file://$MODULE_DIR$/checkstyle" />
+      <excludeFolder url="file://$MODULE_DIR$/client-compiled" />
+      <excludeFolder url="file://$MODULE_DIR$/client-compiler" />
+      <excludeFolder url="file://$MODULE_DIR$/eclipse" />
+      <excludeFolder url="file://$MODULE_DIR$/gwt" />
+      <excludeFolder url="file://$MODULE_DIR$/liferay" />
+      <excludeFolder url="file://$MODULE_DIR$/push" />
+      <excludeFolder url="file://$MODULE_DIR$/result" />
+      <excludeFolder url="file://$MODULE_DIR$/scripts" />
+      <excludeFolder url="file://$MODULE_DIR$/tests" />
+      <excludeFolder url="file://$MODULE_DIR$/uitest" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="server" />
+    <orderEntry type="module" module-name="shared" />
+  </component>
+</module>
+

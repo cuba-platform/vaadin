@@ -77,3 +77,5 @@ WebContent/VAADIN/vaadinPush.debug.js
 result
 
 .sass-cache
+
+.idea/workspace.xml

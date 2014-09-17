@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="gwt-user">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../7.2/platform-vaadin/gwt-libs/gwt-user.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../7.2/platform-vaadin/gwt-libs/gwt-user.jar!/" />
+    </SOURCES>
+  </library>
+</component>
