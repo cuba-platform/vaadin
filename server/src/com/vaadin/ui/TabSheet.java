@@ -98,18 +98,24 @@ public class TabSheet extends AbstractComponentContainer implements Focusable,
      * List of component tabs (tab contents). In addition to being on this list,
      * there is a {@link Tab} object in tabs for each tab with meta-data about
      * the tab.
+     * <br/>
+     * Haulmont API dependency
      */
-    private final ArrayList<Component> components = new ArrayList<Component>();
+    protected final ArrayList<Component> components = new ArrayList<Component>();
 
     /**
      * Map containing information related to the tabs (caption, icon etc).
+     * <br/>
+     * Haulmont API dependency
      */
-    private final HashMap<Component, Tab> tabs = new HashMap<Component, Tab>();
+    protected final HashMap<Component, Tab> tabs = new HashMap<Component, Tab>();
 
     /**
      * Selected tab content component.
+     * <br/>
+     * Haulmont API dependency
      */
-    private Component selected = null;
+    protected Component selected = null;
 
     /**
      * Mapper between server-side component instances (tab contents) and keys
@@ -119,8 +125,10 @@ public class TabSheet extends AbstractComponentContainer implements Focusable,
 
     /**
      * Handler to be called when a tab is closed.
+     * <br/>
+     * Haulmont API dependency
      */
-    private CloseHandler closeHandler;
+    protected CloseHandler closeHandler;
 
     /**
      * Constructs a new TabSheet. A TabSheet is immediate by default, and the
@@ -481,11 +489,13 @@ public class TabSheet extends AbstractComponentContainer implements Focusable,
     /**
      * Sets the selected tab in the TabSheet. Ensures that the selected tab is
      * repainted if needed.
+     * <br/>
+     * Haulmont API dependency
      * 
      * @param component
      *            The new selection or null for no selection
      */
-    private void setSelected(Component component) {
+    protected void setSelected(Component component) {
         Tab tab = tabs.get(selected);
 
         selected = component;
@@ -539,10 +549,13 @@ public class TabSheet extends AbstractComponentContainer implements Focusable,
      * 
      * This method does not fire tab change events, but the caller should do so
      * if appropriate.
+     *
+     * <br/>
+     * Haulmont API dependency
      * 
      * @return true if selection was changed, false otherwise
      */
-    private boolean updateSelection() {
+    protected boolean updateSelection() {
         Component originalSelection = selected;
         for (final Iterator<Component> i = getComponentIterator(); i.hasNext();) {
             final Component component = i.next();
