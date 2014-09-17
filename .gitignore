@@ -79,3 +79,4 @@ result
 .sass-cache
 
 .idea/workspace.xml
+.idea/inspectionProfiles/*
