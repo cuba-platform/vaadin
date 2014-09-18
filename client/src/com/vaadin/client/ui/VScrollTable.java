@@ -913,7 +913,6 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 });
     }
 
-<<<<<<< HEAD
     /**
      * Handles a context menu event on table body.
      *
@@ -927,10 +926,6 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
      * @return true if a context menu was shown, otherwise false
      */
     protected boolean handleBodyContextMenu(int left, int top) {
-=======
-    // Haulmont API dependency
-    protected void handleBodyContextMenu(ContextMenuEvent event) {
->>>>>>> 65c8624... Haulmont API - Protected handle body context menu for Table
         if (enabled && bodyActionKeys != null) {
             top += Window.getScrollTop();
             left += Window.getScrollLeft();
