@@ -27,7 +27,8 @@ import com.vaadin.shared.ui.AlignmentInfo;
 
 public abstract class VLayoutSlot {
 
-    private final Element wrapper = Document.get().createDivElement();
+    // Haulmont API dependency
+    protected final Element wrapper = Document.get().createDivElement();
 
     private AlignmentInfo alignment;
     private VCaption caption;
@@ -154,7 +155,8 @@ public abstract class VLayoutSlot {
         style.setLeft(Math.round(currentLocation), Unit.PX);
     }
 
-    private double parsePercent(String size) {
+    // Haulmont API dependency
+    protected double parsePercent(String size) {
         return Double.parseDouble(size.replaceAll("%", ""));
     }
 
