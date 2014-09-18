@@ -96,7 +96,8 @@ public abstract class AbstractOrderedLayoutConnector extends
         }
     };
 
-    private ElementResizeListener slotCaptionResizeListener = new ElementResizeListener() {
+    // Haulmont API dependency
+    protected ElementResizeListener slotCaptionResizeListener = new ElementResizeListener() {
         @Override
         public void onElementResize(ElementResizeEvent e) {
 
@@ -248,7 +249,8 @@ public abstract class AbstractOrderedLayoutConnector extends
         updateInternalState();
     }
 
-    private void updateCaptionInternal(ComponentConnector child) {
+    // Haulmont API dependency
+    protected void updateCaptionInternal(ComponentConnector child) {
         Slot slot = getWidget().getSlot(child.getWidget());
 
         String caption = child.getState().caption;
