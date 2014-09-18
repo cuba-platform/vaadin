@@ -40,8 +40,10 @@ import com.vaadin.shared.ui.AlignmentInfo;
 
 /**
  * Represents a slot which contains the actual widget in the layout.
+ *
+ * Haulmont API dependency
  */
-public final class Slot extends SimplePanel {
+public class Slot extends SimplePanel {
 
     private static final String ALIGN_CLASS_PREFIX = "v-align-";
 
