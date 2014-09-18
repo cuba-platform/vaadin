@@ -40,6 +40,8 @@ import com.vaadin.shared.ui.AlignmentInfo;
 
 /**
  * Represents a slot which contains the actual widget in the layout.
+ *
+ * Haulmont API dependency
  */
 public class Slot extends SimplePanel {
 
