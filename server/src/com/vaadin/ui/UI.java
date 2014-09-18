@@ -1643,4 +1643,8 @@ public abstract class UI extends AbstractSingleComponentContainer implements
     public String getEmbedId() {
         return embedId;
     }
+
+    // Haulmont API
+    public void handleRequest(VaadinRequest request) {
+    }
 }
