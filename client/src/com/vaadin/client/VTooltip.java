@@ -480,7 +480,8 @@ public class VTooltip extends VOverlay {
         opening = false;
     }
 
-    private class TooltipEventHandler implements MouseMoveHandler,
+    // Haulmont API dependency
+    public class TooltipEventHandler implements MouseMoveHandler,
             KeyDownHandler, FocusHandler, BlurHandler, MouseDownHandler {
 
         /**
@@ -631,7 +632,8 @@ public class VTooltip extends VOverlay {
         }
     }
 
-    private final TooltipEventHandler tooltipEventHandler = new TooltipEventHandler();
+    // Haulmont API dependency
+    protected TooltipEventHandler tooltipEventHandler = new TooltipEventHandler();
 
     /**
      * Connects DOM handlers to widget that are needed for tooltip presentation.
