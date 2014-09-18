@@ -54,11 +54,14 @@ public class VTooltip extends VOverlay {
 
     private TooltipInfo currentTooltipInfo = new TooltipInfo(" ");
 
-    private boolean closing = false;
-    private boolean opening = false;
+    // Haulmont API dependency
+    protected boolean closing = false;
+    // Haulmont API dependency
+    protected boolean opening = false;
 
     // Open next tooltip faster. Disabled after 2 sec of showTooltip-silence.
-    private boolean justClosed = false;
+    // Haulmont API dependency
+    protected boolean justClosed = false;
 
     private String uniqueId = DOM.createUniqueId();
     private int maxWidth;
@@ -158,9 +161,10 @@ public class VTooltip extends VOverlay {
 
     /**
      * Show a popup containing the currentTooltipInfo
-     * 
+     * <br/>
+     * Haulmont API dependency
      */
-    private void showTooltip() {
+    protected void showTooltip() {
         if (currentTooltipInfo.hasMessage()) {
             // Issue #8454: With IE7 the tooltips size is calculated based on
             // the last tooltip's position, causing problems if the last one was
@@ -282,7 +286,8 @@ public class VTooltip extends VOverlay {
                 && getPopupTop() > 0;
     }
 
-    private void closeNow() {
+    // Haulmont API dependency
+    protected void closeNow() {
         hide();
         setWidth("");
         closing = false;
@@ -290,7 +295,8 @@ public class VTooltip extends VOverlay {
         justClosed = true;
     }
 
-    private Timer showTimer = new Timer() {
+    // Haulmont API dependency
+    protected Timer showTimer = new Timer() {
         @Override
         public void run() {
             opening = false;
@@ -298,7 +304,8 @@ public class VTooltip extends VOverlay {
         }
     };
 
-    private Timer closeTimer = new Timer() {
+    // Haulmont API dependency
+    protected Timer closeTimer = new Timer() {
         @Override
         public void run() {
             closeNow();
@@ -393,13 +400,17 @@ public class VTooltip extends VOverlay {
 
         /**
          * Current element hovered
+         * <br/>
+         * Haulmont API dependency
          */
-        private com.google.gwt.dom.client.Element currentElement = null;
+        protected com.google.gwt.dom.client.Element currentElement = null;
 
         /**
          * Marker for handling of tooltip through focus
+         * <br/>
+         * Haulmont API dependency
          */
-        private boolean handledByFocus;
+        protected boolean handledByFocus;
 
         /**
          * Locate the tooltip for given element
@@ -443,9 +454,10 @@ public class VTooltip extends VOverlay {
 
         /**
          * Handle hide event
-         * 
+         * <br/>
+         * Haulmont API dependency
          */
-        private void handleHideEvent() {
+        protected void handleHideEvent() {
             hideTooltip();
         }
 
@@ -487,7 +499,8 @@ public class VTooltip extends VOverlay {
             handleHideEvent();
         }
 
-        private void handleShowHide(DomEvent domEvent, boolean isFocused) {
+        // Haulmont API dependency
+        protected void handleShowHide(DomEvent domEvent, boolean isFocused) {
             Event event = Event.as(domEvent.getNativeEvent());
             Element element = Element.as(event.getEventTarget());
 
