@@ -224,6 +224,18 @@ $v-error-indicator-color: #ed473b !default;
 $v-required-field-indicator-color: $v-error-indicator-color !default;
 
 /**
+* Box-shadow specification for the field focus indicator in error state. The space-separated values
+* are the horizontal shadow position in pixels, vertical shadow position in pixels,
+* blur distance in pixels, spread distance in pixels, and the color. The color can be
+* any CSS color. You can only specify the color, in which case defaults for the position
+* are used. rgba() or hsla() can be used to enable transparency.
+*
+* @group style
+* @type list | color
+*/
+$v-error-focus-style: 0 0 0 2px rgba($v-error-indicator-color, .5) !default;
+
+/**
  * Color used for success states and to indicate safe actions (i.e. actions that
  * will not cause any data loss).
  *
