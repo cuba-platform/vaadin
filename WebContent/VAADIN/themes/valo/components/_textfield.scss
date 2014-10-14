@@ -327,6 +327,10 @@ $v-textfield-disabled-opacity: $v-disabled-opacity !default;
  * @group textfield
  */
 @mixin valo-textfield-error-style {
+  &:focus {
+    @include valo-error-focus-style;
+  }
+
   border-color: $v-error-indicator-color !important;
   $bg: scale-color($v-error-indicator-color, $lightness: 98%);
   background: $bg;
