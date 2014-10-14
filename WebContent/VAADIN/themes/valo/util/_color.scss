@@ -124,3 +124,16 @@ $v-luminance-threshold: 150 !default;
     border-color: $v-focus-style;
   }
 }
+
+/**
+ * Output the default focus styles for error state (border-color and box-shadow).
+ *
+ * @group style
+ */
+@mixin valo-error-focus-style {
+  @if type-of($v-error-focus-style) == list {
+    @include box-shadow($v-error-focus-style);
+  } @else if type-of($v-error-focus-style) == color {
+    border-color: $v-error-focus-style;
+  }
+}
