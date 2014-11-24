@@ -6651,18 +6651,17 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
              * the row directly this method returns the TR element instead of
              * the TD.
              *
-             * Haulmont API dependency
-             *
              * @param event
              * @return TD or TR element that the event targets (the actual event
              *         target is this element or a child of it)
              */
-            protected Element getEventTargetTdOrTr(Event event) {
+            private Element getEventTargetTdOrTr(Event event) {
                 final Element eventTarget = event.getEventTarget().cast();
                 return getElementTdOrTr(eventTarget);
             }
 
-            private Element getElementTdOrTr(Element element) {
+            // Haulmont API dependency
+            protected Element getElementTdOrTr(Element element) {
 
                 Widget widget = WidgetUtil.findWidget(element, null);
 
