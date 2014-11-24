@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,15 +33,10 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Util;
 import com.vaadin.client.VCaptionWrapper;
 import com.vaadin.client.VConsole;
@@ -48,7 +45,8 @@ import com.vaadin.client.ui.ShortcutActionHandler.ShortcutActionHandlerOwner;
 import com.vaadin.client.ui.popupview.VisibilityChangeEvent;
 import com.vaadin.client.ui.popupview.VisibilityChangeHandler;
 
-public class VPopupView extends HTML implements Iterable<Widget> {
+public class VPopupView extends HTML implements HasEnabled, Iterable<Widget>,
+        DeferredWorker {
 
     public static final String CLASSNAME = "v-popupview";
 
@@ -73,6 +71,9 @@ public class VPopupView extends HTML implements Iterable<Widget> {
     public final CustomPopup popup;
     private final Label loading = new Label();
 
+    private boolean popupShowInProgress;
+    private boolean enabled = true;
+
     /**
      * loading constructor
      */
@@ -91,10 +92,12 @@ public class VPopupView extends HTML implements Iterable<Widget> {
         addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                preparePopup(popup);
-                showPopup(popup);
-                center();
-                fireEvent(new VisibilityChangeEvent(true));
+                if(isEnabled()) {
+                    preparePopup(popup);
+                    showPopup(popup);
+                    center();
+                    fireEvent(new VisibilityChangeEvent(true));
+                }
             }
         });
 
@@ -191,6 +194,28 @@ public class VPopupView extends HTML implements Iterable<Widget> {
     }-*/;
 
     /**
+     * Returns true if the popup is enabled, false if not.
+     *
+     * @since 7.3.4
+     */
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * Sets whether this popup is enabled.
+     *
+     * @param enabled <code>true</code> to enable the popup, <code>false</code>
+     *          to disable it
+     * @since 7.3.4
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
      * This class is only public to enable overriding showPopup, and is
      * currently not intended to be extended or otherwise used directly. Its API
      * (other than it being a VOverlay) is to be considered private and
@@ -280,19 +305,33 @@ public class VPopupView extends HTML implements Iterable<Widget> {
 
         @Override
         public void show() {
+            popupShowInProgress = true;
             // Find the shortcut action handler that should handle keyboard
             // events from the popup. The events do not propagate automatically
             // because the popup is directly attached to the RootPanel.
-            Widget widget = VPopupView.this;
-            while (shortcutActionHandler == null && widget != null) {
-                if (widget instanceof ShortcutActionHandlerOwner) {
-                    shortcutActionHandler = ((ShortcutActionHandlerOwner) widget)
-                            .getShortcutActionHandler();
-                }
-                widget = widget.getParent();
-            }
 
             super.show();
+
+            /*
+             * Shortcut actions could be set (and currently in 7.2 they ARE SET
+             * via old style "updateFromUIDL" method, see f.e. UIConnector)
+             * AFTER method show() has been invoked (which is called as a
+             * reaction on change in component hierarchy). As a result there
+             * could be no shortcutActionHandler set yet. So let's postpone
+             * search of shortcutActionHandler.
+             */
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    try {
+                        if (shortcutActionHandler == null) {
+                            shortcutActionHandler = findShortcutActionHandler();
+                        }
+                    } finally {
+                        popupShowInProgress = false;
+                    }
+                }
+            });
         }
 
         /**
@@ -378,6 +417,18 @@ public class VPopupView extends HTML implements Iterable<Widget> {
             positionOrSizeUpdated();
         }
 
+        private ShortcutActionHandler findShortcutActionHandler() {
+            Widget widget = VPopupView.this;
+            ShortcutActionHandler handler = null;
+            while (handler == null && widget != null) {
+                if (widget instanceof ShortcutActionHandlerOwner) {
+                    handler = ((ShortcutActionHandlerOwner) widget)
+                            .getShortcutActionHandler();
+                }
+                widget = widget.getParent();
+            }
+            return handler;
+        }
     }// class CustomPopup
 
     public HandlerRegistration addVisibilityChangeHandler(
@@ -389,6 +440,11 @@ public class VPopupView extends HTML implements Iterable<Widget> {
     @Override
     public Iterator<Widget> iterator() {
         return Collections.singleton((Widget) popup).iterator();
+    }
+
+    @Override
+    public boolean isWorkPending() {
+        return popupShowInProgress;
     }
 
 }// class VPopupView

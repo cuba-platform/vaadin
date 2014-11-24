@@ -239,6 +239,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             addCloseHandler(this);
 
             Roles.getListRole().set(getElement());
+
+            setPreviewingAllNativeEvents(true);
         }
 
         /**

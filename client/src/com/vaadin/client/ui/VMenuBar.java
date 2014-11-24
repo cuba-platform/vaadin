@@ -16,7 +16,9 @@
 package com.vaadin.client.ui;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -243,7 +245,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * This is called by the items in the menu and it communicates the
      * information to the server
-     *
+     * 
      * @param clickedItemId
      *            id of the item that was clicked
      */
@@ -280,7 +282,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Returns the containing element of the menu
-     *
+     * 
      * @return
      */
     @Override
@@ -290,7 +292,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Add a new item to this menu
-     *
+     * 
      * @param html
      *            items text
      * @param cmd
@@ -307,7 +309,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Add a new item to this menu
-     *
+     * 
      * @param item
      */
     public void addItem(CustomMenuItem item) {
@@ -332,7 +334,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Remove the given item from this menu
-     *
+     * 
      * @param item
      */
     public void removeItem(CustomMenuItem item) {
@@ -429,7 +431,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * When an item is clicked
-     *
+     * 
      * @param item
      */
     public void itemClick(CustomMenuItem item) {
@@ -460,7 +462,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * When the user hovers the mouse over the item
-     *
+     * 
      * @param item
      */
     public void itemOver(CustomMenuItem item) {
@@ -485,7 +487,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * When the mouse is moved away from an item
-     *
+     * 
      * @param item
      */
     public void itemOut(CustomMenuItem item) {
@@ -543,7 +545,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * Shows the child menu of an item. The caller must ensure that the item has
      * a submenu.
-     *
+     * 
      * @param item
      */
     public void showChildMenu(CustomMenuItem item) {
@@ -665,7 +667,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Hides the submenu of an item
-     *
+     * 
      * @param item
      */
     public void hideChildMenu(CustomMenuItem item) {
@@ -729,7 +731,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * Returns the parent menu of this menu, or null if this is the top-level
      * menu
-     *
+     * 
      * @return
      */
     public VMenuBar getParentMenu() {
@@ -738,7 +740,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Set the parent menu of this menu
-     *
+     * 
      * @param parent
      */
     public void setParentMenu(VMenuBar parent) {
@@ -748,7 +750,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * Returns the currently selected item of this menu, or null if nothing is
      * selected
-     *
+     * 
      * @return
      */
     public CustomMenuItem getSelected() {
@@ -757,7 +759,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Set the currently selected item of this menu
-     *
+     * 
      * @param item
      */
     public void setSelected(CustomMenuItem item) {
@@ -774,9 +776,9 @@ public class VMenuBar extends SimpleFocusablePanel implements
     }
 
     /**
-     *
+     * 
      * A class to hold information on menu items
-     *
+     * 
      */
     public static class CustomMenuItem extends Widget implements HasHTML {
 
@@ -795,7 +797,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
         /**
          * Default menu item {@link Widget} constructor for GWT.create().
-         *
+         * 
          * Use {@link #setHTML(String)} and {@link #setCommand(Command)} after
          * constructing a menu item.
          */
@@ -805,7 +807,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
         /**
          * Creates a menu item {@link Widget}.
-         *
+         * 
          * @param html
          * @param cmd
          * @deprecated use the default constructor and {@link #setHTML(String)}
@@ -1043,7 +1045,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
         /**
          * Checks if the item can be selected.
-         *
+         * 
          * @return true if it is possible to select this item, false otherwise
          */
         public boolean isSelectable() {
@@ -1202,7 +1204,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
      * Get the key that moves the selection upwards. By default it is the up
      * arrow key but by overriding this you can change the key to whatever you
      * want.
-     *
+     * 
      * @return The keycode of the key
      */
     protected int getNavigationUpKey() {
@@ -1213,7 +1215,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
      * Get the key that moves the selection downwards. By default it is the down
      * arrow key but by overriding this you can change the key to whatever you
      * want.
-     *
+     * 
      * @return The keycode of the key
      */
     protected int getNavigationDownKey() {
@@ -1224,7 +1226,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
      * Get the key that moves the selection left. By default it is the left
      * arrow key but by overriding this you can change the key to whatever you
      * want.
-     *
+     * 
      * @return The keycode of the key
      */
     protected int getNavigationLeftKey() {
@@ -1235,7 +1237,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
      * Get the key that moves the selection right. By default it is the right
      * arrow key but by overriding this you can change the key to whatever you
      * want.
-     *
+     * 
      * @return The keycode of the key
      */
     protected int getNavigationRightKey() {
@@ -1245,7 +1247,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * Get the key that selects a menu item. By default it is the Enter key but
      * by overriding this you can change the key to whatever you want.
-     *
+     * 
      * @deprecated use {@link #isNavigationSelectKey(int)} instead
      * @return
      */
@@ -1258,7 +1260,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
      * Checks whether key code selects a menu item. By default it is the Enter
      * and Space keys but by overriding this you can change the keys to whatever
      * you want.
-     *
+     * 
      * @since 7.2
      * @param keycode
      * @return true if key selects menu item
@@ -1271,7 +1273,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
     /**
      * Get the key that closes the menu. By default it is the escape key but by
      * overriding this yoy can change the key to whatever you want.
-     *
+     * 
      * @return
      */
     protected int getCloseMenuKey() {
@@ -1280,7 +1282,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Handles the keyboard events handled by the MenuBar
-     *
+     * 
      * @param event
      *            The keyboard event received
      * @return true iff the navigation event was handled
@@ -1535,11 +1537,69 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     @Override
     public com.google.gwt.user.client.Element getSubPartElement(String subPart) {
-        int index = Integer
-                .parseInt(subPart.substring(SUBPART_PREFIX.length()));
-        CustomMenuItem item = getItems().get(index);
+        if (subPart.startsWith(SUBPART_PREFIX)) {
+            int index = Integer.parseInt(subPart.substring(SUBPART_PREFIX
+                    .length()));
+            CustomMenuItem item = getItems().get(index);
 
-        return item.getElement();
+            return item.getElement();
+        } else {
+            Queue<CustomMenuItem> submenuItems = new LinkedList<CustomMenuItem>();
+            for (CustomMenuItem item : getItems()) {
+                if (isItemNamed(item, subPart)) {
+                    return item.getElement();
+                }
+                if (item.getSubMenu() != null) {
+                    submenuItems.addAll(item.getSubMenu().getItems());
+                }
+            }
+            while (!submenuItems.isEmpty()) {
+                CustomMenuItem item = submenuItems.poll();
+                if (!item.isSeparator() && isItemNamed(item, subPart)) {
+                    return item.getElement();
+                }
+                if (item.getSubMenu() != null && item.getSubMenu().menuVisible) {
+                    submenuItems.addAll(item.getSubMenu().getItems());
+                }
+
+            }
+            return null;
+        }
+    }
+
+    private boolean isItemNamed(CustomMenuItem item, String name) {
+        Element lastChildElement = getLastChildElement(item);
+        if (getText(lastChildElement).equals(name)) {
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * Returns the text content of element without including the text of
+     * possible nested elements. It is assumed that the last child of element
+     * contains the text of interest and that the last child does not itself
+     * have children with text content. This method is used by
+     * getSubPartElement(String) so that possible text icons are not included in
+     * the textual matching (#14879).
+     */
+    private native String getText(Element element)
+    /*-{
+        var n = element.childNodes.length;
+        if(n > 0){
+            return element.childNodes[n - 1].nodeValue;
+        }
+        else{
+            return "";
+        }
+    }-*/;
+
+    private Element getLastChildElement(CustomMenuItem item) {
+        Element lastChildElement = item.getElement().getFirstChildElement();
+        while (lastChildElement.getNextSiblingElement() != null) {
+            lastChildElement = lastChildElement.getNextSiblingElement();
+        }
+        return lastChildElement;
     }
 
     @Override
@@ -1567,7 +1627,7 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Get menu item with given DOM element
-     *
+     * 
      * @param element
      *            Element used in search
      * @return Menu item or null if not found
@@ -1596,11 +1656,11 @@ public class VMenuBar extends SimpleFocusablePanel implements
 
     /**
      * Get menu item with given DOM element
-     *
+     * 
      * @param element
      *            Element used in search
      * @return Menu item or null if not found
-     *
+     * 
      * @since 7.2
      */
     public CustomMenuItem getMenuItemWithElement(Element element) {
