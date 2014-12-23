@@ -333,8 +333,12 @@ $v-textfield-disabled-opacity: $v-disabled-opacity !default;
 
   border-color: $v-error-indicator-color !important;
   $bg: scale-color($v-error-indicator-color, $lightness: 98%);
+  @if ($v-error-indicator-use-bg) {
   background: $bg;
+  }
+  @if ($v-error-indicator-use-color) {
   color: valo-font-color($bg);
+  }
 }
 
 
