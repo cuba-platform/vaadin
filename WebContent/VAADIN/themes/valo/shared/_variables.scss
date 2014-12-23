@@ -230,10 +230,26 @@ $v-required-field-indicator-color: $v-error-indicator-color !default;
 * any CSS color. You can only specify the color, in which case defaults for the position
 * are used. rgba() or hsla() can be used to enable transparency.
 *
+* Haulmont API
+*
 * @group style
 * @type list | color
 */
 $v-error-focus-style: 0 0 0 2px rgba($v-error-indicator-color, .5) !default;
+
+/**
+ * Use or not error indicator background for fields.
+ *
+ * Haulmont API
+ */
+$v-error-indicator-use-bg: true !default;
+
+/**
+ * Use or not error indicator color for field text.
+ *
+ * Haulmont API
+ */
+$v-error-indicator-use-color: true !default;
 
 /**
  * Color used for success states and to indicate safe actions (i.e. actions that
