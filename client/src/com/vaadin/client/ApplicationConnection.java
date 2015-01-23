@@ -2754,6 +2754,35 @@ public class ApplicationConnection implements HasHandlers {
         }
     }
 
+    // Haulmont API
+    public interface MethodInvocationFilter {
+        boolean apply(MethodInvocation mi);
+    }
+
+    // Haulmont API
+    @SuppressWarnings("UnusedDeclaration")
+    public void removePendingInvocationsAndBursts(MethodInvocationFilter filter) {
+        Iterator<MethodInvocation> pIter = pendingInvocations.values()
+                .iterator();
+        while (pIter.hasNext()) {
+            MethodInvocation mi = pIter.next();
+            if (filter.apply(mi)) {
+                pIter.remove();
+            }
+        }
+
+        for (LinkedHashMap<String, MethodInvocation> burst : pendingBursts) {
+            Iterator<MethodInvocation> bIter = burst.values()
+                    .iterator();
+            while (bIter.hasNext()) {
+                MethodInvocation mi = bIter.next();
+                if (filter.apply(mi)) {
+                    bIter.remove();
+                }
+            }
+        }
+    }
+
     /**
      * This method sends currently queued variable changes to server. It is
      * called when immediate variable update must happen.
