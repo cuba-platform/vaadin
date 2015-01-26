@@ -1008,7 +1008,8 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
         }
     }
 
-    private void onCloseClick() {
+    // Haulmont API dependency
+    protected void onCloseClick() {
         // Send the close event to the server
         client.updateVariable(id, "close", true, true);
     }
