@@ -2278,6 +2278,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             final FooterCell fCell = (FooterCell) footCells.next();
             boolean needsIndent = hierarchyColumnIndent > 0
                     && hCell.isHierarchyColumn();
+            hCell.saveNaturalColumnWidthIfNotSaved(i);
+            fCell.saveNaturalColumnWidthIfNotSaved(i);
             int w = hCell.getWidth();
             if (hCell.isDefinedWidth()) {
                 // server has defined column width explicitly
@@ -2303,8 +2305,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     int footerWidth = fCell.getNaturalColumnWidth(i);
                     w = headerWidth > footerWidth ? headerWidth : footerWidth;
                 }
-                hCell.setNaturalMinimumColumnWidth(w);
-                fCell.setNaturalMinimumColumnWidth(w);
+                if (w != 0) {
+                    hCell.setNaturalMinimumColumnWidth(w);
+                    fCell.setNaturalMinimumColumnWidth(w);
+                }
             }
             widths[i] = w;
             total += w;
@@ -2686,11 +2690,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
         @Override
         public void run() {
+
             if (client.hasActiveRequest() || navKeyDown) {
                 // if client connection is busy, don't bother loading it more
                 VConsole.log("Postponed rowfetch");
                 schedule(250);
-            } else if (!updatedReqRows && allRenderedRowsAreNew()) {
+            } else if (allRenderedRowsAreNew() && !updatedReqRows) {
 
                 /*
                  * If all rows are new, there might have been a server-side call
@@ -2711,6 +2716,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 setReqRows(last - getReqFirstRow() + 1);
                 updatedReqRows = true;
                 schedule(250);
+
             } else {
 
                 int firstRendered = scrollBody.getFirstRendered();
@@ -2798,6 +2804,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     client.updateVariable(paintableId, "firstvisible",
                             firstRowInViewPort, false);
                 }
+
                 client.updateVariable(paintableId, "reqfirstrow", reqFirstRow,
                         false);
                 client.updateVariable(paintableId, "reqrows", reqRows, true);
@@ -3028,6 +3035,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             if (!isResizing) {
                 setWidth(-1, false);
             }
+        }
+
+        private void setUndefinedWidthFlagOnly() {
+            definedWidth = false;
         }
 
         /**
@@ -3452,6 +3463,33 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         }
 
         /**
+         *
+         * @param columnIndex
+         * @since 7.3.9
+         */
+        protected void saveNaturalColumnWidthIfNotSaved(int columnIndex) {
+            if (naturalWidth < 0) {
+                // This is recently revealed column. Try to detect a proper
+                // value (greater of header and data columns)
+
+                int hw = captionContainer.getOffsetWidth() + getHeaderPadding();
+                if (BrowserInfo.get().isGecko()) {
+                    hw += sortIndicator.getOffsetWidth();
+                }
+                if (columnIndex < 0) {
+                    columnIndex = 0;
+                    for (Iterator<Widget> it = tHead.iterator(); it.hasNext(); columnIndex++) {
+                        if (it.next() == this) {
+                            break;
+                        }
+                    }
+                }
+                final int cw = scrollBody.getColWidth(columnIndex);
+                naturalWidth = (hw > cw ? hw : cw);
+            }
+        }
+
+        /**
          * Detects the natural minimum width for the column of this header cell.
          * If column is resized by user or the width is defined by server the
          * actual width is returned. Else the natural min width is returned.
@@ -3464,33 +3502,13 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         public int getNaturalColumnWidth(int columnIndex) {
             final int iw = columnIndex == getHierarchyColumnIndex() ? scrollBody
                     .getMaxIndent() : 0;
+            saveNaturalColumnWidthIfNotSaved(columnIndex);
             if (isDefinedWidth()) {
                 if (iw > width) {
                     return iw;
                 }
                 return width;
             } else {
-                if (naturalWidth < 0) {
-                    // This is recently revealed column. Try to detect a proper
-                    // value (greater of header and data columns)
-
-                    int hw = captionContainer.getOffsetWidth()
-                            + getHeaderPadding();
-                    if (BrowserInfo.get().isGecko()) {
-                        hw += sortIndicator.getOffsetWidth();
-                    }
-                    if (columnIndex < 0) {
-                        columnIndex = 0;
-                        for (Iterator<Widget> it = tHead.iterator(); it
-                                .hasNext(); columnIndex++) {
-                            if (it.next() == this) {
-                                break;
-                            }
-                        }
-                    }
-                    final int cw = scrollBody.getColWidth(columnIndex);
-                    naturalWidth = (hw > cw ? hw : cw);
-                }
                 if (iw > naturalWidth) {
                     // indent is temporary value, naturalWidth shouldn't be
                     // updated
@@ -3742,7 +3760,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     }
                 } else if (col.hasAttribute("er")) {
                     c.setExpandRatio(col.getFloatAttribute("er"));
-
+                    c.setUndefinedWidthFlagOnly();
                 } else if (recalcWidths) {
                     c.setUndefinedWidth();
 
@@ -4362,7 +4380,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         }
 
         /**
-         * Returns the expand ration of the cell
+         * Returns the expand ratio of the cell
          * 
          * @return The expand ratio
          */
@@ -4447,6 +4465,31 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         }
 
         /**
+         *
+         * @param columnIndex
+         * @since 7.3.9
+         */
+        protected void saveNaturalColumnWidthIfNotSaved(int columnIndex) {
+            if (naturalWidth < 0) {
+                // This is recently revealed column. Try to detect a proper
+                // value (greater of header and data cols)
+
+                final int hw = ((Element) getElement().getLastChild())
+                        .getOffsetWidth() + getHeaderPadding();
+                if (columnIndex < 0) {
+                    columnIndex = 0;
+                    for (Iterator<Widget> it = tHead.iterator(); it.hasNext(); columnIndex++) {
+                        if (it.next() == this) {
+                            break;
+                        }
+                    }
+                }
+                final int cw = scrollBody.getColWidth(columnIndex);
+                naturalWidth = (hw > cw ? hw : cw);
+            }
+        }
+
+        /**
          * Detects the natural minimum width for the column of this header cell.
          * If column is resized by user or the width is defined by server the
          * actual width is returned. Else the natural min width is returned.
@@ -4459,31 +4502,13 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         public int getNaturalColumnWidth(int columnIndex) {
             final int iw = columnIndex == getHierarchyColumnIndex() ? scrollBody
                     .getMaxIndent() : 0;
+            saveNaturalColumnWidthIfNotSaved(columnIndex);
             if (isDefinedWidth()) {
                 if (iw > width) {
                     return iw;
                 }
                 return width;
             } else {
-                if (naturalWidth < 0) {
-                    // This is recently revealed column. Try to detect a proper
-                    // value (greater of header and data
-                    // cols)
-
-                    final int hw = ((Element) getElement().getLastChild())
-                            .getOffsetWidth() + getHeaderPadding();
-                    if (columnIndex < 0) {
-                        columnIndex = 0;
-                        for (Iterator<Widget> it = tHead.iterator(); it
-                                .hasNext(); columnIndex++) {
-                            if (it.next() == this) {
-                                break;
-                            }
-                        }
-                    }
-                    final int cw = scrollBody.getColWidth(columnIndex);
-                    naturalWidth = (hw > cw ? hw : cw);
-                }
                 if (iw > naturalWidth) {
                     return iw;
                 } else {
@@ -4860,10 +4885,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         }
 
         public int getLastRendered() {
+
             return lastRendered;
         }
 
         public int getFirstRendered() {
+
             return firstRendered;
         }
 
@@ -4947,10 +4974,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             } else if (firstIndex + rows == firstRendered) {
                 final VScrollTableRow[] rowArray = new VScrollTableRow[rows];
                 int i = rows;
+
                 while (it.hasNext()) {
                     i--;
                     rowArray[i] = prepareRow((UIDL) it.next());
                 }
+
                 for (i = 0; i < rows; i++) {
                     addRowBeforeFirstRendered(rowArray[i]);
                     firstRendered--;
@@ -4975,10 +5004,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 setLastRendered(lastRendered + 1);
                 setContainerHeight();
                 fixSpacers();
+
                 while (it.hasNext()) {
                     addRow(prepareRow((UIDL) it.next()));
                     setLastRendered(lastRendered + 1);
                 }
+
                 fixSpacers();
             }
 
@@ -4993,6 +5024,14 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
          * has changed since the last request.
          */
         protected void ensureCacheFilled() {
+
+            /**
+             * Fixes cache issue #13576 where unnecessary rows are fetched
+             */
+            if (isLazyScrollerActive()) {
+                return;
+            }
+
             int reactFirstRow = (int) (firstRowInViewPort - pageLength
                     * cache_react_rate);
             int reactLastRow = (int) (firstRowInViewPort + pageLength + pageLength
@@ -5555,6 +5594,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             private Map<TableCellElement, TooltipInfo> cellToolTips = new HashMap<TableCellElement, TooltipInfo>();
             private boolean isDragging = false;
             private String rowStyle = null;
+            protected boolean applyZeroWidthFix = true;
 
             private VScrollTableRow(int rowKey) {
                 this.rowKey = rowKey;
@@ -5660,7 +5700,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                      * definition of zero width table cells. Instead, use 1px
                      * and compensate with a negative margin.
                      */
-                    if (width == 0) {
+                    if (applyZeroWidthFix && width == 0) {
                         wrapperWidth = 1;
                         wrapperStyle.setMarginRight(-1, Unit.PX);
                     } else {
@@ -6347,7 +6387,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                         touchStart = event;
                         Touch touch = event.getChangedTouches().get(0);
                         // save position to fields, touches in events are same
-                        // isntance during the operation.
+                        // instance during the operation.
                         touchStartX = touch.getClientX();
                         touchStartY = touch.getClientY();
                         /*
@@ -6663,8 +6703,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     startRow = focusedRow;
                     selectionRangeStart = focusedRow;
                     // If start row is null then we have a multipage selection
-                    // from
-                    // above
+                    // from above
                     if (startRow == null) {
                         startRow = (VScrollTableRow) scrollBody.iterator()
                                 .next();
@@ -7062,6 +7101,14 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     // natural width already includes indent if any
                     int naturalColumnWidth = hCell
                             .getNaturalColumnWidth(colIndex);
+                    /*
+                     * TODO If there is extra width, expand ratios are for
+                     * additional extra widths, not for absolute column widths.
+                     * Should be fixed in sizeInit(), too.
+                     */
+                    if (hCell.getExpandRatio() > 0) {
+                        naturalColumnWidth = 0;
+                    }
                     usedMinimumWidth += naturalColumnWidth;
                     expandRatioDivider += hCell.getExpandRatio();
                     if (hasIndent) {
@@ -7079,7 +7126,16 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     * visibleCellCount;
             if (willHaveScrollbars()) {
                 totalExtraWidth += Util.getNativeScrollbarSize();
+                // if there will be vertical scrollbar, let's enable it
+                scrollBodyPanel.getElement().getStyle().clearOverflowY();
+            } else {
+                // if there is no need for vertical scrollbar, let's disable it
+                // this is necessary since sometimes the browsers insist showing
+                // the scrollbar even if the content would fit perfectly
+                scrollBodyPanel.getElement().getStyle()
+                        .setOverflowY(Overflow.HIDDEN);
             }
+
             availW -= totalExtraWidth;
             int forceScrollBodyWidth = -1;
 
@@ -7097,6 +7153,15 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     forceScrollBodyWidth = usedMinimumWidth + totalExtraWidth;
                 }
                 extraSpace = 0;
+                // if there will be horizontal scrollbar, let's enable it
+                scrollBodyPanel.getElement().getStyle().clearOverflowX();
+            } else {
+                // if there is no need for horizontal scrollbar, let's disable
+                // it
+                // this is necessary since sometimes the browsers insist showing
+                // the scrollbar even if the content would fit perfectly
+                scrollBodyPanel.getElement().getStyle()
+                        .setOverflowX(Overflow.HIDDEN);
             }
 
             if (forceScrollBodyWidth > 0) {
@@ -7148,6 +7213,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     int newSpace;
                     if (expandRatioDivider > 0) {
                         // divide excess space by expand ratios
+                        if (hCell.getExpandRatio() > 0) {
+                            w = 0;
+                        }
                         newSpace = Math.round((w + extraSpace
                                 * hCell.getExpandRatio() / expandRatioDivider));
                     } else {
@@ -7513,6 +7581,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         }
         if (preLimit < firstRendered) {
             // need some rows to the beginning of the rendered area
+
             rowRequestHandler
                     .setReqFirstRow((int) (firstRowInViewPort - pageLength
                             * cache_rate));
@@ -7898,13 +7967,13 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             // viewport
                             selectLastItemInNextRender = true;
                             multiselectPending = shift;
-                            scrollByPagelenght(1);
+                            scrollByPagelength(1);
                         }
                     }
                 }
             } else {
                 /* No selections, go page down by scrolling */
-                scrollByPagelenght(1);
+                scrollByPagelength(1);
             }
             return true;
         }
@@ -7950,13 +8019,13 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             // viewport
                             selectFirstItemInNextRender = true;
                             multiselectPending = shift;
-                            scrollByPagelenght(-1);
+                            scrollByPagelength(-1);
                         }
                     }
                 }
             } else {
                 /* No selections, go page up by scrolling */
-                scrollByPagelenght(-1);
+                scrollByPagelength(-1);
             }
 
             return true;
@@ -8030,7 +8099,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 .getRowHeight());
     }
 
-    private void scrollByPagelenght(int i) {
+    private void scrollByPagelength(int i) {
         int pixels = i * scrollBodyPanel.getOffsetHeight();
         int newPixels = scrollBodyPanel.getScrollPosition() + pixels;
         if (newPixels < 0) {
