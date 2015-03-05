@@ -312,11 +312,15 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
     public static class TabCaption extends VCaption {
 
-        private boolean closable = false;
-        private Element closeButton;
+        // Haulmont API dependency
+        protected boolean closable = false;
+
+        // Haulmont API dependency
+        protected Element closeButton;
         private Tab tab;
 
-        TabCaption(Tab tab) {
+        // Haulmont API dependency
+        public TabCaption(Tab tab) {
             super(tab.getTabsheet().connector.getConnection());
             this.tab = tab;
 
