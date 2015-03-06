@@ -138,11 +138,22 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
             DOM.appendChild(td, div);
 
-            tabCaption = new TabCaption(this);
+            // Haulmont API extracted method
+            tabCaption = createTabCaption();
             add(tabCaption);
 
             Roles.getTabRole().setAriaLabelledbyProperty(getElement(),
                     Id.of(tabCaption.getElement()));
+        }
+
+        // Haulmont API dependency
+        public TabBar getTabBar() {
+            return tabBar;
+        }
+
+        // Haulmont API dependency
+        protected TabCaption createTabCaption() {
+            return new TabCaption(this);
         }
 
         public boolean isHiddenOnServer() {
@@ -317,7 +328,9 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
         // Haulmont API dependency
         protected Element closeButton;
-        private Tab tab;
+
+        // Haulmont API dependency
+        protected Tab tab;
 
         // Haulmont API dependency
         public TabCaption(Tab tab) {
