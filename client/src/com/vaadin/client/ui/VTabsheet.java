@@ -1391,7 +1391,7 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
      * event to the main component, otherwise it'll do nothing, so the main
      * component will not generate the blur..
      */
-    private static class FocusBlurManager {
+    public static class FocusBlurManager {
 
         // The real tab with focus on it. If the focus goes to another element
         // in the page this will be null.
