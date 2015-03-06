@@ -2783,14 +2783,21 @@ public class ApplicationConnection implements HasHandlers {
     }
 
     // Haulmont API
+    public interface RemoveMethodInvocationCallback {
+        void removed(MethodInvocation mi);
+    }
+
+    // Haulmont API
     @SuppressWarnings("UnusedDeclaration")
-    public void removePendingInvocationsAndBursts(MethodInvocationFilter filter) {
+    public void removePendingInvocationsAndBursts(MethodInvocationFilter filter,
+                                                  RemoveMethodInvocationCallback callback) {
         Iterator<MethodInvocation> pIter = pendingInvocations.values()
                 .iterator();
         while (pIter.hasNext()) {
             MethodInvocation mi = pIter.next();
             if (filter.apply(mi)) {
                 pIter.remove();
+                callback.removed(mi);
             }
         }
 
@@ -2801,6 +2808,7 @@ public class ApplicationConnection implements HasHandlers {
                 MethodInvocation mi = bIter.next();
                 if (filter.apply(mi)) {
                     bIter.remove();
+                    callback.removed(mi);
                 }
             }
         }
@@ -3441,7 +3449,8 @@ public class ApplicationConnection implements HasHandlers {
         return SharedUtil.addGetParameters(uri, extraParams);
     }
 
-    ConnectorMap getConnectorMap() {
+    // Haulmont API dependency
+    public ConnectorMap getConnectorMap() {
         return connectorMap;
     }
 
