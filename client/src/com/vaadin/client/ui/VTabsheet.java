@@ -138,17 +138,11 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
             DOM.appendChild(td, div);
 
-            // Haulmont API extracted method
-            tabCaption = createTabCaption();
+            tabCaption = new TabCaption(this);
             add(tabCaption);
 
             Roles.getTabRole().setAriaLabelledbyProperty(getElement(),
                     Id.of(tabCaption.getElement()));
-        }
-
-        // Haulmont API dependency
-        protected TabCaption createTabCaption() {
-            return new TabCaption(this);
         }
 
         public boolean isHiddenOnServer() {
@@ -323,9 +317,7 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
         // Haulmont API dependency
         protected Element closeButton;
-
-        // Haulmont API dependency
-        protected Tab tab;
+        private Tab tab;
 
         // Haulmont API dependency
         public TabCaption(Tab tab) {
@@ -1367,8 +1359,10 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
     /*
      * The focus and blur manager instance.
+     *
+     * Haulmont API dependency
      */
-    private FocusBlurManager focusBlurManager = new FocusBlurManager();
+    protected FocusBlurManager focusBlurManager = new FocusBlurManager();
 
     /*
      * Generate the correct focus/blur events for the main TabSheet component
@@ -1405,8 +1399,10 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
 
         /*
          * Gets the focused tab.
+         *
+         * Haulmont API dependency
          */
-        private Tab getFocusedTab() {
+        public Tab getFocusedTab() {
             return focusedTab;
         }
 
