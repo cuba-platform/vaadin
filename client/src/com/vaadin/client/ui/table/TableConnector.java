@@ -24,10 +24,7 @@ import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.*;
-import com.vaadin.client.ui.AbstractHasComponentsConnector;
-import com.vaadin.client.ui.ManagedLayout;
-import com.vaadin.client.ui.PostLayoutListener;
-import com.vaadin.client.ui.VScrollTable;
+import com.vaadin.client.ui.*;
 import com.vaadin.client.ui.VScrollTable.ContextMenuDetails;
 import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
 import com.vaadin.shared.ui.Connect;
@@ -372,9 +369,10 @@ public class TableConnector extends AbstractHasComponentsConnector implements
                             ComponentConnector childConnector =
                                     Util.findConnectorFor(child);
                             if (childConnector instanceof ManagedLayout) {
-                                LayoutManager lm = getLayoutManager();
-                                lm.setNeedsMeasure(childConnector);
-                                lm.setNeedsLayout((ManagedLayout) childConnector);
+                                getLayoutManager().setNeedsMeasure(childConnector);
+                                getLayoutManager().setNeedsLayout((ManagedLayout) childConnector);
+                            } else if (childConnector instanceof AbstractLayoutConnector) {
+                                getLayoutManager().setNeedsMeasureRecursively(childConnector);
                             }
                         }
                     }
