@@ -7287,27 +7287,17 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
             forceRealignColumnHeaders();
 
-            // Fix for #VAADIN-12970, relayout cell widgets
-            // Haulmont API
             if (colWidthChanged) {
-                ComponentConnector connector = Util.findConnectorFor(VScrollTable.this);
-                LayoutManager lm = connector.getLayoutManager();
-
-                for (Widget w : scrollBody) {
-                    HasWidgets row = (HasWidgets) w;
-                    for (Widget child : row) {
-                        ComponentConnector childConnector = Util.findConnectorFor(child);
-                        if (childConnector instanceof ManagedLayout) {
-                            lm.setNeedsMeasure(childConnector);
-                            lm.setNeedsLayout((ManagedLayout) childConnector);
-                        } else if (childConnector instanceof AbstractLayoutConnector) {
-                            lm.setNeedsMeasure(childConnector);
-                        }
-                    }
-                }
+                // Haulmont API
+                scheduleLayoutForChildWidgets();
             }
         }
     };
+
+    // Haulmont API
+    public void scheduleLayoutForChildWidgets() {
+        // implement in descendants
+    }
 
     private void forceRealignColumnHeaders() {
         if (BrowserInfo.get().isIE()) {

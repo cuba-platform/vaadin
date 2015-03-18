@@ -21,7 +21,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.*;
 import com.vaadin.client.ui.*;
@@ -361,21 +360,8 @@ public class TableConnector extends AbstractHasComponentsConnector implements
                     getLayoutManager().setNeedsVerticalLayout(
                             TableConnector.this);
 
-                    // Fix for #VAADIN-12970, initial layout for cell widgets
                     // Haulmont API
-                    for (Widget w : getWidget().scrollBody) {
-                        HasWidgets row = (HasWidgets) w;
-                        for (Widget child : row) {
-                            ComponentConnector childConnector =
-                                    Util.findConnectorFor(child);
-                            if (childConnector instanceof ManagedLayout) {
-                                getLayoutManager().setNeedsMeasure(childConnector);
-                                getLayoutManager().setNeedsLayout((ManagedLayout) childConnector);
-                            } else if (childConnector instanceof AbstractLayoutConnector) {
-                                getLayoutManager().setNeedsMeasureRecursively(childConnector);
-                            }
-                        }
-                    }
+                    getWidget().scheduleLayoutForChildWidgets();
 
                     getLayoutManager().layoutNow();
                 }
