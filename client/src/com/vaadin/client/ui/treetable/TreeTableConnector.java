@@ -34,12 +34,18 @@ import com.vaadin.ui.TreeTable;
 @Connect(TreeTable.class)
 public class TreeTableConnector extends TableConnector {
 
+    // Haulmont API dependency
+    protected FocusableScrollPanel getFocusableScrollPanel() {
+        return (FocusableScrollPanel) getWidget().getWidget(1);
+    }
+
     @Override
     public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
         FocusableScrollPanel widget = null;
         int scrollPosition = 0;
         if (getWidget().collapseRequest) {
-            widget = (FocusableScrollPanel) getWidget().getWidget(1);
+            // Haulmont API extracted method
+            widget = getFocusableScrollPanel();
             scrollPosition = widget.getScrollPosition();
         }
         getWidget().animationsEnabled = uidl.getBooleanAttribute("animate");
