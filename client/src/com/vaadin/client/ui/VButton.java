@@ -81,8 +81,10 @@ public class VButton extends FocusWidget implements ClickHandler {
      * If <code>true</code>, this widget has focus with the space bar down. This
      * means that we will get events when the button is released, but we should
      * trigger the button only if the button is still focused at that point.
+     *
+     * Haulmont API dependency
      */
-    private boolean isFocusing;
+    protected boolean isFocusing;
 
     /**
      * Used to decide whether to allow clicks to propagate up to the superclass
@@ -280,7 +282,9 @@ public class VButton extends FocusWidget implements ClickHandler {
 
         // Synthesize clicks based on keyboard events AFTER the normal key
         // handling.
-        if ((event.getTypeInt() & Event.KEYEVENTS) != 0) {
+        // Haulmont API invocation
+        if (!handleKeyboardEvents(event)
+            && (event.getTypeInt() & Event.KEYEVENTS) != 0) {
             switch (type) {
             case Event.ONKEYDOWN:
                 // Stop propagation when the user starts pressing a button that
@@ -310,6 +314,11 @@ public class VButton extends FocusWidget implements ClickHandler {
                 break;
             }
         }
+    }
+
+    // Haulmont API
+    protected boolean handleKeyboardEvents(Event event) {
+        return false;
     }
 
     /**
