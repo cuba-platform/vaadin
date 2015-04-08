@@ -38,13 +38,9 @@ import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.MouseEventDetailsBuilder;
 import com.vaadin.client.Profiler;
 import com.vaadin.client.UIDL;
-<<<<<<< HEAD
 import com.vaadin.client.Util;
-=======
->>>>>>> 4a4661d... Fix Table column header sorting on Chrome (#14796)
 import com.vaadin.client.VConsole;
 import com.vaadin.client.ValueMap;
-import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.VOverlay;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.MouseEventDetails;

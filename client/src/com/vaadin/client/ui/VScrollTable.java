@@ -79,6 +79,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.*;
+import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
 import com.vaadin.client.ui.dd.DDUtil;
 import com.vaadin.client.ui.dd.VAbstractDropHandler;
 import com.vaadin.client.ui.dd.VAcceptCallback;
@@ -3212,7 +3213,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                         event.stopPropagation();
                     }
                     dragging = true;
-                    currentDragX = WidgetUtil.getTouchOrMouseClientX(event);
+                    currentDragX = Util.getTouchOrMouseClientX(event);
                     moved = false;
                     colIndex = getColIndexByKey(cid);
                     DOM.setCapture(getElement());
