@@ -200,11 +200,6 @@ public class TreeConnector extends AbstractComponentConnector implements
         return true;
     }
 
-    //Haulmont API
-    protected boolean isPopupSelection(UIDL uidl){
-        return false;
-    }
-
     // Haulmont API
     protected TreeNode createNode(UIDL childUidl) {
         return getWidget().new TreeNode();
