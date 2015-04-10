@@ -39,9 +39,6 @@
 		<antcall target="installArtifact">
 			<param name="artifact.name" value="vaadin-themes"/>
 		</antcall>
-		<antcall target="installArtifact">
-			<param name="artifact.name" value="vaadin-buildhelpers"/>
-		</antcall>
 	</target>
 	
 </project>
