@@ -53,6 +53,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.BrowserInfo;
@@ -70,6 +71,8 @@ import com.vaadin.shared.Connector;
 import com.vaadin.shared.EventId;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.shared.ui.window.WindowRole;
+
+import java.util.*;
 
 /**
  * "Sub window" component.
@@ -1293,14 +1296,52 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                     if (w instanceof VDebugWindow) {
                         return true; // allow debug-window clicks
                     } else if (ConnectorMap.get(client).isConnector(w)) {
-                        return false;
+                        return isChildOfTopPopup(target);
                     }
                     w = w.getParent();
                 }
-                return false;
+
+                return isChildOfTopPopup(target);
             }
         }
         return true;
+    }
+
+    // Haulmont API
+    protected boolean isChildOfTopPopup(Element target) {
+        VWindow topmostWindow = getTopmostWindow();
+        String topmostZIndex = topmostWindow.getElement().getStyle().getZIndex();
+
+        Widget w = WidgetUtil.findWidget(target, null);
+        if (w != null) {
+            PopupPanel popupPanel = findPopupPanel(w);
+            if (popupPanel != null) {
+                String popupZIndex = popupPanel.getElement().getStyle().getZIndex();
+                try {
+                    if (Integer.parseInt(topmostZIndex) < Integer.parseInt(popupZIndex)) {
+                        return true;
+                    }
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // Haulmont API
+    protected PopupPanel findPopupPanel(Widget w) {
+        Widget parent = w;
+        while (parent != null && !(parent instanceof PopupPanel)) {
+            parent = parent.getParent();
+        }
+
+        if (parent != null) {
+            return (PopupPanel) parent;
+        }
+
+        return null;
     }
 
     @Override
