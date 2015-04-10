@@ -320,7 +320,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
     /** For internal use only. May be removed or replaced in the future. */
     public boolean showRowHeaders = false;
 
-    private String[] columnOrder;
+    // Haulmont API dependency
+    protected String[] columnOrder;
 
     protected ApplicationConnection client;
 
@@ -500,11 +501,27 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
      */
     public boolean headerChangedDuringUpdate = false;
 
-    /** For internal use only. May be removed or replaced in the future. */
-    public final TableHead tHead = new TableHead();
+    /** For internal use only. May be removed or replaced in the future.
+     *  <br/>
+     *  Haulmont API dependency
+     */
+    public final TableHead tHead = createTableHead();
 
-    /** For internal use only. May be removed or replaced in the future. */
-    public final TableFooter tFoot = new TableFooter();
+    // Haulmont API
+    protected TableHead createTableHead() {
+        return new TableHead();
+    }
+
+    /** For internal use only. May be removed or replaced in the future.
+     *  <br/>
+     *  Haulmont API dependency
+     */
+    public final TableFooter tFoot = createTableFooter();
+
+    // Haulmont API
+    protected TableFooter createTableFooter() {
+        return new TableFooter();
+    }
 
     /** Handles context menu for table body */
     private ContextMenuOwner contextMenuOwner = new ContextMenuOwner() {
@@ -665,7 +682,9 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
      * "Edit" * "33_i" -> "http://dom.com/edit.png"
      */
     private final HashMap<Object, String> actionMap = new HashMap<Object, String>();
-    private String[] visibleColOrder;
+
+    // Haulmont API dependency
+    protected String[] visibleColOrder;
     private boolean initialContentReceived = false;
     private Element scrollPositionElement;
 
@@ -1664,12 +1683,39 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         return actionMap.get(actionKey + "_i");
     }
 
+    // Haulmont API
+    protected int getVisibleColsCount(String[] strings) {
+        return strings.length;
+    }
+
+    // Haulmont API extracted method
+    protected void updateHeaderColumns(String[] strings, int colIndex) {
+        int i;
+        for (i = 0; i < strings.length; i++) {
+            final String cid = strings[i];
+            visibleColOrder[colIndex] = cid;
+            tHead.enableColumn(cid, colIndex);
+            colIndex++;
+        }
+    }
+
+    // Haulmont API dependency
+    protected void updateFooterColumns(String[] strings, int colIndex) {
+        int i;
+        for (i = 0; i < strings.length; i++) {
+            final String cid = strings[i];
+            tFoot.enableColumn(cid, colIndex);
+            colIndex++;
+        }
+    }
+
     private void updateHeader(String[] strings) {
         if (strings == null) {
             return;
         }
 
-        int visibleCols = strings.length;
+        // Haulmont API dependency
+        int visibleCols = getVisibleColsCount(strings);
         int colIndex = 0;
         if (showRowHeaders) {
             tHead.enableColumn(ROW_HEADER_COLUMN_KEY, colIndex);
@@ -1682,13 +1728,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             tHead.removeCell(ROW_HEADER_COLUMN_KEY);
         }
 
-        int i;
-        for (i = 0; i < strings.length; i++) {
-            final String cid = strings[i];
-            visibleColOrder[colIndex] = cid;
-            tHead.enableColumn(cid, colIndex);
-            colIndex++;
-        }
+        // Haulmont API extracted protected method
+        updateHeaderColumns(strings, colIndex);
 
         tHead.setVisible(showColHeaders);
         setContainerHeight();
@@ -1717,12 +1758,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             tFoot.removeCell(ROW_HEADER_COLUMN_KEY);
         }
 
-        int i;
-        for (i = 0; i < strings.length; i++) {
-            final String cid = strings[i];
-            tFoot.enableColumn(cid, colIndex);
-            colIndex++;
-        }
+        // Haulmont API extracted protected method
+        updateFooterColumns(strings, colIndex);
 
         tFoot.setVisible(showColFooters);
     }
@@ -1888,11 +1925,13 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
     /**
      * Gives correct column index for given column key ("cid" in UIDL).
-     * 
+     * <br/>
+     * Haulmont API dependency
+     *
      * @param colKey
      * @return column index of visible columns, -1 if column not visible
      */
-    private int getColIndexByKey(String colKey) {
+    protected int getColIndexByKey(String colKey) {
         // return 0 if asked for rowHeaders
         if (ROW_HEADER_COLUMN_KEY.equals(colKey)) {
             return 0;
@@ -1939,7 +1978,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         return selectMode.getId() > SelectMode.NONE.getId();
     }
 
-    private boolean isCollapsedColumn(String colKey) {
+    // Haulmont API dependency
+    protected boolean isCollapsedColumn(String colKey) {
         if (collapsedColumns == null) {
             return false;
         }
@@ -2762,7 +2802,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
     public class HeaderCell extends Widget {
 
-        Element td = DOM.createTD();
+        // Haulmont API dependency
+        protected Element td = DOM.createTD();
 
         Element captionContainer = DOM.createDiv();
 
@@ -3502,7 +3543,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
         ArrayList<Widget> visibleCells = new ArrayList<Widget>();
 
-        HashMap<String, HeaderCell> availableCells = new HashMap<String, HeaderCell>();
+        // Haulmont API dependency
+        protected HashMap<String, HeaderCell> availableCells = new HashMap<String, HeaderCell>();
 
         Element div = DOM.createDiv();
         Element hTableWrapper = DOM.createDiv();
@@ -3606,11 +3648,24 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     new RowHeadersHeaderCell());
         }
 
+        // Haulmont API
+        public ArrayList<Widget> getVisibleCells() {
+            return visibleCells;
+        }
+
+        // Haulmont API
+        protected void fillAdditionalUpdatedCells(HashSet<String> updated) {
+        }
+
         public void updateCellsFromUIDL(UIDL uidl) {
             Iterator<?> it = uidl.getChildIterator();
             HashSet<String> updated = new HashSet<String>();
             boolean refreshContentWidths = initializedAndAttached
                     && hadScrollBars != willHaveScrollbars();
+
+            // Haulmont API dependency
+            fillAdditionalUpdatedCells(updated);
+
             while (it.hasNext()) {
                 final UIDL col = (UIDL) it.next();
                 final String cid = col.getStringAttribute("cid");
@@ -4061,7 +4116,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
      * A cell in the footer
      */
     public class FooterCell extends Widget {
-        private final Element td = DOM.createTD();
+        // Haulmont API dependency
+        protected final Element td = DOM.createTD();
         private final Element captionContainer = DOM.createDiv();
         private char align = ALIGN_LEFT;
         private int width = -1;
@@ -4424,7 +4480,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         private static final int WRAPPER_WIDTH = 900000;
 
         ArrayList<Widget> visibleCells = new ArrayList<Widget>();
-        HashMap<String, FooterCell> availableCells = new HashMap<String, FooterCell>();
+        // Haulmont API dependency
+        protected HashMap<String, FooterCell> availableCells = new HashMap<String, FooterCell>();
 
         Element div = DOM.createDiv();
         Element hTableWrapper = DOM.createDiv();
@@ -4525,6 +4582,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             }
         }
 
+        // Haulmont API
+        protected void fillAdditionalUpdatedCells(HashSet<String> updated) {
+        }
+
         /**
          * Updates the cells contents when updateUIDL request is received
          * 
@@ -4534,6 +4595,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
         public void updateCellsFromUIDL(UIDL uidl) {
             Iterator<?> columnIterator = uidl.getChildIterator();
             HashSet<String> updated = new HashSet<String>();
+
+            // Haulmont API dependency
+            fillAdditionalUpdatedCells(updated);
+
             while (columnIterator.hasNext()) {
                 final UIDL col = (UIDL) columnIterator.next();
                 final String cid = col.getStringAttribute("cid");
@@ -5052,7 +5117,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             renderedRows.add(0, row);
         }
 
-        private void addRow(VScrollTableRow row) {
+        // Haulmont API dependency
+        protected void addRow(VScrollTableRow row) {
             row.setIndex(firstRendered + renderedRows.size());
             if (row.isSelected()) {
                 row.addStyleName("v-selected");
@@ -5278,7 +5344,12 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 for (Widget row : renderedRows) {
                     if (!(row instanceof VScrollTableGeneratedRow)) {
                         TableRowElement tr = row.getElement().cast();
-                        Element wrapperdiv = tr.getCells().getItem(columnIndex)
+                        // Haulmont API
+                        TableCellElement item = tr.getCells().getItem(columnIndex);
+                        if (item == null)
+                            return 0;
+
+                        Element wrapperdiv = item
                                 .getFirstChildElement().cast();
                         return wrapperdiv.getOffsetWidth();
                     }
@@ -5561,14 +5632,29 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 cell.getStyle().setPropertyPx("width", width);
             }
 
+            // Haulmont API dependency
+            protected boolean addSpecificCell(Object columnId, int colIndex, char[] aligns) {
+                return false;
+            }
+
             protected void addCellsFromUIDL(UIDL uidl, char[] aligns, int col,
                     int visibleColumnIndex) {
                 final Iterator<?> cells = uidl.getChildIterator();
-                while (cells.hasNext()) {
-                    final Object cell = cells.next();
+                while (cells.hasNext() && col < visibleColOrder.length) {
+                    // Haulmont API dependency
+                    // final Object cell = cells.next();
                     visibleColumnIndex++;
 
                     String columnId = visibleColOrder[visibleColumnIndex];
+
+                    // Haulmont API dependency
+                    if (addSpecificCell(columnId, visibleColumnIndex, aligns)) {
+                        col++;
+                        continue;
+                    }
+
+                    // Haulmont API dependency
+                    final Object cell = cells.next();
 
                     String style = "";
                     if (uidl.hasAttribute("style-" + columnId)) {
@@ -5681,6 +5767,18 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             public void addCell(UIDL rowUidl, String text, char align,
                     String style, boolean textIsHTML, boolean sorted,
                     String description) {
+                // String only content is optimized by not using Label widget
+                final TableCellElement td = DOM.createTD().cast();
+                initCellWithText(text, align, style, textIsHTML, sorted,
+                        description, td);
+            }
+
+            /**
+             * Haulmont API
+             */
+            public void addCell(String text, char align,
+                                String style, boolean textIsHTML, boolean sorted,
+                                String description) {
                 // String only content is optimized by not using Label widget
                 final TableCellElement td = DOM.createTD().cast();
                 initCellWithText(text, align, style, textIsHTML, sorted,
@@ -5813,14 +5911,17 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             /**
              * If there are registered click listeners, sends a click event and
              * returns true. Otherwise, does nothing and returns false.
-             * 
+             *
+             * <br/>
+             * Haulmont API dependency
+             *
              * @param event
              * @param targetTdOrTr
              * @param immediate
              *            Whether the event is sent immediately
              * @return Whether a click event was sent
              */
-            private boolean handleClickEvent(Event event, Element targetTdOrTr,
+            protected boolean handleClickEvent(Event event, Element targetTdOrTr,
                     boolean immediate) {
                 if (!client.hasEventListeners(VScrollTable.this,
                         TableConstants.ITEM_CLICK_EVENT_ID)) {
