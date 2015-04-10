@@ -348,7 +348,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
     }
 
     private String findCurrentMouseOverKey(Element elementOver) {
-        TreeNode treeNode = WidgetUtil.findWidget(elementOver, TreeNode.class);
+        // Haulmont API dependency
+        TreeNode treeNode = WidgetUtil.findWidget(elementOver, getTreeNodeClass());
         return treeNode == null ? null : treeNode.key;
     }
 
@@ -2154,6 +2155,11 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
         return null;
     }
 
+    // Haulmont API
+    protected Class<? extends Widget> getTreeNodeClass() {
+        return TreeNode.class;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -2179,7 +2185,8 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
             return "fe";
         }
 
-        TreeNode treeNode = WidgetUtil.findWidget(subElement, TreeNode.class);
+        // Haulmont API dependency
+        TreeNode treeNode = WidgetUtil.findWidget(subElement, getTreeNodeClass());
         if (treeNode == null) {
             // Did not click on a node, let somebody else take care of the
             // locator string
