@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.TextBox;
 import com.vaadin.client.BrowserInfo;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.LocaleNotLoadedException;
 import com.vaadin.client.LocaleService;
@@ -48,7 +49,7 @@ public class VTextualDate extends VDateField implements Field, ChangeHandler,
     private static final String PARSE_ERROR_CLASSNAME = "-parseerror";
 
     /** For internal use only. May be removed or replaced in the future. */
-    public final TextBox text;
+    public final TextBoxBase text;
 
     /** For internal use only. May be removed or replaced in the future. */
     public String formatStr;
@@ -68,7 +69,8 @@ public class VTextualDate extends VDateField implements Field, ChangeHandler,
 
     public VTextualDate() {
         super();
-        text = new TextBox();
+		//Haulmont API
+        text = createImpl();
         text.addChangeHandler(this);
         text.addFocusHandler(new FocusHandler() {
             @Override
@@ -117,6 +119,14 @@ public class VTextualDate extends VDateField implements Field, ChangeHandler,
         add(text);
     }
 
+	protected TextBoxBase createImpl(){
+        return new TextBox();
+    }
+	
+	public TextBoxBase getImpl() {
+        return text;
+    }
+	
     protected void updateStyleNames() {
         if (text != null) {
             text.setStyleName(VTextField.CLASSNAME);
