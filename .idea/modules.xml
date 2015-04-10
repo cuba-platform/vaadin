@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/WebContent/WebContent.iml" filepath="$PROJECT_DIR$/WebContent/WebContent.iml" />
       <module fileurl="file://$PROJECT_DIR$/buildhelpers/buildhelpers.iml" filepath="$PROJECT_DIR$/buildhelpers/buildhelpers.iml" />
       <module fileurl="file://$PROJECT_DIR$/client/client.iml" filepath="$PROJECT_DIR$/client/client.iml" />
       <module fileurl="file://$PROJECT_DIR$/gwt/gwt.iml" filepath="$PROJECT_DIR$/gwt/gwt.iml" />
