@@ -1883,4 +1883,9 @@ public abstract class VaadinService implements Serializable {
             throw e;
         }
     }
+
+    // Haulmont API application version support
+    public String getApplicationVersion() {
+        return "DEBUG";
+    }
 }
