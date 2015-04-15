@@ -884,11 +884,11 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                     }
 
                     // Haulmont API
-                    clickEventPending = isNeedToSendDoubleClick(eventType, clickEventPending);
+                    boolean sendClickNow = isNeedToSendDoubleClick(eventType, !clickEventPending);
 
                     client.updateVariable(paintableId, "clickedKey", key, false);
                     client.updateVariable(paintableId, "clickEvent",
-                            details.toString(), clickEventPending);
+                            details.toString(), sendClickNow);
                 }
             });
         }
