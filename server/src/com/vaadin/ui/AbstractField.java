@@ -160,6 +160,9 @@ public abstract class AbstractField<T> extends AbstractComponent implements
      */
     private Locale valueLocale = null;
 
+    // Haulmont API
+    private boolean checkReadOnlyOnNextSetValue = true;
+
     /* Component basics */
 
     /*
@@ -467,9 +470,12 @@ public abstract class AbstractField<T> extends AbstractComponent implements
         if (!SharedUtil.equals(newFieldValue, getInternalValue())) {
 
             // Read only fields can not be changed
-            if (isReadOnly()) {
+            if (isCheckReadOnlyOnNextSetValue() && isReadOnly()) {
                 throw new Property.ReadOnlyException();
             }
+
+            setCheckReadOnlyOnNextSetValue(true);
+
             try {
                 T doubleConvertedFieldValue = convertFromModel(convertToModel(newFieldValue));
                 if (!SharedUtil
@@ -548,6 +554,16 @@ public abstract class AbstractField<T> extends AbstractComponent implements
             fireValueChange(repaintIsNotNeeded);
 
         }
+    }
+
+    // Haulmont API
+    protected boolean isCheckReadOnlyOnNextSetValue() {
+        return checkReadOnlyOnNextSetValue;
+    }
+
+    // Haulmont API
+    public void setCheckReadOnlyOnNextSetValue(boolean checkReadOnlyOnNextSetValue) {
+        this.checkReadOnlyOnNextSetValue = checkReadOnlyOnNextSetValue;
     }
 
     @Deprecated
