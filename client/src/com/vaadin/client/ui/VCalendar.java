@@ -68,7 +68,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
     private boolean eventResizeAllowed = true;
     private boolean eventMoveAllowed = true;
 
-    private final SimpleDayToolbar nameToolbar = new SimpleDayToolbar();
+    //Haulmont API
+    private final SimpleDayToolbar nameToolbar = createSimpleDayToolbar();
 
     private final DayToolbar dayToolbar = new DayToolbar(this);
     private final SimpleWeekToolbar weekToolbar;
@@ -100,6 +101,11 @@ public class VCalendar extends Composite implements VHasDropHandler {
     private int lastHour;
 
     private CalendarDropHandler dropHandler;
+
+    //Haulmont API
+    protected SimpleDayToolbar createSimpleDayToolbar() {
+        return new SimpleDayToolbar();
+    }
 
     /**
      * Listener interface for listening to event click events
@@ -337,6 +343,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
                     } else {
                         dayCells.add(sdc);
                     }
+                    //Haulmont API
+                    setSimpleDayCellStyle(sdc);
                     inProgress = true;
                     continue;
                 } else if (inProgress) {
@@ -360,6 +368,10 @@ public class VCalendar extends Composite implements VHasDropHandler {
         if (renderImmediately) {
             reDrawAllMonthEvents(!eventMoving);
         }
+    }
+
+    //Haulmont API
+    protected void setSimpleDayCellStyle(SimpleDayCell sdc) {
     }
 
     /*
@@ -619,7 +631,7 @@ public class VCalendar extends Composite implements VHasDropHandler {
                 cell.addStyleDependentName("next-month");
             }
             //Haulmont API
-            setCellStyle(days, date, cell, columns, pos);
+            setCellStyle(today, days, date, cell, columns, pos);
 
             if (dayOfMonth >= 1 && !monthNameDrawn) {
                 cell.setMonthNameVisible(true);
@@ -628,12 +640,18 @@ public class VCalendar extends Composite implements VHasDropHandler {
 
             if (today.getDate() == dayOfMonth && today.getYear() == d.getYear()
                     && today.getMonth() == d.getMonth()) {
-                cell.setToday(true);
+                //Haulmont API
+                setCellToday(cell, x);
 
             }
             monthGrid.setWidget(y, x, cell);
             pos++;
         }
+    }
+
+    //Haulmont API
+    protected void setCellToday(SimpleDayCell cell, int x) {
+        cell.setToday(true);
     }
 
     //Haulmont API
@@ -647,7 +665,7 @@ public class VCalendar extends Composite implements VHasDropHandler {
     }
 
     //Haulmont API
-    protected void setCellStyle(List<CalendarDay> days, String date, SimpleDayCell cell, int columns, int pos) {
+    protected void setCellStyle(Date today, List<CalendarDay> days, String date, SimpleDayCell cell, int columns, int pos) {
     }
 
     public void setSizeForChildren(int newWidth, int newHeight) {
@@ -1111,7 +1129,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
         outer.add(dayToolbar, DockPanel.NORTH);
         outer.add(weeklyLongEvents, DockPanel.NORTH);
         outer.add(weekGrid, DockPanel.SOUTH);
-        weekGrid.setVerticalScrollPosition(scroll);
+        //Haulmont API
+        weekGrid.setVerticalScrollPosition(getWeekGridVerticalScrollPosition(scroll));
     }
 
     //Haulmont API
@@ -1119,6 +1138,11 @@ public class VCalendar extends Composite implements VHasDropHandler {
         if (weekGrid == null) {
             weekGrid = new WeekGrid(this, is24HFormat());
         }
+    }
+
+    //Haulmont API
+    protected int getWeekGridVerticalScrollPosition(int scroll) {
+        return scroll;
     }
 
     /**

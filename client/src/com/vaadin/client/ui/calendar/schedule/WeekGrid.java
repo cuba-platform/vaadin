@@ -182,10 +182,12 @@ public class WeekGrid extends SimplePanel {
     public void setHeightPX(int intHeight) {
         height = intHeight;
 
-        setVerticalScroll(height <= -1);
+        //Haulmont API
+        setVerticalScroll(isAvilableVerticalScroll());
 
         // if not scrollable, use any height given
-        if (!isVerticalScrollable() && height > 0) {
+        //Haulmont API
+        if (isNotScrollable() && height > 0) {
 
             content.setHeight(height + "px");
             setHeight(height + "px");
@@ -201,6 +203,16 @@ public class WeekGrid extends SimplePanel {
             timebar.setCellHeights(cellHeights);
             timebar.setHeightPX(height);
         }
+    }
+
+    //Haulmont API
+    protected boolean isNotScrollable() {
+        return !isVerticalScrollable();
+    }
+
+    //Haulmont API
+    protected boolean isAvilableVerticalScroll() {
+        return height <= -1;
     }
 
     public void clearDates() {
@@ -231,7 +243,8 @@ public class WeekGrid extends SimplePanel {
                     dc.setHorizontalSized(isHorizontalScrollable() || width < 0);
                     dc.setWidthPX(cellWidths[i - 1]);
                     if (dc.isToday()) {
-                        dc.setTimeBarWidth(getOffsetWidth());
+                        //Haulmont API
+                        dc.setTimeBarWidth(getTimeBarOffsetWidth());
                     }
                 }
             }
@@ -245,6 +258,11 @@ public class WeekGrid extends SimplePanel {
                 }
             }
         }
+    }
+
+    //Haulmont API
+    protected int getTimeBarOffsetWidth() {
+        return getOffsetWidth();
     }
 
     /**

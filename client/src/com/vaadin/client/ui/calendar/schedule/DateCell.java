@@ -385,10 +385,16 @@ public class DateCell extends FocusableComplexPanel implements
                         .getStyle()
                         .setMarginLeft((eventWidth * columns.get(index)),
                                 Unit.PX);
-                d.setWidth(eventWidth + "px");
+                //Haulmont API
+                d.setWidth(eventWidth + getEventWidthOffset() + "px");
                 d.setSlotHeightInPX(getSlotHeight());
             }
         }
+    }
+
+    //Haulmont API
+    protected int getEventWidthOffset() {
+        return 0;
     }
 
     private int findFreeColumnSpaceOnLeft(WeekGridMinuteTimeRange dateRange,
@@ -768,11 +774,17 @@ public class DateCell extends FocusableComplexPanel implements
             getElement().appendChild(todaybar);
         }
 
+        //Haulmont API
+        setTodaybarWidth(todaybar, width);
+
+        // position is calculated later, when we know the cell heights
+    }
+
+    //Haulmont API
+    protected void setTodaybarWidth(Element todaybar, int width) {
         if (width != -1) {
             todaybar.getStyle().setWidth(width, Unit.PX);
         }
-
-        // position is calculated later, when we know the cell heights
     }
 
     public Element getTodaybarElement() {

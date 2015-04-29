@@ -101,7 +101,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         caption = new Label();
         bottomspacer = new HTML();
         bottomspacer.setStyleName("v-calendar-bottom-spacer-empty");
-        bottomspacer.setWidth(3 + "em");
+        //Haulmont API
+        bottomspacer.setWidth(getBottomspacerWidth() + "em");
         caption.setStyleName("v-calendar-day-number");
         add(caption);
         add(bottomspacer);
@@ -109,10 +110,21 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         caption.addMouseUpHandler(this);
     }
 
+    //Haulmont API
+    protected int getBottomspacerWidth() {
+        return 3;
+    }
+
     @Override
     public void onLoad() {
         BOTTOMSPACERHEIGHT = bottomspacer.getOffsetHeight();
-        EVENTHEIGHT = BOTTOMSPACERHEIGHT;
+        //Haulmont API
+        EVENTHEIGHT = getEventHeight(BOTTOMSPACERHEIGHT);
+    }
+
+    //Haulmont API
+    protected int getEventHeight(int bottomSpacerHeight) {
+        return bottomSpacerHeight;
     }
 
     public void setMonthGrid(MonthGrid monthGrid) {
@@ -180,7 +192,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         } else {
             // Dynamic height by the content
             DOM.removeElementAttribute(getElement(), "height");
-            slots = (intHeight - caption.getOffsetHeight() - BOTTOMSPACERHEIGHT)
+            //Haulmont API
+            slots = (intHeight - (caption.getOffsetHeight() + getSlotsCaptionOffsetHeight()) - BOTTOMSPACERHEIGHT)
                     / EVENTHEIGHT;
             if (slots > 10) {
                 slots = 10;
@@ -189,6 +202,11 @@ public class SimpleDayCell extends FocusableFlowPanel implements
 
         updateEvents(slots, clear);
 
+    }
+
+    //Haulmont API
+    protected int getSlotsCaptionOffsetHeight() {
+        return 0;
     }
 
     public void updateEvents(int slots, boolean clear) {
@@ -221,9 +239,9 @@ public class SimpleDayCell extends FocusableFlowPanel implements
             }
         }
 
-        int remainingSpace = intHeight
-                - ((slots * EVENTHEIGHT) + BOTTOMSPACERHEIGHT + caption
-                        .getOffsetHeight());
+        //Haulmont API
+        int remainingSpace = intHeight - ((slots * EVENTHEIGHT) + BOTTOMSPACERHEIGHT
+                + caption.getOffsetHeight() + getRemainingSpaceOffsetHeight());
         int newHeight = remainingSpace + BOTTOMSPACERHEIGHT;
         if (newHeight < 0) {
             newHeight = EVENTHEIGHT;
@@ -258,6 +276,11 @@ public class SimpleDayCell extends FocusableFlowPanel implements
                 bottomspacer.setText("");
             }
         }
+    }
+
+    //Haulmont API
+    protected int getRemainingSpaceOffsetHeight() {
+        return 0;
     }
 
     //Haulmont API
@@ -416,7 +439,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements
             prevDayDiff = 0;
             prevWeekDiff = 0;
 
-            if (xDiff < -3 || xDiff > 3 || yDiff < -3 || yDiff > 3) {
+            //Haulmont API
+            if ((xDiff < -3 || xDiff > 3 || yDiff < -3 || yDiff > 3) && isMoveEventAvailable()) {
                 eventMoved(moveEvent);
 
             } else if (calendar.getEventClickListener() != null) {
@@ -438,6 +462,11 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         monthEventMouseDown = false;
         labelMouseDown = false;
         clickedWidget = null;
+    }
+
+    //Haulmont API
+    protected boolean isMoveEventAvailable() {
+        return true;
     }
 
     //Haulmont API
