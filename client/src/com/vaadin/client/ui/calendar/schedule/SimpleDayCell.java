@@ -54,7 +54,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements
     private static int EVENTHEIGHT = -1;
     private static final int BORDERPADDINGSIZE = 1;
 
-    private final VCalendar calendar;
+    protected final VCalendar calendar;  //Haulmont API
     private Date date;
     private int intHeight;
     private final HTML bottomspacer;
@@ -67,7 +67,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements
     private HandlerRegistration mouseDownRegistration;
     private HandlerRegistration mouseOverRegistration;
     private boolean monthEventMouseDown;
-    private boolean labelMouseDown;
+    protected boolean labelMouseDown;  //Haulmont API
     private int eventCount = 0;
 
     private int startX = -1;
@@ -89,7 +89,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements
     private CalendarEvent moveEvent;
     private Widget clickedWidget;
     private HandlerRegistration bottomSpacerMouseDownHandler;
-    private boolean scrollable = false;
+    protected boolean scrollable = false;  //Haulmont API
     private MonthGrid monthGrid;
     private HandlerRegistration keyDownHandler;
 
@@ -241,20 +241,37 @@ public class SimpleDayCell extends FocusableFlowPanel implements
                         .addMouseDownHandler(this);
             }
             bottomspacer.setStyleName("v-calendar-bottom-spacer");
-            bottomspacer.setText("+ " + more);
+            bottomspacer.setText(getMoreMsgFormat(more));  //Haulmont API
         } else {
-            if (!scrollable && bottomSpacerMouseDownHandler != null) {
+//            if (!scrollable && bottomSpacerMouseDownHandler != null) {
+            //Haulmont API
+            if (allowBottomSpacerMouseDownHandler() && bottomSpacerMouseDownHandler != null) {
                 bottomSpacerMouseDownHandler.removeHandler();
                 bottomSpacerMouseDownHandler = null;
             }
 
             if (scrollable) {
                 bottomspacer.setText("[ - ]");
+                setScrollableBottomspacerStyle(bottomspacer);
             } else {
                 bottomspacer.setStyleName("v-calendar-bottom-spacer-empty");
                 bottomspacer.setText("");
             }
         }
+    }
+
+    //Haulmont API
+    protected boolean allowBottomSpacerMouseDownHandler() {
+        return !scrollable;
+    }
+
+    //Haulmont API
+    protected void setScrollableBottomspacerStyle(HTML bottomspacer) {
+    }
+
+    //Haulmont API
+    protected String getMoreMsgFormat(int more) {
+        return "+ " + more;
     }
 
     private MonthEventLabel createMonthEventLabel(CalendarEvent e) {
@@ -410,8 +427,9 @@ public class SimpleDayCell extends FocusableFlowPanel implements
             moveEvent = null;
         } else if (w == this) {
             getMonthGrid().setSelectionReady();
-
+            cleanMotionGrigSelection();  //Haulmont API
         } else if (w instanceof Label && labelMouseDown) {
+            cleanMotionGrigSelection();  //Haulmont API
             String clickedDate = calendar.getDateFormat().format(date);
             if (calendar.getDateClickListener() != null) {
                 calendar.getDateClickListener().dateClick(clickedDate);
@@ -420,6 +438,10 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         monthEventMouseDown = false;
         labelMouseDown = false;
         clickedWidget = null;
+    }
+
+    //Haulmont API
+    protected void cleanMotionGrigSelection() {
     }
 
     @Override
@@ -575,7 +597,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements
         end.setTime((start.getTime() + duration));
     }
 
-    private void eventMoved(CalendarEvent e) {
+    //Haulmont API
+    protected void eventMoved(CalendarEvent e) {
         calendar.updateEventToMonthGrid(e);
         if (calendar.getEventMovedListener() != null) {
             calendar.getEventMovedListener().eventMoved(e);

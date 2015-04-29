@@ -56,7 +56,8 @@ public class DateCellDayEvent extends FocusableHTML implements
     private final DateCell dateCell;
     private Element caption = null;
     private final Element eventContent;
-    private CalendarEvent calendarEvent = null;
+    //Haulmont API
+    protected CalendarEvent calendarEvent = null;
     private HandlerRegistration moveRegistration;
     private int startY = -1;
     private int startX = -1;
@@ -183,18 +184,25 @@ public class DateCellDayEvent extends FocusableHTML implements
      *            If false, event is so small that caption must be in time-row
      */
     private void updateCaptions(boolean bigMode) {
+        //Haulmont API
+        String innerHtml = getInnerHTML(bigMode);
+        caption.setInnerHTML(innerHtml);
+        eventContent.setInnerHTML("");
+    }
+
+    //Haulmont API
+    protected String getInnerHTML(boolean bigMode) {
         String innerHtml;
         String escapedCaption = Util.escapeHTML(calendarEvent.getCaption());
         String timeAsText = calendarEvent.getTimeAsText();
         if (bigMode) {
-            innerHtml = "<span>" + timeAsText + "</span><br />"
+            innerHtml = "<span>" + timeAsText + "</span><br/>"
                     + escapedCaption;
         } else {
             innerHtml = "<span>" + timeAsText + "<span>:</span></span> "
                     + escapedCaption;
         }
-        caption.setInnerHTML(innerHtml);
-        eventContent.setInnerHTML("");
+        return innerHtml;
     }
 
     @Override

@@ -74,7 +74,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
     private final SimpleWeekToolbar weekToolbar;
     private WeeklyLongEvents weeklyLongEvents;
     private MonthGrid monthGrid;
-    private WeekGrid weekGrid;
+    //Haulmont API
+    protected WeekGrid weekGrid;
     private int intWidth = 0;
     private int intHeight = 0;
 
@@ -531,12 +532,18 @@ public class VCalendar extends Composite implements VHasDropHandler {
             dayToolbar.add(realDayNames[dayOfWeek - 1], date,
                     localized_date_format, isToday ? "today" : null);
             weeklyLongEvents.addDate(d);
-            weekGrid.addDate(d);
+            //Haulmont API
+            addDateToWeekGrid(date, d);
             if (isToday) {
                 weekGrid.setToday(d, today);
             }
         }
         dayToolbar.addNextButton();
+    }
+
+    //Haulmont API
+    protected void addDateToWeekGrid(String date, Date d) {
+        weekGrid.addDate(d);
     }
 
     /**
@@ -555,7 +562,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
         int columns = getLastDayNumber() - getFirstDayNumber() + 1;
         rows = (int) Math.ceil(daysCount / (double) 7);
 
-        monthGrid = new MonthGrid(this, rows, columns);
+        //Haulmont API
+        monthGrid = createMonthGrid(rows, columns);
         monthGrid.setEnabled(!isDisabledOrReadOnly());
         weekToolbar.removeAllRows();
         int pos = 0;
@@ -590,7 +598,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
                 // Add week to weekToolbar for navigation
                 weekToolbar.addWeek(week, day.getYearOfWeek());
             }
-            final SimpleDayCell cell = new SimpleDayCell(this, y, x);
+            //Haulmont API
+            final SimpleDayCell cell = createSimpleDayCell(y, x);
             cell.setMonthGrid(monthGrid);
             cell.setDate(d);
             cell.addDomHandler(new ContextMenuHandler() {
@@ -609,6 +618,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
             } else if (lastDayFound) {
                 cell.addStyleDependentName("next-month");
             }
+            //Haulmont API
+            setCellStyle(days, date, cell, columns, pos);
 
             if (dayOfMonth >= 1 && !monthNameDrawn) {
                 cell.setMonthNameVisible(true);
@@ -623,6 +634,20 @@ public class VCalendar extends Composite implements VHasDropHandler {
             monthGrid.setWidget(y, x, cell);
             pos++;
         }
+    }
+
+    //Haulmont API
+    protected MonthGrid createMonthGrid(int rows, int columns) {
+        return new MonthGrid(this, rows, columns);
+    }
+
+    //Haulmont API
+    protected SimpleDayCell createSimpleDayCell(int y, int x) {
+        return new SimpleDayCell(this, y, x);
+    }
+
+    //Haulmont API
+    protected void setCellStyle(List<CalendarDay> days, String date, SimpleDayCell cell, int columns, int pos) {
     }
 
     public void setSizeForChildren(int newWidth, int newHeight) {
@@ -1077,15 +1102,23 @@ public class VCalendar extends Composite implements VHasDropHandler {
         }
 
         weeklyLongEvents = new WeeklyLongEvents(this);
-        if (weekGrid == null) {
-            weekGrid = new WeekGrid(this, is24HFormat());
-        }
+
+        //Haulmont API
+        createWeekGrid();
+
         updateWeekGrid(daysInMonth, days, today, realDayNames);
         updateEventsToWeekGrid(sortEventsByDuration(events));
         outer.add(dayToolbar, DockPanel.NORTH);
         outer.add(weeklyLongEvents, DockPanel.NORTH);
         outer.add(weekGrid, DockPanel.SOUTH);
         weekGrid.setVerticalScrollPosition(scroll);
+    }
+
+    //Haulmont API
+    protected void createWeekGrid() {
+        if (weekGrid == null) {
+            weekGrid = new WeekGrid(this, is24HFormat());
+        }
     }
 
     /**

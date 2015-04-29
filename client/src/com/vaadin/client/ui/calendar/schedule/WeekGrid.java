@@ -43,9 +43,11 @@ import com.vaadin.shared.ui.calendar.DateConstants;
  */
 public class WeekGrid extends SimplePanel {
 
-    int width = 0;
+    //Haulmont API
+    protected int width = 0;
     private int height = 0;
-    final HorizontalPanel content;
+    //Haulmont API
+    protected final HorizontalPanel content;
     private VCalendar calendar;
     private boolean disabled;
     final Timebar timebar;
@@ -145,11 +147,13 @@ public class WeekGrid extends SimplePanel {
         return ((DateCell) content.getWidget(1)).getSlotBorder();
     }
 
-    private boolean isVerticalScrollable() {
+    //Haulmont API
+    protected boolean isVerticalScrollable() {
         return verticalScrollEnabled;
     }
 
-    private boolean isHorizontalScrollable() {
+    //Haulmont API
+    protected boolean isHorizontalScrollable() {
         return horizontalScrollEnabled;
     }
 
