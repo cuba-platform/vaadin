@@ -1130,6 +1130,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
         outer.add(weeklyLongEvents, DockPanel.NORTH);
         outer.add(weekGrid, DockPanel.SOUTH);
         //Haulmont API
+        initSizeWeekGrid();
+        //Haulmont API
         weekGrid.setVerticalScrollPosition(getWeekGridVerticalScrollPosition(scroll));
     }
 
@@ -1138,6 +1140,10 @@ public class VCalendar extends Composite implements VHasDropHandler {
         if (weekGrid == null) {
             weekGrid = new WeekGrid(this, is24HFormat());
         }
+    }
+
+    //Haulmont API
+    protected void initSizeWeekGrid() {
     }
 
     //Haulmont API
