@@ -6160,6 +6160,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             }
                             contextTouchTimeout
                                     .schedule(TOUCH_CONTEXT_MENU_TIMEOUT);
+                            event.stopPropagation();
                         }
                         break;
                     case Event.ONTOUCHMOVE:
@@ -6200,10 +6201,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                         if (touchStart != null) {
                             if (!BrowserInfo.get().isAndroid()) {
                                 event.preventDefault();
-                                event.stopPropagation();
                                 WidgetUtil.simulateClickFromTouchEvent(
                                         touchStart, this);
                             }
+                            event.stopPropagation();
                             touchStart = null;
                         }
                         isDragging = false;

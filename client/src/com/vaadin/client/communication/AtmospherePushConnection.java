@@ -17,6 +17,7 @@
 package com.vaadin.client.communication;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
@@ -30,7 +31,6 @@ import com.vaadin.client.ApplicationConnection.CommunicationErrorHandler;
 import com.vaadin.client.ResourceLoader;
 import com.vaadin.client.ResourceLoader.ResourceLoadEvent;
 import com.vaadin.client.ResourceLoader.ResourceLoadListener;
-import com.vaadin.client.VConsole;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.Version;
 import com.vaadin.shared.communication.PushConstants;
@@ -43,7 +43,7 @@ import elemental.json.JsonObject;
 /**
  * The default {@link PushConnection} implementation that uses Atmosphere for
  * handling the communication channel.
- *
+ * 
  * @author Vaadin Ltd
  * @since 7.1
  */
@@ -210,7 +210,7 @@ public class AtmospherePushConnection implements PushConnection {
         // uri is needed to identify the right connection when closing
         uri = SharedUtil.addGetParameters(baseUrl, extraParams);
 
-        VConsole.log("Establishing push connection");
+        getLogger().info("Establishing push connection");
         socket = doConnect(uri, getConfig());
     }
 
@@ -230,12 +230,12 @@ public class AtmospherePushConnection implements PushConnection {
         switch (state) {
         case CONNECT_PENDING:
             assert isActive();
-            VConsole.log("Queuing push message: " + message.toJson());
+            getLogger().info("Queuing push message: " + message.toJson());
             messageQueue.add(message);
             break;
         case CONNECTED:
             assert isActive();
-            VConsole.log("Sending push message: " + message.toJson());
+            getLogger().info("Sending push message: " + message.toJson());
 
             if (transport.equals("websocket")) {
                 FragmentedMessage fragmented = new FragmentedMessage(
@@ -258,23 +258,24 @@ public class AtmospherePushConnection implements PushConnection {
     }
 
     protected void onReopen(AtmosphereResponse response) {
-        VConsole.log("Push connection re-established using "
-                + response.getTransport());
+        getLogger().info(
+                "Push connection re-established using "
+                        + response.getTransport());
         onConnect(response);
     }
 
     protected void onOpen(AtmosphereResponse response) {
-        VConsole.log("Push connection established using "
-                + response.getTransport());
+        getLogger().info(
+                "Push connection established using " + response.getTransport());
         onConnect(response);
     }
 
     /**
      * Called whenever a server push connection is established (or
      * re-established).
-     *
+     * 
      * @param response
-     *
+     * 
      * @since 7.2
      */
     protected void onConnect(AtmosphereResponse response) {
@@ -321,7 +322,7 @@ public class AtmospherePushConnection implements PushConnection {
             break;
         case CONNECTED:
             // Normal disconnect
-            VConsole.log("Closing push connection");
+            getLogger().info("Closing push connection");
             doDisconnect(uri);
             state = State.DISCONNECTED;
             command.execute();
@@ -335,7 +336,7 @@ public class AtmospherePushConnection implements PushConnection {
     protected void onMessage(AtmosphereResponse response) {
         String message = response.getResponseBody();
         if (message.startsWith("for(;;);")) {
-            VConsole.log("Received push message: " + message);
+            getLogger().info("Received push message: " + message);
             // "for(;;);[{json}]" -> "{json}"
             message = message.substring(9, message.length() - 1);
             connection.handlePushMessage(message);
@@ -347,15 +348,16 @@ public class AtmospherePushConnection implements PushConnection {
      * tried
      */
     protected void onTransportFailure() {
-        VConsole.log("Push connection using primary method ("
-                + getConfig().getTransport() + ") failed. Trying with "
-                + getConfig().getFallbackTransport());
+        getLogger().warning(
+                "Push connection using primary method ("
+                        + getConfig().getTransport() + ") failed. Trying with "
+                        + getConfig().getFallbackTransport());
     }
 
     /**
      * Called if the push connection fails. Atmosphere will automatically retry
      * the connection until successful.
-     *
+     * 
      */
     protected void onError(AtmosphereResponse response) {
         state = State.DISCONNECTED;
@@ -365,7 +367,7 @@ public class AtmospherePushConnection implements PushConnection {
     }
 
     protected void onClose(AtmosphereResponse response) {
-        VConsole.log("Push connection closed");
+        getLogger().info("Push connection closed");
         state = State.CONNECT_PENDING;
     }
 
@@ -380,10 +382,11 @@ public class AtmospherePushConnection implements PushConnection {
     protected void onReconnect(JavaScriptObject request,
             final AtmosphereResponse response) {
         if (state == State.CONNECTED) {
-            VConsole.log("No onClose was received before reconnect. Forcing state to closed.");
+            getLogger()
+                    .fine("No onClose was received before reconnect. Forcing state to closed.");
             state = State.CONNECT_PENDING;
         }
-        VConsole.log("Reopening push connection");
+        getLogger().info("Reopening push connection");
     }
 
     public static abstract class AbstractJSO extends JavaScriptObject {
@@ -535,14 +538,14 @@ public class AtmospherePushConnection implements PushConnection {
         } else {
             final String pushJs = getVersionedPushJs();
 
-            VConsole.log("Loading " + pushJs);
+            getLogger().info("Loading " + pushJs);
             ResourceLoader.get().loadScript(
                     connection.getConfiguration().getVaadinDirUrl() + pushJs,
                     new ResourceLoadListener() {
                         @Override
                         public void onLoad(ResourceLoadEvent event) {
                             if (isAtmosphereLoaded()) {
-                                VConsole.log(pushJs + " loaded");
+                                getLogger().info(pushJs + " loaded");
                                 command.execute();
                             } else {
                                 // If bootstrap tried to load vaadinPush.js,
@@ -583,5 +586,9 @@ public class AtmospherePushConnection implements PushConnection {
     @Override
     public String getTransportType() {
         return transport;
+    }
+
+    private static Logger getLogger() {
+        return Logger.getLogger(AtmospherePushConnection.class.getName());
     }
 }
