@@ -207,9 +207,13 @@
 				var vaadinDir = getConfig('vaadinDir');
 				
 				var versionInfo = getConfig('versionInfo');
-				
+                var version = versionInfo && versionInfo['vaadinVersion'];
+				if (getConfig('applicationVersion')) {
+                    version = getConfig('applicationVersion');
+                }
+
 				var themeUri = vaadinDir + 'themes/' + getConfig('theme');
-				loadTheme(themeUri, versionInfo && versionInfo['vaadinVersion']);
+				loadTheme(themeUri, version);
 				
 				var widgetset = getConfig('widgetset');
 				var widgetsetUrl = getConfig('widgetsetUrl');
