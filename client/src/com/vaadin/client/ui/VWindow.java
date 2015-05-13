@@ -55,6 +55,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
@@ -96,6 +97,9 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
     private static final int STACKING_OFFSET_PIXELS = 15;
 
     public static final int Z_INDEX = 10000;
+
+    // Haulmont API
+    protected boolean needFocusTopmostModalWindow = true;
 
     /** For internal use only. May be removed or replaced in the future. */
     public Element contents;
@@ -572,7 +576,10 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
             public void execute() {
                 VWindow topmost = getTopmostWindow();
                 if ((topmost != null) && (topmost.vaadinModality)) {
-                    topmost.focus();
+                    // Haulmont API
+                    if (topmost.needFocusTopmostModalWindow) {
+                        topmost.focus();
+                    }
                 }
             }
         });
