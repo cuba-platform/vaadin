@@ -135,7 +135,12 @@ public class UidlRequestHandler extends SynchronizedRequestHandler implements
             return;
         }
 
-        if (!Version.getFullVersion().equals(widgetsetVersion)) {
+        String version = Version.getFullVersion();
+        if (request.getService().getApplicationVersion() != null) {
+            version = request.getService().getApplicationVersion();
+        }
+
+        if (!version.equals(widgetsetVersion)) {
             getLogger().warning(
                     String.format(Constants.WIDGETSET_MISMATCH_INFO,
                             Version.getFullVersion(), widgetsetVersion));
