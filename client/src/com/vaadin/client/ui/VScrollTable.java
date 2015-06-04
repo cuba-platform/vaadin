@@ -2005,7 +2005,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
     }
 
     private void setMultiSelectMode(int multiselectmode) {
-        if (BrowserInfo.get().isTouchDevice()) {
+        // Haulmont API
+        if (isUseSimpleModeForTouchDevice() && BrowserInfo.get().isTouchDevice()) {
             // Always use the simple mode for touch devices that do not have
             // shift/ctrl keys
             this.multiselectmode = MULTISELECT_MODE_SIMPLE;
@@ -2013,6 +2014,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             this.multiselectmode = multiselectmode;
         }
 
+    }
+
+    // Haulmont API
+    public boolean isUseSimpleModeForTouchDevice() {
+        return true;
     }
 
     /** For internal use only. May be removed or replaced in the future. */

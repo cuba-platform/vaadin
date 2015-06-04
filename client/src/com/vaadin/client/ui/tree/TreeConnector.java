@@ -131,7 +131,8 @@ public class TreeConnector extends AbstractComponentConnector implements
             Roles.getTreeRole().setAriaMultiselectableProperty(
                     getWidget().getElement(), true);
 
-            if (BrowserInfo.get().isTouchDevice()) {
+            // Haulmont API
+            if (isUseSimpleModeForTouchDevice() && BrowserInfo.get().isTouchDevice()) {
                 // Always use the simple mode for touch devices that do not have
                 // shift/ctrl keys (#8595)
                 getWidget().multiSelectMode = MultiSelectMode.SIMPLE;
@@ -393,4 +394,8 @@ public class TreeConnector extends AbstractComponentConnector implements
         return true;
     }
 
+    // Haulmont API
+    public boolean isUseSimpleModeForTouchDevice() {
+        return true;
+    }
 }
