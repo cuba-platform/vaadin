@@ -5794,8 +5794,14 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
                     boolean sorted = tHead.getHeaderCell(col).isSorted();
                     if (cell instanceof String) {
+                        // Haulmont API
+                        beforeAddCell(columnId);
+
                         addCell(uidl, cell.toString(), aligns[col++], style,
                                 isRenderHtmlInCells(), sorted, description);
+
+                        // Haulmont API
+                        afterAddCell(columnId);
                     } else {
                         final ComponentConnector cellContent = client
                                 .getPaintable((UIDL) cell);
@@ -5804,6 +5810,14 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                                 style, sorted, description);
                     }
                 }
+            }
+
+            // Haulmont API
+            protected void beforeAddCell(String columnKey) {
+            }
+
+            // Haulmont API
+            protected void afterAddCell(String columnKey) {
             }
 
             /**
