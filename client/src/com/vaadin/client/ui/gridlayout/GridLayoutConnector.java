@@ -159,9 +159,8 @@ public class GridLayoutConnector extends AbstractComponentContainerConnector
         for (ComponentConnector componentConnector : getChildComponents()) {
             Cell cell = getCell(componentConnector);
 
-            cell.setComponent(componentConnector);
+            cell.setComponent(componentConnector, getChildComponents());
         }
-
     }
 
     private void initSize() {

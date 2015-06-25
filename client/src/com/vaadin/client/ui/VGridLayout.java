@@ -16,27 +16,16 @@
 
 package com.vaadin.client.ui;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.StyleConstants;
-import com.vaadin.client.Util;
-import com.vaadin.client.VCaption;
+import com.vaadin.client.*;
 import com.vaadin.client.ui.gridlayout.GridLayoutConnector;
 import com.vaadin.client.ui.layout.ComponentConnectorLayoutSlot;
 import com.vaadin.client.ui.layout.VLayoutSlot;
@@ -732,7 +721,8 @@ public class VGridLayout extends ComplexPanel {
             setAlignment(new AlignmentInfo(childComponentData.alignment));
         }
 
-        public void setComponent(ComponentConnector component) {
+        public void setComponent(ComponentConnector component,
+                                 List<ComponentConnector> ordering) {
             if (slot == null || slot.getChild() != component) {
                 // Haulmont API dependency extracted method
                 slot = createComponentConnectorLayoutSlot(component);
@@ -741,7 +731,20 @@ public class VGridLayout extends ComplexPanel {
                     slot.getWrapperElement().getStyle().setWidth(100, Unit.PCT);
                 }
                 Element slotWrapper = slot.getWrapperElement();
-                getElement().appendChild(slotWrapper);
+                int childIndex = ordering.indexOf(component);
+                // insert new slot by proper index
+                // do not break default focus order
+                com.google.gwt.user.client.Element element = getElement();
+                if (childIndex == ordering.size()) {
+                    element.appendChild(slotWrapper);
+                } else if (childIndex == 0) {
+                    element.insertAfter(slotWrapper, spacingMeasureElement);
+                } else {
+                    // here we use childIndex - 1 + 1(spacingMeasureElement)
+                    Element previousSlot = (Element) element
+                            .getChild(childIndex);
+                    element.insertAfter(slotWrapper, previousSlot);
+                }
 
                 Widget widget = component.getWidget();
                 insert(widget, slotWrapper, getWidgetCount(), false);
