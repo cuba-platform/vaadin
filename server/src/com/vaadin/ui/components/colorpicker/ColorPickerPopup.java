@@ -51,7 +51,8 @@ import com.vaadin.ui.Window;
 public class ColorPickerPopup extends Window implements ClickListener,
         ColorChangeListener, ColorSelector {
 
-    private static final String STYLENAME = "v-colorpicker-popup";
+    // Haulmont API dependency
+    protected static final String STYLENAME = "v-colorpicker-popup";
 
     private static final Method COLOR_CHANGE_METHOD;
     static {
@@ -72,25 +73,36 @@ public class ColorPickerPopup extends Window implements ClickListener,
 
     private Component hsvTab;
 
-    private Component swatchesTab;
+    // Haulmont API dependency
+    protected Component swatchesTab;
 
-    /** The layout. */
-    private final VerticalLayout layout;
+    /** The layout.
+     * Haulmont API dependency
+     */
+    protected VerticalLayout layout;
 
-    /** The ok button. */
-    private final Button ok = new Button("OK");
+    /** The ok button.
+     * Haulmont API dependency
+     */
+    protected Button ok = new Button("OK");
 
-    /** The cancel button. */
-    private final Button cancel = new Button("Cancel");
+    /** The cancel button.
+     * Haulmont API dependency
+     */
+    protected Button cancel = new Button("Cancel");
 
     /** The resize button. */
     private final Button resize = new Button("show/hide history");
 
-    /** The selected color. */
-    private Color selectedColor = Color.WHITE;
+    /** The selected color.
+     * Haulmont API dependency
+     */
+    protected Color selectedColor = Color.WHITE;
 
-    /** The history. */
-    private ColorPickerHistory history;
+    /** The history.
+     * Haulmont API dependency
+     */
+    protected ColorPickerHistory history;
 
     /** The history container. */
     private Layout historyContainer;
@@ -125,14 +137,20 @@ public class ColorPickerPopup extends Window implements ClickListener,
     /** The preview on the hsv tab. */
     private ColorPickerPreview hsvPreview;
 
-    /** The preview on the swatches tab. */
-    private ColorPickerPreview selPreview;
+    /** The preview on the swatches tab.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPreview selPreview;
 
-    /** The color select. */
-    private ColorPickerSelect colorSelect;
+    /** The color select.
+     * Haulmont API dependency
+     */
+    protected ColorPickerSelect colorSelect;
 
-    /** The selectors. */
-    private final Set<ColorSelector> selectors = new HashSet<ColorSelector>();
+    /** The selectors.
+     * Haulmont API dependency
+     */
+    protected Set<ColorSelector> selectors = new HashSet<ColorSelector>();
 
     /**
      * Set true while the slider values are updated after colorChange. When
