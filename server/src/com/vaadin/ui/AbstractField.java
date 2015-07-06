@@ -550,14 +550,16 @@ public abstract class AbstractField<T> extends AbstractComponent implements
                     setModified(false);
 
                 } catch (final Throwable e) {
-
+                    // Haulmont API
                     // Sets the buffering state
-                    currentBufferedSourceException = new Buffered.SourceException(
-                            this, e);
+                    SourceException sourceException = new SourceException(this, e);
+                    if (showBufferedSourceException) {
+                        currentBufferedSourceException = sourceException;
+                    }
                     markAsDirty();
 
                     // Throws the source exception
-                    throw currentBufferedSourceException;
+                    throw sourceException;
                 } finally {
                     committingValueToDataSource = false;
                 }
@@ -1690,13 +1692,16 @@ public abstract class AbstractField<T> extends AbstractComponent implements
             } catch (final Throwable e) {
                 // FIXME: What should really be done here if conversion fails?
 
+                // Haulmont API
                 // Sets the buffering state
-                currentBufferedSourceException = new Buffered.SourceException(
-                        this, e);
+                SourceException sourceException = new SourceException(this, e);
+                if (showBufferedSourceException) {
+                    currentBufferedSourceException = sourceException;
+                }
                 markAsDirty();
 
                 // Throws the source exception
-                throw currentBufferedSourceException;
+                throw sourceException;
             }
 
             final boolean wasModified = isModified();
