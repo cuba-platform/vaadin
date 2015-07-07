@@ -162,6 +162,9 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
     // Haulmont API dependency
     protected boolean selectionHasChanged = false;
 
+    // Haulmont API dependency
+    protected boolean allowTextSelection = false;
+
     /*
      * to fix #14388. The cause of defect #14388: event 'clickEvent' is sent to
      * server before updating of "selected" variable, but should be sent after
@@ -491,7 +494,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                  */
                 client.updateVariable(paintableId, "selected",
                         selectedIds.toArray(new String[selectedIds.size()]),
-                        clickEventPending || immediate);
+                        clickEventPending || immediateValue);
                 clickEventPending = false;
                 selectionHasChanged = false;
             }
@@ -772,8 +775,11 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                             mouseDownEvent = event; // save event for possible
                             // dd operation
                             if (type == Event.ONMOUSEDOWN) {
-                                event.preventDefault(); // prevent text
-                                // selection
+                                // Haulmont API
+                                if (!allowTextSelection) {
+                                    event.preventDefault(); // prevent text
+                                    // selection
+                                }
                             } else {
                                 /*
                                  * FIXME We prevent touch start event to be used
@@ -817,7 +823,9 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
 
             } else if (type == Event.ONMOUSEDOWN
                     && event.getButton() == NativeEvent.BUTTON_LEFT) {
-                event.preventDefault(); // text selection
+                if (!allowTextSelection) {
+                    event.preventDefault(); // text selection
+                }
             }
         }
 
