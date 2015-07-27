@@ -518,13 +518,15 @@ public class VCalendar extends Composite implements VHasDropHandler {
         weekGrid.setFirstHour(getFirstHourOfTheDay());
         weekGrid.setLastHour(getLastHourOfTheDay());
         weekGrid.getTimeBar().updateTimeBar(is24HFormat());
+        weekGrid.clearDates();
+        weekGrid.setDisabled(isDisabledOrReadOnly());
 
         dayToolbar.clear();
         dayToolbar.addBackButton();
         dayToolbar.setVerticalSized(isHeightUndefined);
         dayToolbar.setHorizontalSized(isWidthUndefined);
-        weekGrid.clearDates();
-        weekGrid.setDisabled(isDisabledOrReadOnly());
+
+        weeklyLongEvents.clear();
 
         for (CalendarDay day : days) {
             String date = day.getDate();
@@ -1099,8 +1101,12 @@ public class VCalendar extends Composite implements VHasDropHandler {
             int firstDayOfWeek, Collection<CalendarEvent> events,
             List<CalendarDay> days) {
 
-        while (outer.getWidgetCount() > 0) {
-            outer.remove(0);
+        boolean repaint = (weekGrid == null) ? true : (outer
+                .getWidgetIndex(weekGrid) == -1);
+        if (repaint) {
+            while (outer.getWidgetCount() > 0) {
+                outer.remove(0);
+            }
         }
 
         monthGrid = null;
@@ -1119,20 +1125,28 @@ public class VCalendar extends Composite implements VHasDropHandler {
 
         }
 
-        weeklyLongEvents = new WeeklyLongEvents(this);
+        if (weeklyLongEvents == null) {
+            weeklyLongEvents = new WeeklyLongEvents(this);
+        }
 
         //Haulmont API
         createWeekGrid();
 
         updateWeekGrid(daysInMonth, days, today, realDayNames);
         updateEventsToWeekGrid(sortEventsByDuration(events));
-        outer.add(dayToolbar, DockPanel.NORTH);
-        outer.add(weeklyLongEvents, DockPanel.NORTH);
-        outer.add(weekGrid, DockPanel.SOUTH);
+
+        if (repaint) {
+            outer.add(dayToolbar, DockPanel.NORTH);
+            outer.add(weeklyLongEvents, DockPanel.NORTH);
+            outer.add(weekGrid, DockPanel.SOUTH);
+        }
         //Haulmont API
         initSizeWeekGrid();
         //Haulmont API
-        weekGrid.setVerticalScrollPosition(getWeekGridVerticalScrollPosition(scroll));
+
+        if (repaint) {
+            weekGrid.setVerticalScrollPosition(getWeekGridVerticalScrollPosition(scroll));
+        }
     }
 
     //Haulmont API
