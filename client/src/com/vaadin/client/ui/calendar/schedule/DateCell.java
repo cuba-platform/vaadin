@@ -43,6 +43,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
 
 public class DateCell extends FocusableComplexPanel implements
@@ -622,7 +623,10 @@ public class DateCell extends FocusableComplexPanel implements
                 eventRangeStart = event.getY();
                 eventRangeStop = eventRangeStart;
                 Event.setCapture(getElement());
-                setFocus(true);
+                // Setting focus on IE causes scrolling to top
+                if (!BrowserInfo.get().isIE()) {
+                    setFocus(true);
+                }
             }
         }
     }
