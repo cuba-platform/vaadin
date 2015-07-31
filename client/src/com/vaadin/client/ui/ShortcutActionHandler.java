@@ -146,10 +146,8 @@ public class ShortcutActionHandler {
     private void fireAction(final Event event, final ShortcutAction a,
             ComponentConnector target) {
         final Element et = DOM.eventGetTarget(event);
-        if (target == null) {
-            target = Util.findPaintable(client, et);
-        }
-        final ComponentConnector finalTarget = target;
+        // Haulmont API
+        final ComponentConnector finalTarget = getTargetConnector(target, et);
 
         event.preventDefault();
 
@@ -180,6 +178,11 @@ public class ShortcutActionHandler {
                 client.updateVariable(paintableId, "action", a.getKey(), true);
             }
         });
+    }
+
+    // Haulmont API
+    protected ComponentConnector getTargetConnector(ComponentConnector target, Element et) {
+        return target == null ? Util.findPaintable(client, et) : target;
     }
 
     /**
