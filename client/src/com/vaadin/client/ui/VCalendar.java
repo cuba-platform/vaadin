@@ -1101,9 +1101,7 @@ public class VCalendar extends Composite implements VHasDropHandler {
             int firstDayOfWeek, Collection<CalendarEvent> events,
             List<CalendarDay> days) {
 
-        boolean repaint = (weekGrid == null) ? true : (outer
-                .getWidgetIndex(weekGrid) == -1);
-        if (repaint) {
+        if (isRepaint()) {
             while (outer.getWidgetCount() > 0) {
                 outer.remove(0);
             }
@@ -1135,18 +1133,28 @@ public class VCalendar extends Composite implements VHasDropHandler {
         updateWeekGrid(daysInMonth, days, today, realDayNames);
         updateEventsToWeekGrid(sortEventsByDuration(events));
 
-        if (repaint) {
+        if (isRepaint()) {
             outer.add(dayToolbar, DockPanel.NORTH);
             outer.add(weeklyLongEvents, DockPanel.NORTH);
             outer.add(weekGrid, DockPanel.SOUTH);
         }
         //Haulmont API
         initSizeWeekGrid();
-        //Haulmont API
 
-        if (repaint) {
+        //Haulmont API
+        if (isScroll()) {
             weekGrid.setVerticalScrollPosition(getWeekGridVerticalScrollPosition(scroll));
         }
+    }
+
+    //Haulmont API
+    protected boolean isRepaint() {
+        return (weekGrid == null) || (outer.getWidgetIndex(weekGrid) == -1);
+    }
+
+    //Haulmont API
+    protected boolean isScroll() {
+        return isRepaint();
     }
 
     //Haulmont API
