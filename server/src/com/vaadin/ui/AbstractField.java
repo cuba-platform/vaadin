@@ -16,20 +16,6 @@
 
 package com.vaadin.ui;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.logging.Logger;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
 import com.vaadin.data.Buffered;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validatable;
@@ -49,6 +35,13 @@ import com.vaadin.shared.AbstractFieldState;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * <p>
@@ -340,7 +333,9 @@ public abstract class AbstractField<T> extends AbstractComponent implements
     }
 
     private void setModified(boolean modified) {
-        getState().modified = modified;
+        if (getState(false).modified != modified) {
+            getState().modified = modified;
+        }
     }
 
     /**
@@ -1355,7 +1350,9 @@ public abstract class AbstractField<T> extends AbstractComponent implements
      */
     @Override
     public void setTabIndex(int tabIndex) {
-        getState().tabIndex = tabIndex;
+        if (getState(false).tabIndex != tabIndex) {
+            getState().tabIndex = tabIndex;
+        }
     }
 
     /**
@@ -1498,7 +1495,9 @@ public abstract class AbstractField<T> extends AbstractComponent implements
      */
     @Override
     public void setRequired(boolean required) {
-        getState().required = required;
+        if (getState(false).required != required) {
+            getState().required = required;
+        }
     }
 
     /**
