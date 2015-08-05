@@ -17,15 +17,7 @@
 package com.vaadin.ui;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.jsoup.nodes.Attribute;
@@ -131,7 +123,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setId(String id) {
-        getState().id = id;
+        if (!equalValues(getState(false).id, id)) {
+            getState().id = id;
+        }
     }
 
     /*
@@ -150,8 +144,10 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @see com.vaadin.ui.Component#setId(java.lang.String)
      */
     @Override
-    public void setCubaId(String id) {
-        getState().cubaId = id;
+    public void setCubaId(String cubaId) {
+        if (!equalValues(getState(false).cubaId, cubaId)) {
+            getState().cubaId = cubaId;
+        }
     }
 
     /*
@@ -221,8 +217,10 @@ public abstract class AbstractComponent extends AbstractClientConnector
     }
 
     @Override
-    public void setPrimaryStyleName(String style) {
-        getState().primaryStyleName = style;
+    public void setPrimaryStyleName(String primaryStyleName) {
+        if (!equalValues(getState(false).primaryStyleName, primaryStyleName)) {
+            getState().primaryStyleName = primaryStyleName;
+        }
     }
 
     @Override
@@ -282,7 +280,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setCaption(String caption) {
-        getState().caption = caption;
+        if (!equalValues(getState(false).caption, caption)) {
+            getState().caption = caption;
+        }
     }
 
     /**
@@ -299,7 +299,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      *            as plain text
      */
     public void setCaptionAsHtml(boolean captionAsHtml) {
-        getState().captionAsHtml = captionAsHtml;
+        if (getState(false).captionAsHtml != captionAsHtml) {
+            getState().captionAsHtml = captionAsHtml;
+        }
     }
 
     /**
@@ -401,7 +403,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setEnabled(boolean enabled) {
-        getState().enabled = enabled;
+        if (getState(false).enabled != enabled) {
+            getState().enabled = enabled;
+        }
     }
 
     /*
@@ -511,7 +515,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      *            the new description string for the component.
      */
     public void setDescription(String description) {
-        getState().description = description;
+        if (!equalValues(getState(false).description, description)) {
+            getState().description = description;
+        }
     }
 
     /*
@@ -628,7 +634,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setReadOnly(boolean readOnly) {
-        getState().readOnly = readOnly;
+        if (getState(false).readOnly != readOnly) {
+            getState().readOnly = readOnly;
+        }
     }
 
     /*
@@ -1376,5 +1384,10 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     private static final Logger getLogger() {
         return Logger.getLogger(AbstractComponent.class.getName());
+    }
+
+    // Haulmont API
+    protected boolean equalValues(Object a, Object b) {
+        return a == b || (a != null && a.equals(b));
     }
 }
