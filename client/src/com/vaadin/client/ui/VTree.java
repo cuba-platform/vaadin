@@ -251,13 +251,13 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
         super.onBrowserEvent(event);
         if (event.getTypeInt() == Event.ONMOUSEDOWN) {
             // Prevent default text selection in IE
-            if (BrowserInfo.get().isIE()) {
+            if (BrowserInfo.get().isIE() && !allowTextSelection) {
                 ((Element) event.getEventTarget().cast()).setPropertyJSO(
                         "onselectstart", applyDisableTextSelectionIEHack());
             }
         } else if (event.getTypeInt() == Event.ONMOUSEUP) {
             // Remove IE text selection hack
-            if (BrowserInfo.get().isIE()) {
+            if (BrowserInfo.get().isIE() && !allowTextSelection) {
                 ((Element) event.getEventTarget().cast()).setPropertyJSO(
                         "onselectstart", null);
             }
