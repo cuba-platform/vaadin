@@ -70,11 +70,6 @@ public abstract class VLayoutSlot {
 
     public void setAlignment(AlignmentInfo alignment) {
         this.alignment = alignment;
-        // if alignment is something other than topLeft then we need to align
-        // the component inside this slot
-        if (alignment != null && (!alignment.isLeft() || !alignment.isTop())) {
-            widget.getElement().getStyle().setPosition(Position.ABSOLUTE);
-        }
     }
 
     public void positionHorizontally(double currentLocation,
@@ -115,7 +110,11 @@ public abstract class VLayoutSlot {
             style.clearMarginRight();
         }
 
-        style.setPropertyPx("width", (int) availableWidth);
+        if (isRelativeWidth()) {
+            style.setPropertyPx("width", (int) availableWidth);
+        } else {
+            style.clearProperty("width");
+        }
 
         double allocatedContentWidth = 0;
         if (isRelativeWidth()) {
@@ -126,8 +125,6 @@ public abstract class VLayoutSlot {
             reportActualRelativeWidth(Math.round((float) allocatedContentWidth));
         }
 
-        style.setLeft(Math.round(currentLocation), Unit.PX);
-        double padding = 0;
         AlignmentInfo alignment = getAlignment();
         if (!alignment.isLeft()) {
             double usedWidth;
@@ -137,26 +134,25 @@ public abstract class VLayoutSlot {
                 usedWidth = getWidgetWidth();
             }
             if (alignment.isHorizontalCenter()) {
-                padding = (allocatedSpace - usedWidth) / 2d;
+                currentLocation += (allocatedSpace - usedWidth) / 2d;
                 if (captionAboveCompnent) {
                     captionStyle.setLeft(
                             Math.round(usedWidth - captionWidth) / 2, Unit.PX);
                 }
             } else {
-                padding = (allocatedSpace - usedWidth);
+                currentLocation += (allocatedSpace - usedWidth);
                 if (captionAboveCompnent) {
                     captionStyle.setLeft(Math.round(usedWidth - captionWidth),
                             Unit.PX);
                 }
             }
-            widget.getElement().getStyle()
-                    .setLeft(Math.round(padding), Unit.PX);
         } else {
             if (captionAboveCompnent) {
                 captionStyle.setLeft(0, Unit.PX);
             }
         }
 
+        style.setLeft(Math.round(currentLocation), Unit.PX);
     }
 
     // Haulmont API dependency
@@ -190,7 +186,11 @@ public abstract class VLayoutSlot {
             style.clearMarginBottom();
         }
 
-        style.setHeight(contentHeight, Unit.PX);
+        if (isRelativeHeight()) {
+            style.setHeight(contentHeight, Unit.PX);
+        } else {
+            style.clearHeight();
+        }
 
         double allocatedContentHeight = 0;
         if (isRelativeHeight()) {
@@ -201,8 +201,6 @@ public abstract class VLayoutSlot {
                     .round((float) allocatedContentHeight));
         }
 
-        style.setTop(currentLocation, Unit.PX);
-        double padding = 0;
         AlignmentInfo alignment = getAlignment();
         if (!alignment.isTop()) {
             double usedHeight;
@@ -212,14 +210,13 @@ public abstract class VLayoutSlot {
                 usedHeight = getUsedHeight();
             }
             if (alignment.isVerticalCenter()) {
-                padding = (allocatedSpace - usedHeight) / 2d;
+                currentLocation += (allocatedSpace - usedHeight) / 2d;
             } else {
-                padding = (allocatedSpace - usedHeight);
+                currentLocation += (allocatedSpace - usedHeight);
             }
-            padding += captionHeight;
-
-            widget.getElement().getStyle().setTop(padding, Unit.PX);
         }
+
+        style.setTop(currentLocation, Unit.PX);
     }
 
     protected void reportActualRelativeHeight(int allocatedHeight) {
