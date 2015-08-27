@@ -85,3 +85,5 @@ scripts/*.pyc
 result
 
 .sass-cache
+
+.idea/workspace.xml
