@@ -1399,9 +1399,15 @@ public class VTabsheet extends VTabsheetBase implements Focusable, SubPartAware 
     }
 
     private boolean isClippedTabs() {
+        // Haulmont API
         return (tb.getOffsetWidth() - DOM.getElementPropertyInt((Element) tb
-                .getContainerElement().getLastChild().cast(), "offsetWidth")) > getOffsetWidth()
+                .getContainerElement().getLastChild().cast(), "offsetWidth")) + getOtherComponentsWidth() > getOffsetWidth()
                 - (isScrolledTabs() ? scroller.getOffsetWidth() : 0);
+    }
+
+    // Haulmont API
+    protected int getOtherComponentsWidth() {
+        return 0;
     }
 
     private boolean isClipped(Tab tab) {
