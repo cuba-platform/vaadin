@@ -2780,7 +2780,9 @@ public class Grid<T> extends ResizeComposite implements
             for (Column<?, T> column : visibleColumns) {
                 final double widthAsIs = column.getWidth();
                 final boolean isFixedWidth = widthAsIs >= 0;
-                final double widthFixed = Math.max(widthAsIs,
+                // Check for max width just to be sure we don't break the limits
+                final double widthFixed = Math.max(
+                        Math.min(getMaxWidth(column), widthAsIs),
                         column.getMinimumWidth());
                 defaultExpandRatios = defaultExpandRatios
                         && (column.getExpandRatio() == -1 || column == selectionColumn);
@@ -2799,8 +2801,9 @@ public class Grid<T> extends ResizeComposite implements
             for (Column<?, T> column : nonFixedColumns) {
                 final int expandRatio = (defaultExpandRatios ? 1 : column
                         .getExpandRatio());
-                final double newWidth = column.getWidthActual();
                 final double maxWidth = getMaxWidth(column);
+                final double newWidth = Math.min(maxWidth,
+                        column.getWidthActual());
                 boolean shouldExpand = newWidth < maxWidth && expandRatio > 0
                         && column != selectionColumn;
                 if (shouldExpand) {
@@ -2819,6 +2822,10 @@ public class Grid<T> extends ResizeComposite implements
             double pixelsToDistribute = escalator.getInnerWidth()
                     - reservedPixels;
             if (pixelsToDistribute <= 0 || totalRatios <= 0) {
+                if (pixelsToDistribute <= 0) {
+                    // Set column sizes for expanding columns
+                    setColumnSizes(columnSizes);
+                }
                 return;
             }
 
@@ -7869,6 +7876,10 @@ public class Grid<T> extends ResizeComposite implements
         if (detailsGenerator == null) {
             throw new IllegalArgumentException(
                     "Details generator may not be null");
+        }
+
+        for (Integer index : visibleDetails) {
+            setDetailsVisible(index, false);
         }
 
         this.detailsGenerator = detailsGenerator;
