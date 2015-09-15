@@ -500,6 +500,10 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
             }
         };
 
+        applySelectionCommand(command);
+    }
+
+    protected void applySelectionCommand(final Scheduler.ScheduledCommand command) {
         /*
          * Delaying the sending of the selection in webkit to ensure the
          * selection is always sent when the tree has focus and after click
