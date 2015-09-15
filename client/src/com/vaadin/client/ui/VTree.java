@@ -503,6 +503,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
         applySelectionCommand(command);
     }
 
+    // Haulmont API
     protected void applySelectionCommand(final Scheduler.ScheduledCommand command) {
         /*
          * Delaying the sending of the selection in webkit to ensure the
