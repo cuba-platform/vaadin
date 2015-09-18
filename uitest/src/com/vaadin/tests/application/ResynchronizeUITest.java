@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.vaadin.tests.themes;
+package com.vaadin.tests.application;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,54 +21,39 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.parallel.Browser;
 import com.vaadin.tests.tb3.SingleBrowserTest;
 
-public class ThemeChangeFaviconTest extends SingleBrowserTest {
+public class ResynchronizeUITest extends SingleBrowserTest {
 
     @Override
     public List<DesiredCapabilities> getBrowsersToTest() {
-        // Seems like stylesheet onload is not fired on PhantomJS
-        // https://github.com/ariya/phantomjs/issues/12332
+        // PhantomJS does not send onload events for styles
         return Collections.singletonList(Browser.FIREFOX
                 .getDesiredCapabilities());
     }
 
     @Test
-    public void changeFavicon() throws InterruptedException {
-        setDebug(true);
+    public void ensureResynchronizeRecreatesDOM() {
         openTestURL();
-        assertFavicon("reindeer");
-
-        changeTheme("valo");
-        assertFavicon("valo");
-
-        changeTheme("reindeer");
-        assertFavicon("reindeer");
-    }
-
-    private void changeTheme(final String theme) {
-        $(ButtonElement.class).caption(theme).first().click();
-        waitForThemeToChange(theme);
-    }
-
-    private void assertFavicon(String theme) {
-        String faviconUrl = "/VAADIN/themes/" + theme + "/favicon.ico";
-
-        List<WebElement> elements = findElements(By
-                .cssSelector("link[rel~=\"icon\"]"));
-
-        Assert.assertEquals(2, elements.size());
-
-        for (WebElement element : elements) {
-            Assert.assertTrue(element.getAttribute("href")
-                    + " does not end with " + faviconUrl,
-                    element.getAttribute("href").endsWith(faviconUrl));
+        ButtonElement button = $(ButtonElement.class).first();
+        button.click();
+        // Click causes repaint, after this the old button element should no
+        // longer be available
+        // Ensure that the theme has changed
+        waitForThemeToChange("runo");
+        try {
+            button.click();
+            Assert.fail("The old button element should have been removed by the click and replaced by a new one.");
+        } catch (StaleElementReferenceException e) {
+            // This is what should happen
         }
     }
-
 }

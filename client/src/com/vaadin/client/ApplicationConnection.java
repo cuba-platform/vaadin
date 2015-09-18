@@ -862,11 +862,7 @@ public class ApplicationConnection implements HasHandlers {
                 + ApplicationConstants.UIDL_PATH + '/');
 
         if (extraParams != null && extraParams.length() > 0) {
-            if (extraParams.equals(getRepaintAllParameters())) {
-                payload.put(ApplicationConstants.RESYNCHRONIZE_ID, true);
-            } else {
-                uri = SharedUtil.addGetParameters(uri, extraParams);
-            }
+            uri = SharedUtil.addGetParameters(uri, extraParams);
         }
         uri = SharedUtil.addGetParameters(uri, UIConstants.UI_ID_PARAMETER
                 + "=" + configuration.getUIId());
@@ -1696,18 +1692,20 @@ public class ApplicationConnection implements HasHandlers {
 
                 updatingState = false;
 
-                if (!onlyNoLayoutUpdates) {
-                    Profiler.enter("Layout processing");
-                    try {
-                        LayoutManager layoutManager = getLayoutManager();
+                Profiler.enter("Layout processing");
+                try {
+                    LayoutManager layoutManager = getLayoutManager();
+                    if (!onlyNoLayoutUpdates) {
                         layoutManager.setEverythingNeedsMeasure();
-                        layoutManager.layoutNow();
-                    } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE,
-                                "Error processing layouts", e);
                     }
-                    Profiler.leave("Layout processing");
+                    if (layoutManager.isLayoutNeeded()) {
+                        layoutManager.layoutNow();
+                    }
+                } catch (final Throwable e) {
+                    getLogger()
+                            .log(Level.SEVERE, "Error processing layouts", e);
                 }
+                Profiler.leave("Layout processing");
 
                 if (ApplicationConfiguration.isDebugMode()) {
                     Profiler.enter("Dumping state changes to the console");

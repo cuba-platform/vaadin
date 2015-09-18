@@ -141,6 +141,7 @@ import com.vaadin.client.widget.grid.events.ScrollHandler;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.HasSelectionHandlers;
+import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
@@ -1361,7 +1362,9 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private void updateSelectionCheckboxesAsNeeded(boolean isEnabled) {
-            if (grid.getSelectionModel() instanceof Multi) {
+            // FIXME: This is too much guessing. Define a better way to do this.
+            if (grid.selectionColumn != null
+                    && grid.selectionColumn.getRenderer() instanceof MultiSelectionRenderer) {
                 grid.refreshBody();
                 CheckBox checkBox = (CheckBox) grid.getDefaultHeaderRow()
                         .getCell(grid.selectionColumn).getWidget();
@@ -3134,7 +3137,7 @@ public class Grid<T> extends ResizeComposite implements
      * 
      * @since 7.5.0
      */
-    private static class Sidebar extends Composite {
+    private static class Sidebar extends Composite implements HasEnabled {
 
         private final ClickHandler openCloseButtonHandler = new ClickHandler() {
 
@@ -3185,6 +3188,9 @@ public class Grid<T> extends ResizeComposite implements
             initWidget(rootContainer);
 
             openCloseButton = new Button();
+
+            setEnabled(grid.isEnabled());
+
             openCloseButton.addClickHandler(openCloseButtonHandler);
 
             rootContainer.add(openCloseButton);
@@ -3405,6 +3411,20 @@ public class Grid<T> extends ResizeComposite implements
                     setHeightToHeaderCellHeight();
                 }
             });
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return openCloseButton.isEnabled();
+        }
+
+        @Override
+        public void setEnabled(boolean enabled) {
+            if(!enabled && isOpen()) {
+                close();
+            }
+
+            openCloseButton.setEnabled(enabled);
         }
     }
 
@@ -5306,6 +5326,8 @@ public class Grid<T> extends ResizeComposite implements
         if (editorOpen) {
             editor.setGridEnabled(enabled);
         }
+
+        sidebar.setEnabled(enabled);
 
         getEscalator().setScrollLocked(Direction.VERTICAL,
                 !enabled || editorOpen);
@@ -7913,6 +7935,10 @@ public class Grid<T> extends ResizeComposite implements
      * @see #isDetailsVisible(int)
      */
     public void setDetailsVisible(int rowIndex, boolean visible) {
+        if (DetailsGenerator.NULL.equals(detailsGenerator)) {
+            return;
+        }
+
         Integer rowIndexInteger = Integer.valueOf(rowIndex);
 
         /*
