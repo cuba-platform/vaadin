@@ -90,6 +90,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         private final String key;
         private final String caption;
         private String untranslatedIconUri;
+        private String style;
 
         /**
          * Constructor
@@ -100,6 +101,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         public FilterSelectSuggestion(UIDL uidl) {
             key = uidl.getStringAttribute("key");
             caption = uidl.getStringAttribute("caption");
+            style = uidl.getStringAttribute("style");
+
             if (uidl.hasAttribute("icon")) {
                 untranslatedIconUri = uidl.getStringAttribute("icon");
             }
@@ -159,6 +162,19 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         }
 
         /**
+         * Gets the style set for this suggestion item. Styles are typically set
+         * by a server-side {@link com.vaadin.ui.ComboBox.ItemStyleGenerator}.
+         * The returned style is prefixed by <code>v-filterselect-item-</code>.
+         * 
+         * @since 7.5.6
+         * @return the style name to use, or <code>null</code> to not apply any
+         *         custom style.
+         */
+        public String getStyle() {
+            return style;
+        }
+
+        /**
          * Executes a selection of this item.
          */
 
@@ -183,6 +199,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             }
             if (!SharedUtil.equals(untranslatedIconUri,
                     other.untranslatedIconUri)) {
+                return false;
+            }
+            if (!SharedUtil.equals(style, other.style)) {
                 return false;
             }
             return true;
@@ -606,14 +625,15 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                 // Must take margin,border,padding manually into account for
                 // menu element as we measure the element child and set width to
                 // the element parent
-                int naturalMenuOuterWidth = naturalMenuWidth
+                double naturalMenuOuterWidth = WidgetUtil
+                        .getRequiredWidthDouble(menuFirstChild)
                         + getMarginBorderPaddingWidth(menu.getElement());
 
                 /*
                  * IE requires us to specify the width for the container
                  * element. Otherwise it will be 100% wide
                  */
-                int rootWidth = Math.max(desiredWidth - popupOuterPadding,
+                double rootWidth = Math.max(desiredWidth - popupOuterPadding,
                         naturalMenuOuterWidth);
                 getContainerElement().getStyle().setWidth(rootWidth, Unit.PX);
             }
@@ -807,6 +827,10 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             while (it.hasNext()) {
                 final FilterSelectSuggestion s = it.next();
                 final MenuItem mi = new MenuItem(s.getDisplayString(), true, s);
+                String style = s.getStyle();
+                if (style != null) {
+                    mi.addStyleName("v-filterselect-item-" + style);
+                }
                 Roles.getListitemRole().set(mi.getElement());
 
                 WidgetUtil.sinkOnloadForImages(mi.getElement());
@@ -1286,13 +1310,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         sinkEvents(Event.ONPASTE);
     }
 
-    private static int getMarginBorderPaddingWidth(Element element) {
+    private static double getMarginBorderPaddingWidth(Element element) {
         final ComputedStyle s = new ComputedStyle(element);
-        int[] margin = s.getMargin();
-        int[] border = s.getBorder();
-        int[] padding = s.getPadding();
-        return margin[1] + margin[3] + border[1] + border[3] + padding[1]
-                + padding[3];
+        return s.getMarginWidth() + s.getBorderWidth() + s.getPaddingWidth();
 
     }
 

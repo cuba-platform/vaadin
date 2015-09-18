@@ -23,10 +23,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.tests.tb3.MultiBrowserTest;
@@ -71,7 +69,7 @@ public class ThemeChangeOnTheFlyTest extends MultiBrowserTest {
     public void reindeerToNullToReindeer() throws IOException {
         openTestURL();
 
-        changeThemeAndCompare("null");
+        changeTheme("null");
         changeThemeAndCompare("reindeer");
     }
 
@@ -89,21 +87,6 @@ public class ThemeChangeOnTheFlyTest extends MultiBrowserTest {
             waitForThemeToChange(theme);
             assertOverlayTheme(theme);
         }
-    }
-
-    private void waitForThemeToChange(final String theme) {
-
-        final WebElement rootDiv = findElement(By
-                .xpath("//div[contains(@class,'v-app')]"));
-        waitUntil(new ExpectedCondition<Boolean>() {
-
-            @Override
-            public Boolean apply(WebDriver input) {
-                String rootClass = rootDiv.getAttribute("class").trim();
-
-                return rootClass.contains(theme);
-            }
-        }, 30);
     }
 
     private void assertOverlayTheme(String theme) {

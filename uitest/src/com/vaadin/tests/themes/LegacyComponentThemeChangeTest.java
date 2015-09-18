@@ -20,10 +20,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.ComboBoxElement;
@@ -122,8 +120,22 @@ public class LegacyComponentThemeChangeTest extends MultiBrowserTest {
 
         // The other image should change with the theme
         WebElement themeImage = $(MenuBarElement.class).first().findElement(
-                By.xpath(".//span[text()='seletedtheme']/img"));
+                By.xpath(".//span[text()='selectedtheme']/img"));
         assertAttributePrefix(themeImage, "src", theme);
+
+        WebElement subMenuItem = $(MenuBarElement.class).first().findElement(
+                By.xpath(".//span[text()='sub menu']"));
+        subMenuItem.click();
+
+        WebElement subMenu = findElement(By.className("v-menubar-popup"));
+        WebElement subMenuRuno = subMenu.findElement(By
+                .xpath(".//span[text()='runo']/img"));
+        String subMenuRunoImageSrc = subMenuRuno.getAttribute("src");
+        Assert.assertEquals(getThemeURL("runo") + "icons/16/ok.png",
+                subMenuRunoImageSrc);
+        WebElement subMenuThemeImage = subMenu.findElement(By
+                .xpath(".//span[text()='selectedtheme']/img"));
+        assertAttributePrefix(subMenuThemeImage, "src", theme);
     }
 
     private void assertAttributePrefix(WebElement element, String attribute,
@@ -143,21 +155,6 @@ public class LegacyComponentThemeChangeTest extends MultiBrowserTest {
     private void changeTheme(String theme) {
         $(ButtonElement.class).id(theme).click();
         waitForThemeToChange(theme);
-    }
-
-    private void waitForThemeToChange(final String theme) {
-
-        final WebElement rootDiv = findElement(By
-                .xpath("//div[contains(@class,'v-app')]"));
-        waitUntil(new ExpectedCondition<Boolean>() {
-
-            @Override
-            public Boolean apply(WebDriver input) {
-                String rootClass = rootDiv.getAttribute("class").trim();
-
-                return rootClass.contains(theme);
-            }
-        }, 30);
     }
 
 }
