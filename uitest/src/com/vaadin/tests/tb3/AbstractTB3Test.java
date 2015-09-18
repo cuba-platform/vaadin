@@ -348,8 +348,8 @@ public abstract class AbstractTB3Test extends ParallelTest {
      *         {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...)}
      *         returns
      */
-    protected Object executeScript(String script) {
-        return ((JavascriptExecutor) getDriver()).executeScript(script);
+    protected Object executeScript(String script, Object... args) {
+        return ((JavascriptExecutor) getDriver()).executeScript(script, args);
     }
 
     /**
@@ -955,5 +955,193 @@ public abstract class AbstractTB3Test extends ParallelTest {
 
     protected void click(CheckBoxElement checkbox) {
         checkbox.findElement(By.xpath("input")).click();
+    }
+
+    protected void waitUntilLoadingIndicatorNotVisible() {
+        waitUntil(new ExpectedCondition<Boolean>() {
+
+            @Override
+            public Boolean apply(WebDriver input) {
+                WebElement loadingIndicator = input.findElement(By
+                        .className("v-loading-indicator"));
+
+                return !loadingIndicator.isDisplayed();
+            }
+        });
+    }
+
+    /**
+     * Selects a menu item. By default, this will click on the menu item.
+     * 
+     * @param menuCaption
+     *            caption of the menu item
+     */
+    protected void selectMenu(String menuCaption) {
+        selectMenu(menuCaption, true);
+    }
+
+    /**
+     * Selects a menu item.
+     * 
+     * @param menuCaption
+     *            caption of the menu item
+     * @param click
+     *            <code>true</code> if should click the menu item;
+     *            <code>false</code> if not
+     */
+    protected void selectMenu(String menuCaption, boolean click) {
+        WebElement menuElement = getMenuElement(menuCaption);
+        Dimension size = menuElement.getSize();
+        new Actions(getDriver()).moveToElement(menuElement, size.width - 10,
+                size.height / 2).perform();
+        if (click) {
+            new Actions(getDriver()).click().perform();
+        }
+    }
+
+    /**
+     * Finds the menu item from the DOM based on menu item caption.
+     * 
+     * @param menuCaption
+     *            caption of the menu item
+     * @return the found menu item
+     * @throws NoSuchElementException
+     *             if menu item is not found
+     */
+    protected WebElement getMenuElement(String menuCaption)
+            throws NoSuchElementException {
+        return getDriver().findElement(
+                By.xpath("//span[text() = '" + menuCaption + "']"));
+    }
+
+    /**
+     * Selects a submenu described by a path of menus from the first MenuBar in
+     * the UI.
+     * 
+     * @param menuCaptions
+     *            array of menu captions
+     */
+    protected void selectMenuPath(String... menuCaptions) {
+        selectMenu(menuCaptions[0], true);
+
+        // Move to the menu item opened below the menu bar.
+        new Actions(getDriver()).moveByOffset(0,
+                getMenuElement(menuCaptions[0]).getSize().getHeight())
+                .perform();
+
+        for (int i = 1; i < menuCaptions.length - 1; i++) {
+            selectMenu(menuCaptions[i]);
+            new Actions(getDriver()).moveByOffset(40, 0).build().perform();
+        }
+        selectMenu(menuCaptions[menuCaptions.length - 1], true);
+    }
+
+    /**
+     * Asserts that an element is present
+     * 
+     * @param by
+     *            the locatore for the element
+     */
+    protected void assertElementPresent(By by) {
+        Assert.assertTrue("Element is not present", isElementPresent(by));
+    }
+
+    /**
+     * Asserts that an element is not present
+     * 
+     * @param by
+     *            the locatore for the element
+     */
+    protected void assertElementNotPresent(By by) {
+        Assert.assertFalse("Element is present", isElementPresent(by));
+    }
+
+    /**
+     * Asserts that no error notifications are shown. Requires the use of
+     * "?debug" as exceptions are otherwise not shown as notifications.
+     */
+    protected void assertNoErrorNotifications() {
+        Assert.assertTrue(
+                "Debug window must be open to be able to see error notifications",
+                isDebugWindowOpen());
+        Assert.assertFalse(
+                "Error notification with client side exception is shown",
+                isElementPresent(By.className("v-Notification-error")));
+    }
+
+    private boolean isDebugWindowOpen() {
+        return isElementPresent(By.className("v-debugwindow"));
+    }
+
+    protected void assertNoHorizontalScrollbar(WebElement element,
+            String errorMessage) {
+        // IE rounds clientWidth/clientHeight down and scrollHeight/scrollWidth
+        // up, so using clientWidth/clientHeight will fail if the element height
+        // is not an integer
+        int clientWidth = getClientWidth(element);
+        int scrollWidth = getScrollWidth(element);
+        boolean hasScrollbar = scrollWidth > clientWidth;
+
+        Assert.assertFalse(
+                "The element should not have a horizontal scrollbar (scrollWidth: "
+                        + scrollWidth + ", clientWidth: " + clientWidth + "): "
+                        + errorMessage, hasScrollbar);
+    }
+
+    protected void assertNoVerticalScrollbar(WebElement element,
+            String errorMessage) {
+        // IE rounds clientWidth/clientHeight down and scrollHeight/scrollWidth
+        // up, so using clientWidth/clientHeight will fail if the element height
+        // is not an integer
+        int clientHeight = getClientHeight(element);
+        int scrollHeight = getScrollHeight(element);
+        boolean hasScrollbar = scrollHeight > clientHeight;
+
+        Assert.assertFalse(
+                "The element should not have a vertical scrollbar (scrollHeight: "
+                        + scrollHeight + ", clientHeight: " + clientHeight
+                        + "): " + errorMessage, hasScrollbar);
+    }
+
+    protected int getScrollHeight(WebElement element) {
+        return ((Number) executeScript("return arguments[0].scrollHeight;",
+                element)).intValue();
+    }
+
+    protected int getScrollWidth(WebElement element) {
+        return ((Number) executeScript("return arguments[0].scrollWidth;",
+                element)).intValue();
+    }
+
+    /**
+     * Returns client height rounded up instead of as double because of IE9
+     * issues: https://dev.vaadin.com/ticket/18469
+     */
+    protected int getClientHeight(WebElement e) {
+        String script;
+        if (BrowserUtil.isIE8(getDesiredCapabilities())) {
+            script = "return arguments[0].clientHeight;"; //
+        } else {
+            script = "var cs = window.getComputedStyle(arguments[0]);"
+                    + "return Math.ceil(parseFloat(cs.height)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom));";
+        }
+        return ((Number) executeScript(script, e)).intValue();
+    }
+
+    /**
+     * Returns client width rounded up instead of as double because of IE9
+     * issues: https://dev.vaadin.com/ticket/18469
+     */
+    protected int getClientWidth(WebElement e) {
+        String script;
+        if (BrowserUtil.isIE8(getDesiredCapabilities())) {
+            script = "return arguments[0].clientWidth;";
+        } else {
+            script = "var cs = window.getComputedStyle(arguments[0]);"
+                    + "var h = parseFloat(cs.width)+parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight);"
+                    + "return Math.ceil(h);";
+        }
+
+        return ((Number) executeScript(script, e)).intValue();
     }
 }
