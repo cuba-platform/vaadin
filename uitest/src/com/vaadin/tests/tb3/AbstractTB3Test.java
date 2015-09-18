@@ -13,9 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
+ 
 package com.vaadin.tests.tb3;
-
+ 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
-
+ 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -54,7 +54,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+ 
 import com.google.gwt.thirdparty.guava.common.base.Joiner;
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 import com.vaadin.server.LegacyApplication;
@@ -71,10 +71,10 @@ import com.vaadin.testbench.parallel.BrowserUtil;
 import com.vaadin.testbench.parallel.ParallelTest;
 import com.vaadin.tests.components.AbstractTestUIWithLog;
 import com.vaadin.ui.UI;
-
+ 
 import elemental.json.JsonObject;
 import elemental.json.impl.JsonUtil;
-
+ 
 /**
  * Base class for TestBench 3+ tests. All TB3+ tests in the project should
  * extend this class.
@@ -93,34 +93,34 @@ import elemental.json.impl.JsonUtil;
  */
 @RunWith(TB3Runner.class)
 public abstract class AbstractTB3Test extends ParallelTest {
-
+ 
     @Rule
     public RetryOnFail retry = new RetryOnFail();
-
+ 
     /**
      * Height of the screenshots we want to capture
      */
     private static final int SCREENSHOT_HEIGHT = 850;
-
+ 
     /**
      * Width of the screenshots we want to capture
      */
     private static final int SCREENSHOT_WIDTH = 1500;
-
+ 
     /**
      * Timeout used by the TB grid
      */
     private static final int BROWSER_TIMEOUT_IN_MS = 30 * 1000;
-
+ 
     private boolean debug = false;
-
+ 
     private boolean push = false;
-
+ 
     static {
         com.vaadin.testbench.Parameters
                 .setScreenshotComparisonCursorDetection(true);
     }
-
+ 
     /**
      * Connect to the hub using a remote web driver, set the canvas size and
      * opens the initial URL as specified by {@link #getTestUrl()}
@@ -130,10 +130,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
     @Override
     public void setup() throws Exception {
         super.setup();
-
+ 
         int w = SCREENSHOT_WIDTH;
         int h = SCREENSHOT_HEIGHT;
-
+ 
         if (BrowserUtil.isIE8(super.getDesiredCapabilities())) {
             // IE8 gets size wrong, who would have guessed...
             w += 4;
@@ -145,7 +145,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
             // Opera does not support this...
         }
     }
-
+ 
     /**
      * Method for closing the tested application.
      */
@@ -158,52 +158,52 @@ public abstract class AbstractTB3Test extends ParallelTest {
             }
         }
     }
-
+ 
     protected WebElement getTooltipErrorElement() {
         WebElement tooltip = getDriver().findElement(
                 com.vaadin.testbench.By.className("v-tooltip"));
         return tooltip.findElement(By.className("v-errormessage"));
     }
-
+ 
     protected WebElement getTooltipElement() {
         return getDriver().findElement(
                 com.vaadin.testbench.By.className("v-tooltip-text"));
     }
-
+ 
     protected Coordinates getCoordinates(TestBenchElement element) {
         return ((Locatable) element.getWrappedElement()).getCoordinates();
     }
-
+ 
     private boolean hasDebugMessage(String message) {
         return getDebugMessage(message) != null;
     }
-
+ 
     private WebElement getDebugMessage(String message) {
         return driver.findElement(By.xpath(String.format(
                 "//span[@class='v-debugwindow-message' and text()='%s']",
                 message)));
     }
-
+ 
     protected void waitForDebugMessage(final String expectedMessage) {
         waitForDebugMessage(expectedMessage, 30);
     }
-
+ 
     protected void waitForDebugMessage(final String expectedMessage, int timeout) {
         waitUntil(new ExpectedCondition<Boolean>() {
-
+ 
             @Override
             public Boolean apply(WebDriver input) {
                 return hasDebugMessage(expectedMessage);
             }
         }, timeout);
     }
-
+ 
     protected void clearDebugMessages() {
         driver.findElement(
                 By.xpath("//button[@class='v-debugwindow-button' and @title='Clear log']"))
                 .click();
     }
-
+ 
     protected void waitUntilRowIsVisible(final TableElement table, final int row) {
         waitUntil(new ExpectedCondition<Object>() {
             @Override
@@ -216,14 +216,14 @@ public abstract class AbstractTB3Test extends ParallelTest {
             }
         });
     }
-
+ 
     protected void scrollTable(TableElement table, int rows, int rowToWait) {
         testBenchElement(table.findElement(By.className("v-scrollable")))
                 .scroll(rows * 30);
-
+ 
         waitUntilRowIsVisible(table, rowToWait);
     }
-
+ 
     /**
      * Opens the given test (defined by {@link #getTestUrl()}, optionally with
      * debug window and/or push (depending on {@link #isDebug()} and
@@ -232,7 +232,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected void openTestURL(String... parameters) {
         openTestURL(getUIClass(), parameters);
     }
-
+ 
     /**
      * Opens the given test (defined by {@link #getTestUrl()}, optionally with
      * debug window and/or push (depending on {@link #isDebug()} and
@@ -241,25 +241,25 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected void openTestURL(Class<?> uiClass, String... parameters) {
         openTestURL(uiClass, new HashSet<String>(Arrays.asList(parameters)));
     }
-
+ 
     private void openTestURL(Class<?> uiClass, Set<String> parameters) {
         String url = getTestURL(uiClass);
-
+ 
         if (isDebug()) {
             parameters.add("debug");
         }
-
+ 
         if (LegacyApplication.class.isAssignableFrom(uiClass)) {
             parameters.add("restartApplication");
         }
-
+ 
         if (parameters.size() > 0) {
             url += "?" + Joiner.on("&").join(parameters);
         }
-
+ 
         driver.get(url);
     }
-
+ 
     /**
      * Returns the full URL to be used for the test
      * 
@@ -268,7 +268,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected String getTestUrl() {
         return StringUtils.strip(getBaseURL(), "/") + getDeploymentPath();
     }
-
+ 
     /**
      * Returns the full URL to be used for the test for the provided UI class.
      * 
@@ -278,21 +278,21 @@ public abstract class AbstractTB3Test extends ParallelTest {
         return StringUtils.strip(getBaseURL(), "/")
                 + getDeploymentPath(uiClass);
     }
-
+ 
     /**
      * Used to determine what URL to initially open for the test
      * 
      * @return the host name of development server
      */
     protected abstract String getDeploymentHostname();
-
+ 
     /**
      * Used to determine what port the test is running on
      * 
      * @return The port teh test is running on, by default 8888
      */
     protected abstract int getDeploymentPort();
-
+ 
     /**
      * Produces a collection of browsers to run the test on. This method is
      * executed by the test runner when determining how many test methods to
@@ -311,7 +311,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
         return Collections.singletonList(Browser.FIREFOX
                 .getDesiredCapabilities());
     }
-
+ 
     /**
      * Finds an element based on the part of a TB2 style locator following the
      * :: (e.g. vaadin=runLabelModes::PID_Scheckboxaction-Enabled/domChild[0] ->
@@ -324,7 +324,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected WebElement vaadinElement(String vaadinLocator) {
         return driver.findElement(vaadinLocator(vaadinLocator));
     }
-
+ 
     /**
      * Uses JavaScript to determine the currently focused element.
      * 
@@ -338,7 +338,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
             return null;
         }
     }
-
+ 
     /**
      * Executes the given Javascript
      * 
@@ -348,10 +348,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
      *         {@link org.openqa.selenium.JavascriptExecutor#executeScript(String, Object...)}
      *         returns
      */
-    protected Object executeScript(String script, Object... args) {
-        return ((JavascriptExecutor) getDriver()).executeScript(script, args);
+    protected Object executeScript(String script) {
+        return ((JavascriptExecutor) getDriver()).executeScript(script);
     }
-
+ 
     /**
      * Find a Vaadin element based on its id given using Component.setId
      * 
@@ -362,7 +362,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     public WebElement vaadinElementById(String id) {
         return driver.findElement(vaadinLocatorById(id));
     }
-
+ 
     /**
      * Finds a {@link By} locator based on the part of a TB2 style locator
      * following the :: (e.g.
@@ -375,11 +375,11 @@ public abstract class AbstractTB3Test extends ParallelTest {
      */
     public org.openqa.selenium.By vaadinLocator(String vaadinLocator) {
         String base = getApplicationId(getDeploymentPath());
-
+ 
         base += "::";
         return com.vaadin.testbench.By.vaadin(base + vaadinLocator);
     }
-
+ 
     /**
      * Constructs a {@link By} locator for the id given using Component.setId
      * 
@@ -390,7 +390,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     public By vaadinLocatorById(String id) {
         return vaadinLocator("PID_S" + id);
     }
-
+ 
     /**
      * Waits up to 10s for the given condition to become true. Use e.g. as
      * {@link #waitUntil(ExpectedConditions.textToBePresentInElement(by, text))}
@@ -401,7 +401,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected <T> void waitUntil(ExpectedCondition<T> condition) {
         waitUntil(condition, 10);
     }
-
+ 
     /**
      * Waits the given number of seconds for the given condition to become true.
      * Use e.g. as {@link
@@ -414,7 +414,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
             long timeoutInSeconds) {
         new WebDriverWait(driver, timeoutInSeconds).until(condition);
     }
-
+ 
     /**
      * Waits up to 10s for the given condition to become false. Use e.g. as
      * {@link #waitUntilNot(ExpectedConditions.textToBePresentInElement(by,
@@ -426,7 +426,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected <T> void waitUntilNot(ExpectedCondition<T> condition) {
         waitUntilNot(condition, 10);
     }
-
+ 
     /**
      * Waits the given number of seconds for the given condition to become
      * false. Use e.g. as {@link
@@ -439,15 +439,15 @@ public abstract class AbstractTB3Test extends ParallelTest {
             long timeoutInSeconds) {
         waitUntil(ExpectedConditions.not(condition), timeoutInSeconds);
     }
-
+ 
     protected void waitForElementPresent(final By by) {
         waitUntil(ExpectedConditions.presenceOfElementLocated(by));
     }
-
+ 
     protected void waitForElementVisible(final By by) {
         waitUntil(ExpectedConditions.visibilityOfElementLocated(by));
     }
-
+ 
     /**
      * Checks if the given element has the given class name.
      * 
@@ -463,16 +463,16 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if (classes == null || classes.isEmpty()) {
             return (className == null || className.isEmpty());
         }
-
+ 
         for (String cls : classes.split(" ")) {
             if (className.equals(cls)) {
                 return true;
             }
         }
-
+ 
         return false;
     }
-
+ 
     /**
      * For tests extending {@link AbstractTestUIWithLog}, returns the element
      * for the Nth log row
@@ -484,7 +484,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected WebElement getLogRowElement(int rowNr) {
         return vaadinElementById("Log_row_" + rowNr);
     }
-
+ 
     /**
      * For tests extending {@link AbstractTestUIWithLog}, returns the text in
      * the Nth log row
@@ -496,7 +496,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected String getLogRow(int rowNr) {
         return getLogRowElement(rowNr).getText();
     }
-
+ 
     /**
      * Asserts that {@literal a} is &gt;= {@literal b}
      * 
@@ -512,10 +512,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if (a.compareTo(b) >= 0) {
             return;
         }
-
+ 
         throw new AssertionError(decorate(message, a, b));
     }
-
+ 
     /**
      * Asserts that {@literal a} is &gt; {@literal b}
      * 
@@ -533,7 +533,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
         }
         throw new AssertionError(decorate(message, a, b));
     }
-
+ 
     /**
      * Asserts that {@literal a} is &lt;= {@literal b}
      * 
@@ -549,10 +549,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if (a.compareTo(b) <= 0) {
             return;
         }
-
+ 
         throw new AssertionError(decorate(message, a, b));
     }
-
+ 
     /**
      * Asserts that {@literal a} is &lt; {@literal b}
      * 
@@ -570,13 +570,13 @@ public abstract class AbstractTB3Test extends ParallelTest {
         }
         throw new AssertionError(decorate(message, a, b));
     }
-
+ 
     private static <T> String decorate(String message, Comparable<T> a, T b) {
         message = message.replace("{0}", a.toString());
         message = message.replace("{1}", b.toString());
         return message;
     }
-
+ 
     /**
      * Returns the path that should be used for the test. The path contains the
      * full path (appended to hostname+port) and must start with a slash.
@@ -595,9 +595,9 @@ public abstract class AbstractTB3Test extends ParallelTest {
         }
         throw new IllegalArgumentException("Unable to determine path for "
                 + getClass().getCanonicalName());
-
+ 
     }
-
+ 
     /**
      * Returns the UI class the current test is connected to (or in special
      * cases UIProvider or LegacyApplication). Uses the enclosing class if the
@@ -624,7 +624,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
         throw new RuntimeException(
                 "Could not determine UI class. Ensure the test is named UIClassTest and is in the same package as the UIClass");
     }
-
+ 
     /**
      * @return true if the given class is supported by ApplicationServletRunner
      */
@@ -639,10 +639,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if (LegacyApplication.class.isAssignableFrom(cls)) {
             return true;
         }
-
+ 
         return false;
     }
-
+ 
     /**
      * Returns whether to run the test in debug mode (with the debug console
      * open) or not
@@ -652,7 +652,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected final boolean isDebug() {
         return debug;
     }
-
+ 
     /**
      * Sets whether to run the test in debug mode (with the debug console open)
      * or not.
@@ -663,7 +663,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected final void setDebug(boolean debug) {
         this.debug = debug;
     }
-
+ 
     /**
      * Returns whether to run the test with push enabled (using /run-push) or
      * not. Note that push tests can and should typically be created using @Push
@@ -674,7 +674,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected final boolean isPush() {
         return push;
     }
-
+ 
     /**
      * Sets whether to run the test with push enabled (using /run-push) or not.
      * Note that push tests can and should typically be created using @Push on
@@ -686,7 +686,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected final void setPush(boolean push) {
         this.push = push;
     }
-
+ 
     /**
      * Returns the path for the given UI class when deployed on the test server.
      * The path contains the full path (appended to hostname+port) and must
@@ -707,7 +707,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if (isPush()) {
             runPath = "/run-push";
         }
-
+ 
         if (UI.class.isAssignableFrom(uiClass)
                 || UIProvider.class.isAssignableFrom(uiClass)
                 || LegacyApplication.class.isAssignableFrom(uiClass)) {
@@ -718,7 +718,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
                             + uiClass.getCanonicalName());
         }
     }
-
+ 
     /**
      * Used to determine what URL to initially open for the test
      * 
@@ -727,7 +727,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected String getBaseURL() {
         return "http://" + getDeploymentHostname() + ":" + getDeploymentPort();
     }
-
+ 
     /**
      * Generates the application id based on the URL in a way compatible with
      * VaadinServletService.
@@ -744,11 +744,11 @@ public abstract class AbstractTB3Test extends ParallelTest {
         if ("".equals(pathWithoutQueryParameters)) {
             return "ROOT";
         }
-
+ 
         // Retain only a-z and numbers
         return pathWithoutQueryParameters.replaceAll("[^a-zA-Z0-9]", "");
     }
-
+ 
     /**
      * Sleeps for the given number of ms but ensures that the browser connection
      * does not time out.
@@ -762,12 +762,12 @@ public abstract class AbstractTB3Test extends ParallelTest {
             int d = Math.min(BROWSER_TIMEOUT_IN_MS, timeoutMillis);
             Thread.sleep(d);
             timeoutMillis -= d;
-
+ 
             // Do something to keep the connection alive
             getDriver().getTitle();
         }
     }
-
+ 
     /**
      * Called by the test runner whenever there is an exception in the test that
      * will cause termination of the test
@@ -777,9 +777,9 @@ public abstract class AbstractTB3Test extends ParallelTest {
      */
     public void onUncaughtException(Throwable t) {
         // Do nothing by default
-
+ 
     }
-
+ 
     /**
      * Returns the mouse object for doing mouse commands
      * 
@@ -788,7 +788,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     public Mouse getMouse() {
         return ((HasInputDevices) getDriver()).getMouse();
     }
-
+ 
     /**
      * Returns the keyboard object for controlling keyboard events
      * 
@@ -797,20 +797,20 @@ public abstract class AbstractTB3Test extends ParallelTest {
     public Keyboard getKeyboard() {
         return ((HasInputDevices) getDriver()).getKeyboard();
     }
-
+ 
     public void hitButton(String id) {
         if (BrowserUtil.isPhantomJS(getDesiredCapabilities())) {
             driver.findElement(By.id(id)).click();
         } else {
             WebDriverBackedSelenium selenium = new WebDriverBackedSelenium(
                     driver, driver.getCurrentUrl());
-
+ 
             selenium.keyPress("id=" + id, "\\13");
         }
     }
-
+ 
     protected void openDebugLogTab() {
-
+ 
         waitUntil(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
@@ -820,11 +820,11 @@ public abstract class AbstractTB3Test extends ParallelTest {
         }, 15);
         getDebugLogButton().click();
     }
-
+ 
     private WebElement getDebugLogButton() {
         return findElement(By.xpath("//button[@title='Debug message log']"));
     }
-
+ 
     protected void assertNoDebugMessage(Level level) {
         // class="v-debugwindow-row Level.getName()"
         List<WebElement> logElements = driver
@@ -840,7 +840,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
                     + ": " + logRows);
         }
     }
-
+ 
     /**
      * Should the "require window focus" be enabled for Internet Explorer.
      * RequireWindowFocus makes tests more stable but seems to be broken with
@@ -852,7 +852,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected boolean requireWindowFocusForIE() {
         return false;
     }
-
+ 
     /**
      * Should the "enable persistent hover" be enabled for Internet Explorer.
      * 
@@ -869,7 +869,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected boolean usePersistentHoverForIE() {
         return true;
     }
-
+ 
     // FIXME: Remove this once TB4 getRemoteControlName works properly
     private RemoteWebDriver getRemoteDriver() {
         WebDriver d = getDriver();
@@ -883,15 +883,15 @@ public abstract class AbstractTB3Test extends ParallelTest {
                 e.printStackTrace();
             }
         }
-
+ 
         if (d instanceof RemoteWebDriver) {
             return (RemoteWebDriver) d;
         }
-
+ 
         return null;
-
+ 
     }
-
+ 
     // FIXME: Remove this once TB4 getRemoteControlName works properly
     protected String getRemoteControlName() {
         try {
@@ -920,31 +920,31 @@ public abstract class AbstractTB3Test extends ParallelTest {
         }
         return null;
     }
-
+ 
     protected boolean logContainsText(String string) {
         List<String> logs = getLogs();
-
+ 
         for (String text : logs) {
             if (text.contains(string)) {
                 return true;
             }
         }
-
+ 
         return false;
     }
-
+ 
     protected List<String> getLogs() {
         VerticalLayoutElement log = $(VerticalLayoutElement.class).id("Log");
         List<LabelElement> logLabels = log.$(LabelElement.class).all();
         List<String> logTexts = new ArrayList<String>();
-
+ 
         for (LabelElement label : logLabels) {
             logTexts.add(label.getText());
         }
-
+ 
         return logTexts;
     }
-
+ 
     private static JsonObject extractObject(HttpResponse resp)
             throws IOException {
         InputStream contents = resp.getEntity().getContent();
@@ -952,196 +952,8 @@ public abstract class AbstractTB3Test extends ParallelTest {
         IOUtils.copy(contents, writer, "UTF8");
         return JsonUtil.parse(writer.toString());
     }
-
+ 
     protected void click(CheckBoxElement checkbox) {
         checkbox.findElement(By.xpath("input")).click();
-    }
-
-    protected void waitUntilLoadingIndicatorNotVisible() {
-        waitUntil(new ExpectedCondition<Boolean>() {
-
-            @Override
-            public Boolean apply(WebDriver input) {
-                WebElement loadingIndicator = input.findElement(By
-                        .className("v-loading-indicator"));
-
-                return !loadingIndicator.isDisplayed();
-            }
-        });
-    }
-
-    /**
-     * Selects a menu item. By default, this will click on the menu item.
-     * 
-     * @param menuCaption
-     *            caption of the menu item
-     */
-    protected void selectMenu(String menuCaption) {
-        selectMenu(menuCaption, true);
-    }
-
-    /**
-     * Selects a menu item.
-     * 
-     * @param menuCaption
-     *            caption of the menu item
-     * @param click
-     *            <code>true</code> if should click the menu item;
-     *            <code>false</code> if not
-     */
-    protected void selectMenu(String menuCaption, boolean click) {
-        WebElement menuElement = getMenuElement(menuCaption);
-        Dimension size = menuElement.getSize();
-        new Actions(getDriver()).moveToElement(menuElement, size.width - 10,
-                size.height / 2).perform();
-        if (click) {
-            new Actions(getDriver()).click().perform();
-        }
-    }
-
-    /**
-     * Finds the menu item from the DOM based on menu item caption.
-     * 
-     * @param menuCaption
-     *            caption of the menu item
-     * @return the found menu item
-     * @throws NoSuchElementException
-     *             if menu item is not found
-     */
-    protected WebElement getMenuElement(String menuCaption)
-            throws NoSuchElementException {
-        return getDriver().findElement(
-                By.xpath("//span[text() = '" + menuCaption + "']"));
-    }
-
-    /**
-     * Selects a submenu described by a path of menus from the first MenuBar in
-     * the UI.
-     * 
-     * @param menuCaptions
-     *            array of menu captions
-     */
-    protected void selectMenuPath(String... menuCaptions) {
-        selectMenu(menuCaptions[0], true);
-
-        // Move to the menu item opened below the menu bar.
-        new Actions(getDriver()).moveByOffset(0,
-                getMenuElement(menuCaptions[0]).getSize().getHeight())
-                .perform();
-
-        for (int i = 1; i < menuCaptions.length - 1; i++) {
-            selectMenu(menuCaptions[i]);
-            new Actions(getDriver()).moveByOffset(40, 0).build().perform();
-        }
-        selectMenu(menuCaptions[menuCaptions.length - 1], true);
-    }
-
-    /**
-     * Asserts that an element is present
-     * 
-     * @param by
-     *            the locatore for the element
-     */
-    protected void assertElementPresent(By by) {
-        Assert.assertTrue("Element is not present", isElementPresent(by));
-    }
-
-    /**
-     * Asserts that an element is not present
-     * 
-     * @param by
-     *            the locatore for the element
-     */
-    protected void assertElementNotPresent(By by) {
-        Assert.assertFalse("Element is present", isElementPresent(by));
-    }
-
-    /**
-     * Asserts that no error notifications are shown. Requires the use of
-     * "?debug" as exceptions are otherwise not shown as notifications.
-     */
-    protected void assertNoErrorNotifications() {
-        Assert.assertTrue(
-                "Debug window must be open to be able to see error notifications",
-                isDebugWindowOpen());
-        Assert.assertFalse(
-                "Error notification with client side exception is shown",
-                isElementPresent(By.className("v-Notification-error")));
-    }
-
-    private boolean isDebugWindowOpen() {
-        return isElementPresent(By.className("v-debugwindow"));
-    }
-
-    protected void assertNoHorizontalScrollbar(WebElement element,
-            String errorMessage) {
-        // IE rounds clientWidth/clientHeight down and scrollHeight/scrollWidth
-        // up, so using clientWidth/clientHeight will fail if the element height
-        // is not an integer
-        int clientWidth = getClientWidth(element);
-        int scrollWidth = getScrollWidth(element);
-        boolean hasScrollbar = scrollWidth > clientWidth;
-
-        Assert.assertFalse(
-                "The element should not have a horizontal scrollbar (scrollWidth: "
-                        + scrollWidth + ", clientWidth: " + clientWidth + "): "
-                        + errorMessage, hasScrollbar);
-    }
-
-    protected void assertNoVerticalScrollbar(WebElement element,
-            String errorMessage) {
-        // IE rounds clientWidth/clientHeight down and scrollHeight/scrollWidth
-        // up, so using clientWidth/clientHeight will fail if the element height
-        // is not an integer
-        int clientHeight = getClientHeight(element);
-        int scrollHeight = getScrollHeight(element);
-        boolean hasScrollbar = scrollHeight > clientHeight;
-
-        Assert.assertFalse(
-                "The element should not have a vertical scrollbar (scrollHeight: "
-                        + scrollHeight + ", clientHeight: " + clientHeight
-                        + "): " + errorMessage, hasScrollbar);
-    }
-
-    protected int getScrollHeight(WebElement element) {
-        return ((Number) executeScript("return arguments[0].scrollHeight;",
-                element)).intValue();
-    }
-
-    protected int getScrollWidth(WebElement element) {
-        return ((Number) executeScript("return arguments[0].scrollWidth;",
-                element)).intValue();
-    }
-
-    /**
-     * Returns client height rounded up instead of as double because of IE9
-     * issues: https://dev.vaadin.com/ticket/18469
-     */
-    protected int getClientHeight(WebElement e) {
-        String script;
-        if (BrowserUtil.isIE8(getDesiredCapabilities())) {
-            script = "return arguments[0].clientHeight;"; //
-        } else {
-            script = "var cs = window.getComputedStyle(arguments[0]);"
-                    + "return Math.ceil(parseFloat(cs.height)+parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom));";
-        }
-        return ((Number) executeScript(script, e)).intValue();
-    }
-
-    /**
-     * Returns client width rounded up instead of as double because of IE9
-     * issues: https://dev.vaadin.com/ticket/18469
-     */
-    protected int getClientWidth(WebElement e) {
-        String script;
-        if (BrowserUtil.isIE8(getDesiredCapabilities())) {
-            script = "return arguments[0].clientWidth;";
-        } else {
-            script = "var cs = window.getComputedStyle(arguments[0]);"
-                    + "var h = parseFloat(cs.width)+parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight);"
-                    + "return Math.ceil(h);";
-        }
-
-        return ((Number) executeScript(script, e)).intValue();
-    }
+    }                                                                                                                                                                                            
 }
