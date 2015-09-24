@@ -73,14 +73,14 @@ import com.vaadin.shared.util.SharedUtil;
 
 /**
  * Client side implementation of the Select component.
- * 
+ *
  * TODO needs major refactoring (to be extensible etc)
  */
 @SuppressWarnings("deprecation")
 public class VFilterSelect extends Composite implements Field, KeyDownHandler,
-        KeyUpHandler, ClickHandler, FocusHandler, BlurHandler, Focusable,
-        SubPartAware, HandlesAriaCaption, HandlesAriaInvalid,
-        HandlesAriaRequired, DeferredWorker, HasFocusHandlers {
+                                                        KeyUpHandler, ClickHandler, FocusHandler, BlurHandler, Focusable,
+                                                        SubPartAware, HandlesAriaCaption, HandlesAriaInvalid,
+                                                        HandlesAriaRequired, DeferredWorker, HasFocusHandlers {
 
     /**
      * Represents a suggestion in the suggestion popup box
@@ -94,7 +94,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Constructor
-         * 
+         *
          * @param uidl
          *            The UIDL recieved from the server
          */
@@ -145,7 +145,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Get the option key which represents the item on the server side.
-         * 
+         *
          * @return The key of the item
          */
         public String getOptionKey() {
@@ -154,7 +154,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Get the URI of the icon. Used when constructing the displayed option.
-         * 
+         *
          * @return
          */
         public String getIconUri() {
@@ -165,7 +165,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
          * Gets the style set for this suggestion item. Styles are typically set
          * by a server-side {@link com.vaadin.ui.ComboBox.ItemStyleGenerator}.
          * The returned style is prefixed by <code>v-filterselect-item-</code>.
-         * 
+         *
          * @since 7.5.6
          * @return the style name to use, or <code>null</code> to not apply any
          *         custom style.
@@ -213,7 +213,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * menu.
      */
     public class SuggestionPopup extends VOverlay implements PositionCallback,
-            CloseHandler<PopupPanel> {
+                                                             CloseHandler<PopupPanel> {
 
         private static final int Z_INDEX = 30000;
 
@@ -266,7 +266,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Shows the popup where the user can see the filtered options
-         * 
+         *
          * @param currentSuggestions
          *            The filtered suggestions
          * @param currentPage
@@ -318,7 +318,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                             + currentSuggestions.size()
                             - 1
                             - (firstPage && "".equals(lastFilter) ? nullOffset
-                                    : 0);
+                            : 0);
                     final int matches = totalSuggestions - nullOffset;
                     if (last > 0) {
                         // nullsel not counted, as requested by user
@@ -357,7 +357,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Should the next page button be visible to the user?
-         * 
+         *
          * @param active
          */
         private void setNextButtonActive(boolean active) {
@@ -377,7 +377,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Should the previous page button be visible to the user
-         * 
+         *
          * @param active
          */
         private void setPrevButtonActive(boolean active) {
@@ -434,7 +434,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Select the first item of the suggestions list popup.
-         * 
+         *
          * @since 7.2.6
          */
         public void selectFirstItem() {
@@ -444,7 +444,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Select the last item of the suggestions list popup.
-         * 
+         *
          * @since 7.2.6
          */
         public void selectLastItem() {
@@ -512,7 +512,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                 debug("VFS.SP.LPS: scrollDown()");
                 if (pageLength > 0
                         && totalMatches > (currentPage + pagesToScroll + 1)
-                                * pageLength) {
+                        * pageLength) {
                     pagesToScroll++;
                     cancel();
                     schedule(200);
@@ -564,7 +564,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
          * amount of items are visible at a time and a scrollbar or buttons are
          * visible to change page. If paging is turned of then all options are
          * rendered into the popup menu.
-         * 
+         *
          * @param paging
          *            Should the paging be turned on?
          */
@@ -698,7 +698,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Was the popup just closed?
-         * 
+         *
          * @return true if popup was just closed
          */
         public boolean isJustClosed() {
@@ -727,14 +727,14 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Updates style names in suggestion popup to help theme building.
-         * 
+         *
          * @param uidl
          *            UIDL for the whole combo box
          * @param componentState
          *            shared state of the combo box
          */
         public void updateStyleNames(UIDL uidl,
-                AbstractComponentState componentState) {
+                                     AbstractComponentState componentState) {
             debug("VFS.SP: updateStyleNames()");
             setStyleName(VFilterSelect.this.getStylePrimaryName()
                     + "-suggestpopup");
@@ -757,25 +757,25 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * The menu where the suggestions are rendered
      */
     public class SuggestionMenu extends MenuBar implements SubPartAware,
-            LoadHandler {
+                                                           LoadHandler {
 
         private VLazyExecutor delayedImageLoadExecutioner = new VLazyExecutor(
                 100, new ScheduledCommand() {
 
-                    @Override
-                    public void execute() {
-                        debug("VFS.SM: delayedImageLoadExecutioner()");
-                        if (suggestionPopup.isVisible()
-                                && suggestionPopup.isAttached()) {
-                            setWidth("");
-                            getElement().getFirstChildElement().getStyle()
-                                    .clearWidth();
-                            suggestionPopup
-                                    .setPopupPositionAndShow(suggestionPopup);
-                        }
+            @Override
+            public void execute() {
+                debug("VFS.SM: delayedImageLoadExecutioner()");
+                if (suggestionPopup.isVisible()
+                        && suggestionPopup.isAttached()) {
+                    setWidth("");
+                    getElement().getFirstChildElement().getStyle()
+                            .clearWidth();
+                    suggestionPopup
+                            .setPopupPositionAndShow(suggestionPopup);
+                }
 
-                    }
-                });
+            }
+        });
 
         /**
          * Default constructor
@@ -811,7 +811,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         /**
          * Sets the suggestions rendered in the menu
-         * 
+         *
          * @param suggestions
          *            The suggestions to be rendered in the menu
          */
@@ -908,7 +908,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                         // stays selected
                         if (!"".equals(enteredItemValue)
                                 || (selectedOptionKey != null && !""
-                                        .equals(selectedOptionKey))) {
+                                .equals(selectedOptionKey))) {
                             doItemAction(potentialExactMatch, true);
                         }
                         suggestionPopup.hide();
@@ -930,10 +930,10 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             } else if (item != null
                     && !"".equals(lastFilter)
                     && (filteringmode == FilteringMode.CONTAINS ? item
-                            .getText().toLowerCase()
-                            .contains(lastFilter.toLowerCase()) : item
-                            .getText().toLowerCase()
-                            .startsWith(lastFilter.toLowerCase()))) {
+                    .getText().toLowerCase()
+                    .contains(lastFilter.toLowerCase()) : item
+                    .getText().toLowerCase()
+                    .startsWith(lastFilter.toLowerCase()))) {
                 doItemAction(item, true);
             } else {
                 // currentSuggestion has key="" for nullselection
@@ -1042,7 +1042,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
          * menu currently displays the last page with less items then the
          * maximum visibility (in which case the scroll is not active, but the
          * scroll is active for any other page in general).
-         * 
+         *
          * @since 7.2.6
          */
         @Override
@@ -1059,7 +1059,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     /**
      * TextBox variant used as input element for filter selects, which prevents
      * selecting text when disabled.
-     * 
+     *
      * @since 7.1.5
      */
     public class FilterSelectTextBox extends TextBox {
@@ -1345,7 +1345,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * It is invoked during the Constructor and should only be overridden if a
      * custom TextBox shall be used. The overriding method cannot use any
      * instance variables.
-     * 
+     *
      * @since 7.1.5
      * @return TextBox instance used by this VFilterSelect
      */
@@ -1358,7 +1358,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * instance. It is invoked during the Constructor and should only be
      * overridden if a custom SuggestionPopup shall be used. The overriding
      * method cannot use any instance variables.
-     * 
+     *
      * @since 7.1.5
      * @return SuggestionPopup instance used by this VFilterSelect
      */
@@ -1386,7 +1386,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Does the Select have more pages?
-     * 
+     *
      * @return true if a next page exists, else false if the current page is the
      *         last page
      */
@@ -1401,7 +1401,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     /**
      * Filters the options at a certain page. Uses the text box input as a
      * filter
-     * 
+     *
      * @param page
      *            The page which items are to be filtered
      */
@@ -1411,7 +1411,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Filters the options at certain page using the given filter
-     * 
+     *
      * @param page
      *            The page to filter
      * @param filter
@@ -1503,7 +1503,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Sets the text in the text box.
-     * 
+     *
      * @param text
      *            the text to set in the text box
      */
@@ -1543,7 +1543,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      * shown in the text box if nothing has been entered.
      * <p>
      * For internal use only. May be removed or replaced in the future.
-     * 
+     *
      * @param text
      *            The text the text box should contain.
      */
@@ -1558,7 +1558,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Triggered when a suggestion is selected
-     * 
+     *
      * @param suggestion
      *            The suggestion that just got selected.
      */
@@ -1601,7 +1601,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     /**
      * Sets the icon URI of the selected item. The icon is shown on the left
      * side of the item caption text. Set the URI to null to remove the icon.
-     * 
+     *
      * @param iconUri
      *            The URI of the icon
      */
@@ -1738,36 +1738,36 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             debug("VFS: inputFieldKeyDown(" + event.getNativeKeyCode() + ")");
         }
         switch (event.getNativeKeyCode()) {
-        case KeyCodes.KEY_DOWN:
-        case KeyCodes.KEY_UP:
-        case KeyCodes.KEY_PAGEDOWN:
-        case KeyCodes.KEY_PAGEUP:
-            // open popup as from gadget
-            filterOptions(-1, "");
-            lastFilter = "";
-            tb.selectAll();
-            break;
-        case KeyCodes.KEY_ENTER:
+            case KeyCodes.KEY_DOWN:
+            case KeyCodes.KEY_UP:
+            case KeyCodes.KEY_PAGEDOWN:
+            case KeyCodes.KEY_PAGEUP:
+                // open popup as from gadget
+                filterOptions(-1, "");
+                lastFilter = "";
+                tb.selectAll();
+                break;
+            case KeyCodes.KEY_ENTER:
             /*
              * This only handles the case when new items is allowed, a text is
              * entered, the popup opener button is clicked to close the popup
              * and enter is then pressed (see #7560).
              */
-            if (!allowNewItem) {
-                return;
-            }
+                if (!allowNewItem) {
+                    return;
+                }
 
-            if (currentSuggestion != null
-                    && tb.getText().equals(
-                            currentSuggestion.getReplacementString())) {
-                // Retain behavior from #6686 by returning without stopping
-                // propagation if there's nothing to do
-                return;
-            }
-            suggestionPopup.menu.doSelectedItemAction();
+                if (currentSuggestion != null
+                        && tb.getText().equals(
+                        currentSuggestion.getReplacementString())) {
+                    // Retain behavior from #6686 by returning without stopping
+                    // propagation if there's nothing to do
+                    return;
+                }
+                suggestionPopup.menu.doSelectedItemAction();
 
-            event.stopPropagation();
-            break;
+                event.stopPropagation();
+                break;
         }
 
     }
@@ -1787,44 +1787,44 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         // Propagation of handled events is stopped so other handlers such as
         // shortcut key handlers do not also handle the same events.
         switch (event.getNativeKeyCode()) {
-        case KeyCodes.KEY_DOWN:
-            suggestionPopup.selectNextItem();
+            case KeyCodes.KEY_DOWN:
+                suggestionPopup.selectNextItem();
 
-            DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
-            event.stopPropagation();
-            break;
-        case KeyCodes.KEY_UP:
-            suggestionPopup.selectPrevItem();
+                DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
+                event.stopPropagation();
+                break;
+            case KeyCodes.KEY_UP:
+                suggestionPopup.selectPrevItem();
 
-            DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
-            event.stopPropagation();
-            break;
-        case KeyCodes.KEY_PAGEDOWN:
-            selectNextPage();
-            event.stopPropagation();
-            break;
-        case KeyCodes.KEY_PAGEUP:
-            selectPrevPage();
-            event.stopPropagation();
-            break;
-        case KeyCodes.KEY_ESCAPE:
-            reset();
-            DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
-            event.stopPropagation();
-            break;
-        case KeyCodes.KEY_TAB:
-        case KeyCodes.KEY_ENTER:
+                DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
+                event.stopPropagation();
+                break;
+            case KeyCodes.KEY_PAGEDOWN:
+                selectNextPage();
+                event.stopPropagation();
+                break;
+            case KeyCodes.KEY_PAGEUP:
+                selectPrevPage();
+                event.stopPropagation();
+                break;
+            case KeyCodes.KEY_ESCAPE:
+                reset();
+                DOM.eventPreventDefault(DOM.eventGetCurrentEvent());
+                event.stopPropagation();
+                break;
+            case KeyCodes.KEY_TAB:
+            case KeyCodes.KEY_ENTER:
 
-            if (!allowNewItem) {
-                onSuggestionSelected(currentSuggestions
-                        .get(suggestionPopup.menu.getSelectedIndex()));
-            } else {
-                // Handle addition of new items.
-                suggestionPopup.menu.doSelectedItemAction();
-            }
+                if (!allowNewItem) {
+                    onSuggestionSelected(currentSuggestions
+                            .get(suggestionPopup.menu.getSelectedIndex()));
+                } else {
+                    // Handle addition of new items.
+                    suggestionPopup.menu.doSelectedItemAction();
+                }
 
-            event.stopPropagation();
-            break;
+                event.stopPropagation();
+                break;
         }
 
     }
@@ -1851,7 +1851,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Triggered when a key was depressed
-     * 
+     *
      * @param event
      *            The KeyUpEvent of the key depressed
      */
@@ -1863,25 +1863,25 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         }
         if (enabled && !readonly) {
             switch (event.getNativeKeyCode()) {
-            case KeyCodes.KEY_ENTER:
-            case KeyCodes.KEY_TAB:
-            case KeyCodes.KEY_SHIFT:
-            case KeyCodes.KEY_CTRL:
-            case KeyCodes.KEY_ALT:
-            case KeyCodes.KEY_DOWN:
-            case KeyCodes.KEY_UP:
-            case KeyCodes.KEY_PAGEDOWN:
-            case KeyCodes.KEY_PAGEUP:
-            case KeyCodes.KEY_ESCAPE:
-                // NOP
-                break;
-            default:
-                if (textInputEnabled) {
-                    // when filtering, we always want to see the results on the
-                    // first page first.
-                    filterOptions(0);
-                }
-                break;
+                case KeyCodes.KEY_ENTER:
+                case KeyCodes.KEY_TAB:
+                case KeyCodes.KEY_SHIFT:
+                case KeyCodes.KEY_CTRL:
+                case KeyCodes.KEY_ALT:
+                case KeyCodes.KEY_DOWN:
+                case KeyCodes.KEY_UP:
+                case KeyCodes.KEY_PAGEDOWN:
+                case KeyCodes.KEY_PAGEUP:
+                case KeyCodes.KEY_ESCAPE:
+                    // NOP
+                    break;
+                default:
+                    if (textInputEnabled) {
+                        // when filtering, we always want to see the results on the
+                        // first page first.
+                        filterOptions(0);
+                    }
+                    break;
             }
         }
     }
@@ -1923,7 +1923,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         debug("VFS: onClick()");
         if (textInputEnabled
                 && event.getNativeEvent().getEventTarget().cast() == tb
-                        .getElement()) {
+                .getElement()) {
             // Don't process clicks on the text field if text input is enabled
             return;
         }
@@ -2073,7 +2073,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             Element focusedElement = WidgetUtil.getFocusedElement();
             if (getElement().isOrHasChild(focusedElement)
                     || suggestionPopup.getElement()
-                            .isOrHasChild(focusedElement)) {
+                    .isOrHasChild(focusedElement)) {
 
                 // IF the suggestion popup or another part of the VFilterSelect
                 // was focused, move the focus back to the textfield and prevent
@@ -2187,7 +2187,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
     /**
      * Get the width of the select in pixels where the text area and icon has
      * been included.
-     * 
+     *
      * @return The width in pixels
      */
     private int getMainWidth() {
@@ -2204,7 +2204,7 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /**
      * Handles special behavior of the mouse down event
-     * 
+     *
      * @param event
      */
     private void handleMouseDownEvent(Event event) {
@@ -2282,8 +2282,10 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
     /*
      * Anything that should be set after the client updates the server.
+     *
+     * Haulmont API dependency
      */
-    private void afterUpdateClientVariables() {
+    protected void afterUpdateClientVariables() {
         // We need this here to be consistent with the all the calls.
         // Then set your specific selection type only after
         // client.updateVariable() method call.
