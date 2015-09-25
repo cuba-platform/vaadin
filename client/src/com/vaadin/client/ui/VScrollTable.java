@@ -4074,7 +4074,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     return;
                 }
 
-                if (!isColumnCollapsingEnabled()) {
+                if (!collapsedColumns.contains(colKey)
+                    && !isColumnCollapsingEnabled()) {
                     return;
                 }
 
