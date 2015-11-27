@@ -695,7 +695,12 @@ public class ComboBox extends AbstractSelect implements
             currentPage = ((Integer) variables.get("page")).intValue();
             filterstring = newFilter;
             if (filterstring != null) {
-                filterstring = filterstring.toLowerCase(getLocale());
+                // Haulmont API fix for NPE with null getLocale()
+                if (getLocale() == null) {
+                    filterstring = filterstring.toLowerCase();
+                } else {
+                    filterstring = filterstring.toLowerCase(getLocale());
+                }
             }
             requestRepaint();
             requestRepaintOptions(newFilter);
