@@ -194,6 +194,27 @@ public class ContainerOrderedWrapper implements Container.Ordered,
         }
     }
 
+    // Haulmont API
+    public void updateOrderWrapperCompletely() {
+        if (!ordered) {
+            final Collection<?> ids = container.getItemIds();
+
+            // Recreates ordering
+            first = null;
+            last = null;
+            next = new Hashtable<Object, Object>();
+            prev = new Hashtable<Object, Object>();
+
+            // Adds all items
+            for (final Iterator<?> i = ids.iterator(); i.hasNext();) {
+                final Object id = i.next();
+                if (!next.containsKey(id) && last != id) {
+                    addToOrderWrapper(id);
+                }
+            }
+        }
+    }
+
     /**
      * Updates the wrapper's internal ordering information to include all Items
      * in the underlying container.
@@ -682,10 +703,9 @@ public class ContainerOrderedWrapper implements Container.Ordered,
 
         @Override
         public void containerItemSetChange(ItemSetChangeEvent event) {
-            updateOrderWrapper();
+            updateOrderWrapperCompletely();
             ((Container.ItemSetChangeListener) listener)
                     .containerItemSetChange(event);
-
         }
 
         @Override
