@@ -86,6 +86,9 @@ public class ContainerOrderedWrapper implements Container.Ordered,
      */
     private int lastKnownSize = -1;
 
+    // Haulmont API
+    private boolean resetOnItemSetChange = false;
+
     /**
      * Constructs a new ordered wrapper for an existing Container. Works even if
      * the to-be-wrapped container already implements the Container.Ordered
@@ -194,27 +197,6 @@ public class ContainerOrderedWrapper implements Container.Ordered,
         }
     }
 
-    // Haulmont API
-    public void updateOrderWrapperCompletely() {
-        if (!ordered) {
-            final Collection<?> ids = container.getItemIds();
-
-            // Recreates ordering
-            first = null;
-            last = null;
-            next = new Hashtable<Object, Object>();
-            prev = new Hashtable<Object, Object>();
-
-            // Adds all items
-            for (final Iterator<?> i = ids.iterator(); i.hasNext();) {
-                final Object id = i.next();
-                if (!next.containsKey(id) && last != id) {
-                    addToOrderWrapper(id);
-                }
-            }
-        }
-    }
-
     /**
      * Updates the wrapper's internal ordering information to include all Items
      * in the underlying container.
@@ -231,7 +213,8 @@ public class ContainerOrderedWrapper implements Container.Ordered,
             final Collection<?> ids = container.getItemIds();
 
             // Recreates ordering if some parts of it are missing
-            if (next == null || first == null || last == null || prev == null) {
+            if (next == null || first == null || last == null || prev == null
+                    || resetOnItemSetChange) {
                 first = null;
                 last = null;
                 next = new Hashtable<Object, Object>();
@@ -257,11 +240,21 @@ public class ContainerOrderedWrapper implements Container.Ordered,
         }
     }
 
+    // Haulmont API
+    public boolean isResetOnItemSetChange() {
+        return resetOnItemSetChange;
+    }
+
+    // Haulmont API
+    public void setResetOnItemSetChange(boolean resetOnItemSetChange) {
+        this.resetOnItemSetChange = resetOnItemSetChange;
+    }
+
     /*
-     * Gets the first item stored in the ordered container Don't add a JavaDoc
-     * comment here, we use the default documentation from implemented
-     * interface.
-     */
+         * Gets the first item stored in the ordered container Don't add a JavaDoc
+         * comment here, we use the default documentation from implemented
+         * interface.
+         */
     @Override
     public Object firstItemId() {
         if (ordered) {
@@ -703,7 +696,7 @@ public class ContainerOrderedWrapper implements Container.Ordered,
 
         @Override
         public void containerItemSetChange(ItemSetChangeEvent event) {
-            updateOrderWrapperCompletely();
+            updateOrderWrapper();
             ((Container.ItemSetChangeListener) listener)
                     .containerItemSetChange(event);
         }
