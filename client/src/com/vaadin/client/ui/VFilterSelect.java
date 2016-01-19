@@ -1251,6 +1251,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
      */
     private boolean textInputEnabled = true;
 
+    // Haulmont API
+    protected boolean filterOptionsOnPaste = true;
+
     /**
      * Default constructor.
      */
@@ -1304,7 +1307,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         super.onBrowserEvent(event);
 
         if (event.getTypeInt() == Event.ONPASTE) {
-            if (textInputEnabled) {
+            // Haulmont API
+            if (textInputEnabled && filterOptionsOnPaste) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
                     @Override
