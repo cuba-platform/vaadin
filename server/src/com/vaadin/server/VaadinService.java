@@ -2023,4 +2023,8 @@ public abstract class VaadinService implements Serializable {
         return VaadinSession.class.getName() + "." + getServiceName();
     }
 
+    // Haulmont API application version support
+    public String getApplicationVersion() {
+        return "DEBUG";
+    }
 }
