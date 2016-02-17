@@ -104,7 +104,12 @@ public class VaadinServlet extends HttpServlet implements Constants {
             }
 
             JsonObject object = Json.createObject();
-            object.put("version", Version.getFullVersion());
+            String version = Version.getFullVersion();
+            if (getCurrent().getService().getApplicationVersion() != null) {
+                version = getCurrent().getService().getApplicationVersion();
+            }
+
+            object.put("version", version);
             object.put("timestamp", Long.toString(timestamp));
             object.put("uris", uris);
             object.put("css", css);
@@ -1072,7 +1077,11 @@ public class VaadinServlet extends HttpServlet implements Constants {
         JsonObject entryJson = Json.parse(jsonString);
 
         String cacheVersion = entryJson.getString("version");
-        if (!Version.getFullVersion().equals(cacheVersion)) {
+        String version = Version.getFullVersion();
+        if (servletService.getApplicationVersion() != null) {
+            version = servletService.getApplicationVersion();
+        }
+        if (!version.equals(cacheVersion)) {
             // Compiled for some other Vaadin version, discard cache
             scssCacheFile.delete();
             return null;

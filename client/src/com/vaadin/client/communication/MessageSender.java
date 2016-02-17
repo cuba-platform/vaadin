@@ -122,8 +122,12 @@ public class MessageSender {
 
         JsonObject extraJson = Json.createObject();
         if (!connection.getConfiguration().isWidgetsetVersionSent()) {
-            extraJson.put(ApplicationConstants.WIDGETSET_VERSION_ID,
-                    Version.getFullVersion());
+            String widgetsetVersion = Version.getFullVersion();
+            if (connection.getConfiguration().getApplicationVersion() != null) {
+                widgetsetVersion = connection.getConfiguration().getApplicationVersion();
+            }
+
+            extraJson.put(ApplicationConstants.WIDGETSET_VERSION_ID, widgetsetVersion);
             connection.getConfiguration().setWidgetsetVersionSent();
         }
         if (showLoadingIndicator) {

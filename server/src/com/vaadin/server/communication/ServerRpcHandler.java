@@ -237,7 +237,8 @@ public class ServerRpcHandler implements Serializable {
             throw new InvalidUIDLSecurityKeyException("");
         }
 
-        checkWidgetsetVersion(rpcRequest.getWidgetsetVersion());
+        // Haulmont API changes
+        checkWidgetsetVersion(request, rpcRequest.getWidgetsetVersion());
 
         int expectedId = ui.getLastProcessedClientToServerId() + 1;
         if (rpcRequest.getClientToServerId() != -1
@@ -286,11 +287,11 @@ public class ServerRpcHandler implements Serializable {
     /**
      * Checks that the version reported by the client (widgetset) matches that
      * of the server.
-     * 
+     *
+     * @param request
      * @param widgetsetVersion
-     *            the widget set version reported by the client or null
      */
-    private void checkWidgetsetVersion(String widgetsetVersion) {
+    private void checkWidgetsetVersion(VaadinRequest request, String widgetsetVersion) {
         if (widgetsetVersion == null) {
             // Only check when the widgetset version is reported. It is reported
             // in the first UIDL request (not the initial request as it is a
@@ -298,7 +299,12 @@ public class ServerRpcHandler implements Serializable {
             return;
         }
 
-        if (!Version.getFullVersion().equals(widgetsetVersion)) {
+        String version = Version.getFullVersion();
+        if (request.getService().getApplicationVersion() != null) {
+            version = request.getService().getApplicationVersion();
+        }
+
+        if (!version.equals(widgetsetVersion)) {
             getLogger().warning(
                     String.format(Constants.WIDGETSET_MISMATCH_INFO,
                             Version.getFullVersion(), widgetsetVersion));
