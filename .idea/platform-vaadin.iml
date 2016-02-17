@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://build/classes" />
+    <output-test url="file://build/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.settings" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/META-INF" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/WEB-INF" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/css" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/html-tests" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/img" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/licenses" />
+      <excludeFolder url="file://$MODULE_DIR$/WebContent/statictestfiles" />
+      <excludeFolder url="file://$MODULE_DIR$/all" />
+      <excludeFolder url="file://$MODULE_DIR$/bom" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/checkstyle" />
+      <excludeFolder url="file://$MODULE_DIR$/client-compiled" />
+      <excludeFolder url="file://$MODULE_DIR$/documentation" />
+      <excludeFolder url="file://$MODULE_DIR$/eclipse" />
+      <excludeFolder url="file://$MODULE_DIR$/liferay" />
+      <excludeFolder url="file://$MODULE_DIR$/scripts" />
+      <excludeFolder url="file://$MODULE_DIR$/tests" />
+      <excludeFolder url="file://$MODULE_DIR$/widgets" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

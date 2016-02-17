@@ -86,3 +86,5 @@ result
 
 .sass-cache
 phantomjsdriver.log
+
+.idea/workspace.xml
