@@ -453,6 +453,11 @@ public abstract class AbstractField<T> extends AbstractComponent implements
         setValue(newFieldValue, false);
     }
 
+    // Haulmont API
+    public void setValueIgnoreReadOnly(T newFieldValue) {
+        setValue(newFieldValue, false, true);
+    }
+
     /**
      * Sets the value of the field.
      * 
