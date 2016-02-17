@@ -83,12 +83,15 @@ public class ComboBox extends AbstractSelect implements
     protected int pageLength = 10;
 
     // Current page when the user is 'paging' trough options
-    private int currentPage = -1;
+    // Haulmont API dependency
+    protected int currentPage = -1;
 
     private FilteringMode filteringMode = FilteringMode.STARTSWITH;
 
-    private String filterstring;
-    private String prevfilterstring;
+    // Haulmont API dependency
+    protected String filterstring;
+    // Haulmont API dependency
+    protected String prevfilterstring;
 
     /**
      * Number of options that pass the filter, excluding the null item if any.
@@ -247,8 +250,8 @@ public class ComboBox extends AbstractSelect implements
             // null option is needed and not filtered out, even if not on
             // current
             // page
-            boolean nullOptionVisible = needNullSelectOption
-                    && !nullFilteredOut;
+            // Haulmont API extracted method
+            boolean nullOptionVisible = isNullOptionVisible(needNullSelectOption, nullFilteredOut);
 
             // first try if using container filters is possible
             List<?> options = getOptionsWithFilter(nullOptionVisible);
@@ -260,8 +263,7 @@ public class ComboBox extends AbstractSelect implements
                 options = sanitetizeList(options, nullOptionVisible);
             }
 
-            final boolean paintNullSelection = needNullSelectOption
-                    && currentPage == 0 && !nullFilteredOut;
+            final boolean paintNullSelection = nullOptionVisible && currentPage == 0;
 
             if (paintNullSelection) {
                 target.startTag("so");
@@ -353,6 +355,11 @@ public class ComboBox extends AbstractSelect implements
                 target.addAttribute("style", style);
             }
         }
+    }
+
+    // Haulmont API
+    protected boolean isNullOptionVisible(boolean needNullSelectOption, boolean nullFilteredOut) {
+        return needNullSelectOption && !nullFilteredOut;
     }
 
     /**
@@ -524,13 +531,15 @@ public class ComboBox extends AbstractSelect implements
      * Detects proper first and last item in list to return right page of
      * options. Also, if the current page is beyond the end of the list, it will
      * be adjusted.
-     * 
+     *
+     * Haulmont API dependency
+     *
      * @param options
      * @param needNullSelectOption
      *            flag to indicate if nullselect option needs to be taken into
      *            consideration
      */
-    private List<?> sanitetizeList(List<?> options, boolean needNullSelectOption) {
+    protected List<?> sanitetizeList(List<?> options, boolean needNullSelectOption) {
 
         if (pageLength != 0 && options.size() > pageLength) {
 
@@ -741,6 +750,7 @@ public class ComboBox extends AbstractSelect implements
                 filterstring = filterstring.toLowerCase(getLocale());
             }
             requestRepaint();
+            requestRepaintOptions();
         } else if (isNewItemsAllowed()) {
             // New option entered (and it is allowed)
             final String newitem = (String) variables.get("newitem");
@@ -758,6 +768,11 @@ public class ComboBox extends AbstractSelect implements
         if (variables.containsKey(BlurEvent.EVENT_ID)) {
             fireEvent(new BlurEvent(this));
         }
+
+    }
+
+    // Haulmont API dependency
+    protected void requestRepaintOptions() {
 
     }
 
