@@ -871,30 +871,9 @@ public class ApplicationConnection implements HasHandlers {
     }
 
     // Haulmont API
-    @SuppressWarnings("UnusedDeclaration")
     public void removePendingInvocationsAndBursts(MethodInvocationFilter filter,
                                                   RemoveMethodInvocationCallback callback) {
-        Iterator<MethodInvocation> pIter = pendingInvocations.values()
-                .iterator();
-        while (pIter.hasNext()) {
-            MethodInvocation mi = pIter.next();
-            if (filter.apply(mi)) {
-                pIter.remove();
-                callback.removed(mi);
-            }
-        }
-
-        for (LinkedHashMap<String, MethodInvocation> burst : pendingBursts) {
-            Iterator<MethodInvocation> bIter = burst.values()
-                    .iterator();
-            while (bIter.hasNext()) {
-                MethodInvocation mi = bIter.next();
-                if (filter.apply(mi)) {
-                    bIter.remove();
-                    callback.removed(mi);
-                }
-            }
-        }
+        serverRpcQueue.removeMatching(filter, callback);
     }
 
     /**
