@@ -732,6 +732,29 @@ public class TreeTable extends Table implements Hierarchical {
         }
     }
 
+    // Haulmont API
+    public void expandAllItems() {
+        boolean hasCollapsed = true;
+
+        while (hasCollapsed) {
+            hasCollapsed = false;
+
+            for (Object itemId : getItemIds()) {
+                if (isCollapsed(itemId)) {
+                    getContainerStrategy().toggleChildVisibility(itemId);
+
+                    fireExpandEvent(itemId);
+
+                    hasCollapsed = true;
+                }
+            }
+        }
+
+        setCurrentPageFirstItemIndex(getCurrentPageFirstItemIndex(), false);
+
+        refreshRowCache();
+    }
+
     /**
      * Checks if Item with given identifier is collapsed in the UI.
      * 
