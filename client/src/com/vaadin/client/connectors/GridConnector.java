@@ -274,8 +274,8 @@ public class GridConnector extends AbstractHasComponentsConnector implements
 
                 @Override
                 public void bind(final int rowIndex) {
-                    // call this finally to avoid issues with editing on init
-                    Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                    // call this deferred to avoid issues with editing on init
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                         @Override
                         public void execute() {
                             GridConnector.this.getWidget().editRow(rowIndex);
@@ -937,7 +937,13 @@ public class GridConnector extends AbstractHasComponentsConnector implements
             break;
         case WIDGET:
             ComponentConnector connector = (ComponentConnector) cellState.connector;
-            cell.setWidget(connector.getWidget());
+            if (connector != null) {
+                cell.setWidget(connector.getWidget());
+            } else {
+                // This happens if you do setVisible(false) on the component on
+                // the server side
+                cell.setWidget(null);
+            }
             break;
         default:
             throw new IllegalStateException("unexpected cell type: "
@@ -991,7 +997,13 @@ public class GridConnector extends AbstractHasComponentsConnector implements
             break;
         case WIDGET:
             ComponentConnector connector = (ComponentConnector) cellState.connector;
-            cell.setWidget(connector.getWidget());
+            if (connector != null) {
+                cell.setWidget(connector.getWidget());
+            } else {
+                // This happens if you do setVisible(false) on the component on
+                // the server side
+                cell.setWidget(null);
+            }
             break;
         default:
             throw new IllegalStateException("unexpected cell type: "

@@ -312,7 +312,7 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
          * 
          * @see #setDetailsGenerator(DetailsGenerator)
          */
-        private DetailsGenerator detailsGenerator = DetailsGenerator.NULL;
+        private DetailsGenerator detailsGenerator;
 
         /**
          * This map represents all details that are currently visible on the
@@ -334,7 +334,13 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         private final Set<Object> openDetails = new HashSet<Object>();
 
         public DetailComponentManager(Grid grid) {
+            this(grid, DetailsGenerator.NULL);
+        }
+
+        public DetailComponentManager(Grid grid,
+                DetailsGenerator detailsGenerator) {
             super(grid);
+            setDetailsGenerator(detailsGenerator);
         }
 
         /**
@@ -2461,6 +2467,12 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
             }
 
             abstract protected String getCellTagName();
+
+            void detach() {
+                for (CELLTYPE cell : cells.values()) {
+                    cell.detach();
+                }
+            }
         }
 
         /**
@@ -2668,6 +2680,10 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                             .html()));
                 }
             }
+
+            void detach() {
+                removeComponentIfPresent();
+            }
         }
 
         protected Grid grid;
@@ -2714,6 +2730,7 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                         + rowIndex);
             }
             ROWTYPE row = rows.remove(rowIndex);
+            row.detach();
             getSectionState().rows.remove(rowIndex);
 
             markAsDirty();
@@ -4914,7 +4931,12 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
             }
         }
 
-        detailComponentManager = new DetailComponentManager(this);
+        if (detailComponentManager != null) {
+            detailComponentManager = new DetailComponentManager(this,
+                    detailComponentManager.getDetailsGenerator());
+        } else {
+            detailComponentManager = new DetailComponentManager(this);
+        }
 
         /*
          * selectionModel == null when the invocation comes from the
