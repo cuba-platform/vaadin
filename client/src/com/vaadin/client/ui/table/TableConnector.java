@@ -180,20 +180,6 @@ public class TableConnector extends AbstractFieldConnector implements
             return;
         }
 
-        getWidget().enabled = isEnabled();
-
-        if (BrowserInfo.get().isIE8() && !getWidget().enabled) {
-            /*
-             * The disabled shim will not cover the table body if it is relative
-             * in IE8. See #7324
-             */
-            getWidget().scrollBodyPanel.getElement().getStyle()
-                    .setPosition(Position.STATIC);
-        } else if (BrowserInfo.get().isIE8()) {
-            getWidget().scrollBodyPanel.getElement().getStyle()
-                    .setPosition(Position.RELATIVE);
-        }
-
         getWidget().paintableId = uidl.getStringAttribute("id");
         getWidget().immediate = getState().immediate;
 
@@ -414,6 +400,25 @@ public class TableConnector extends AbstractFieldConnector implements
 
     // Haulmont API dependency
     protected void updateAdditionalRowData(UIDL uidl) {
+    }
+
+    @Override
+    public void updateEnabledState(boolean enabledState) {
+        super.updateEnabledState(enabledState);
+        getWidget().enabled = isEnabled();
+
+        if (BrowserInfo.get().isIE8() && !getWidget().enabled) {
+            /*
+             * The disabled shim will not cover the table body if it is relative
+             * in IE8. See #7324
+             */
+            getWidget().scrollBodyPanel.getElement().getStyle()
+                    .setPosition(Position.STATIC);
+        } else if (BrowserInfo.get().isIE8()) {
+            getWidget().scrollBodyPanel.getElement().getStyle()
+                    .setPosition(Position.RELATIVE);
+        }
+
     }
 
     @Override
