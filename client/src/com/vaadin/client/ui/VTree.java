@@ -547,9 +547,6 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
         public boolean childrenLoaded;
 
         // Haulmont API dependency
-        protected boolean allowSingleSelectToggle = false;
-
-        // Haulmont API dependency
         protected Element nodeCaptionDiv;
 
         protected Element nodeCaptionSpan;
@@ -686,7 +683,7 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
                     if (multiSelectMode == MultiSelectMode.SIMPLE
                             || !isMultiselect) {
                         // Haulmont API
-                        if (!isSelected() || ctrl || allowSingleSelectToggle) {
+                        if (!isSelected() || ctrl || isAllowSingleSelectToggle()) {
                             toggleSelection();
                         }
                         lastSelection = TreeNode.this;
@@ -1223,6 +1220,11 @@ public class VTree extends FocusElementPanel implements VHasDropHandler,
 
         }
 
+    }
+
+    // Haulmont API dependency
+    protected boolean isAllowSingleSelectToggle() {
+        return true;
     }
 
     @Override
