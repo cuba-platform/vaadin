@@ -6212,7 +6212,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             dragTouchTimeout.schedule(TOUCHSCROLL_TIMEOUT);
                         }
 
-                        if (actionKeys != null) {
+                        if (hasContextMenuActions()) {
                             if (contextTouchTimeout == null) {
                                 contextTouchTimeout = new Timer() {
 
@@ -6284,6 +6284,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 return touchEventHandled;
             }
 
+            // Haulmont API dependency
+            protected boolean hasContextMenuActions() {
+                return actionKeys != null;
+            }
+
             /*
              * React on click that occur on content cells only
              */
@@ -6299,7 +6304,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                     if (type == Event.ONCONTEXTMENU) {
                         showContextMenu(event);
                         if (enabled
-                                && (actionKeys != null || client
+                                && (hasContextMenuActions() || client
                                         .hasEventListeners(
                                                 VScrollTable.this,
                                                 TableConstants.ITEM_CLICK_EVENT_ID))) {
@@ -6498,7 +6503,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                          * Prevent simulated mouse events.
                          */
                         touchStart.preventDefault();
-                        if (dragmode != 0 || actionKeys != null) {
+                        if (dragmode != 0 || hasContextMenuActions()) {
                             new Timer() {
 
                                 @Override
@@ -6537,7 +6542,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             }.schedule(TOUCHSCROLL_TIMEOUT);
 
                             if (contextTouchTimeout == null
-                                    && actionKeys != null) {
+                                    && hasContextMenuActions()) {
                                 contextTouchTimeout = new Timer() {
 
                                     @Override
@@ -6740,7 +6745,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
             @Override
             public void showContextMenu(Event event) {
-                if (enabled && actionKeys != null) {
+                if (enabled && hasContextMenuActions()) {
                     // Show context menu if there are registered action handlers
                     int left = WidgetUtil.getTouchOrMouseClientX(event)
                             + Window.getScrollLeft();
