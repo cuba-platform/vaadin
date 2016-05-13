@@ -110,9 +110,14 @@ public class UidlRequestHandler extends SynchronizedRequestHandler implements
             UI ui, Writer writer) throws IOException {
         openJsonMessage(writer, response);
 
-        new UidlWriter().write(ui, writer, false);
+        createUidlWriter().write(ui, writer, false);
 
         closeJsonMessage(writer);
+    }
+
+    //Haulmont API
+    protected UidlWriter createUidlWriter() {
+        return new UidlWriter();
     }
 
     protected void closeJsonMessage(Writer outWriter) throws IOException {

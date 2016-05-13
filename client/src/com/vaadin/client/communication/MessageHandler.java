@@ -411,6 +411,8 @@ public class MessageHandler {
             public void execute() {
                 assert serverId == -1 || serverId == lastSeenServerSyncId;
 
+                startHandlingJsonCommand(json);
+
                 handleUIDLDuration.logDuration(" * Loading widgets completed",
                         10);
 
@@ -568,6 +570,7 @@ public class MessageHandler {
                 getLogger().info(
                         "Referenced paintables: " + getConnectorMap().size());
 
+                finishHandlingJsonCommand();
                 endRequestIfResponse(json);
                 resumeResponseHandling(lock);
 
@@ -1730,6 +1733,14 @@ public class MessageHandler {
 
     private MessageSender getMessageSender() {
         return connection.getMessageSender();
+    }
+
+    //Haulmont API
+    protected void startHandlingJsonCommand(ValueMap json) {
+    }
+
+    //Haulmont API
+    protected void finishHandlingJsonCommand() {
     }
 
     /**
