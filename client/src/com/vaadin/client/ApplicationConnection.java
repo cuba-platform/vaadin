@@ -234,8 +234,8 @@ public class ApplicationConnection implements HasHandlers {
 
     /** redirectTimer scheduling interval in seconds */
     private int sessionExpirationInterval;
-
-    private Date requestStartTime;
+    //Haulmont API
+    protected Date requestStartTime;
 
     private final LayoutManager layoutManager;
 
@@ -921,7 +921,7 @@ public class ApplicationConnection implements HasHandlers {
                         "Server visit took "
                                 + String.valueOf((new Date()).getTime()
                                         - requestStartTime.getTime()) + "ms");
-
+                handleOnResponseReceived(request, response);
                 int statusCode = response.getStatusCode();
                 // Notify network observers about response status
                 fireEvent(new ConnectionStatusEvent(statusCode));
@@ -1064,6 +1064,7 @@ public class ApplicationConnection implements HasHandlers {
         getLogger().info(
                 "JSON parsing took " + (new Date().getTime() - start.getTime())
                         + "ms");
+        beforeHandlingMessage(json);
         if (isApplicationRunning()) {
             handleReceivedJSONMessage(start, jsonText, json);
         } else {
@@ -1623,6 +1624,8 @@ public class ApplicationConnection implements HasHandlers {
             public void execute() {
                 assert syncId == -1 || syncId == lastSeenServerSyncId;
 
+                startHandlingJsonCommand(json);
+
                 handleUIDLDuration.logDuration(" * Loading widgets completed",
                         10);
 
@@ -1766,6 +1769,7 @@ public class ApplicationConnection implements HasHandlers {
                                 + " characters of JSON");
                 getLogger().info(
                         "Referenced paintables: " + connectorMap.size());
+                finishHandlingJsonCommand();
 
                 if (meta == null || !meta.containsKey("async")) {
                     // End the request if the received message was a response,
@@ -3823,5 +3827,21 @@ public class ApplicationConnection implements HasHandlers {
      */
     public boolean isUpdatingState() {
         return updatingState;
+    }
+
+    //Haulmont API
+    protected void beforeHandlingMessage(ValueMap json) {
+    }
+
+    //Haulmont API
+    protected void startHandlingJsonCommand(ValueMap json) {
+    }
+
+    //Haulmont API
+    protected void finishHandlingJsonCommand() {
+    }
+
+    //Haulmont API
+    protected void handleOnResponseReceived(Request request, Response response) {
     }
 }

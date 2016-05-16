@@ -372,8 +372,11 @@ public class TableConnector extends AbstractHasComponentsConnector implements
 
                     // Haulmont API
                     getWidget().scheduleLayoutForChildWidgets();
-
+                    beforeLayout();
                     getLayoutManager().layoutNow();
+                    // Haulmont API
+                    afterLayout();
+
                 }
             });
         }
@@ -456,5 +459,13 @@ public class TableConnector extends AbstractHasComponentsConnector implements
         if("".equals(newHeight)) {
             getWidget().updateHeight();
         }
+    }
+
+    // Haulmont API
+    protected void beforeLayout() {
+    }
+
+    // Haulmont API
+    protected void afterLayout() {
     }
 }

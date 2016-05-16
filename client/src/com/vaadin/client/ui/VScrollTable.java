@@ -672,7 +672,8 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
     protected Set<String> collapsedColumns;
 
     /** For internal use only. May be removed or replaced in the future. */
-    public final RowRequestHandler rowRequestHandler;
+    //Haulmont API
+    public RowRequestHandler rowRequestHandler;
 
     /** For internal use only. May be removed or replaced in the future. */
     public VScrollTableBody scrollBody;
@@ -2825,6 +2826,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                             firstRowInViewPort, false);
                 }
 
+                updateVariables();
                 client.updateVariable(paintableId, "reqfirstrow", reqFirstRow,
                         false);
                 client.updateVariable(paintableId, "reqrows", reqRows, true);
@@ -2851,6 +2853,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             setReqFirstRow(first);
             setReqRows(reqRows);
             run();
+        }
+
+        //Haulmont API
+        protected void updateVariables() {
         }
     }
 
