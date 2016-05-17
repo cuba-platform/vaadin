@@ -591,7 +591,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 // Cancel default keyboard events on a disabled Table
                 // (prevents scrolling)
                 event.preventDefault();
-            } else if (hasFocus) {
+            } else if (hasFocus()) {
                 // Key code in Firefox/onKeyPress is present only for
                 // special keys, otherwise 0 is returned
                 int keyCode = event.getKeyCode();
@@ -655,7 +655,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                 // Cancel default keyboard events on a disabled Table
                 // (prevents scrolling)
                 event.preventDefault();
-            } else if (hasFocus) {
+            } else if (hasFocus()) {
                 if (handleNavigation(event.getKeyCode(), event.getCtrlKey()
                         || event.getMetaKey(), event.getShiftKey())) {
                     navKeyDown = true;
@@ -7055,7 +7055,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
          * focus only if not currently focused.
          */
         protected void ensureFocus() {
-            if (!hasFocus) {
+            if (!hasFocus()) {
                 scrollBodyPanel.setFocus(true);
             }
 
@@ -7980,7 +7980,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             // Set new focused row
             focusedRow = row;
 
-            if (hasFocus) {
+            if (hasFocus()) {
                 ensureRowIsVisible(row);
             }
 
@@ -8298,6 +8298,10 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
     @Override
     public void onBlur(BlurEvent event) {
+        onBlur();
+    }
+
+    private void onBlur() {
         hasFocus = false;
         navKeyDown = false;
 
@@ -8308,9 +8312,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
              * handler is still active. (#10464)
              */
             Element focusedElement = WidgetUtil.getFocusedElement();
-            if (Util.getConnectorForElement(client, getParent(), focusedElement) == this
-                    && focusedElement != null
-                    && focusedElement != scrollBodyPanel.getFocusElement()) {
+            if (focusedElement != null
+                    && focusedElement != scrollBodyPanel.getFocusElement()
+                    && Util.getConnectorForElement(client, getParent(),
+                            focusedElement) == ConnectorMap.get(client)
+                            .getConnector(this)) {
                 /*
                  * Steal focus back to the focus handler if it was moved to some
                  * other part of the table. Avoid stealing focus in other cases.
@@ -8674,4 +8680,19 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
     public void setChildMeasurementHint(ChildMeasurementHint hint) {
         childMeasurementHint = hint;
     }
+
+    private boolean hasFocus() {
+        if (hasFocus && BrowserInfo.get().isIE()) {
+            com.google.gwt.user.client.Element focusedElement = Util
+                    .getIEFocusedElement();
+            if (!getElement().isOrHasChild(focusedElement)) {
+                // Does not really have focus but a blur event has been lost
+                getLogger().warning(
+                        "IE did not send a blur event, firing manually");
+                onBlur();
+            }
+        }
+        return hasFocus;
+    }
+
 }

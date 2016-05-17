@@ -223,6 +223,10 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
         contentPanel.addKeyDownHandler(this);
         contentPanel.addFocusHandler(this);
         contentPanel.addBlurHandler(this);
+        if (!BrowserInfo.get().isIE8() && !BrowserInfo.get().isIE9()) {
+            addTransitionEndLayoutListener(getElement());
+        }
+
     }
 
     @Override
@@ -988,7 +992,7 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
         } else if (header.isOrHasChild(target) && !dragging) {
             // dblclick handled in connector
             if (type != Event.ONDBLCLICK && draggable) {
-                if (type == Event.ONMOUSEDOWN) {
+                if (type == Event.ONMOUSEDOWN || type == Event.ONTOUCHSTART) {
                     /**
                      * Prevents accidental selection of window caption or
                      * content. (#12726)
@@ -996,7 +1000,7 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                     event.preventDefault();
 
                     headerDragPending = event;
-                } else if (type == Event.ONMOUSEMOVE
+                } else if ((type == Event.ONMOUSEMOVE || type == Event.ONTOUCHMOVE)
                         && headerDragPending != null) {
                     // ie won't work unless this is set here
                     dragging = true;
@@ -1022,7 +1026,7 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
          * If clicking on other than the content, move focus to the window.
          * After that this windows e.g. gets all keyboard shortcuts.
          */
-        if (type == Event.ONMOUSEDOWN
+        if ((type == Event.ONMOUSEDOWN || type == Event.ONTOUCHSTART)
                 && !contentPanel.getElement().isOrHasChild(target)
                 && target != closeBox && target != maximizeRestoreBox) {
             contentPanel.focus();
@@ -1176,6 +1180,18 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                 this));
         layoutManager.layoutNow();
     }
+
+    private native void addTransitionEndLayoutListener(Element e)
+    /*-{
+        var self = this;
+        e.addEventListener("transitionend", function(e) {
+            if (e.propertyName == "width" || e.propertyName == 'height') {
+                $entry(function() {
+                  self.@com.vaadin.client.ui.VWindow::updateContentsSize()();
+                })();
+            }
+        });
+    }-*/;
 
     @Override
     public void setWidth(String width) {
