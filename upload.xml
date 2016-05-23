@@ -51,6 +51,9 @@
 		<antcall target="uploadArtifact">
 			<param name="artifact.name" value="vaadin-themes"/>
 		</antcall>
+		<antcall target="uploadArtifact">
+			<param name="artifact.name" value="vaadin-push"/>
+		</antcall>
 	</target>
 	
 </project>
