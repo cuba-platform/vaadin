@@ -78,7 +78,7 @@ public class VNotification extends VOverlay {
 
     private static final String STYLENAME = "v-Notification";
     private static final int mouseMoveThreshold = 7;
-    private static final int Z_INDEX_BASE = 20000;
+    public static final int Z_INDEX_BASE = 20000;
     public static final String STYLE_SYSTEM = "system";
 
     private static final ArrayList<VNotification> notifications = new ArrayList<VNotification>();
@@ -95,6 +95,10 @@ public class VNotification extends VOverlay {
 
     private ArrayList<EventListener> listeners;
     private static final int TOUCH_DEVICE_IDLE_DELAY = 1000;
+
+    // Haulmont API
+    private NotificationDelegate delegate;
+    private static boolean relativeZIndex = false;
 
     /**
      * Default constructor. You should use GWT.create instead.
@@ -258,6 +262,15 @@ public class VNotification extends VOverlay {
         updatePositionOffsets(position);
         notifications.add(this);
         positionOrSizeUpdated();
+
+        // Haulmont API
+        int index = notifications.indexOf(this);
+        if (isRelativeZIndex()) {
+            getElement().getStyle().setZIndex(index + Z_INDEX_BASE);
+        }
+        if (delegate != null) {
+            delegate.show(getOverlayContainer(), getElement(), isShowing(), style, index);
+        }
         /**
          * Android 4 fails to render notifications correctly without a little
          * nudge (#8551) Chrome 41 now requires this too (#17252)
@@ -314,6 +327,10 @@ public class VNotification extends VOverlay {
                 VNotification.super.hide();
                 fireEvent(new HideEvent(this));
                 notifications.remove(this);
+                // Haulmont API
+                if (delegate != null) {
+                    delegate.hide();
+                }
             }
         }
     }
@@ -493,6 +510,12 @@ public class VNotification extends VOverlay {
 
     public static void showNotification(ApplicationConnection client,
             final UIDL notification) {
+        showNotification(client, notification, null);
+    }
+
+    // Haulmont API
+    public static void showNotification(ApplicationConnection client,
+                                        final UIDL notification, NotificationDelegate delegate) {
         boolean onlyPlainText = notification
                 .hasAttribute(UIConstants.NOTIFICATION_HTML_CONTENT_NOT_ALLOWED);
         String html = "";
@@ -535,7 +558,7 @@ public class VNotification extends VOverlay {
 
         final int delay = notification
                 .getIntAttribute(UIConstants.ATTRIBUTE_NOTIFICATION_DELAY);
-        createNotification(delay, client.getUIConnector().getWidget()).show(
+        createNotification(delay, client.getUIConnector().getWidget(), delegate).show(
                 html, position, style);
     }
 
@@ -561,7 +584,13 @@ public class VNotification extends VOverlay {
     }
 
     public static VNotification createNotification(int delayMsec, Widget owner) {
+        return createNotification(delayMsec, owner, null);
+    }
+
+    // Haulmont API
+    public static VNotification createNotification(int delayMsec, Widget owner, NotificationDelegate delegate) {
         final VNotification notification = GWT.create(VNotification.class);
+        notification.setDelegate(delegate);
         notification.setWaiAriaRole(null);
         notification.setDelay(delayMsec);
 
@@ -692,5 +721,25 @@ public class VNotification extends VOverlay {
             return notifications.get(notifications.size() - 1);
         }
         return null;
+    }
+
+    // Haulmont API
+    public NotificationDelegate getDelegate() {
+        return delegate;
+    }
+
+    // Haulmont API
+    public void setDelegate(NotificationDelegate notificationDelegate) {
+        this.delegate = notificationDelegate;
+    }
+
+    // Haulmont API
+    public static boolean isRelativeZIndex() {
+        return relativeZIndex;
+    }
+
+    // Haulmont API
+    public static void setRelativeZIndex(boolean relativeZIndex) {
+        VNotification.relativeZIndex = relativeZIndex;
     }
 }
