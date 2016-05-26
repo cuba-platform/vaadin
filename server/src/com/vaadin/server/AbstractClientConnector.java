@@ -261,8 +261,7 @@ public abstract class AbstractClientConnector implements ClientConnector,
                 ui.getConnectorTracker().markDirty(this);
             }
 
-            // Haulmont API dependency
-            if (VaadinSession.getCurrent() == null) {
+            if (VaadinSession.getCurrent() == null || !VaadinSession.getCurrent().hasLock()) {
                 IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
                 if (getUI() != null && handler != null) {
                     handler.incorrectConcurrentAccess();
