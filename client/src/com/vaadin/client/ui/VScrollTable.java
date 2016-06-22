@@ -3671,7 +3671,7 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
         public void resizeCaptionContainer(HeaderCell cell) {
             HeaderCell lastcell = getHeaderCell(visibleCells.size() - 1);
-            int columnSelectorOffset = columnSelector.getOffsetWidth();
+            int columnSelectorOffset = getIconsOffsetWidth();
 
             if (cell == lastcell && columnSelectorOffset > 0
                     && !hasVerticalScrollbar()) {
@@ -3717,6 +3717,11 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
             } else {
                 cell.resizeCaptionContainer(0);
             }
+        }
+
+        // Haulmont API
+        protected int getIconsOffsetWidth() {
+            return columnSelector.getOffsetWidth();
         }
 
         @Override
