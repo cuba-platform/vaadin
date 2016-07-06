@@ -454,6 +454,13 @@ public abstract class AbstractColorPicker extends AbstractComponent implements
     }
 
     /**
+     * Haulmont API 
+     */
+    protected void createPopupWindow() {
+        window = new ColorPickerPopup(color);
+    }
+
+    /**
      * Shows or hides popup-window depending on the given parameter. If there is
      * no such window yet, one is created.
      * 
@@ -468,7 +475,7 @@ public abstract class AbstractColorPicker extends AbstractComponent implements
             if (window == null) {
 
                 // Create the popup
-                window = new ColorPickerPopup(color);
+                createPopupWindow();
                 window.setCaption(popupCaption);
 
                 window.setRGBTabVisible(rgbVisible);

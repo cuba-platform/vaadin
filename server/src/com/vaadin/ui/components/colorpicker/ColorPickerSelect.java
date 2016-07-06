@@ -30,8 +30,10 @@ import com.vaadin.ui.VerticalLayout;
 public class ColorPickerSelect extends CustomComponent implements
         ColorSelector, ValueChangeListener {
 
-    /** The range. */
-    private final ComboBox range;
+    /** The range.
+     * Haulmont API dependency
+     * */
+    protected final ComboBox range;
 
     /** The grid.
      * Haulmont API dependency
@@ -40,8 +42,9 @@ public class ColorPickerSelect extends CustomComponent implements
 
     /**
      * The Enum ColorRangePropertyId.
+     * Haulmont API dependency
      */
-    private enum ColorRangePropertyId {
+    protected enum ColorRangePropertyId {
         ALL("All colors"), RED("Red colors"), GREEN("Green colors"), BLUE(
                 "Blue colors");
 
