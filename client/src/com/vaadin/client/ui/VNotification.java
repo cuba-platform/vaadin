@@ -291,6 +291,10 @@ public class VNotification extends VOverlay {
                 @Override
                 public void run() {
                     VNotification.super.hide();
+                    // Haulmont API
+                    if (delegate != null) {
+                        delegate.hide();
+                    }
                 }
             };
             delay.schedule(hideDelay);
