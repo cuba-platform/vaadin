@@ -86,7 +86,11 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
 
         @Override
         public String getInitParameter(String name) {
-            return servletRegistration.getInitParameter(name);
+            String initParameterValue = servletRegistration.getInitParameter(name);
+            if (initParameterValue == null && "org.atmosphere.cpr.recoverFromDestroyedBroadcaster".equals(name)) {
+                return "false";
+            }
+            return initParameterValue;
         }
 
         @Override
