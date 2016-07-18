@@ -563,18 +563,18 @@ public class WeekGrid extends SimplePanel {
 
     public static class Timebar extends HTML {
 
-        private static final int[] timesFor12h = { 12, 1, 2, 3, 4, 5, 6, 7, 8,
+        protected static final int[] timesFor12h = { 12, 1, 2, 3, 4, 5, 6, 7, 8,
                 9, 10, 11 };
 
-        private int height;
+        protected int height;
 
-        private final int verticalPadding = 7; // FIXME measure this from DOM
+        protected final int verticalPadding = 7; // FIXME measure this from DOM
 
-        private int[] slotCellHeights;
+        protected int[] slotCellHeights;
 
-        private int firstHour;
+        protected int firstHour;
 
-        private int lastHour;
+        protected int lastHour;
 
         public Timebar(boolean format24h) {
             createTimeBar(format24h);
