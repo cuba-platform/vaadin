@@ -435,7 +435,8 @@ public class Calendar extends AbstractComponent implements
         }
     }
 
-    private void setupCalendarEvents() {
+    //Haulmont API
+    protected void setupCalendarEvents() {
         int durationInDays = (int) (((endDate.getTime()) - startDate.getTime()) / DateConstants.DAYINMILLIS);
         durationInDays++;
         if (durationInDays > 60) {

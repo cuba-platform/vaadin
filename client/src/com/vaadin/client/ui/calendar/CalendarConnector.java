@@ -89,7 +89,8 @@ public class CalendarConnector extends AbstractComponentConnector implements
             this);
 
     private final HashMap<String, String> actionMap = new HashMap<String, String>();
-    private HashMap<Object, String> tooltips = new HashMap<Object, String>();
+    //Haulmont API
+    protected HashMap<Object, String> tooltips = new HashMap<Object, String>();
 
     private static final String DROPHANDLER_ACCEPT_CRITERIA_PAINT_TAG = "-ac";
 
@@ -347,18 +348,17 @@ public class CalendarConnector extends AbstractComponentConnector implements
 
         widget.setEventCaptionAsHtml(state.eventCaptionAsHtml);
 
-        List<CalendarState.Day> days = state.days;
-        List<CalendarState.Event> events = state.events;
-
         CalendarDropHandler dropHandler = getWidget().getDropHandler();
         if (showingMonthView()) {
-            updateMonthView(days, events);
+            //Haulmont API
+            updateMonthView(state);
             if (dropHandler != null
                     && !(dropHandler instanceof CalendarMonthDropHandler)) {
                 getWidget().setDropHandler(new CalendarMonthDropHandler(this));
             }
         } else {
-            updateWeekView(days, events);
+            //Haulmont API
+            updateWeekView(state);
             if (dropHandler != null
                     && !(dropHandler instanceof CalendarWeekDropHandler)) {
                 getWidget().setDropHandler(new CalendarWeekDropHandler(this));
@@ -409,7 +409,8 @@ public class CalendarConnector extends AbstractComponentConnector implements
      * displaying widget can use the event index as a key to display the
      * tooltip.
      */
-    private void registerEventToolTips(List<CalendarState.Event> events) {
+    //Haulmont API
+    protected void registerEventToolTips(List<CalendarState.Event> events) {
         for (CalendarState.Event e : events) {
             if (e.description != null && !"".equals(e.description)) {
                 tooltips.put(e.index, e.description);
@@ -443,7 +444,15 @@ public class CalendarConnector extends AbstractComponentConnector implements
         return true;
     }
 
-    private void updateMonthView(List<CalendarState.Day> days,
+    //Haulmont API
+    protected void updateMonthView(CalendarState state) {
+        List<CalendarState.Day> days = state.days;
+        List<CalendarState.Event> events = state.events;
+        updateMonthView(days, events);
+    }
+
+    //Haulmont API
+    protected void updateMonthView(List<CalendarState.Day> days,
             List<CalendarState.Event> events) {
         CalendarState state = getState();
         getWidget().updateMonthView(state.firstDayOfWeek,
@@ -452,7 +461,15 @@ public class CalendarConnector extends AbstractComponentConnector implements
                 calendarDayListOf(days));
     }
 
-    private void updateWeekView(List<CalendarState.Day> days,
+    //Haulmont API
+    protected void updateWeekView(CalendarState state) {
+        List<CalendarState.Day> days = state.days;
+        List<CalendarState.Event> events = state.events;
+        updateWeekView(days, events);
+    }
+
+    //Haulmont API
+    protected void updateWeekView(List<CalendarState.Day> days,
             List<CalendarState.Event> events) {
         CalendarState state = getState();
         getWidget().updateWeekView(state.scroll,
@@ -647,7 +664,8 @@ public class CalendarConnector extends AbstractComponentConnector implements
         return getConnectorId();
     }
 
-    private List<CalendarEvent> calendarEventListOf(
+    //Haulmont API
+    protected List<CalendarEvent> calendarEventListOf(
             List<CalendarState.Event> events, boolean format24h) {
         List<CalendarEvent> list = new ArrayList<CalendarEvent>(events.size());
         for (CalendarState.Event event : events) {
@@ -673,7 +691,8 @@ public class CalendarConnector extends AbstractComponentConnector implements
         return list;
     }
 
-    private List<CalendarDay> calendarDayListOf(List<CalendarState.Day> days) {
+    //Haulmont API
+    protected List<CalendarDay> calendarDayListOf(List<CalendarState.Day> days) {
         List<CalendarDay> list = new ArrayList<CalendarDay>(days.size());
         for (CalendarState.Day day : days) {
             CalendarDay d = new CalendarDay(day.date, day.localizedDateFormat,
