@@ -540,8 +540,9 @@ public class ComboBox extends AbstractSelect implements
      *            consideration
      */
     protected List<?> sanitetizeList(List<?> options, boolean needNullSelectOption) {
+        int totalOptionsSize = options.size() + (needNullSelectOption ? 1 : 0);
 
-        if (pageLength != 0 && options.size() > pageLength) {
+        if (pageLength != 0 && totalOptionsSize > pageLength) {
 
             int indexToEnsureInView = -1;
 
