@@ -212,6 +212,8 @@ public class PushHandler {
                 session = service.findVaadinSession(vaadinRequest);
                 assert VaadinSession.getCurrent() == session;
 
+                // Haulmont API
+                service.sessionStart(vaadinRequest, session);
             } catch (ServiceException e) {
                 getLogger().log(Level.SEVERE,
                         "Could not get session. This should never happen", e);
@@ -345,6 +347,10 @@ public class PushHandler {
         session.lock();
         try {
             VaadinSession.setCurrent(session);
+
+            // Haulmont API
+            service.sessionStart(vaadinRequest, session);
+
             // Sets UI.currentInstance
             ui = service.findUI(vaadinRequest);
             if (ui == null) {
@@ -410,6 +416,8 @@ public class PushHandler {
         } catch (final Exception e) {
             callErrorHandler(session, e);
         } finally {
+            service.sessionEnd(vaadinRequest, session);
+
             try {
                 session.unlock();
             } catch (Exception e) {

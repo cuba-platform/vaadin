@@ -1330,6 +1330,16 @@ public abstract class VaadinService implements Serializable {
         request.setAttribute(REQUEST_START_TIME_ATTRIBUTE, System.nanoTime());
     }
 
+    // Haulmont API
+    public void sessionStart(VaadinRequest request, VaadinSession session) {
+
+    }
+
+    // Haulmont API
+    public void sessionEnd(VaadinRequest request, VaadinSession session) {
+
+    }
+
     /**
      * Called after the framework has handled a request and the response has
      * been written.
@@ -1357,6 +1367,8 @@ public abstract class VaadinService implements Serializable {
             }
         }
         CurrentInstance.clearAll();
+
+        sessionEnd(request, session);
     }
 
     /**
@@ -1404,6 +1416,9 @@ public abstract class VaadinService implements Serializable {
             if (vaadinSession == null) {
                 return;
             }
+
+            // Haulmont API
+            sessionStart(request, vaadinSession);
 
             for (RequestHandler handler : getRequestHandlers()) {
                 if (handler.handleRequest(vaadinSession, request, response)) {
