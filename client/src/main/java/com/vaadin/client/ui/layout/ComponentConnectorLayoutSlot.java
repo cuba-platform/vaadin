@@ -108,4 +108,9 @@ public class ComponentConnectorLayoutSlot extends VLayoutSlot {
     public boolean isRelativeWidth() {
         return child.isRelativeWidth();
     }
+
+    // Haulmont API
+    public ManagedLayout getLayout() {
+        return layout;
+    }
 }
