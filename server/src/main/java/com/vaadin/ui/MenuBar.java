@@ -148,6 +148,10 @@ public class MenuBar extends AbstractComponent
                 target.addAttribute(MenuBarConstants.ATTRIBUTE_CHECKED,
                         item.isChecked());
             }
+
+            // Haulmont API
+            paintAdditionalItemParams(target, item);
+
             if (item.hasChildren()) {
                 for (MenuItem child : item.getChildren()) {
                     paintItem(target, child);
@@ -157,6 +161,10 @@ public class MenuBar extends AbstractComponent
         }
 
         target.endTag("item");
+    }
+
+    // Haulmont API
+    protected void paintAdditionalItemParams(PaintTarget target, MenuItem item) throws PaintException {
     }
 
     /** Deserialize changes received from client. */
