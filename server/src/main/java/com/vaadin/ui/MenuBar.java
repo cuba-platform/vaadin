@@ -148,6 +148,10 @@ public class MenuBar extends AbstractComponent
                 target.addAttribute(MenuBarConstants.ATTRIBUTE_CHECKED,
                         item.isChecked());
             }
+
+            // Haulmont API
+            paintAdditionalItemParams(target, item);
+
             if (item.hasChildren()) {
                 for (MenuItem child : item.getChildren()) {
                     paintItem(target, child);
@@ -159,7 +163,11 @@ public class MenuBar extends AbstractComponent
         target.endTag("item");
     }
 
-    /** De-serialize changes received from client. */
+    // Haulmont API
+    protected void paintAdditionalItemParams(PaintTarget target, MenuItem item) throws PaintException {
+    }
+
+    /** Deserialize changes received from client. */
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
         final Deque<MenuItem> items = new ArrayDeque<>();
