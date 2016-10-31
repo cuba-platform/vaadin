@@ -2033,4 +2033,8 @@ public abstract class UI extends AbstractSingleComponentContainer
          */
         public void windowOrderUpdated(WindowOrderUpdateEvent event);
     }
+
+    // Haulmont API
+    public void handleRequest(VaadinRequest request) {
+    }
 }
