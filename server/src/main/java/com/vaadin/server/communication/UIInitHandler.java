@@ -258,6 +258,8 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
     private void reinitUI(UI ui, VaadinRequest request) {
         UI.setCurrent(ui);
         ui.doRefresh(request);
+        // Haulmont API
+        ui.handleRequest(request);
     }
 
     /**

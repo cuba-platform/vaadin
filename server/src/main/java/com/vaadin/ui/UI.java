@@ -1738,4 +1738,8 @@ public abstract class UI extends AbstractSingleComponentContainer
             int lastProcessedClientToServerId) {
         this.lastProcessedClientToServerId = lastProcessedClientToServerId;
     }
+
+    // Haulmont API
+    public void handleRequest(VaadinRequest request) {
+    }
 }
