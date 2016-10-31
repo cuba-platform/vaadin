@@ -55,4 +55,7 @@ public class AbstractComponentState extends SharedState {
     public ErrorLevel errorLevel = null;
 
     public boolean captionAsHtml = false;
+
+    // Haulmont API
+    public String cubaId = null;
 }
