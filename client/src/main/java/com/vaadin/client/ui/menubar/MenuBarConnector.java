@@ -134,6 +134,7 @@ public class MenuBarConnector extends AbstractComponentConnector
             if (id != null && !"".equals(id)) {
                 currentItem.getElement().setId(id);
             }
+            assignAdditionalAttributes(currentItem, item);
 
             currentItem.updateFromUIDL(item, client);
 
@@ -173,6 +174,10 @@ public class MenuBarConnector extends AbstractComponentConnector
         }
 
         getLayoutManager().setNeedsHorizontalLayout(this);
+    }
+
+    // Haulmont API
+    protected void assignAdditionalAttributes(VMenuBar.CustomMenuItem currentItem, UIDL item) {
     }
 
     @Override
