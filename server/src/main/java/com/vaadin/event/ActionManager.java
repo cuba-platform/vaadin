@@ -169,8 +169,10 @@ public class ActionManager
         if (!actions.isEmpty() || clientHasActions) {
             actionMapper = new ActionKeyMapper();
 
-            paintTarget.addVariable((VariableOwner) viewer, "action", "");
-            paintTarget.startTag("actions");
+            if (isNeedToAddActionVariable()) {
+                paintTarget.addVariable((VariableOwner) viewer, "action", "");
+            }
+            paintTarget.startTag(getActionsJsonTag());
 
             for (final Action a : actions) {
 
@@ -200,7 +202,7 @@ public class ActionManager
                 paintTarget.endTag("action");
             }
 
-            paintTarget.endTag("actions");
+            paintTarget.endTag(getActionsJsonTag());
         }
 
         /*
@@ -209,6 +211,16 @@ public class ActionManager
          * all actions were removed).
          */
         clientHasActions = !actions.isEmpty();
+    }
+
+    // Haulmont API
+    protected boolean isNeedToAddActionVariable() {
+        return false;
+    }
+
+    // Haulmont API
+    protected String getActionsJsonTag() {
+        return "actions";
     }
 
     public void handleActions(Map<String, Object> variables, Container sender) {
