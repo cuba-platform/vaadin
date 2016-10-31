@@ -924,13 +924,16 @@ public class VScrollTable extends FlowPanel
     /**
      * Handles a context menu event on table body.
      *
+     * <br/>
+     * Haulmont API dependency
+     *
      * @param left
      *            left position of the context menu
      * @param top
      *            top position of the context menu
      * @return true if a context menu was shown, otherwise false
      */
-    private boolean handleBodyContextMenu(int left, int top) {
+    protected boolean handleBodyContextMenu(int left, int top) {
         if (enabled && bodyActionKeys != null) {
             top += Window.getScrollTop();
             left += Window.getScrollLeft();
