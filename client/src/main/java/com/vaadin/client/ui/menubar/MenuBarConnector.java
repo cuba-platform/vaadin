@@ -132,12 +132,13 @@ public class MenuBarConnector extends AbstractComponentConnector
                 }
             }
 
-            currentItem = currentMenu.addItem(itemHTML.toString(), cmd);
+            currentItem = currentMenu.addItem(itemHTML, cmd);
             // Haulmont API
             String id = getItemId(item);
             if (id != null && !"".equals(id)) {
                 currentItem.getElement().setId(id);
             }
+            assignAdditionalAttributes(currentItem, item);
 
             currentItem.updateFromUIDL(item, client);
 
@@ -179,6 +180,10 @@ public class MenuBarConnector extends AbstractComponentConnector
         getLayoutManager().setNeedsHorizontalLayout(this);
 
     }// updateFromUIDL
+
+    // Haulmont API
+    protected void assignAdditionalAttributes(VMenuBar.CustomMenuItem currentItem, UIDL item) {
+    }
 
     @Override
     public VMenuBar getWidget() {
