@@ -3715,7 +3715,8 @@ public class Table extends AbstractSelect implements Action.Container,
 
     }
 
-    private void paintActions(PaintTarget target, final Set<Action> actionSet)
+    // Haulmont API dependency
+    protected void paintActions(PaintTarget target, final Set<Action> actionSet)
             throws PaintException {
         if (!actionSet.isEmpty()) {
             target.addVariable(this, "action", "");
