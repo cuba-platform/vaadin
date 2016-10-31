@@ -406,7 +406,10 @@ public class VButton extends FocusWidget
 
     @Override
     public final void setTabIndex(int index) {
-        super.setTabIndex(index);
+        // Haulmont API
+        if (isEnabled()) {
+            super.setTabIndex(index);
+        }
         tabIndex = index;
     }
 
