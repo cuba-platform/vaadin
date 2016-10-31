@@ -133,6 +133,12 @@ public class MenuBarConnector extends AbstractComponentConnector
             }
 
             currentItem = currentMenu.addItem(itemHTML.toString(), cmd);
+            // Haulmont API
+            String id = getItemId(item);
+            if (id != null && !"".equals(id)) {
+                currentItem.getElement().setId(id);
+            }
+
             currentItem.updateFromUIDL(item, client);
 
             if (item.getChildCount() > 0) {
@@ -190,8 +196,13 @@ public class MenuBarConnector extends AbstractComponentConnector
     }
 
     // Haulmont API
-    public boolean isUseMoreMenuItem() {
+    protected boolean isUseMoreMenuItem() {
         return true;
+    }
+
+    // Haulmont API
+    protected String getItemId(UIDL uidl) {
+        return null;
     }
 
     @Override
