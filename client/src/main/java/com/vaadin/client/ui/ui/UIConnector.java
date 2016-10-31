@@ -1108,13 +1108,20 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
      * @return The URL the theme can be loaded from
      */
     private String getThemeUrl(String theme) {
-        String themeUrl = getConnection()
-                .translateVaadinUri(ApplicationConstants.VAADIN_PROTOCOL_PREFIX
+        String themeUrl = getConnection().
+                translateVaadinUri(ApplicationConstants.VAADIN_PROTOCOL_PREFIX
                         + "themes/" + theme + "/styles" + ".css");
-        // Parameter appended to bypass caches after version upgrade.
-        themeUrl += "?v=" + Version.getFullVersion();
-        return themeUrl;
 
+        String applicationVersion = getConnection().getConfiguration()
+                .getApplicationVersion();
+        if (applicationVersion != null) {
+            themeUrl += "?v=" + applicationVersion;
+        } else {
+            // Parameter appended to bypass caches after version upgrade.
+            themeUrl += "?v=" + Version.getFullVersion();
+        }
+
+        return themeUrl;
     }
 
     /**

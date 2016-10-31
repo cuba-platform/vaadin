@@ -720,6 +720,9 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
             appConfig.put("sendUrlsAsParameters", false);
         }
 
+        // Haulmont API
+        appConfig.put("applicationVersion", vaadinService.getApplicationVersion());
+
         return appConfig;
     }
 
