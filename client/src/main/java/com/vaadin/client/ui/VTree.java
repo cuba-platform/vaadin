@@ -536,7 +536,8 @@ public class VTree extends FocusElementPanel
         /** For internal use only. May be removed or replaced in the future. */
         public boolean childrenLoaded;
 
-        Element nodeCaptionDiv;
+        // Haulmont API dependency
+        protected Element nodeCaptionDiv;
 
         protected Element nodeCaptionSpan;
 

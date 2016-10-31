@@ -754,25 +754,8 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
                 }
 
                 // Adds the attributes
-                target.addAttribute(TreeConstants.ATTRIBUTE_NODE_CAPTION,
-                        getItemCaption(itemId));
-                final Resource icon = getItemIcon(itemId);
-                if (icon != null) {
-                    target.addAttribute(TreeConstants.ATTRIBUTE_NODE_ICON,
-                            getItemIcon(itemId));
-                    target.addAttribute(TreeConstants.ATTRIBUTE_NODE_ICON_ALT,
-                            getItemIconAlternateText(itemId));
-                }
-                final String key = itemIdMapper.key(itemId);
-                target.addAttribute("key", key);
-                if (isSelected(itemId)) {
-                    target.addAttribute("selected", true);
-                    selectedKeys.add(key);
-                }
-                if (areChildrenAllowed(itemId) && isExpanded(itemId)) {
-                    target.addAttribute("expanded", true);
-                    expandedKeys.add(key);
-                }
+                // Haulmont API call
+                paintItem(target, itemId, selectedKeys, expandedKeys);
 
                 // Add caption change listener
                 getCaptionChangeListener().addNotifierForItem(itemId);
@@ -848,7 +831,30 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
             if (dropHandler != null) {
                 dropHandler.getAcceptCriterion().paint(target);
             }
+        }
+    }
 
+    // Haulmont API
+    protected void paintItem(PaintTarget target, Object itemId,
+                             LinkedList<String> selectedKeys, LinkedList<String> expandedKeys) throws PaintException {
+        target.addAttribute(TreeConstants.ATTRIBUTE_NODE_CAPTION,
+                        getItemCaption(itemId));
+        final Resource icon = getItemIcon(itemId);
+        if (icon != null) {
+            target.addAttribute(TreeConstants.ATTRIBUTE_NODE_ICON,
+                    getItemIcon(itemId));
+            target.addAttribute(TreeConstants.ATTRIBUTE_NODE_ICON_ALT,
+                    getItemIconAlternateText(itemId));
+        }
+        final String key = itemIdMapper.key(itemId);
+        target.addAttribute("key", key);
+        if (isSelected(itemId)) {
+            target.addAttribute("selected", true);
+            selectedKeys.add(key);
+        }
+        if (areChildrenAllowed(itemId) && isExpanded(itemId)) {
+            target.addAttribute("expanded", true);
+            expandedKeys.add(key);
         }
     }
 
