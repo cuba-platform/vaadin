@@ -798,8 +798,10 @@ public class VTabsheet extends VTabsheetBase
 
     /**
      * @return Whether the tab could be selected or not.
+     *
+     * Haulmont API dependency
      */
-    private boolean canSelectTab(final int tabIndex) {
+    protected boolean canSelectTab(final int tabIndex) {
         Tab tab = tb.getTab(tabIndex);
         if (getApplicationConnection() == null || disabled
                 || waitingForResponse) {
