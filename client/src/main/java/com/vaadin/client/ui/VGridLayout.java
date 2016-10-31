@@ -107,7 +107,8 @@ public class VGridLayout extends ComplexPanel {
         });
     }-*/;
 
-    private GridLayoutConnector getConnector() {
+    // Haulmont API dependency
+    protected GridLayoutConnector getConnector() {
         return (GridLayoutConnector) ConnectorMap.get(client)
                 .getConnector(this);
     }
@@ -639,7 +640,8 @@ public class VGridLayout extends ComplexPanel {
         l.cells.add(cell);
     }
 
-    Cell[][] cells;
+    // Haulmont API dependency
+    protected Cell[][] cells;
 
     private int rowCount;
 
@@ -758,8 +760,8 @@ public class VGridLayout extends ComplexPanel {
         public void setComponent(ComponentConnector component,
                 List<ComponentConnector> ordering) {
             if (slot == null || slot.getChild() != component) {
-                slot = new ComponentConnectorLayoutSlot(CLASSNAME, component,
-                        getConnector());
+                // Haulmont API dependency extracted method
+                slot = createComponentConnectorLayoutSlot(component);
                 slot.setAlignment(alignment);
                 if (component.isRelativeWidth()) {
                     slot.getWrapperElement().getStyle().setWidth(100, Unit.PCT);
@@ -788,6 +790,11 @@ public class VGridLayout extends ComplexPanel {
                     oldCell.slot = null;
                 }
             }
+        }
+
+        // Haulmont API
+        protected ComponentConnectorLayoutSlot createComponentConnectorLayoutSlot(ComponentConnector component) {
+            return new ComponentConnectorLayoutSlot(CLASSNAME, component, getConnector());
         }
 
         public void setAlignment(AlignmentInfo alignmentInfo) {
