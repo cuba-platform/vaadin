@@ -48,7 +48,8 @@ public class VAbstractOrderedLayout extends FlowPanel {
 
     protected boolean definedHeight = false;
 
-    private Map<Widget, Slot> widgetToSlot = new HashMap<>();
+    //Haulmont API
+    protected Map<Widget, Slot> widgetToSlot = new HashMap<>();
 
     private Element expandWrapper;
 

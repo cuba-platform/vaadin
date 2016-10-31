@@ -42,6 +42,8 @@ import com.vaadin.shared.ui.ErrorLevel;
 
 /**
  * Represents a slot which contains the actual widget in the layout.
+ *
+ * Haulmont API dependency
  */
 public class Slot extends SimplePanel implements HasErrorIndicatorElement {
 
