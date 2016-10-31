@@ -152,6 +152,26 @@ public abstract class AbstractComponent extends AbstractClientConnector
         return getState(false).id;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.vaadin.ui.Component#setId(java.lang.String)
+     */
+    @Override
+    public void setCubaId(String id) {
+        getState().cubaId = id;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.vaadin.ui.Component#getId()
+     */
+    @Override
+    public String getCubaId() {
+        return getState(false).cubaId;
+    }
+
     /**
      * @deprecated As of 7.0. Use {@link #setId(String)}
      */

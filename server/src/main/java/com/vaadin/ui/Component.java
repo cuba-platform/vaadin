@@ -674,6 +674,26 @@ public interface Component extends ClientConnector, Sizeable, Serializable {
     public String getId();
 
     /**
+     * Haulmont API
+     *
+     * Adds an nonunique id for component that get's transferred to terminal for
+     * testing purposes.
+     *
+     * @param id
+     *            An alphanumeric id
+     */
+    public void setCubaId(String id);
+
+    /**
+     * Haulmont API
+     *
+     * Get's currently set debug identifier
+     *
+     * @return current id, null if not set
+     */
+    public String getCubaId();
+
+    /**
      * <p>
      * Gets the components description, used in tooltips and can be displayed
      * directly in certain other components such as forms. The description can
