@@ -96,12 +96,18 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
 
     protected PopupStyle popupStyle = PopupStyle.POPUP_NORMAL;
 
-    private ColorPickerPopup window;
+    /** The popup window.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPopup window;
 
     /** The currently selected color. */
     protected Color color;
 
-    private UI parent;
+    /** The UI.
+     * Haulmont API dependency
+     * */
+    protected UI parent;
 
     private String popupCaption = null;
     private int positionX = 0;
