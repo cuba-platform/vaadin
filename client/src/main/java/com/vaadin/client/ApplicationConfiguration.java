@@ -229,6 +229,16 @@ public class ApplicationConfiguration implements EntryPoint {
         /*-{
             return this.url;
         }-*/;
+
+        // Haulmont API
+        public final native void setCaption(String caption) /*-{
+            this.caption = caption;
+        }-*/;
+
+        // Haulmont API
+        public final native void setMessage(String message) /*-{
+            this.message = message;
+        }-*/;
     }
 
     private static WidgetSet widgetSet = GWT.create(WidgetSet.class);
