@@ -51,8 +51,9 @@ import com.vaadin.data.Property;
 public class ContainerHierarchicalWrapper implements Container.Hierarchical,
         Container.ItemSetChangeNotifier, Container.PropertySetChangeNotifier {
 
+    // Haulmont API dependency
     /** The wrapped container */
-    private final Container container;
+    protected final Container container;
 
     /** Set of IDs of those contained Items that can't have children. */
     private HashSet<Object> noChildrenAllowed = null;
@@ -60,14 +61,16 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
     /** Mapping from Item ID to parent Item ID */
     private Hashtable<Object, Object> parent = null;
 
+    // Haulmont API dependency
     /** Mapping from Item ID to a list of child IDs */
-    private Hashtable<Object, LinkedList<Object>> children = null;
+    protected Hashtable<Object, LinkedList<Object>> children = null;
 
     /** List that contains all root elements of the container. */
     private LinkedHashSet<Object> roots = null;
 
+    // Haulmont API dependency
     /** Is the wrapped container hierarchical by itself ? */
-    private boolean hierarchical;
+    protected boolean hierarchical;
 
     /**
      * A comparator that sorts the listed items before other items. Otherwise,
@@ -202,10 +205,11 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
      * Note : The Item is not removed from the underlying Container.
      * </p>
      *
+     * Haulmont API dependency
      * @param itemId
      *            the ID of the item to remove from the hierarchy.
      */
-    private void removeFromHierarchyWrapper(Object itemId) {
+    protected void removeFromHierarchyWrapper(Object itemId) {
 
         LinkedList<Object> oprhanedChildren = children.remove(itemId);
         if (oprhanedChildren != null) {
@@ -232,10 +236,11 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
      * The new item is added as a root Item. The underlying container is not
      * modified.
      *
+     * Haulmont API dependency
      * @param itemId
      *            the ID of the item to add to the hierarchy.
      */
-    private void addToHierarchyWrapper(Object itemId) {
+    protected void addToHierarchyWrapper(Object itemId) {
         roots.add(itemId);
 
     }
