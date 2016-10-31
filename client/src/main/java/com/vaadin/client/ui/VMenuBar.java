@@ -968,6 +968,10 @@ public class VMenuBar extends FocusableFlowPanel
                 addStyleDependentName(styleName);
             }
 
+            if (parentMenu.moreItem == this) {
+                addStyleDependentName("more-item");
+            }
+
             if (enabled) {
                 removeStyleDependentName("disabled");
             } else {
