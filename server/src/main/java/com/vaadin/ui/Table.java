@@ -384,8 +384,9 @@ public class Table extends AbstractSelect implements Action.Container,
 
     /**
      * Holds visible column propertyIds - in order.
+     * Haulmont API dependency
      */
-    private LinkedList<Object> visibleColumns = new LinkedList<Object>();
+    protected LinkedList<Object> visibleColumns = new LinkedList<Object>();
 
     /**
      * Holds noncollapsible columns.
@@ -510,8 +511,9 @@ public class Table extends AbstractSelect implements Action.Container,
 
     /**
      * Table cell editor factory.
+     * Haulmont API dependency
      */
-    private TableFieldFactory fieldFactory = DefaultFieldFactory.get();
+    protected TableFieldFactory fieldFactory = DefaultFieldFactory.get();
 
     /**
      * Is table editable.
@@ -585,7 +587,8 @@ public class Table extends AbstractSelect implements Action.Container,
 
     private RowGenerator rowGenerator = null;
 
-    private final Map<Field<?>, Property<?>> associatedProperties = new HashMap<Field<?>, Property<?>>();
+    // Haulmont API dependency
+    protected final Map<Field<?>, Property<?>> associatedProperties = new HashMap<Field<?>, Property<?>>();
 
     private boolean painted = false;
 
@@ -3987,7 +3990,7 @@ public class Table extends AbstractSelect implements Action.Container,
                 }
             }
 
-            if ((iscomponent[currentColumn] || iseditable
+            if ((iscomponent[currentColumn] || isColumnEditable(columnId, editable)
                     || cells[CELL_GENERATED_ROW][indexInRowbuffer] != null)
                     && Component.class.isInstance(cells[CELL_FIRSTCOL
                             + currentColumn][indexInRowbuffer])) {
@@ -4007,6 +4010,11 @@ public class Table extends AbstractSelect implements Action.Container,
         }
 
         target.endTag("tr");
+    }
+
+    // Haulmont API
+    protected boolean isColumnEditable(Object columnId, boolean editable) {
+        return editable;
     }
 
     private void paintCellTooltips(PaintTarget target, Object itemId,
@@ -4154,7 +4162,7 @@ public class Table extends AbstractSelect implements Action.Container,
      */
     protected Object getPropertyValue(Object rowId, Object colId,
             Property property) {
-        if (isEditable() && fieldFactory != null) {
+        if (isColumnEditable(colId, editable) && fieldFactory != null) {
             final Field<?> f = fieldFactory
                     .createField(getContainerDataSource(), rowId, colId, this);
             if (f != null) {
