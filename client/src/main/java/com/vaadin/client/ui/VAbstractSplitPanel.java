@@ -804,7 +804,8 @@ public abstract class VAbstractSplitPanel extends ComplexPanel {
 
     private int splitterSize = -1;
 
-    private int getSplitterSize() {
+    // Haulmont API dependency
+    protected int getSplitterSize() {
         if (splitterSize < 0) {
             if (isAttached()) {
                 switch (orientation) {
