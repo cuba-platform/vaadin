@@ -418,7 +418,17 @@ public class VNotification extends VOverlay {
                 hide();
                 return false;
             }
-            return temporaryStyle == STYLE_SYSTEM;
+            if (temporaryStyle == STYLE_SYSTEM) {
+                return true;
+            } else if (type == Event.ONKEYDOWN
+                    && ((event.getKeyCode() == KeyCodes.KEY_BACKSPACE)
+                    || (event.getAltKey() && event.getKeyCode() == KeyCodes.KEY_LEFT))) {
+                // Haulmont API
+                hide();
+                return false;
+            } else {
+                return false;
+            }
         }
         // default
         switch (type) {
@@ -673,4 +683,11 @@ public class VNotification extends VOverlay {
 
     }
 
+    // Haulmont API
+    public static VNotification getLastNotification() {
+        if (!NOTIFICATIONS.isEmpty()) {
+            return NOTIFICATIONS.get(NOTIFICATIONS.size() - 1);
+        }
+        return null;
+    }
 }
