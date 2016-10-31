@@ -421,6 +421,23 @@ public class VButton extends FocusWidget implements ClickHandler {
         tabIndex = index;
     }
 
+    // Haulmont API
+    @Override
+    public int getTabIndex() {
+        return tabIndex;
+    }
+
+    // Haulmont API
+    @Override
+    protected void onAttach() {
+        int tabIndex = this.tabIndex;
+
+        super.onAttach();
+
+        // Small hack to restore tabIndex after attach
+        setTabIndex(tabIndex);
+    }
+
     /**
      * Resets internal state if this button can no longer service events. This
      * can occur when the widget becomes detached or disabled.
