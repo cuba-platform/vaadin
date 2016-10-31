@@ -338,7 +338,8 @@ public class VScrollTable extends FlowPanel
 
     private boolean updatedReqRows = true;
 
-    private boolean nullSelectionAllowed = true;
+    // Haulmont API dependency
+    protected boolean nullSelectionAllowed = true;
 
     private SelectMode selectMode = SelectMode.NONE;
 
@@ -1970,12 +1971,14 @@ public class VScrollTable extends FlowPanel
         return -1;
     }
 
-    private boolean isMultiSelectModeSimple() {
+    // Haulmont API dependency
+    protected boolean isMultiSelectModeSimple() {
         return selectMode == SelectMode.MULTI
                 && multiselectmode == MULTISELECT_MODE_SIMPLE;
     }
 
-    private boolean isSingleSelectMode() {
+    // Haulmont API dependency
+    protected boolean isSingleSelectMode() {
         return selectMode == SelectMode.SINGLE;
     }
 
@@ -1983,7 +1986,8 @@ public class VScrollTable extends FlowPanel
         return selectMode == SelectMode.MULTI;
     }
 
-    private boolean isMultiSelectModeDefault() {
+    // Haulmont API dependency
+    protected boolean isMultiSelectModeDefault() {
         return selectMode == SelectMode.MULTI
                 && multiselectmode == MULTISELECT_MODE_DEFAULT;
     }
@@ -5596,7 +5600,8 @@ public class VScrollTable extends FlowPanel
             private boolean selected = false;
             protected final int rowKey;
 
-            private String[] actionKeys = null;
+            // Haulmont API dependency
+            protected String[] actionKeys = null;
             private final TableRowElement rowElement;
             private int index;
             private Event touchStart;
