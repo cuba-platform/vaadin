@@ -124,7 +124,8 @@ public class VTabsheet extends VTabsheetBase
 
         private String id;
 
-        private Tab(TabBar tabBar) {
+        // Haulmont API dependency
+        public Tab(TabBar tabBar) {
             super(DOM.createTD());
             this.tabBar = tabBar;
             setStyleName(td, TD_CLASSNAME);
@@ -424,7 +425,7 @@ public class VTabsheet extends VTabsheetBase
     }
 
     // Haulmont API dependency, implements ContextMenuHandler
-    static class TabBar extends ComplexPanel implements VCloseHandler, ContextMenuHandler {
+    public static class TabBar extends ComplexPanel implements VCloseHandler, ContextMenuHandler {
 
         private final Element tr = DOM.createTR();
 
@@ -434,7 +435,8 @@ public class VTabsheet extends VTabsheetBase
 
         private VTabsheet tabsheet;
 
-        TabBar(VTabsheet tabsheet) {
+        // Haulmont API dependency
+        public TabBar(VTabsheet tabsheet) {
             this.tabsheet = tabsheet;
 
             Element el = DOM.createTable();
@@ -479,7 +481,8 @@ public class VTabsheet extends VTabsheetBase
          * @return the added tab.
          */
         public Tab addTab() {
-            Tab t = new Tab(this);
+            // Haulmont API dependency
+            Tab t = createTab();
             int tabIndex = getTabCount();
 
             // Logical attach
@@ -497,6 +500,11 @@ public class VTabsheet extends VTabsheetBase
             t.addContextMenuHandler(this);
 
             return t;
+        }
+
+        // Haulmont API
+        protected Tab createTab() {
+            return new Tab(this);
         }
 
         /**
@@ -783,7 +791,14 @@ public class VTabsheet extends VTabsheetBase
      */
     private String scrollerPositionTabId;
 
-    final TabBar tb = new TabBar(this);
+    // Haulmont API dependency
+    final TabBar tb = createTabBar();
+
+    // Haulmont API
+    protected TabBar createTabBar() {
+        return new TabBar(this);
+    }
+
     /** For internal use only. May be removed or replaced in the future. */
     protected final VTabsheetPanel tabPanel = new VTabsheetPanel();
     /** For internal use only. May be removed or replaced in the future. */
