@@ -729,7 +729,8 @@ public class ComboBox extends AbstractSelect
         // component hierarchy
 
         // Selection change
-        if (variables.containsKey("selected")) {
+        // Haulmont API dependency
+        if (variables.containsKey("selected") && !isReadOnly()) {
             final String[] ka = (String[]) variables.get("selected");
 
             // Single select mode
@@ -749,6 +750,9 @@ public class ComboBox extends AbstractSelect
                     setValue(id, true);
                 }
             }
+        } else if (variables.containsKey("selected")) {
+            // Haulmont API dependency
+            markAsDirty();
         }
 
         String newFilter;
