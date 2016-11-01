@@ -50,10 +50,12 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
     private static final int VISIBLE_COUNT = 10;
 
     private static final int DEFAULT_COLUMN_COUNT = 10;
+	
+    //Haulmont API
+    protected DoubleClickListBox options;
 
-    private final DoubleClickListBox options;
-
-    private final DoubleClickListBox selections;
+    //Haulmont API
+    protected DoubleClickListBox selections;
 
     /** For internal use only. May be removed or replaced in the future. */
     public FlowPanel captionWrapper;
@@ -62,11 +64,14 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
     private HTML selectionsCaption = null;
 
-    private final VButton add;
+    //Haulmont API
+    protected final VButton add;
 
-    private final VButton remove;
+    //Haulmont API
+    protected final VButton remove;
 
-    private final FlowPanel buttons;
+    //Haulmont API
+    protected final FlowPanel buttons;
 
     private final Panel panel;
 
@@ -96,13 +101,13 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
         captionWrapper = new FlowPanel();
 
-        options = new DoubleClickListBox();
+        options = createOptionsBox();
         options.addClickHandler(this);
         options.addDoubleClickHandler(this);
         options.setVisibleItemCount(VISIBLE_COUNT);
         options.setStyleName(CLASSNAME + "-options");
 
-        selections = new DoubleClickListBox();
+        selections = createSelectionsBox();
         selections.addClickHandler(this);
         selections.addDoubleClickHandler(this);
         selections.setVisibleItemCount(VISIBLE_COUNT);
@@ -142,7 +147,7 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
         updateEnabledState();
     }
-
+	
     public HTML getOptionsCaption() {
         if (optionsCaption == null) {
             optionsCaption = new HTML();
@@ -246,6 +251,18 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
         }
     }
 
+	//Haulmont API
+	protected DoubleClickListBox createOptionsBox() {
+		DoubleClickListBox options = new DoubleClickListBox();
+        return options;
+	}
+	
+	//Haulmont API
+	protected DoubleClickListBox createSelectionsBox() {
+		DoubleClickListBox selections = new DoubleClickListBox();
+        return selections;
+	}
+	
     @Override
     protected String[] getSelectedItems() {
         final ArrayList<String> selectedItemKeys = new ArrayList<String>();
