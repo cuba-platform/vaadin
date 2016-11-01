@@ -2832,7 +2832,7 @@ public class Table extends AbstractSelect implements Action.Container,
             super.setContainerDataSource(newDataSource);
         } else {
             super.setContainerDataSource(
-                    new ContainerOrderedWrapper(newDataSource));
+                    createOrderedWrapper(newDataSource));
         }
 
         // Resets page position
@@ -2859,6 +2859,11 @@ public class Table extends AbstractSelect implements Action.Container,
         resetPageBuffer();
 
         enableContentRefreshing(true);
+    }
+
+    // Haulmont API
+    protected Container createOrderedWrapper(Container newDataSource) {
+        return new ContainerOrderedWrapper(newDataSource);
     }
 
     /**
