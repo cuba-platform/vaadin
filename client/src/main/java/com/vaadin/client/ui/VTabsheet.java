@@ -140,11 +140,22 @@ public class VTabsheet extends VTabsheetBase
 
             DOM.appendChild(td, div);
 
-            tabCaption = new TabCaption(this);
+            // Haulmont API extracted method
+            tabCaption = createTabCaption();
             add(tabCaption);
 
             Roles.getTabRole().setAriaLabelledbyProperty(getElement(),
                     Id.of(tabCaption.getElement()));
+        }
+
+        // Haulmont API dependency
+        public TabBar getTabBar() {
+            return tabBar;
+        }
+
+        // Haulmont API dependency
+        protected TabCaption createTabCaption() {
+            return new TabCaption(this);
         }
 
         public boolean isHiddenOnServer() {
@@ -316,11 +327,17 @@ public class VTabsheet extends VTabsheetBase
 
     public static class TabCaption extends VCaption {
 
-        private boolean closable = false;
-        private Element closeButton;
-        private Tab tab;
+        // Haulmont API dependency
+        protected boolean closable = false;
 
-        TabCaption(Tab tab) {
+        // Haulmont API dependency
+        protected Element closeButton;
+
+        // Haulmont API dependency
+        protected Tab tab;
+
+        // Haulmont API dependency
+        public TabCaption(Tab tab) {
             super(tab.getTabsheet().connector.getConnection());
             this.tab = tab;
 
@@ -1491,8 +1508,10 @@ public class VTabsheet extends VTabsheetBase
 
     /*
      * The focus and blur manager instance.
+     *
+     * Haulmont API dependency
      */
-    private FocusBlurManager focusBlurManager = new FocusBlurManager();
+    protected FocusBlurManager focusBlurManager = new FocusBlurManager();
 
     /*
      * Generate the correct focus/blur events for the main TabSheet component
@@ -1521,7 +1540,7 @@ public class VTabsheet extends VTabsheetBase
      * event to the main component, otherwise it'll do nothing, so the main
      * component will not generate the blur..
      */
-    private static class FocusBlurManager {
+    public static class FocusBlurManager {
 
         // The real tab with focus on it. If the focus goes to another element
         // in the page this will be null.
@@ -1529,8 +1548,10 @@ public class VTabsheet extends VTabsheetBase
 
         /*
          * Gets the focused tab.
+         *
+         * Haulmont API dependency
          */
-        private Tab getFocusedTab() {
+        public Tab getFocusedTab() {
             return focusedTab;
         }
 
