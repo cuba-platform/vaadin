@@ -137,7 +137,8 @@ public class VTooltip extends VOverlay {
         description.getParentElement().getStyle().clearWidth();
     }
 
-    private void setTooltipText(TooltipInfo info) {
+    // Haulmont API dependency
+    protected void setTooltipText(TooltipInfo info) {
         if (info.getErrorMessage() != null
                 && !info.getErrorMessage().isEmpty()) {
             em.setVisible(true);
@@ -519,12 +520,14 @@ public class VTooltip extends VOverlay {
 
         /**
          * Locate the tooltip for given element
+         * <br/>
+         * Haulmont API dependency
          *
          * @param element
          *            Element used in search
          * @return TooltipInfo if connector and tooltip found, null if not
          */
-        private TooltipInfo getTooltipFor(Element element) {
+        protected TooltipInfo getTooltipFor(Element element) {
             ApplicationConnection ac = getApplicationConnection();
             ComponentConnector connector = Util.getConnectorForElement(ac,
                     RootPanel.get(), element);
