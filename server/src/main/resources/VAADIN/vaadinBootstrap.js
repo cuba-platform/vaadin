@@ -3,6 +3,10 @@
 	var themesLoaded = {};
 	var widgetsets = {};
 	
+    if (location.hash.indexOf("\\") >= 0) {
+        location.hash = ""
+        location.reload()
+    }
 	
     var log;
     if (typeof console === "undefined" || !window.location.search.match(/[&?]debug(&|$)/)) {
