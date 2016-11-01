@@ -90,8 +90,14 @@ public class SimpleDayToolbar extends HorizontalPanel {
         if (cellw > 0) {
             for (int i = 0; i < getWidgetCount(); i++) {
                 Widget widget = getWidget(i);
-                setCellWidth(widget, cellw + "px");
+                //Haulmont API
+                setCellWidth(widget, (cellw + getCellWidthOffset(width, i)) + "px");
             }
         }
+    }
+
+    //Haulmont API
+    protected int getCellWidthOffset(int width, int i) {
+        return 0;
     }
 }

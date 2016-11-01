@@ -152,11 +152,13 @@ public class MonthGrid extends FocusableGrid implements KeyDownHandler {
 
                 if (setWidth) {
                     if (widthRemainder > 0) {
-                        sdc.setWidth(cellWidth + 1 + "px");
+                        //Haulmont API
+                        setSimpleDayCellWidth(sdc, cellWidth, 1, j);
                         widthRemainder--;
 
                     } else {
-                        sdc.setWidth(cellWidth + "px");
+                        //Haulmont API
+                        setSimpleDayCellWidth(sdc, cellWidth, 0, j);
                     }
                 }
 
@@ -173,6 +175,11 @@ public class MonthGrid extends FocusableGrid implements KeyDownHandler {
             }
             heightRemainder--;
         }
+    }
+
+    //Haulmont API
+    protected void setSimpleDayCellWidth(SimpleDayCell sdc, int cellWidth, int add, int j) {
+            sdc.setWidth((cellWidth + add) + "px");
     }
 
     /**
