@@ -76,7 +76,11 @@ public class TextFieldConnector extends AbstractFieldConnector
             getWidget().sinkEvents(VTextField.TEXTCHANGE_EVENTS);
             getWidget().attachCutEventListener(getWidget().getElement());
         }
-        getWidget().setColumns(getState().columns);
+
+        if (isUndefinedWidth()) {
+            // Prefer width over colums
+            getWidget().setColumns(getState().columns);
+        }
 
         String text = getState().text;
         if (text == null) {
@@ -126,5 +130,4 @@ public class TextFieldConnector extends AbstractFieldConnector
     public void flush() {
         getWidget().valueChange(false);
     }
-
 }
