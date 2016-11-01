@@ -160,6 +160,9 @@ public abstract class AbstractField<T> extends AbstractComponent
      */
     private Locale valueLocale = null;
 
+    // Haulmont API
+    private boolean showBufferedSourceException = true;
+
     /* Component basics */
 
     /*
@@ -253,11 +256,13 @@ public abstract class AbstractField<T> extends AbstractComponent
                     committingValueToDataSource = true;
                     getPropertyDataSource().setValue(getConvertedValue());
                 } catch (final Throwable e) {
-
                     // Sets the buffering state.
                     SourceException sourceException = new Buffered.SourceException(
                             this, e);
-                    setCurrentBufferedSourceException(sourceException);
+                    // Haulmont API
+                    if (showBufferedSourceException) {
+                        setCurrentBufferedSourceException(sourceException);
+                    }
 
                     // Throws the source exception.
                     throw sourceException;
@@ -669,10 +674,13 @@ public abstract class AbstractField<T> extends AbstractComponent
                 setCurrentBufferedSourceException(null);
             }
         } catch (final Throwable e) {
-            setCurrentBufferedSourceException(
-                    new Buffered.SourceException(this, e));
+            // Haulmont API
+            SourceException sourceException = new SourceException(this, e);
+            if (showBufferedSourceException) {
+                setCurrentBufferedSourceException(sourceException);
+            }
             setModified(true);
-            throw getCurrentBufferedSourceException();
+            throw sourceException;
         }
 
         // Listen to new data source if possible
@@ -1590,6 +1598,16 @@ public abstract class AbstractField<T> extends AbstractComponent
             markAsDirty();
             validationVisible = validateAutomatically;
         }
+    }
+
+    // Haulmont API
+    public boolean isShowBufferedSourceException() {
+        return showBufferedSourceException;
+    }
+
+    // Haulmont API
+    public void setShowBufferedSourceException(boolean showBufferedSourceException) {
+        this.showBufferedSourceException = showBufferedSourceException;
     }
 
     /**
