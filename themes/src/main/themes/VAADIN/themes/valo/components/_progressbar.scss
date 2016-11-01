@@ -3,6 +3,7 @@
  * @group progressbar
  */
 $v-progressbar-border-radius: $v-border-radius !default;
+$v-progressbar-define-indeterminate: true !default;
 
 
 /**
@@ -44,14 +45,15 @@ $v-progressbar-border-radius: $v-border-radius !default;
     }
   }
 
-  .#{$primary-stylename}-indeterminate {
-    @include valo-spinner;
-    
-    .#{$primary-stylename}-wrapper {
-      display: none;
+  @if($v-progressbar-define-indeterminate) {
+    .#{$primary-stylename}-indeterminate {
+      @include valo-spinner;
+
+      .#{$primary-stylename}-wrapper {
+        display: none;
+      }
     }
   }
-
 }
 
 
