@@ -695,7 +695,8 @@ public class CalendarConnector extends AbstractComponentConnector
         updateSizes();
     }
 
-    private void updateSizes() {
+    //Haulmont API
+    protected void updateSizes() {
         int height = getLayoutManager()
                 .getOuterHeight(getWidget().getElement());
         int width = getLayoutManager().getOuterWidth(getWidget().getElement());
