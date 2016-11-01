@@ -607,6 +607,11 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         boolean scrollSizeBecomesSmallerThanOffsetSize = showsScrollHandle()
                 && newScrollSizeIsSmallerThanOffsetSize;
         if (scrollSizeBecomesSmallerThanOffsetSize && getScrollPos() != 0) {
+            // remove previous before adding new
+            if (scrollSizeTemporaryScrollHandler != null) {
+                scrollSizeTemporaryScrollHandler.removeHandler();
+            }
+
             // must be a field because Java insists.
             scrollSizeTemporaryScrollHandler = addScrollHandler(new ScrollHandler() {
                 @Override
@@ -717,6 +722,8 @@ public abstract class ScrollbarBundle implements DeferredWorker {
      * @return <code>true</code> iff the scrollbar's handle is visible
      */
     public boolean showsScrollHandle() {
+
+
         return getScrollSize() - getOffsetSize() > WidgetUtil.PIXEL_EPSILON;
     }
 
