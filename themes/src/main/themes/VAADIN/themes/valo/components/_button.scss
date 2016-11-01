@@ -6,10 +6,13 @@
  *
  * @group button
  */
+
+$v-button-font-color: null !default;
+
 @mixin valo-button ($primary-stylename: v-button, $include-additional-styles: contains($v-included-additional-styles, button)) {
   .#{$primary-stylename} {
     @include valo-button-static-style;
-    @include valo-button-style;
+    @include valo-button-style($font-color: $v-button-font-color);
   }
 
 
