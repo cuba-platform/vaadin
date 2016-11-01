@@ -282,6 +282,11 @@ public class FileUploadHandler implements RequestHandler {
             session.unlock();
         }
 
+        // Haulmont API
+        if (!isSuitableUploadComponent(source)) {
+            return false;
+        }
+
         String contentType = request.getContentType();
         if (contentType.contains("boundary")) {
             String boundary = null;
@@ -305,6 +310,11 @@ public class FileUploadHandler implements RequestHandler {
             doHandleXhrFilePost(session, request, response, streamVariable,
                     variableName, source, getContentLength(request));
         }
+        return true;
+    }
+
+    // Haulmont API
+    protected boolean isSuitableUploadComponent(ClientConnector source) {
         return true;
     }
 
@@ -422,8 +432,7 @@ public class FileUploadHandler implements RequestHandler {
             session.getCommunicationManager()
                     .handleConnectorRelatedException(owner, e);
         }
-        sendUploadResponse(request, response);
-
+        sendUploadResponse(request, response, filename, contentLength);
     }
 
     /*
@@ -528,7 +537,7 @@ public class FileUploadHandler implements RequestHandler {
             session.getCommunicationManager()
                     .handleConnectorRelatedException(owner, e);
         }
-        sendUploadResponse(request, response);
+        sendUploadResponse(request, response, filename, contentLength);
     }
 
     /**
@@ -687,12 +696,15 @@ public class FileUploadHandler implements RequestHandler {
     /**
      * TODO document
      *
+     * Haulmont API dependency
+     * Added parameters
+     *
      * @param request
      * @param response
      * @throws IOException
      */
     protected void sendUploadResponse(VaadinRequest request,
-            VaadinResponse response) throws IOException {
+            VaadinResponse response, String fileName, long contentLength) throws IOException {
         response.setContentType("text/html");
         final OutputStream out = response.getOutputStream();
         final PrintWriter outWriter = new PrintWriter(
