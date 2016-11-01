@@ -641,6 +641,7 @@ public class VTree extends FocusElementPanel
             }
         }
 
+        //Haulmont API dependency
         /**
          * Handles mouse selection
          *
@@ -650,7 +651,7 @@ public class VTree extends FocusElementPanel
          *            Was the shift-key pressed
          * @return Returns true if event was handled, else false
          */
-        private boolean handleClickSelection(final boolean ctrl,
+        protected boolean handleClickSelection(final boolean ctrl,
                 final boolean shift) {
 
             // always when clicking an item, focus it
