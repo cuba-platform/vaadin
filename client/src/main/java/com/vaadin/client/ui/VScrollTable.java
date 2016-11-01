@@ -4919,7 +4919,8 @@ public class VScrollTable extends FlowPanel
 
         private double rowHeight = -1;
 
-        private final LinkedList<Widget> renderedRows = new LinkedList<Widget>();
+        // Haulmont API dependency
+        protected final LinkedList<Widget> renderedRows = new LinkedList<Widget>();
 
         /**
          * Due some optimizations row height measuring is deferred and initial
@@ -5483,6 +5484,10 @@ public class VScrollTable extends FlowPanel
                     return 0;
                 }
                 for (Widget row : renderedRows) {
+                    if (isGeneratedRow(row)) {
+                        continue;
+                    }
+
                     if (!(row instanceof VScrollTableGeneratedRow)) {
                         TableRowElement tr = row.getElement().cast();
 
@@ -5504,6 +5509,11 @@ public class VScrollTable extends FlowPanel
             } else {
                 return 0;
             }
+        }
+
+        // Haulmont API
+        public boolean isGeneratedRow(Widget row) {
+            return false;
         }
 
         /**
