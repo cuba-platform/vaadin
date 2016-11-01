@@ -93,6 +93,7 @@ import com.vaadin.client.Util;
 import com.vaadin.client.VConsole;
 import com.vaadin.client.VTooltip;
 import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.ui.VScrollTable.VScrollTableBody.VScrollTableRow;
 import com.vaadin.client.ui.dd.DDUtil;
 import com.vaadin.client.ui.dd.VAbstractDropHandler;
@@ -7280,6 +7281,8 @@ public class VScrollTable extends FlowPanel
                     extraSpace = Math.max(availW - usedMinimumWidth, 0);
                 }
             }
+            // Haulmont API
+            boolean colWidthChanged = false;
 
             // we have some space that can be divided optimally
             HeaderCell hCell;
@@ -7316,11 +7319,15 @@ public class VScrollTable extends FlowPanel
                     checksum += newSpace;
                     setColWidth(colIndex, newSpace, false);
 
+                    colWidthChanged = true;
+
                 } else {
                     if (hierarchyHeaderInNeedOfFurtherHandling == hCell) {
                         // defined with enforced into indent width
                         checksum += hierarchyColumnIndent;
                         setColWidth(colIndex, hierarchyColumnIndent, false);
+                        // Haulmont API
+                        colWidthChanged = true;
                     } else {
                         int cellWidth = hCell.getWidthWithIndent();
                         checksum += cellWidth;
@@ -7328,6 +7335,8 @@ public class VScrollTable extends FlowPanel
                             // update in case the indent has changed
                             // (not detectable earlier)
                             setColWidth(colIndex, cellWidth, true);
+                            // Haulmont API
+                            colWidthChanged = true;
                         }
                     }
                 }
@@ -7348,6 +7357,9 @@ public class VScrollTable extends FlowPanel
                         setColWidth(colIndex,
                                 hc.getWidthWithIndent() + availW - checksum,
                                 false);
+
+                        // Haulmont API
+                        colWidthChanged = true;
                         break;
                     }
                     colIndex++;
@@ -7371,9 +7383,18 @@ public class VScrollTable extends FlowPanel
             }
 
             forceRealignColumnHeaders();
-        }
 
+            if (colWidthChanged) {
+                // Haulmont API
+                scheduleLayoutForChildWidgets();
+            }
+        }
     };
+
+    // Haulmont API
+    public void scheduleLayoutForChildWidgets() {
+        // implement in descendants
+    }
 
     private void forceRealignColumnHeaders() {
         if (BrowserInfo.get().isIE()) {
