@@ -15,7 +15,10 @@
  */
 package com.vaadin.client.ui;
 
+import com.google.gwt.dom.client.Element;
 import com.vaadin.client.StyleConstants;
+import com.vaadin.client.TooltipInfo;
+import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.AbstractFieldState;
 
 public abstract class AbstractFieldConnector
@@ -33,6 +36,31 @@ public abstract class AbstractFieldConnector
 
     public boolean isModified() {
         return getState().modified;
+    }
+
+    // Haulmont API
+    public boolean isShowErrorForDisabledState() {
+        return getState().showErrorForDisabledState;
+    }
+
+    @Override
+    public TooltipInfo getTooltipInfo(Element element) {
+        TooltipInfo info = super.getTooltipInfo(element);
+        if (!isEnabled() && !isShowErrorForDisabledState()) {
+            info.setErrorMessage(null);
+        }
+        return info;
+    }
+
+    @Override
+    public boolean hasTooltip() {
+        if (isEnabled()) {
+            return super.hasTooltip();
+        } else {
+            AbstractComponentState state = getState();
+            return state.description != null && !state.description.equals("")
+                    || isShowErrorForDisabledState() && state.errorMessage != null && !state.errorMessage.equals("");
+        }
     }
 
     /**

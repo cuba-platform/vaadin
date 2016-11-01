@@ -1513,6 +1513,18 @@ public abstract class AbstractField<T> extends AbstractComponent
         }
     }
 
+    // Haulmont API
+    public boolean isShowErrorForDisabledState() {
+        return getState(false).showErrorForDisabledState;
+    }
+
+    // Haulmont API
+    public void setShowErrorForDisabledState(boolean show) {
+        if (getState(false).showErrorForDisabledState != show) {
+            getState().showErrorForDisabledState = show;
+        }
+    }
+
     /**
      * Set the error that is show if this field is required, but empty. When
      * setting requiredMessage to be "" or null, no error pop-up or exclamation

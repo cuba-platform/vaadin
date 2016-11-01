@@ -29,4 +29,6 @@ public class AbstractFieldState extends TabIndexState {
     public boolean hideErrors = false;
     public boolean required = false;
     public boolean modified = false;
+    // Haulmont API
+    public boolean showErrorForDisabledState = true;
 }
