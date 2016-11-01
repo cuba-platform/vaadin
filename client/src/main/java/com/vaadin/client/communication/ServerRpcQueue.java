@@ -98,6 +98,20 @@ public class ServerRpcQueue {
         }
     }
 
+    // Haulmont API
+    public void removeMatching(ApplicationConnection.MethodInvocationFilter invocationFilter,
+                               ApplicationConnection.RemoveMethodInvocationCallback callback) {
+        Iterator<MethodInvocation> iter = pendingInvocations.values()
+                .iterator();
+        while (iter.hasNext()) {
+            MethodInvocation mi = iter.next();
+            if (invocationFilter.apply(mi)) {
+                iter.remove();
+                callback.removed(mi);
+            }
+        }
+    }
+
     /**
      * Adds an explicit RPC method invocation to the send queue.
      *
