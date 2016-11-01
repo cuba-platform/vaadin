@@ -1451,7 +1451,8 @@ public class VScrollTable extends FlowPanel
         scrollBodyPanel.getElement().getStyle().setOverflowY(Overflow.HIDDEN);
     }
 
-    private boolean isLazyScrollerActive() {
+    // Haulmont API dependency
+    protected boolean isLazyScrollerActive() {
         return lazyScrollerIsActive;
     }
 
@@ -2035,7 +2036,8 @@ public class VScrollTable extends FlowPanel
         return false;
     }
 
-    private String getColKeyByIndex(int index) {
+    // Haulmont API dependency
+    protected String getColKeyByIndex(int index) {
         return tHead.getHeaderCell(index).getColKey();
     }
 
@@ -2086,7 +2088,8 @@ public class VScrollTable extends FlowPanel
         scrollBody.setColWidth(colIndex, w);
     }
 
-    private int getColWidth(String colKey) {
+    // Haulmont API dependency
+    protected int getColWidth(String colKey) {
         return tHead.getHeaderCell(colKey).getWidthWithIndent();
     }
 
@@ -7425,6 +7428,7 @@ public class VScrollTable extends FlowPanel
             containerHeight -= showColHeaders ? tHead.getOffsetHeight() : 0;
             containerHeight -= tFoot.getOffsetHeight();
             containerHeight -= getContentAreaBorderHeight();
+            containerHeight -= getAdditionalRowsHeight();
             if (containerHeight < 0) {
                 containerHeight = 0;
             }
@@ -7438,7 +7442,8 @@ public class VScrollTable extends FlowPanel
     }
 
     private int contentAreaBorderHeight = -1;
-    private int scrollLeft;
+    // Haulmont API dependency
+    protected int scrollLeft;
     private int scrollTop;
 
     /** For internal use only. May be removed or replaced in the future. */
@@ -7467,6 +7472,11 @@ public class VScrollTable extends FlowPanel
             scrollBodyPanel.getElement().getStyle().setOverflow(Overflow.AUTO);
         }
         return contentAreaBorderHeight;
+    }
+
+    // Haulmont API
+    public int getAdditionalRowsHeight() {
+        return 0;
     }
 
     @Override
