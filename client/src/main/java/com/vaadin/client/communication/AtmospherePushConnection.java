@@ -611,7 +611,11 @@ public class AtmospherePushConnection implements PushConnection {
             pushJs = ApplicationConstants.VAADIN_PUSH_DEBUG_JS;
         }
         // Parameter appended to bypass caches after version upgrade.
-        pushJs += "?v=" + Version.getFullVersion();
+        String version = "?v=" + Version.getFullVersion();
+        if (connection.getConfiguration().getApplicationVersion() != null) {
+            version = "?v" + connection.getConfiguration().getApplicationVersion();
+        }
+        pushJs += version;
         return pushJs;
     }
 

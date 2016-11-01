@@ -17,6 +17,8 @@
 package com.vaadin.client;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -63,6 +65,7 @@ import com.vaadin.client.ui.ui.UIConnector;
 import com.vaadin.shared.VaadinUriResolver;
 import com.vaadin.shared.Version;
 import com.vaadin.shared.communication.LegacyChangeVariablesInvocation;
+import com.vaadin.shared.communication.MethodInvocation;
 import com.vaadin.shared.util.SharedUtil;
 
 /**
@@ -780,8 +783,13 @@ public class ApplicationConnection implements HasHandlers {
             }
         };
         ResourceLoader loader = ResourceLoader.get();
+        String version = "";
+        if (configuration.getApplicationVersion() != null) {
+            version = "?v=" + configuration.getApplicationVersion();
+        }
+
         for (int i = 0; i < dependencies.length(); i++) {
-            String url = translateVaadinUri(dependencies.get(i));
+            String url = translateVaadinUri(dependencies.get(i)) + version;
             ApplicationConfiguration.startDependencyLoading();
             loader.loadStylesheet(url, resourceLoadListener);
         }
@@ -792,12 +800,18 @@ public class ApplicationConnection implements HasHandlers {
             return;
         }
 
+        String version = "";
+        if (configuration.getApplicationVersion() != null) {
+            version = "?v=" + configuration.getApplicationVersion();
+        }
+
         // Listener that loads the next when one is completed
+        final String finalVersion = version;
         ResourceLoadListener resourceLoadListener = new ResourceLoadListener() {
             @Override
             public void onLoad(ResourceLoadEvent event) {
                 if (dependencies.length() != 0) {
-                    String url = translateVaadinUri(dependencies.shift());
+                    String url = translateVaadinUri(dependencies.shift()) + finalVersion;
                     ApplicationConfiguration.startDependencyLoading();
                     // Load next in chain (hopefully already preloaded)
                     event.getResourceLoader().loadScript(url, this);
@@ -818,19 +832,19 @@ public class ApplicationConnection implements HasHandlers {
         ResourceLoader loader = ResourceLoader.get();
 
         // Start chain by loading first
-        String url = translateVaadinUri(dependencies.shift());
+        String url = translateVaadinUri(dependencies.shift()) + version;
         ApplicationConfiguration.startDependencyLoading();
         loader.loadScript(url, resourceLoadListener);
 
         if (ResourceLoader.supportsInOrderScriptExecution()) {
             for (int i = 0; i < dependencies.length(); i++) {
-                String preloadUrl = translateVaadinUri(dependencies.get(i));
+                String preloadUrl = translateVaadinUri(dependencies.get(i)) + version;
                 loader.loadScript(preloadUrl, null);
             }
         } else {
             // Preload all remaining
             for (int i = 0; i < dependencies.length(); i++) {
-                String preloadUrl = translateVaadinUri(dependencies.get(i));
+                String preloadUrl = translateVaadinUri(dependencies.get(i)) + version;
                 loader.preloadResource(preloadUrl, null);
             }
         }

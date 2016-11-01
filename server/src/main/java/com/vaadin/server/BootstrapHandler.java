@@ -539,6 +539,9 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
 
         // Parameter appended to JS to bypass caches after version upgrade.
         String versionQueryParam = "?v=" + Version.getFullVersion();
+        if (vaadinService.getApplicationVersion() != null) {
+            versionQueryParam = "?v" + vaadinService.getApplicationVersion();
+        }
 
         if (context.getPushMode().isEnabled()) {
             // Load client-side dependencies for push support
