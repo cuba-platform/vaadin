@@ -126,6 +126,7 @@ public class ShortcutActionHandler {
         final ComponentConnector finalTarget = getTargetConnector(target, et);
 
         event.preventDefault();
+        event.stopPropagation();
 
         /*
          * The focused component might have unpublished changes, try to
