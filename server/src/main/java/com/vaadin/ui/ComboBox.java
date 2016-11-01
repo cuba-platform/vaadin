@@ -760,7 +760,7 @@ public class ComboBox extends AbstractSelect
                 filterstring = filterstring.toLowerCase(getLocale());
             }
             requestRepaint();
-            requestRepaintOptions();
+            requestRepaintOptions(newFilter);
         } else if (isNewItemsAllowed()) {
             // New option entered (and it is allowed)
             final String newitem = (String) variables.get("newitem");
@@ -782,7 +782,7 @@ public class ComboBox extends AbstractSelect
     }
 
     // Haulmont API dependency
-    protected void requestRepaintOptions() {
+    protected void requestRepaintOptions(String caseSensitiveFilter) {
 
     }
 
