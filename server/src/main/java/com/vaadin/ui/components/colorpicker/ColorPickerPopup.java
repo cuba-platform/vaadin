@@ -453,8 +453,9 @@ public class ColorPickerPopup extends Window
      * Creates the select tab.
      *
      * @return the component
+     * Haulmont API dependency
      */
-    private Component createSelectTab() {
+    protected Component createSelectTab() {
         VerticalLayout selLayout = new VerticalLayout();
         selLayout.setMargin(new MarginInfo(false, false, true, false));
         selLayout.addComponent(selPreview);
