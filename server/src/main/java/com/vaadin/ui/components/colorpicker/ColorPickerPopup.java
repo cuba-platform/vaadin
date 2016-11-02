@@ -95,35 +95,55 @@ public class ColorPickerPopup extends Window
     /** The history container. */
     private Layout historyContainer;
 
-    /** The rgb gradient. */
-    private ColorPickerGradient rgbGradient;
+    /** The rgb gradient.
+     * Haulmont API dependency
+     */
+    protected ColorPickerGradient rgbGradient;
 
-    /** The hsv gradient. */
-    private ColorPickerGradient hsvGradient;
+    /** The hsv gradient.
+     * Haulmont API dependency
+     */
+    protected ColorPickerGradient hsvGradient;
 
-    /** The red slider. */
-    private Slider redSlider;
+    /** The red slider.
+     * Haulmont API dependency
+     */
+    protected Slider redSlider;
 
-    /** The green slider. */
-    private Slider greenSlider;
+    /** The green slider.
+     * Haulmont API dependency
+     */
+    protected Slider greenSlider;
 
-    /** The blue slider. */
-    private Slider blueSlider;
+    /** The blue slider.
+     * Haulmont API dependency
+     */
+    protected Slider blueSlider;
 
-    /** The hue slider. */
-    private Slider hueSlider;
+    /** The hue slider.
+     * Haulmont API dependency
+     */
+    protected Slider hueSlider;
 
-    /** The saturation slider. */
-    private Slider saturationSlider;
+    /** The saturation slider.
+     * Haulmont API dependency
+     */
+    protected Slider saturationSlider;
 
-    /** The value slider. */
-    private Slider valueSlider;
+    /** The value slider.
+     * Haulmont API dependency
+     */
+    protected Slider valueSlider;
 
-    /** The preview on the rgb tab. */
-    private ColorPickerPreview rgbPreview;
+    /** The preview on the rgb tab.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPreview rgbPreview;
 
-    /** The preview on the hsv tab. */
-    private ColorPickerPreview hsvPreview;
+    /** The preview on the hsv tab.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPreview hsvPreview;
 
     /** The preview on the swatches tab. */
     private ColorPickerPreview selPreview;
@@ -140,8 +160,10 @@ public class ColorPickerPopup extends Window
      * otherwise the set color may become corrupted as it is repeatedly re-set
      * in valueChangeListeners using values from sliders that may not have been
      * updated yet.
+     *
+     * Haulmont API dependency
      */
-    private boolean updatingColors = false;
+    protected boolean updatingColors = false;
 
     private ColorPickerPopup() {
         // Set the layout
@@ -258,8 +280,9 @@ public class ColorPickerPopup extends Window
      * Creates the RGB tab.
      *
      * @return the component
+     * Haulmont API dependency
      */
-    private Component createRGBTab(Color color) {
+    protected Component createRGBTab(Color color) {
         VerticalLayout rgbLayout = new VerticalLayout();
         rgbLayout.setMargin(new MarginInfo(false, false, true, false));
         rgbLayout.addComponent(rgbPreview);
@@ -326,7 +349,10 @@ public class ColorPickerPopup extends Window
         return rgbLayout;
     }
 
-    private Slider createRGBSlider(String caption, String styleName) {
+    /**
+     * Haulmont API dependency
+     */
+    protected Slider createRGBSlider(String caption, String styleName) {
         Slider redSlider = new Slider(caption, 0, 255);
         redSlider.setImmediate(true);
         redSlider.setStyleName("rgb-slider");
@@ -339,8 +365,9 @@ public class ColorPickerPopup extends Window
      * Creates the hsv tab.
      *
      * @return the component
+     * Haulmont API dependency
      */
-    private Component createHSVTab(Color color) {
+    protected Component createHSVTab(Color color) {
         VerticalLayout hsvLayout = new VerticalLayout();
         hsvLayout.setMargin(new MarginInfo(false, false, true, false));
         hsvLayout.addComponent(hsvPreview);
@@ -569,7 +596,10 @@ public class ColorPickerPopup extends Window
         }
     }
 
-    private void setRgbSliderValues(Color color) {
+    /**
+     * Haulmont API dependency
+     */
+    protected void setRgbSliderValues(Color color) {
         try {
             redSlider.setValue(((Integer) color.getRed()).doubleValue());
             blueSlider.setValue(((Integer) color.getBlue()).doubleValue());
@@ -582,7 +612,10 @@ public class ColorPickerPopup extends Window
         }
     }
 
-    private void setHsvSliderValues(float[] hsv) {
+    /**
+     * Haulmont API dependency
+     */
+    protected void setHsvSliderValues(float[] hsv) {
         try {
             hueSlider.setValue(((Float) (hsv[0] * 360f)).doubleValue());
             saturationSlider.setValue(((Float) (hsv[1] * 100f)).doubleValue());
@@ -601,6 +634,48 @@ public class ColorPickerPopup extends Window
     @Override
     public void removeColorChangeListener(ColorChangeListener listener) {
         removeListener(ColorChangeEvent.class, listener);
+    }
+
+    /** Setting the red slider caption.
+     * Haulmont API dependency
+     */
+    public void setRedSliderCaption(String caption) {
+        redSlider.setCaption(caption);
+    }
+
+    /** Setting the green slider caption.
+     * Haulmont API dependency
+     */
+    public void setGreenSliderCaption(String caption) {
+        greenSlider.setCaption(caption);
+    }
+
+    /** Setting the blue slider caption.
+     * Haulmont API dependency
+     */
+    public void setBlueSliderCaption(String caption) {
+        blueSlider.setCaption(caption);
+    }
+
+    /** Setting the hue slider caption.
+     * Haulmont API dependency
+     */
+    public void setHueSliderCaption(String caption) {
+        hueSlider.setCaption(caption);
+    }
+
+    /** Setting the saturation slider caption.
+     * Haulmont API dependency
+     */
+    public void setSaturationSliderCaption(String caption) {
+        saturationSlider.setCaption(caption);
+    }
+
+    /** Setting the value slider caption.
+     * Haulmont API dependency
+     */
+    public void setValueSliderCaption(String caption) {
+        valueSlider.setCaption(caption);
     }
 
     /**
@@ -711,8 +786,10 @@ public class ColorPickerPopup extends Window
         selPreview.setVisible(visible);
     }
 
-    /** RGB color converter */
-    private Coordinates2Color RGBConverter = new Coordinates2Color() {
+    /** RGB color converter
+     * Haulmont API dependency
+     */
+    protected Coordinates2Color RGBConverter = new Coordinates2Color() {
 
         @Override
         public Color calculate(int x, int y) {
@@ -748,8 +825,10 @@ public class ColorPickerPopup extends Window
         }
     };
 
-    /** HSV color converter */
-    Coordinates2Color HSVConverter = new Coordinates2Color() {
+    /** HSV color converter
+     * Haulmont API dependency
+     */
+    protected Coordinates2Color HSVConverter = new Coordinates2Color() {
         @Override
         public int[] calculate(Color color) {
 
