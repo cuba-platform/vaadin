@@ -102,11 +102,17 @@ public class VRichTextArea extends Composite
         TouchScrollDelegate.enableTouchScrolling(html, html.getElement());
     }
 
+    //Haulmont API
+    protected void createRichTextToolbar(RichTextArea rta) {
+        formatter = new VRichTextToolbar(rta);
+    }
+
     private void createRTAComponents() {
         rta = new RichTextArea();
         rta.setWidth("100%");
         rta.addKeyDownHandler(this);
-        formatter = new VRichTextToolbar(rta);
+        //Haulmont API
+        createRichTextToolbar(rta);
 
         // Add blur handlers
         for (Entry<BlurHandler, HandlerRegistration> handler : blurHandlers
