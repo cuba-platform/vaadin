@@ -3979,7 +3979,8 @@ public class Table extends AbstractSelect implements Action.Container,
         return true;
     }
 
-    private void paintRow(PaintTarget target, final Object[][] cells,
+    // Haulmont API
+    protected void paintRow(PaintTarget target, final Object[][] cells,
             final boolean iseditable, final Set<Action> actionSet,
             final boolean[] iscomponent, int indexInRowbuffer,
             final Object itemId) throws PaintException {
