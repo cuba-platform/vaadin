@@ -285,6 +285,9 @@ public abstract class AbstractSelect extends AbstractField<Object> implements
     private boolean nullSelectionAllowed = true;
     private NewItemHandler newItemHandler;
 
+    // Haulmont API
+    protected boolean resetValueToNullOnContainerChange = true;
+
     // Caption (Item / Property) change listeners
     CaptionChangeListener captionChangeListener;
 
@@ -1039,6 +1042,8 @@ public abstract class AbstractSelect extends AbstractField<Object> implements
      */
     @Override
     public void setContainerDataSource(Container newDataSource) {
+        Object oldValue = getValue();
+
         if (newDataSource == null) {
             newDataSource = new IndexedContainer();
         }
@@ -1081,10 +1086,12 @@ public abstract class AbstractSelect extends AbstractField<Object> implements
              * We expect changing the data source should also clean value. See
              * #810, #4607, #5281
              */
-            setValue(null);
+            // Haulmont API
+            if (resetValueToNullOnContainerChange || !newDataSource.containsId(oldValue)) {
+                setValue(null);
+            }
 
             markAsDirty();
-
         }
     }
 
