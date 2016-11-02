@@ -65,7 +65,7 @@ public class WeekGrid extends SimplePanel {
     public WeekGrid(VCalendar parent, boolean format24h) {
         setCalendar(parent);
         content = new HorizontalPanel();
-        timebar = new Timebar(format24h);
+        timebar = createTimebar(format24h);
         content.add(timebar);
 
         wrapper = new SimplePanel();
@@ -73,6 +73,11 @@ public class WeekGrid extends SimplePanel {
         wrapper.add(content);
 
         setWidget(wrapper);
+    }
+
+    //Haulmont API
+    protected Timebar createTimebar(boolean format24h) {
+        return new Timebar(format24h);
     }
 
     private void setVerticalScroll(boolean isVerticalScrollEnabled) {
@@ -592,7 +597,7 @@ public class WeekGrid extends SimplePanel {
             slotCellHeights = cellHeights;
         }
 
-        private void createTimeBar(boolean format24h) {
+        protected void createTimeBar(boolean format24h) {
             setStylePrimaryName("v-calendar-times");
 
             // Fist "time" is empty
@@ -646,7 +651,7 @@ public class WeekGrid extends SimplePanel {
             createTimeBar(format24h);
         }
 
-        private void clear() {
+        protected void clear() {
             while (getElement().getChildCount() > 0) {
                 getElement().removeChild(getElement().getChild(0));
             }
@@ -669,7 +674,7 @@ public class WeekGrid extends SimplePanel {
             }
         }
 
-        private void updateChildHeights() {
+        protected void updateChildHeights() {
             int childCount = getElement().getChildCount();
 
             if (height != -1) {
