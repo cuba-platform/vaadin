@@ -143,6 +143,14 @@ public abstract class AbstractClientConnector
         UI uI = getUI();
         if (uI != null) {
             uI.getConnectorTracker().markDirty(this);
+
+            // Haulmont API
+            if (!uI.getSession().hasLock()) {
+                IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
+                if (handler != null) {
+                    handler.incorrectConcurrentAccess();
+                }
+            }
         }
     }
 
@@ -266,9 +274,10 @@ public abstract class AbstractClientConnector
                 ui.getConnectorTracker().markDirty(this);
             }
 
-            if (VaadinSession.getCurrent() == null || !VaadinSession.getCurrent().hasLock()) {
+            // Haulmont API
+            if (ui == null || !ui.getSession().hasLock()) {
                 IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
-                if (getUI() != null && handler != null) {
+                if (handler != null) {
                     handler.incorrectConcurrentAccess();
                 }
             }
