@@ -821,7 +821,8 @@ public class VTabsheet extends VTabsheetBase
     /** For internal use only. May be removed or replaced in the future. */
     public final Element contentNode;
 
-    private final Element deco;
+    // Haulmont API
+    protected final Element deco;
 
     /** For internal use only. May be removed or replaced in the future. */
     public boolean waitingForResponse;
