@@ -648,6 +648,10 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         boolean scrollSizeBecomesSmallerThanOffsetSize = showsScrollHandle()
                 && newScrollSizeIsSmallerThanOffsetSize;
         if (scrollSizeBecomesSmallerThanOffsetSize && getScrollPos() != 0) {
+            // remove previous before adding new
+            if (scrollSizeTemporaryScrollHandler != null) {
+                scrollSizeTemporaryScrollHandler.removeHandler();
+            }
             /*
              * For whatever reason, Firefox loses the scroll event in this case
              * and the onscroll handler is never called (happens when reducing
