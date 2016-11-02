@@ -113,6 +113,7 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
         for (String servletName : regs.keySet()) {
             ServletRegistration servletRegistration = regs.get(servletName);
 
+            // Haulmont API important fix for Atmosphere Support in multi-servlet environment
             if (isVaadinServlet(servletRegistration, servletContext)) {
                 try {
                     initAtmosphereForVaadinServlet(servletRegistration,
@@ -188,13 +189,14 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
      * Tries to determine if the given servlet registration refers to a Vaadin
      * servlet.
      *
+     * Haulmont API
+     *
      * @param servletRegistration
      *            The servlet registration info for the servlet
      * @return false if the servlet is definitely not a Vaadin servlet, true
      *         otherwise
      */
-    protected boolean isVaadinServlet(ServletRegistration servletRegistration,
-            ServletContext servletContext) {
+    protected boolean isVaadinServlet(ServletRegistration servletRegistration, ServletContext servletContext) {
         try {
             String servletClassName = servletRegistration.getClassName();
             if (servletClassName.equals("com.ibm.ws.wsoc.WsocServlet")) {
