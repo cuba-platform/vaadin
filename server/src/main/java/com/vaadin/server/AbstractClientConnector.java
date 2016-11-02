@@ -102,6 +102,8 @@ public abstract class AbstractClientConnector
     private static final Map<Class<? extends AbstractClientConnector>, Class<? extends SharedState>> STATE_TYPE_CACHE = Collections
             .synchronizedMap(new WeakHashMap<>());
 
+    private static volatile IncorrectConcurrentAccessHandler incorrectConcurrentAccessHandler;
+
     @Override
     public Registration addAttachListener(AttachListener listener) {
         return addListener(AttachEvent.ATTACH_EVENT_IDENTIFIER,
@@ -151,6 +153,15 @@ public abstract class AbstractClientConnector
         UI uI = getUI();
         if (uI != null) {
             uI.getConnectorTracker().markDirty(this);
+
+            // Haulmont API
+            VaadinSession session = uI.getSession();
+            if (session != null && !session.hasLock()) {
+                IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
+                if (handler != null) {
+                    handler.incorrectConcurrentAccess();
+                }
+            }
         }
     }
 
@@ -272,6 +283,17 @@ public abstract class AbstractClientConnector
             if (ui != null && !ui.getConnectorTracker().isDirty(this)
                     && !ui.getConnectorTracker().isWritingResponse()) {
                 ui.getConnectorTracker().markDirty(this);
+            }
+
+            // Haulmont API
+            if (ui != null) {
+                VaadinSession session = ui.getSession();
+                if (session != null && !session.hasLock()) {
+                    IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
+                    if (handler != null) {
+                        handler.incorrectConcurrentAccess();
+                    }
+                }
             }
         }
         return sharedState;
@@ -1109,5 +1131,20 @@ public abstract class AbstractClientConnector
                 + propertyName;
 
         diffState.put(propertyName, newValue);
+    }
+
+    // Haulmont API
+    public interface IncorrectConcurrentAccessHandler {
+        void incorrectConcurrentAccess();
+    }
+
+    // Haulmont API
+    public static IncorrectConcurrentAccessHandler getIncorrectConcurrentAccessHandler() {
+        return incorrectConcurrentAccessHandler;
+    }
+
+    // Haulmont API
+    public static void setIncorrectConcurrentAccessHandler(IncorrectConcurrentAccessHandler incorrectConcurrentAccessHandler) {
+        AbstractClientConnector.incorrectConcurrentAccessHandler = incorrectConcurrentAccessHandler;
     }
 }
