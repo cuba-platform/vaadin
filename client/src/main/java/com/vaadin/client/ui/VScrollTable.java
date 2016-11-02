@@ -342,9 +342,6 @@ public class VScrollTable extends FlowPanel
     // Haulmont API dependency
     protected boolean nullSelectionAllowed = true;
 
-    // Haulmont API dependency
-    protected boolean allowSingleSelectToggle = false;
-
     private SelectMode selectMode = SelectMode.NONE;
 
     public final HashSet<String> selectedRowKeys = new HashSet<String>();
@@ -6437,7 +6434,7 @@ public class VScrollTable extends FlowPanel
                                             toggleSelection();
                                         } else if ((isSingleSelectMode()
                                                 || isMultiSelectModeSimple())
-                                                && nullSelectionAllowed && allowSingleSelectToggle) { // Haulmont API
+                                                && nullSelectionAllowed && isAllowSingleSelectToggle()) { // Haulmont API
                                             toggleSelection();
                                         } /*
                                            * else NOP to avoid excessive server
@@ -7069,6 +7066,11 @@ public class VScrollTable extends FlowPanel
 
         }
 
+    }
+
+    // Haulmont API dependency
+    protected boolean isAllowSingleSelectToggle() {
+        return true;
     }
 
     /**
