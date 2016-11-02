@@ -67,14 +67,7 @@ import com.vaadin.client.ValueMap;
 import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.communication.StateChangeEvent.StateChangeHandler;
-import com.vaadin.client.ui.AbstractConnector;
-import com.vaadin.client.ui.AbstractSingleComponentContainerConnector;
-import com.vaadin.client.ui.ClickEventHandler;
-import com.vaadin.client.ui.ShortcutActionHandler;
-import com.vaadin.client.ui.VNotification;
-import com.vaadin.client.ui.VOverlay;
-import com.vaadin.client.ui.VUI;
-import com.vaadin.client.ui.VWindow;
+import com.vaadin.client.ui.*;
 import com.vaadin.client.ui.layout.MayScrollChildren;
 import com.vaadin.client.ui.window.WindowConnector;
 import com.vaadin.server.Page.Styles;
@@ -313,7 +306,7 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
                 for (final Iterator<?> it = childUidl.getChildIterator(); it
                         .hasNext();) {
                     final UIDL notification = (UIDL) it.next();
-                    VNotification.showNotification(client, notification);
+                    VNotification.showNotification(client, notification, getDelegate());
                 }
             } else if (tag == "css-injections") {
                 injectCSS(childUidl);
@@ -411,6 +404,11 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
                 }
             });
         }
+    }
+
+    // Haulmont API
+    protected NotificationDelegate getDelegate() {
+        return null;
     }
 
     /**
