@@ -155,6 +155,9 @@ public class MenuBarConnector extends AbstractComponentConnector
                 currentItem.setSubMenu(currentMenu);
             }
 
+            // Haulmont API
+            assignAdditionalMenuStyles(currentMenu, item);
+
             while (!itr.hasNext() && !iteratorStack.empty()) {
                 boolean hasCheckableItem = false;
                 for (VMenuBar.CustomMenuItem menuItem : currentMenu
@@ -178,6 +181,10 @@ public class MenuBarConnector extends AbstractComponentConnector
 
     // Haulmont API
     protected void assignAdditionalAttributes(VMenuBar.CustomMenuItem currentItem, UIDL item) {
+    }
+
+    // Haulmont API
+    protected void assignAdditionalMenuStyles(VMenuBar currentMenu, UIDL item) {
     }
 
     @Override
