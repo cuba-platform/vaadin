@@ -145,7 +145,8 @@ public abstract class AbstractClientConnector
             uI.getConnectorTracker().markDirty(this);
 
             // Haulmont API
-            if (!uI.getSession().hasLock()) {
+            VaadinSession session = uI.getSession();
+            if (session != null && !session.hasLock()) {
                 IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
                 if (handler != null) {
                     handler.incorrectConcurrentAccess();
@@ -275,10 +276,13 @@ public abstract class AbstractClientConnector
             }
 
             // Haulmont API
-            if (ui == null || !ui.getSession().hasLock()) {
-                IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
-                if (handler != null) {
-                    handler.incorrectConcurrentAccess();
+            if (ui != null) {
+                VaadinSession session = ui.getSession();
+                if (session != null && !session.hasLock()) {
+                    IncorrectConcurrentAccessHandler handler = incorrectConcurrentAccessHandler;
+                    if (handler != null) {
+                        handler.incorrectConcurrentAccess();
+                    }
                 }
             }
         }
