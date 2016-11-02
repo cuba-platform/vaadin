@@ -613,7 +613,8 @@ public class AtmospherePushConnection implements PushConnection {
         // Parameter appended to bypass caches after version upgrade.
         String version = "?v=" + Version.getFullVersion();
         if (connection.getConfiguration().getApplicationVersion() != null) {
-            version = "?v" + connection.getConfiguration().getApplicationVersion();
+            // Haulmont API application version from server support
+            version = "?v=" + connection.getConfiguration().getApplicationVersion();
         }
         pushJs += version;
         return pushJs;
