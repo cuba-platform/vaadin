@@ -49,6 +49,8 @@
 
         <jetty.version>9.3.7.v20160115</jetty.version>
         <phantomjs.version>2.1.1</phantomjs.version>
+
+        <repositoryUrl/>
     </properties>
 
     <!-- TODO: remove this after maven plugin has been released -->
@@ -93,6 +95,14 @@
         <!-- Nexus staging bug needs the last module to be deployed. -->
         <module>bom</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>vaadin.publishing.repository</id>
+            <name>Nexus Repository</name>
+            <url>${repositoryUrl}</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -344,6 +354,13 @@
                                         <include>**/*.java</include>
                                     </includes>
                                 </configuration>
+                            </execution>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
