@@ -1107,7 +1107,7 @@ public abstract class AbstractClientConnector
     }
 
     // Haulmont API
-    public interface IncorrectConcurrentAccessHandler {
+    public interface IncorrectConcurrentAccessHandler extends Serializable {
         void incorrectConcurrentAccess();
     }
 
