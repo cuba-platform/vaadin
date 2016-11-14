@@ -35,6 +35,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- Generated Version.java -->
             <plugin>
@@ -94,10 +100,6 @@
                         <configuration>
                             <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                             <resources>
-                                <resource>
-                                    <directory>src/main/java</directory>
-                                    <filtering>false</filtering>
-                                </resource>
                                 <resource>
                                     <directory>${project.build.directory}/generated-sources/java-templates</directory>
                                     <filtering>false</filtering>
