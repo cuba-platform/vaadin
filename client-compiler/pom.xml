@@ -44,6 +44,9 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
         </resources>
 
         <plugins>
@@ -59,13 +62,13 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
-                    <!-- Copy .java files to package -->
+                    &lt;!&ndash; Copy .java files to package &ndash;&gt;
                     <execution>
                         <id>copy-sources</id>
-                        <!-- here the phase you need -->
+                        &lt;!&ndash; here the phase you need &ndash;&gt;
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -81,7 +84,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>

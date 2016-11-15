@@ -55,6 +55,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+        </resources>
+
         <plugins>
 
             <plugin>
@@ -162,9 +168,9 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <!-- Copy .java files to package -->
-                    <execution>
+                    <!--<execution>
                         <id>copy-sources</id>
-                        <!-- here the phase you need -->
+                        &lt;!&ndash; here the phase you need &ndash;&gt;
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -178,7 +184,7 @@
                                 </resource>
                             </resources>
                         </configuration>
-                    </execution>
+                    </execution>-->
                     <execution>
                         <id>copy-themes</id>
                         <!-- here the phase you need -->

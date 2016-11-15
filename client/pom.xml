@@ -60,6 +60,12 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -77,10 +83,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/resources</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                                <resource>
-                                    <directory>src/main/java</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
