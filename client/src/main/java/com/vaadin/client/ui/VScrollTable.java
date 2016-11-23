@@ -2095,6 +2095,14 @@ public class VScrollTable extends FlowPanel
 
         // Set body column width
         scrollBody.setColWidth(colIndex, w);
+
+        // Haulmont API
+        reassignHeaderCellWidth(colIndex, hcell, minWidth);
+    }
+
+    // Haulmont API
+    protected void reassignHeaderCellWidth(int colIndex, HeaderCell hcell, int minWidth) {
+        // do nothing
     }
 
     // Haulmont API dependency
@@ -5804,6 +5812,18 @@ public class VScrollTable extends FlowPanel
                 }
             }
 
+            // Haulmont API
+            public double getRealCellWidth(int cellIx) {
+                if (cellIx >= getElement().getChildCount()) {
+                    return -1;
+                }
+
+                Element cell = DOM.getChild(getElement(), cellIx);
+                ComputedStyle cs = new ComputedStyle(cell);
+
+                return cs.getWidth() + cs.getPaddingWidth() + cs.getBorderWidth();
+            }
+
             protected void setCellWidth(int cellIx, int width) {
                 final Element cell = DOM.getChild(getElement(), cellIx);
                 Style wrapperStyle = cell.getFirstChildElement().getStyle();
@@ -7034,6 +7054,16 @@ public class VScrollTable extends FlowPanel
                 td.setColSpan(colCount);
                 initCellWithText(text, align, style, textIsHTML, sorted,
                         description, td);
+            }
+
+            // Haulmont API
+            @Override
+            public double getRealCellWidth(int cellIx) {
+                if (isSpanColumns()) {
+                    return -1;
+                }
+
+                return super.getRealCellWidth(cellIx);
             }
 
             @Override
