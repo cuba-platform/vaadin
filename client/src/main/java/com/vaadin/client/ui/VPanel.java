@@ -43,7 +43,8 @@ public class VPanel extends SimplePanel
 
     private final Element captionText = DOM.createSpan();
 
-    private Icon icon;
+    // Haulmont API
+    protected Icon icon;
 
     /** For internal use only. May be removed or replaced in the future. */
     public final Element bottomDecoration = DOM.createDiv();
