@@ -85,6 +85,7 @@ import com.vaadin.server.communication.data.DataGenerator;
 import com.vaadin.server.communication.data.RpcDataProviderExtension;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.data.sort.SortDirection;
+import com.vaadin.shared.ui.grid.ColumnResizeMode;
 import com.vaadin.shared.ui.grid.EditorClientRpc;
 import com.vaadin.shared.ui.grid.EditorServerRpc;
 import com.vaadin.shared.ui.grid.GridClientRpc;
@@ -546,6 +547,36 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                 field.setCaption(null);
             }
             return field;
+        }
+
+        @Override
+        protected void bindFields() {
+            List<Field<?>> fields = new ArrayList<Field<?>>(getFields());
+            Item itemDataSource = getItemDataSource();
+
+            if (itemDataSource == null) {
+                unbindFields(fields);
+            } else {
+                bindFields(fields, itemDataSource);
+            }
+        }
+
+        private void unbindFields(List<Field<?>> fields) {
+            for (Field<?> field : fields) {
+                clearField(field);
+                unbind(field);
+                field.setParent(null);
+            }
+        }
+
+        private void bindFields(List<Field<?>> fields,
+                Item itemDataSource) {
+            for (Field<?> field : fields) {
+                if (itemDataSource.getItemProperty(getPropertyId(field))
+                        != null) {
+                    bind(field, getPropertyId(field));
+                }
+            }
         }
     }
 
@@ -1878,7 +1909,9 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         private void updateAllSelectedState() {
             int totalRowCount = getParentGrid().datasource.size();
             int rows = Math.min(totalRowCount, selectionLimit);
-            if (getState().allSelected != selection.size() >= rows) {
+            if (totalRowCount == 0) {
+                getState().allSelected = false;
+            } else {
                 getState().allSelected = selection.size() >= rows;
             }
         }
@@ -2194,8 +2227,9 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
             Renderer<?> renderer = column.getRenderer();
 
             Item item = cell.getItem();
-            Object modelValue = item.getItemProperty(cell.getPropertyId())
-                    .getValue();
+            Property itemProperty = item.getItemProperty(cell.getPropertyId());
+            Object modelValue =
+                    itemProperty == null ? null : itemProperty.getValue();
 
             data.put(columnKeys.key(cell.getPropertyId()), AbstractRenderer
                     .encodeValue(modelValue, renderer, converter, getLocale()));
@@ -4511,12 +4545,19 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
 
     private Object editedItemId = null;
     private boolean editorActive = false;
+
     /**
      * True while the editor is storing the field values, i.e. commiting the
      * field group.
      */
     private boolean editorSaving = false;
     private FieldGroup editorFieldGroup = new CustomFieldGroup();
+
+    /**
+     * Poperty ID to Field mapping that stores editor fields set by {@link
+     * #setEditorField(Object, Field)}.
+     */
+    private Map<Object, Field<?>> editorFields = new HashMap<Object, Field<?>>();
 
     private CellStyleGenerator cellStyleGenerator;
     private RowStyleGenerator rowStyleGenerator;
@@ -4750,7 +4791,6 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                 if (column != null && column.isResizable()) {
                     column.getState().width = pixels;
                     fireColumnResizeEvent(column, true);
-                    markAsDirty();
                 }
             }
         });
@@ -5222,6 +5262,24 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
     }
 
     /**
+     * Sets the column resize mode to use. The default mode is {@link ColumnResizeMode#ANIMATED}.
+     *
+     * @param mode a ColumnResizeMode value
+     */
+    public void setColumnResizeMode(ColumnResizeMode mode) {
+        getState().columnResizeMode = mode;
+    }
+
+    /**
+     * Returns the current column resize mode. The default mode is {@link ColumnResizeMode#ANIMATED}.
+     *
+     * @return a ColumnResizeMode value
+     */
+    public ColumnResizeMode getColumnResizeMode() {
+        return getState(false).columnResizeMode;
+    }
+
+    /**
      * Creates a new column based on a property id and appends it as the last
      * column.
      *
@@ -5303,6 +5361,11 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
      *            properties in the desired column order
      */
     public void setColumns(Object... propertyIds) {
+        if (SharedUtil.containsDuplicates(propertyIds)) {
+            throw new IllegalArgumentException(
+                    "The propertyIds array contains duplicates: "
+                            + SharedUtil.getDuplicates(propertyIds));
+        }
         Set<?> removePids = new HashSet<Object>(columns.keySet());
         removePids.removeAll(Arrays.asList(propertyIds));
         for (Object removePid : removePids) {
@@ -5325,6 +5388,11 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
      *            properties in the order columns should be
      */
     public void setColumnOrder(Object... propertyIds) {
+        if (SharedUtil.containsDuplicates(propertyIds)) {
+            throw new IllegalArgumentException(
+                    "The propertyIds array contains duplicates: "
+                            + SharedUtil.getDuplicates(propertyIds));
+        }
         List<String> columnOrder = new ArrayList<String>();
         for (Object propertyId : propertyIds) {
             if (columns.containsKey(propertyId)) {
@@ -5547,7 +5615,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
      * Takes a new {@link SelectionModel} into use.
      * <p>
      * The SelectionModel that is previously in use will have all its items
-     * deselected.
+     * deselected. If any items were selected, this will fire a
+     * {@link SelectionEvent}.
      * <p>
      * If the given SelectionModel is already in use, this method does nothing.
      *
@@ -5564,13 +5633,27 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         }
 
         if (this.selectionModel != selectionModel) {
+            Collection<Object> oldSelection;
             // this.selectionModel is null on init
             if (this.selectionModel != null) {
+                oldSelection = this.selectionModel.getSelectedRows();
                 this.selectionModel.remove();
+            } else {
+                oldSelection = Collections.emptyList();
             }
 
             this.selectionModel = selectionModel;
             selectionModel.setGrid(this);
+            Collection<Object> newSelection = this.selectionModel
+                    .getSelectedRows();
+
+            if (!SharedUtil.equals(oldSelection, newSelection)) {
+                fireSelectionEvent(oldSelection, newSelection);
+            }
+
+            // selection is included in the row data, so the client needs to be
+            // updated
+            datasourceExtension.refreshCache();
         }
     }
 
@@ -6657,6 +6740,22 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         return itemId;
     }
 
+    /**
+     * Refreshes, i.e. causes the client side to re-render the rows with the
+     * given item ids.
+     * <p>
+     * Calling this for a row which is not currently rendered on the client side
+     * has no effect.
+     * 
+     * @param itemIds
+     *            the item id(s) of the row to refresh.
+     */
+    public void refreshRows(Object... itemIds) {
+        for (Object itemId : itemIds) {
+            datasourceExtension.updateRowData(itemId);
+        }
+    }
+
     private static Logger getLogger() {
         return Logger.getLogger(Grid.class.getName());
     }
@@ -6761,6 +6860,15 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
 
         Field<?> editor = editorFieldGroup.getField(propertyId);
 
+        // If field group has no field for this property, see if we have it stored
+        if (editor == null) {
+            editor = editorFields.get(propertyId);
+            if (editor != null) {
+                editorFieldGroup.bind(editor, propertyId);
+            }
+        }
+
+        // Otherwise try to build one
         try {
             if (editor == null) {
                 editor = editorFieldGroup.buildAndBind(propertyId);
@@ -6816,8 +6924,9 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         editorFieldGroup.setItemDataSource(item);
 
         for (Column column : getColumns()) {
-            column.getState().editorConnector = getEditorField(
-                    column.getPropertyId());
+            column.getState().editorConnector =
+                    item.getItemProperty(column.getPropertyId()) == null
+                            ? null : getEditorField(column.getPropertyId());
         }
 
         editorActive = true;
@@ -6846,6 +6955,9 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
             field.setParent(this);
             editorFieldGroup.bind(field, propertyId);
         }
+
+        // Store field for this property for future reference
+        editorFields.put(propertyId, field);
     }
 
     /**

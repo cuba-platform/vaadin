@@ -308,6 +308,8 @@ public class Escalator extends Widget
     static class JsniUtil {
         public static class TouchHandlerBundle {
 
+            public static final String POINTER_EVENT_TYPE_TOUCH = "touch";
+
             /**
              * A <a href=
              * "http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsOverlay.html"
@@ -339,6 +341,11 @@ public class Escalator extends Widget
                 public native int getPageY()
                 /*-{
                     return this.targetTouches[0].pageY;
+                }-*/;
+
+                public native String getPointerType()
+                /*-{
+                    return this.pointerType;
                 }-*/;
             }
 
@@ -457,6 +464,15 @@ public class Escalator extends Widget
                 }
 
                 int pagePosition(CustomTouchEvent event) {
+                    // Use native event's screen x and y for IE11 and Edge
+                    // since there is no touches for these browsers (#18737)
+                    if (isCurrentBrowserIE11OrEdge()) {
+                        return vertical
+                                ? event.getNativeEvent().getClientY()
+                                + Window.getScrollTop()
+                                : event.getNativeEvent().getClientX()
+                                + Window.getScrollLeft();
+                    }
                     JsArray<Touch> a = event.getNativeEvent().getTouches();
                     return vertical ? a.get(0).getPageY() : a.get(0).getPageX();
                 }
@@ -496,7 +512,7 @@ public class Escalator extends Widget
             };
 
             public void touchStart(final CustomTouchEvent event) {
-                if (event.getNativeEvent().getTouches().length() == 1) {
+                if (allowTouch(event)) {
                     if (yMov == null) {
                         yMov = new Movement(true);
                         xMov = new Movement(false);
@@ -541,6 +557,18 @@ public class Escalator extends Widget
                             && Math.abs(yMov.offset) > Math.abs(xMov.offset);
                     double delta = Math.abs((vert ? yMov : xMov).offset);
                     animation.run((int) (3 * DURATION * easingOutExp(delta)));
+                }
+            }
+
+            // Allow touchStart for IE11 and Edge even though there is no touch
+            // (#18737),
+            // otherwise allow touch only if there is a single touch in the
+            // event
+            private boolean allowTouch(final TouchHandlerBundle.CustomTouchEvent event) {
+                if (isCurrentBrowserIE11OrEdge()) {
+                    return (POINTER_EVENT_TYPE_TOUCH.equals(event.getPointerType()));
+                } else {
+                    return (event.getNativeEvent().getTouches().length() == 1);
                 }
             }
 
@@ -673,13 +701,13 @@ public class Escalator extends Widget
         /*-{
             var vScroll = esc.@com.vaadin.client.widgets.Escalator::verticalScrollbar;
             var vScrollElem = vScroll.@com.vaadin.client.widget.escalator.ScrollbarBundle::getElement()();
-
+        
             var hScroll = esc.@com.vaadin.client.widgets.Escalator::horizontalScrollbar;
             var hScrollElem = hScroll.@com.vaadin.client.widget.escalator.ScrollbarBundle::getElement()();
-
+        
             return $entry(function(e) {
                 var target = e.target || e.srcElement; // IE8 uses e.scrElement
-
+        
                 // in case the scroll event was native (i.e. scrollbars were dragged, or
                 // the scrollTop/Left was manually modified), the bundles have old cache
                 // values. We need to make sure that the caches are kept up to date.
@@ -700,29 +728,29 @@ public class Escalator extends Widget
             return $entry(function(e) {
                 var deltaX = e.deltaX ? e.deltaX : -0.5*e.wheelDeltaX;
                 var deltaY = e.deltaY ? e.deltaY : -0.5*e.wheelDeltaY;
-
+        
                 // Delta mode 0 is in pixels; we don't need to do anything...
-
+        
                 // A delta mode of 1 means we're scrolling by lines instead of pixels
                 // We need to scale the number of lines by the default line height
                 if(e.deltaMode === 1) {
                     var brc = esc.@com.vaadin.client.widgets.Escalator::body;
                     deltaY *= brc.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::getDefaultRowHeight()();
                 }
-
+        
                 // Other delta modes aren't supported
                 if((e.deltaMode !== undefined) && (e.deltaMode >= 2 || e.deltaMode < 0)) {
                     var msg = "Unsupported wheel delta mode \"" + e.deltaMode + "\"";
-
+        
                     // Print warning message
                     esc.@com.vaadin.client.widgets.Escalator::logWarning(*)(msg);
                 }
-
+        
                 // IE8 has only delta y
                 if (isNaN(deltaY)) {
                     deltaY = -0.5*e.wheelDelta;
                 }
-
+        
                 @com.vaadin.client.widgets.Escalator.JsniUtil::moveScrollFromEvent(*)(esc, deltaX, deltaY, e);
             });
         }-*/;
@@ -901,7 +929,7 @@ public class Escalator extends Widget
 
         public native void detachScrollListener(Element element)
         /*
-         * Attaching events with JSNI instead of the GWT event mechanism because
+         * Detaching events with JSNI instead of the GWT event mechanism because
          * GWT didn't provide enough details in events, or triggering the event
          * handlers with GWT bindings was unsuccessful. Maybe, with more time
          * and skill, it could be done with better success. JavaScript overlay
@@ -996,6 +1024,50 @@ public class Escalator extends Widget
             }
         }-*/;
 
+        /**
+         * Using pointerdown, pointermove, pointerup, and pointercancel for IE11 and Edge instead of
+         * touch* listeners (#18737)
+         *
+         * @param element
+         */
+        public native void attachPointerEventListeners(Element element)
+        /*
+         * Attaching events with JSNI instead of the GWT event mechanism because
+         * GWT didn't provide enough details in events, or triggering the event
+         * handlers with GWT bindings was unsuccessful. Maybe, with more time
+         * and skill, it could be done with better success. JavaScript overlay
+         * types might work. This might also get rid of the JsniWorkaround
+         * class.
+         */
+        /*-{
+            element.addEventListener("pointerdown", this.@com.vaadin.client.widgets.JsniWorkaround::touchStartFunction);
+            element.addEventListener("pointermove", this.@com.vaadin.client.widgets.JsniWorkaround::touchMoveFunction);
+            element.addEventListener("pointerup", this.@com.vaadin.client.widgets.JsniWorkaround::touchEndFunction);
+            element.addEventListener("pointercancel", this.@com.vaadin.client.widgets.JsniWorkaround::touchEndFunction);
+        }-*/;
+
+        /**
+         * Using pointerdown, pointermove, pointerup, and pointercancel for IE11 and Edge instead of
+         * touch* listeners (#18737)
+         *
+         * @param element
+         */
+        public native void detachPointerEventListeners(Element element)
+        /*
+         * Detaching events with JSNI instead of the GWT event mechanism because
+         * GWT didn't provide enough details in events, or triggering the event
+         * handlers with GWT bindings was unsuccessful. Maybe, with more time
+         * and skill, it could be done with better success. JavaScript overlay
+         * types might work. This might also get rid of the JsniWorkaround
+         * class.
+         */
+        /*-{
+            element.removeEventListener("pointerdown", this.@com.vaadin.client.widgets.JsniWorkaround::touchStartFunction);
+            element.removeEventListener("pointermove", this.@com.vaadin.client.widgets.JsniWorkaround::touchMoveFunction);
+            element.removeEventListener("pointerup", this.@com.vaadin.client.widgets.JsniWorkaround::touchEndFunction);
+            element.removeEventListener("pointercancel", this.@com.vaadin.client.widgets.JsniWorkaround::touchEndFunction);
+        }-*/;
+
         public void scrollToColumn(final int columnIndex,
                 final ScrollDestination destination, final int padding) {
             assert columnIndex >= columnConfiguration.frozenColumns : "Can't scroll to a frozen column";
@@ -1070,7 +1142,8 @@ public class Escalator extends Widget
         /**
          * The table section element ({@code <thead>}, {@code <tbody>} or
          * {@code <tfoot>}) the rows (i.e. {@code 
-         * <tr>
+         * 
+        <tr>
          * } tags) are contained in.
          */
         protected final TableSectionElement root;
@@ -1761,7 +1834,8 @@ public class Escalator extends Widget
          * <p>
          * <em>Note:</em> In contrast to {@link #reapplyColumnWidths()}, this
          * method only modifies the width of the {@code 
-         * <tr>
+         * 
+        <tr>
          * } element, not the cells within.
          */
         protected void reapplyRowWidths() {
@@ -5603,7 +5677,21 @@ public class Escalator extends Widget
         // init default dimensions
         setHeight(null);
         setWidth(null);
+
+        publishJSHelpers(root);
     }
+
+    private int getBodyRowCount() {
+        return getBody().getRowCount();
+    }
+
+    private native void publishJSHelpers(Element root)
+    /*-{
+        var self = this;
+        root.getBodyRowCount = $entry(function () {
+           return self.@Escalator::getBodyRowCount()();
+        });
+    }-*/;
 
     private void setupScrollbars(final Element root) {
 
@@ -5756,7 +5844,13 @@ public class Escalator extends Widget
         scroller.attachScrollListener(verticalScrollbar.getElement());
         scroller.attachScrollListener(horizontalScrollbar.getElement());
         scroller.attachMousewheelListener(getElement());
-        scroller.attachTouchListeners(getElement());
+
+        if (isCurrentBrowserIE11OrEdge()) {
+            // Touch listeners doesn't work for IE11 and Edge (#18737)
+            scroller.attachPointerEventListeners(getElement());
+        } else {
+            scroller.attachTouchListeners(getElement());
+        }
     }
 
     @Override
@@ -5765,7 +5859,13 @@ public class Escalator extends Widget
         scroller.detachScrollListener(verticalScrollbar.getElement());
         scroller.detachScrollListener(horizontalScrollbar.getElement());
         scroller.detachMousewheelListener(getElement());
-        scroller.detachTouchListeners(getElement());
+
+        if (isCurrentBrowserIE11OrEdge()) {
+            // Touch listeners doesn't work for IE11 and Edge (#18737)
+            scroller.detachPointerEventListeners(getElement());
+        } else {
+            scroller.detachTouchListeners(getElement());
+        }
 
         /*
          * We can call paintRemoveRows here, because static ranges are simple to
@@ -6666,15 +6766,19 @@ public class Escalator extends Widget
         } else if (type.equalsIgnoreCase("cell")) {
             // If wanted row is not visible, we need to scroll there.
             Range visibleRowRange = getVisibleRowRange();
-            if (indices.length > 0 && !visibleRowRange.contains(indices[0])) {
-                try {
-                    scrollToRow(indices[0], ScrollDestination.ANY, 0);
-                } catch (IllegalArgumentException e) {
-                    getLogger().log(Level.SEVERE, e.getMessage());
+            if (indices.length > 0) {
+                // Contains a row number, ensure it is available and visible
+                boolean rowInCache = visibleRowRange.contains(indices[0]);
+
+                // Scrolling might be a no-op if row is already in the viewport
+                scrollToRow(indices[0], ScrollDestination.ANY, 0);
+
+                if (!rowInCache) {
+                    // Row was not in cache, scrolling caused lazy loading and
+                    // the caller needs to wait and call this method again to be
+                    // able to get the requested element
+                    return null;
                 }
-                // Scrolling causes a lazy loading event. No element can
-                // currently be retrieved.
-                return null;
             }
             container = getBody();
         } else if (type.equalsIgnoreCase("footer")) {
@@ -6817,5 +6921,13 @@ public class Escalator extends Widget
      */
     double getMinCellWidth(int colIndex) {
         return columnConfiguration.getMinCellWidth(colIndex);
+    }
+
+    /**
+     * Internal method for checking whether the browser is IE11 or Edge
+     * @return true only if the current browser is IE11, or Edge
+     */
+    private static boolean isCurrentBrowserIE11OrEdge() {
+        return BrowserInfo.get().isIE11() || BrowserInfo.get().isEdge();
     }
 }

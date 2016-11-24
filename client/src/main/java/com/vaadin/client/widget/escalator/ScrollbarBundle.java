@@ -368,6 +368,7 @@ public abstract class ScrollbarBundle implements DeferredWorker {
 
     private HandlerRegistration scrollSizeTemporaryScrollHandler;
     private HandlerRegistration offsetSizeTemporaryScrollHandler;
+    private HandlerRegistration scrollInProgress;
 
     private ScrollbarBundle() {
         root.appendChild(scrollSizeElement);
@@ -441,11 +442,9 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         boolean offsetSizeBecomesGreaterThanScrollSize = showsScrollHandle()
                 && newOffsetSizeIsGreaterThanScrollSize;
         if (offsetSizeBecomesGreaterThanScrollSize && getScrollPos() != 0) {
-            // remove previous before adding new
             if (offsetSizeTemporaryScrollHandler != null) {
                 offsetSizeTemporaryScrollHandler.removeHandler();
             }
-
             // must be a field because Java insists.
             offsetSizeTemporaryScrollHandler = addScrollHandler(
                     new ScrollHandler() {
@@ -535,6 +534,16 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         scrollPos = Math.max(0, Math.min(maxScrollPos, truncate(px)));
 
         if (!WidgetUtil.pixelValuesEqual(oldScrollPos, scrollPos)) {
+            if (scrollInProgress == null) {
+                // Only used for tracking that there is "workPending"
+                scrollInProgress = addScrollHandler(new ScrollHandler() {
+                    @Override
+                    public void onScroll(ScrollEvent event) {
+                        scrollInProgress.removeHandler();
+                        scrollInProgress = null;
+                    }
+                });
+            }
             if (isInvisibleScrollbar) {
                 invisibleScrollbarTemporaryResizer.show();
             }
@@ -653,10 +662,6 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         boolean scrollSizeBecomesSmallerThanOffsetSize = showsScrollHandle()
                 && newScrollSizeIsSmallerThanOffsetSize;
         if (scrollSizeBecomesSmallerThanOffsetSize && getScrollPos() != 0) {
-            // remove previous before adding new
-            if (scrollSizeTemporaryScrollHandler != null) {
-                scrollSizeTemporaryScrollHandler.removeHandler();
-            }
             /*
              * For whatever reason, Firefox loses the scroll event in this case
              * and the onscroll handler is never called (happens when reducing
@@ -667,6 +672,9 @@ public abstract class ScrollbarBundle implements DeferredWorker {
             boolean delayedSizeSet = !BrowserInfo.get().isFirefox();
             // must be a field because Java insists.
             if (delayedSizeSet) {
+                if (scrollSizeTemporaryScrollHandler != null) {
+                    scrollSizeTemporaryScrollHandler.removeHandler();
+                }
                 scrollSizeTemporaryScrollHandler = addScrollHandler(
                         new ScrollHandler() {
                             @Override
@@ -928,6 +936,6 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         // requestAnimationFrame - which is not automatically checked
         return scrollSizeTemporaryScrollHandler != null
                 || offsetSizeTemporaryScrollHandler != null
-                || scrollEventFirer.isBeingFired;
+                || scrollInProgress != null || scrollEventFirer.isBeingFired;
     }
 }

@@ -2367,6 +2367,9 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         focused = false;
         if (!readonly) {
+            if (textInputEnabled && allowNewItem) {
+                suggestionPopup.menu.doSelectedItemAction();
+            }
             if (selectedOptionKey == null) {
                 if (explicitSelectedCaption != null) {
                     setPromptingOff(explicitSelectedCaption);
