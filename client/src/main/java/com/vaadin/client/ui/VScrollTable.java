@@ -7484,12 +7484,19 @@ public class VScrollTable extends FlowPanel
 
             forceRealignColumnHeaders();
 
+            forceReassignColumnWidths();
+
             if (colWidthChanged) {
                 // Haulmont API
                 scheduleLayoutForChildWidgets();
             }
         }
     };
+
+    // Haulmont API
+    public void forceReassignColumnWidths() {
+
+    }
 
     // Haulmont API
     public void scheduleLayoutForChildWidgets() {
