@@ -3835,6 +3835,17 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
                         }
                         // save min width without indent
                         c.setWidth(widthWithoutAddedIndent, true);
+
+                        // Recalculate the column sizings if any column has changed
+                        final int finalMinWidth = minWidth;
+                        final HeaderCell finalC = c;
+                        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                            @Override
+                            public void execute() {
+                                int colIx = getColIndexByKey(cid);
+                                reassignHeaderCellWidth(colIx, finalC, finalMinWidth);
+                            }
+                        });
                     }
                 } else if (col.hasAttribute("er")) {
                     c.setExpandRatio(col.getFloatAttribute("er"));
@@ -7454,12 +7465,19 @@ public class VScrollTable extends FlowPanel implements HasWidgets,
 
             forceRealignColumnHeaders();
 
+            forceReassignColumnWidths();
+
             if (colWidthChanged) {
                 // Haulmont API
                 scheduleLayoutForChildWidgets();
             }
         }
     };
+
+    // Haulmont API
+    public void forceReassignColumnWidths() {
+
+    }
 
     // Haulmont API
     public void scheduleLayoutForChildWidgets() {
