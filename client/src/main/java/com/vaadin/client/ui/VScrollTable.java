@@ -3845,6 +3845,17 @@ public class VScrollTable extends FlowPanel
                         }
                         // save min width without indent
                         c.setWidth(widthWithoutAddedIndent, true);
+
+                        // Recalculate the column decimal width
+                        final int finalMinWidth = minWidth;
+                        final HeaderCell finalC = c;
+                        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                            @Override
+                            public void execute() {
+                                int colIx = getColIndexByKey(cid);
+                                reassignHeaderCellWidth(colIx, finalC, finalMinWidth);
+                            }
+                        });
                     }
                 } else if (col.hasAttribute("er")) {
                     c.setExpandRatio(col.getFloatAttribute("er"));
