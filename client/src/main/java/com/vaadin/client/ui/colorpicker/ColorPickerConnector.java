@@ -18,6 +18,7 @@ package com.vaadin.client.ui.colorpicker;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.ui.VColorPicker;
 import com.vaadin.shared.ui.Connect;
@@ -65,5 +66,11 @@ public class ColorPickerConnector extends AbstractColorPickerConnector {
     @Override
     protected void refreshColor() {
         getWidget().refreshColor();
+    }
+
+    // Haulmont API
+    @OnStateChange("readOnly")
+    void updateReadonly() {
+        getWidget().setReadonly(getState().readOnly);
     }
 }
