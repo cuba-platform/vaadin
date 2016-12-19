@@ -13,26 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.vaadin.shared.ui.grid;
+package com.vaadin.client.widget.grid;
+
+import com.vaadin.client.widgets.Grid.GridEvent;
 
 /**
- * Collection of modes used for resizing columns in the Grid.
- * 
- * @since 7.7.5
+ * A handler for events emitted by elements in Grid.
+ *
+ * @param <T>
+ *            the grid row type
  */
-public enum ColumnResizeMode {
-
+public interface GridEventHandler<T> {
     /**
-     * When column resize mode is set to Animated, columns
-     * are resized as they are dragged.
+     * Attempts to handle the given grid event.
+     *
+     * @param event
+     *            the event that occurred
      */
-    ANIMATED,
-
-    /**
-     * When column resize mode is set to Simple, dragging to resize
-     * a column will show a marker, and the column will resize only
-     * after the mouse button or touch is released.
-     */
-    SIMPLE
-
+    public void onEvent(GridEvent<T> event);
 }
