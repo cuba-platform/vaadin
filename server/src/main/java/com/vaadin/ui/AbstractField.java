@@ -492,7 +492,8 @@ public abstract class AbstractField<T> extends AbstractComponent
             boolean ignoreReadOnly) throws Property.ReadOnlyException,
             Converter.ConversionException, InvalidValueException {
 
-        if (!SharedUtil.equals(newFieldValue, getInternalValue())) {
+        // Haulmont API
+        if (!fieldValueEquals(newFieldValue, getInternalValue())) {
 
             // Read only fields can not be changed
             if (!ignoreReadOnly && isReadOnly()) {
@@ -501,7 +502,7 @@ public abstract class AbstractField<T> extends AbstractComponent
             try {
                 T doubleConvertedFieldValue = convertFromModel(
                         convertToModel(newFieldValue));
-                if (!SharedUtil.equals(newFieldValue,
+                if (!fieldValueEquals(newFieldValue,
                         doubleConvertedFieldValue)) {
                     newFieldValue = doubleConvertedFieldValue;
                     repaintIsNotNeeded = false;
@@ -583,6 +584,11 @@ public abstract class AbstractField<T> extends AbstractComponent
 
     @Deprecated
     static boolean equals(Object value1, Object value2) {
+        return SharedUtil.equals(value1, value2);
+    }
+
+    // Haulmont API
+    protected boolean fieldValueEquals(Object value1, Object value2) {
         return SharedUtil.equals(value1, value2);
     }
 
@@ -697,8 +703,9 @@ public abstract class AbstractField<T> extends AbstractComponent
 
         // Fires value change if the value has changed
         T value = getInternalValue();
-        if ((value != oldValue) && ((value != null && !value.equals(oldValue))
-                || value == null)) {
+
+        // Haulmont API
+        if (!fieldValueEquals(oldValue, value)) {
             fireValueChange(false);
         }
     }
@@ -1311,7 +1318,8 @@ public abstract class AbstractField<T> extends AbstractComponent
     public void valueChange(Property.ValueChangeEvent event) {
         if (!isBuffered()) {
             if (committingValueToDataSource) {
-                boolean propertyNotifiesOfTheBufferedValue = SharedUtil.equals(
+                // Haulmont API
+                boolean propertyNotifiesOfTheBufferedValue = fieldValueEquals(
                         event.getProperty().getValue(), getInternalValue());
                 if (!propertyNotifiesOfTheBufferedValue) {
                     /*
@@ -1438,7 +1446,7 @@ public abstract class AbstractField<T> extends AbstractComponent
                 // read from that we want to update the value
                 T newInternalValue = convertFromModel(
                         getPropertyDataSource().getValue());
-                if (!SharedUtil.equals(newInternalValue, getInternalValue())) {
+                if (!fieldValueEquals(newInternalValue, getInternalValue())) {
                     setInternalValue(newInternalValue);
                     fireValueChange(false);
                 }
@@ -1454,7 +1462,8 @@ public abstract class AbstractField<T> extends AbstractComponent
                 Object convertedValue = convertToModel(getInternalValue(),
                         valueLocale);
                 T newinternalValue = convertFromModel(convertedValue);
-                if (!SharedUtil.equals(getInternalValue(), newinternalValue)) {
+                // Haulmont API
+                if (!fieldValueEquals(getInternalValue(), newinternalValue)) {
                     setInternalValue(newinternalValue);
                     fireValueChange(false);
                 }
@@ -1733,7 +1742,8 @@ public abstract class AbstractField<T> extends AbstractComponent
             setModified(false);
 
             // If the new value differs from the previous one
-            if (!SharedUtil.equals(newFieldValue, getInternalValue())) {
+            // Haulmont API
+            if (!fieldValueEquals(newFieldValue, getInternalValue())) {
                 setInternalValue(newFieldValue);
                 fireValueChange(false);
             } else if (wasModified) {
