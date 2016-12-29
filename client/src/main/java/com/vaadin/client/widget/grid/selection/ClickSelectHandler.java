@@ -54,7 +54,12 @@ public class ClickSelectHandler<T> {
      */
     public ClickSelectHandler(Grid<T> grid) {
         this.grid = grid;
-        clickHandler = grid.addBodyClickHandler(new RowClickHandler());
+        clickHandler = grid.addBodyClickHandler(createBodyClickHandler(grid));
+    }
+
+    // Haulmont API
+    protected BodyClickHandler createBodyClickHandler(Grid<T> grid) {
+        return new RowClickHandler();
     }
 
     /**
@@ -62,6 +67,11 @@ public class ClickSelectHandler<T> {
      */
     public void removeHandler() {
         clickHandler.removeHandler();
+    }
+
+    // Haulmont API
+    public boolean isDeselectAllowed() {
+        return deselectAllowed;
     }
 
     /**

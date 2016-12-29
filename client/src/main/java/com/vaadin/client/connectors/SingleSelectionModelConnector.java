@@ -48,8 +48,18 @@ public class SingleSelectionModelConnector extends
     @Override
     protected void extend(ServerConnector target) {
         getGrid().setSelectionModel(selectionModel);
-        spaceHandler = new SpaceSelectHandler<JsonObject>(getGrid());
-        clickHandler = new ClickSelectHandler<JsonObject>(getGrid());
+        spaceHandler = createSpaceSelectHandler();
+        clickHandler = createClickSelectHandler();
+    }
+
+    // Haulmont API
+    protected ClickSelectHandler<JsonObject> createClickSelectHandler() {
+        return new ClickSelectHandler<JsonObject>(getGrid());
+    }
+
+    // Haulmont API
+    protected SpaceSelectHandler<JsonObject> createSpaceSelectHandler() {
+        return new SpaceSelectHandler<JsonObject>(getGrid());
     }
 
     @Override
