@@ -62,7 +62,7 @@ import com.vaadin.ui.Tree.ExpandListener;
 @SuppressWarnings({ "serial" })
 public class TreeTable extends Table implements Hierarchical {
 
-    private interface ContainerStrategy extends Serializable {
+    public interface ContainerStrategy extends Serializable {
         public int size();
 
         public boolean isNodeOpen(Object itemId);
@@ -119,7 +119,7 @@ public class TreeTable extends Table implements Hierarchical {
      * open-collapsed logic diverted to container, otherwise use default
      * implementations.
      */
-    private class CollapsibleStrategy extends AbstractStrategy {
+    public class CollapsibleStrategy extends AbstractStrategy {
 
         private Collapsible c() {
             return (Collapsible) getContainerDataSource();
@@ -186,7 +186,7 @@ public class TreeTable extends Table implements Hierarchical {
      * Store collapsed/open states internally, fool Table to use preorder when
      * accessing items from container via Ordered/Indexed methods.
      */
-    private class HierarchicalStrategy extends AbstractStrategy {
+    public class HierarchicalStrategy extends AbstractStrategy {
 
         private final HashSet<Object> openItems = new HashSet<Object>();
 
@@ -297,7 +297,6 @@ public class TreeTable extends Table implements Hierarchical {
                     }
                 }
             }
-
         }
 
         @Override
@@ -317,6 +316,18 @@ public class TreeTable extends Table implements Hierarchical {
             super.containerItemSetChange(event);
         }
 
+        public void setOpenItems(List<Object> openItems) {
+            this.openItems.clear();
+            this.openItems.addAll(openItems);
+        }
+
+        public Set<Object> getOpenItems() {
+            return Collections.unmodifiableSet(openItems);
+        }
+
+        public void setPreOrder(List<Object> preOrder) {
+            this.preOrder = preOrder;
+        }
     }
 
     /**
@@ -372,7 +383,7 @@ public class TreeTable extends Table implements Hierarchical {
      */
     private boolean containerSupportsPartialUpdates;
 
-    private ContainerStrategy getContainerStrategy() {
+    protected ContainerStrategy getContainerStrategy() {
         if (cStrategy == null) {
             if (getContainerDataSource() instanceof Collapsible) {
                 cStrategy = new CollapsibleStrategy();
