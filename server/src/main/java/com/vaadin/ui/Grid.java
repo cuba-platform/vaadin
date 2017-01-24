@@ -4525,7 +4525,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         }
     };
 
-    private RpcDataProviderExtension datasourceExtension;
+    // Haulmont API
+    protected RpcDataProviderExtension datasourceExtension;
 
     /**
      * The selection model that is currently in use. Never <code>null</code>
