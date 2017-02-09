@@ -168,10 +168,10 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <!-- Copy .java files to package -->
-                    <!--<execution>
+                    <execution>
                         <id>copy-sources</id>
-                        &lt;!&ndash; here the phase you need &ndash;&gt;
-                        <phase>prepare-package</phase>
+                        <!-- here the phase you need -->
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -184,7 +184,7 @@
                                 </resource>
                             </resources>
                         </configuration>
-                    </execution>-->
+                    </execution>
                     <execution>
                         <id>copy-themes</id>
                         <!-- here the phase you need -->
