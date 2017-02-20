@@ -180,6 +180,8 @@ $v-tabsheet-content-animation-enabled: $v-animations-enabled !default;
   }
 }
 
+/* Haulmont API */
+$v-tabsheet-caption-font-size: round($v-font-size * 0.95) !default;
 
 /**
  * Outputs the styles for the tabitemcell element of a tabsheet.
@@ -201,7 +203,7 @@ $v-tabsheet-content-animation-enabled: $v-animations-enabled !default;
     cursor: pointer;
     text-align: center;
     line-height: $v-unit-size;
-    font-size: round($v-font-size * 0.95);
+    font-size: $v-tabsheet-caption-font-size;
     font-weight: $v-font-weight;
     color: valo-font-color($v-app-background-color, 0.58);
     width: auto !important;
