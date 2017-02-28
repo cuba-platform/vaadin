@@ -49,7 +49,8 @@ public class MenuBar extends AbstractComponent
         implements LegacyComponent, Focusable {
 
     // Items of the top-level menu
-    private final List<MenuItem> menuItems;
+    // Haulmont API dependency
+    protected final List<MenuItem> menuItems;
 
     // Number of items in this menu
     private int numberOfItems = 0;
