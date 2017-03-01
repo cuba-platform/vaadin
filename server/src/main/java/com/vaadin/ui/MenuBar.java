@@ -459,7 +459,7 @@ public class MenuBar extends AbstractComponent
         private final int itsId;
         private Command itsCommand;
         private String itsText;
-        private List<MenuItem> itsChildren;
+        protected List<MenuItem> itsChildren;
         private Resource itsIcon;
         private MenuItem itsParent;
         private boolean enabled = true;
@@ -751,7 +751,7 @@ public class MenuBar extends AbstractComponent
          * @param parent
          *            The parent item
          */
-        protected void setParent(MenuBar.MenuItem parent) {
+        public void setParent(MenuBar.MenuItem parent) {
             itsParent = parent;
         }
 
