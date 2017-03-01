@@ -168,6 +168,11 @@ public class MenuBar extends AbstractComponent
     protected void paintAdditionalItemParams(PaintTarget target, MenuItem item) throws PaintException {
     }
 
+    // Haulmont API
+    protected void setMenuItemSeparator(MenuItem menuItem, boolean separator) {
+        menuItem.setSeparator(separator);
+    }
+
     /** Deserialize changes received from client. */
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
