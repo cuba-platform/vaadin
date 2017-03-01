@@ -49,7 +49,8 @@ public class MenuBar extends AbstractComponent
         implements LegacyComponent, Focusable {
 
     // Items of the top-level menu
-    private final List<MenuItem> menuItems;
+    // Haulmont API dependency
+    protected final List<MenuItem> menuItems;
 
     // Number of items in this menu
     private int numberOfItems = 0;
@@ -165,6 +166,11 @@ public class MenuBar extends AbstractComponent
 
     // Haulmont API
     protected void paintAdditionalItemParams(PaintTarget target, MenuItem item) throws PaintException {
+    }
+
+    // Haulmont API
+    protected void setMenuItemSeparator(MenuItem menuItem, boolean separator) {
+        menuItem.setSeparator(separator);
     }
 
     /** Deserialize changes received from client. */
@@ -457,7 +463,7 @@ public class MenuBar extends AbstractComponent
         private final int itsId;
         private Command itsCommand;
         private String itsText;
-        private List<MenuItem> itsChildren;
+        protected List<MenuItem> itsChildren;
         private Resource itsIcon;
         private MenuItem itsParent;
         private boolean enabled = true;
@@ -749,7 +755,7 @@ public class MenuBar extends AbstractComponent
          * @param parent
          *            The parent item
          */
-        protected void setParent(MenuBar.MenuItem parent) {
+        public void setParent(MenuBar.MenuItem parent) {
             itsParent = parent;
         }
 
