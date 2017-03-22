@@ -15,22 +15,10 @@
  */
 package com.vaadin.client.ui.calendar.schedule;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -41,6 +29,7 @@ import com.vaadin.client.ui.FocusableFlowPanel;
 import com.vaadin.client.ui.VCalendar;
 import com.vaadin.shared.ui.calendar.DateConstants;
 
+import java.util.Date;
 /**
  * A class representing a single cell within the calendar in month-view
  *
@@ -50,15 +39,15 @@ import com.vaadin.shared.ui.calendar.DateConstants;
 public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
         MouseDownHandler, MouseOverHandler, MouseMoveHandler {
 
-    private static int BOTTOMSPACERHEIGHT = -1;
-    private static int EVENTHEIGHT = -1;
+    protected static int BOTTOMSPACERHEIGHT = -1;
+    protected static int EVENTHEIGHT = -1;
     private static final int BORDERPADDINGSIZE = 1;
 
     protected final VCalendar calendar;  //Haulmont API
-    private Date date;
-    private int intHeight;
-    private final HTML bottomspacer;
-    private final Label caption;
+    protected Date date;
+    protected int intHeight;
+    protected final HTML bottomspacer;
+    protected final Label caption;
     private final CalendarEvent[] events = new CalendarEvent[10];
     private final int cell;
     private final int row;
@@ -68,6 +57,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
     private HandlerRegistration mouseOverRegistration;
     private boolean monthEventMouseDown;
     protected boolean labelMouseDown;  //Haulmont API
+    protected HTML additionInfo; //Haulmont API
     private int eventCount = 0;
 
     private int startX = -1;
@@ -193,8 +183,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
             // Dynamic height by the content
             DOM.removeElementAttribute(getElement(), "height");
             //Haulmont API
-            slots = (intHeight - (caption.getOffsetHeight() + getSlotsCaptionOffsetHeight()) - BOTTOMSPACERHEIGHT)
-                    / EVENTHEIGHT;
+            slots = countingSlots();
             if (slots > 10) {
                 slots = 10;
             }
@@ -202,6 +191,12 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
 
         updateEvents(slots, clear);
 
+    }
+
+    //Haulmont API
+    protected int countingSlots() {
+        return (intHeight - (caption.getOffsetHeight() + getSlotsCaptionOffsetHeight()) - BOTTOMSPACERHEIGHT)
+                / EVENTHEIGHT;
     }
 
     //Haulmont API
@@ -276,6 +271,17 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
                 bottomspacer.setText("");
             }
         }
+
+        //Haulmont API
+        additionInfo = createAdditionInfo();
+        if (additionInfo != null) {
+            add(additionInfo);
+        }
+    }
+
+    // Haulmont API
+    protected HTML createAdditionInfo() {
+        return null;
     }
 
     //Haulmont API
@@ -351,7 +357,15 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
             }
         }
 
+        // Haulmont API
+        setSpecificStyle(e, eventDiv);
+
         return eventDiv;
+    }
+
+    // Haulmont API
+    protected void setSpecificStyle(CalendarEvent e, MonthEventLabel eventDiv) {
+        return;
     }
 
     private void setUnlimitedCellHeight() {

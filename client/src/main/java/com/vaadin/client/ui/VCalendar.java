@@ -338,6 +338,12 @@ public class VCalendar extends Composite implements VHasDropHandler {
                         eventMoving = sdc.getMoveEvent() != null;
                     }
                     long d = e.getRangeInMilliseconds();
+
+                    //Haulmont API
+                    if (needDeleteEvent(e, d > 0 && d <= DateConstants.DAYINMILLIS, sdc)) {
+                        continue;
+                    }
+
                     if ((d > 0 && d <= DateConstants.DAYINMILLIS)
                             && !e.isAllDay()) {
                         timeCells.add(sdc);
@@ -369,6 +375,11 @@ public class VCalendar extends Composite implements VHasDropHandler {
         if (renderImmediately) {
             reDrawAllMonthEvents(!eventMoving);
         }
+    }
+
+    //Haulmont API
+    protected boolean needDeleteEvent(CalendarEvent event, boolean isOneDay, SimpleDayCell sdc) {
+        return false;
     }
 
     //Haulmont API
