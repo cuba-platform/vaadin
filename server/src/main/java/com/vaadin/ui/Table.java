@@ -266,7 +266,7 @@ public class Table extends AbstractSelect implements Action.Container,
         /**
          * Row caption mode: Index of the item is used as item caption. The
          * index mode can only be used with the containers implementing the
-         * {@link com.vaadin.data.Container.Indexed} interface.
+         * {@link Container.Indexed} interface.
          */
         INDEX(ItemCaptionMode.INDEX),
         /**
@@ -2986,8 +2986,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Invoked when the value of a variable has changed.
      *
-     * @see com.vaadin.ui.Select#changeVariables(java.lang.Object,
-     *      java.util.Map)
+     * @see Select#changeVariables(java.lang.Object, java.util.Map)
      */
 
     @Override
@@ -3348,13 +3347,6 @@ public class Table extends AbstractSelect implements Action.Container,
         // calls to markAsDirty during paint
         getVisibleCells();
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.vaadin.ui.AbstractSelect#paintContent(com.vaadin.
-     * terminal.PaintTarget)
-     */
 
     @Override
     public void paintContent(PaintTarget target) throws PaintException {
@@ -4332,7 +4324,7 @@ public class Table extends AbstractSelect implements Action.Container,
      *
      * Also listens changes in rendered items to refresh content area.
      *
-     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(Property.ValueChangeEvent)
+     * @see Property.ValueChangeListener#valueChange(Property.ValueChangeEvent)
      */
 
     @Override
@@ -4363,7 +4355,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Notifies the component that it is connected to an application.
      *
-     * @see com.vaadin.ui.Component#attach()
+     * @see Component#attach()
      */
 
     @Override
@@ -4376,7 +4368,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Notifies the component that it is detached from the application
      *
-     * @see com.vaadin.ui.Component#detach()
+     * @see Component#detach()
      */
 
     @Override
@@ -4387,7 +4379,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Removes all Items from the Container.
      *
-     * @see com.vaadin.data.Container#removeAllItems()
+     * @see Container#removeAllItems()
      */
 
     @Override
@@ -4400,7 +4392,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Removes the Item identified by <code>ItemId</code> from the Container.
      *
-     * @see com.vaadin.data.Container#removeItem(Object)
+     * @see Container#removeItem(Object)
      */
 
     @Override
@@ -4420,7 +4412,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Removes a Property specified by the given Property ID from the Container.
      *
-     * @see com.vaadin.data.Container#removeContainerProperty(Object)
+     * @see Container#removeContainerProperty(Object)
      */
 
     @Override
@@ -4448,8 +4440,7 @@ public class Table extends AbstractSelect implements Action.Container,
      *            the class of the property.
      * @param defaultValue
      *            the default value given for all existing items.
-     * @see com.vaadin.data.Container#addContainerProperty(Object, Class,
-     *      Object)
+     * @see Container#addContainerProperty(Object, Class, Object)
      */
 
     @Override
@@ -4493,8 +4484,7 @@ public class Table extends AbstractSelect implements Action.Container,
      *            the Alignment of the column. Null implies align left.
      * @throws UnsupportedOperationException
      *             if the operation is not supported.
-     * @see com.vaadin.data.Container#addContainerProperty(Object, Class,
-     *      Object)
+     * @see Container#addContainerProperty(Object, Class, Object)
      */
     public boolean addContainerProperty(Object propertyId, Class<?> type,
             Object defaultValue, String columnHeader, Resource columnIcon,
@@ -4605,7 +4595,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * {@link #getPageLength()} may produce good enough estimates in some
      * situations.
      *
-     * @see com.vaadin.ui.Select#getVisibleItemIds()
+     * @see Select#getVisibleItemIds()
      */
 
     @Override
@@ -4629,7 +4619,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Container datasource item set change. Table must flush its buffers on
      * change.
      *
-     * @see com.vaadin.data.Container.ItemSetChangeListener#containerItemSetChange(com.vaadin.data.Container.ItemSetChangeEvent)
+     * @see Container.ItemSetChangeListener#containerItemSetChange(Container.ItemSetChangeEvent)
      */
 
     @Override
@@ -4675,7 +4665,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Container datasource property set change. Table must flush its buffers on
      * change.
      *
-     * @see com.vaadin.data.Container.PropertySetChangeListener#containerPropertySetChange(com.vaadin.data.Container.PropertySetChangeEvent)
+     * @see Container.PropertySetChangeListener#containerPropertySetChange(Container.PropertySetChangeEvent)
      */
 
     @Override
@@ -4723,7 +4713,7 @@ public class Table extends AbstractSelect implements Action.Container,
      *
      * @throws UnsupportedOperationException
      *             if set to true.
-     * @see com.vaadin.ui.Select#setNewItemsAllowed(boolean)
+     * @see Select#setNewItemsAllowed(boolean)
      */
 
     @Override
@@ -4737,7 +4727,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Gets the ID of the Item following the Item that corresponds to itemId.
      *
-     * @see com.vaadin.data.Container.Ordered#nextItemId(java.lang.Object)
+     * @see Container.Ordered#nextItemId(java.lang.Object)
      */
 
     @Override
@@ -4749,7 +4739,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Gets the ID of the Item preceding the Item that corresponds to the
      * itemId.
      *
-     * @see com.vaadin.data.Container.Ordered#prevItemId(java.lang.Object)
+     * @see Container.Ordered#prevItemId(java.lang.Object)
      */
 
     @Override
@@ -4760,7 +4750,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Gets the ID of the first Item in the Container.
      *
-     * @see com.vaadin.data.Container.Ordered#firstItemId()
+     * @see Container.Ordered#firstItemId()
      */
 
     @Override
@@ -4771,7 +4761,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Gets the ID of the last Item in the Container.
      *
-     * @see com.vaadin.data.Container.Ordered#lastItemId()
+     * @see Container.Ordered#lastItemId()
      */
 
     @Override
@@ -4783,7 +4773,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Tests if the Item corresponding to the given Item ID is the first Item in
      * the Container.
      *
-     * @see com.vaadin.data.Container.Ordered#isFirstId(java.lang.Object)
+     * @see Container.Ordered#isFirstId(java.lang.Object)
      */
 
     @Override
@@ -4795,7 +4785,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Tests if the Item corresponding to the given Item ID is the last Item in
      * the Container.
      *
-     * @see com.vaadin.data.Container.Ordered#isLastId(java.lang.Object)
+     * @see Container.Ordered#isLastId(java.lang.Object)
      */
 
     @Override
@@ -4806,7 +4796,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Adds new item after the given item.
      *
-     * @see com.vaadin.data.Container.Ordered#addItemAfter(java.lang.Object)
+     * @see Container.Ordered#addItemAfter(java.lang.Object)
      */
 
     @Override
@@ -4823,8 +4813,7 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Adds new item after the given item.
      *
-     * @see com.vaadin.data.Container.Ordered#addItemAfter(java.lang.Object,
-     *      java.lang.Object)
+     * @see Container.Ordered#addItemAfter(java.lang.Object, java.lang.Object)
      */
 
     @Override
@@ -4916,8 +4905,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * @throws UnsupportedOperationException
      *             if the container data source does not implement
      *             Container.Sortable
-     * @see com.vaadin.data.Container.Sortable#sort(java.lang.Object[],
-     *      boolean[])
+     * @see Container.Sortable#sort(java.lang.Object[], boolean[])
      *
      */
 
@@ -4971,7 +4959,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * collection.
      * </p>
      *
-     * @see com.vaadin.data.Container.Sortable#getSortableContainerPropertyIds()
+     * @see Container.Sortable#getSortableContainerPropertyIds()
      */
 
     @Override

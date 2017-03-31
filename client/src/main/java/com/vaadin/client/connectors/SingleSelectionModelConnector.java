@@ -225,6 +225,5 @@ public class SingleSelectionModelConnector extends
         public void setUserSelectionAllowed(boolean userSelectionAllowed) {
             this.userSelectionAllowed = userSelectionAllowed;
         }
-
     }
 }

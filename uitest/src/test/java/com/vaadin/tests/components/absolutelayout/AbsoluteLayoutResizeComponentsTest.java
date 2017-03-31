@@ -1,16 +1,27 @@
 package com.vaadin.tests.components.absolutelayout;
 
-import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.tests.tb3.MultiBrowserTest;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.parallel.Browser;
+import com.vaadin.tests.tb3.MultiBrowserTest;
 
 /**
  * Tests for component positioning after width changes from defined to relative and relative to defined
  */
 public class AbsoluteLayoutResizeComponentsTest extends MultiBrowserTest {
+
+    // Don't test IE8 with this test as it uses auto sizing.
+    @Override
+    public List<DesiredCapabilities> getBrowsersToTest() {
+        return getBrowsersExcludingIE8();
+    }
 
     @Test
     public void testFullWithComponentWithRightAlignmentShouldMoveRightWhenSettingAbsoluteWidth() {

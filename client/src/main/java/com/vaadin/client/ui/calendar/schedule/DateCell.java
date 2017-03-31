@@ -59,7 +59,7 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
     private int height;
     private final Element[] slotElements;
     //Haulmont API
-    protected final List<DateCellSlot> slots = new ArrayList<DateCell.DateCellSlot>();
+    protected final List<DateCellSlot> slots = new ArrayList<DateCellSlot>();
     private int[] slotElementHeights;
     private int startingSlotHeight;
     private Date today;
