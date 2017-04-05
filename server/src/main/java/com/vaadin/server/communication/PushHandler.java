@@ -368,7 +368,7 @@ public class PushHandler {
                                     + " see http://dev.vaadin.com/ticket/14251.");
                     return;
                 } else {
-                    getLogger().log(Level.INFO,
+                    getLogger().log(Level.FINE,
                             "No UI was found based on data in the request,"
                                     + " but a slower lookup based on the AtmosphereResource succeeded."
                                     + " See http://dev.vaadin.com/ticket/14251 for more details.");
