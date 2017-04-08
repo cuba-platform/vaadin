@@ -68,6 +68,10 @@ public interface Constants {
     // Keep the version number in sync with pom.xml
     static final String REQUIRED_ATMOSPHERE_RUNTIME_VERSION = "2.2.9.vaadin2";
 
+    // Haulmont API
+    // Keep the version number in sync with cuba build.gradle
+    static final String REQUIRED_ATMOSPHERE_RUNTIME_PATCH_VERSION = "2.2.9.vaadin2.cuba0";
+
     static final String INVALID_ATMOSPHERE_VERSION_WARNING = "\n"
             + "=================================================================\n"
             + "Vaadin depends on Atmosphere {0} but version {1} was found.\n"

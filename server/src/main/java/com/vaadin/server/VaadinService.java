@@ -1656,7 +1656,9 @@ public abstract class VaadinService implements Serializable {
             return false;
         }
 
-        if (!Constants.REQUIRED_ATMOSPHERE_RUNTIME_VERSION.equals(rawVersion)) {
+        // Haulmont API
+        if (!Constants.REQUIRED_ATMOSPHERE_RUNTIME_VERSION.equals(rawVersion)
+                && !Constants.REQUIRED_ATMOSPHERE_RUNTIME_PATCH_VERSION.equals(rawVersion)) {
             getLogger().log(Level.WARNING,
                     Constants.INVALID_ATMOSPHERE_VERSION_WARNING,
                     new Object[] {
