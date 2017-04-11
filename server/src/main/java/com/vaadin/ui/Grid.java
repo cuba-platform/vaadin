@@ -3377,7 +3377,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
          *
          * @return the internal state of the column
          */
-        GridColumnState getState() {
+        // Haulmont API
+        public GridColumnState getState() {
             return state;
         }
 
@@ -4545,7 +4546,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
     /**
      * The data source attached to the grid
      */
-    private Container.Indexed datasource;
+    // Haulmont API
+    protected Container.Indexed datasource;
 
     /**
      * Property id to column instance mapping
@@ -4642,21 +4644,26 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
     private final Header header = new Header(this);
     private final Footer footer = new Footer(this);
 
-    private Object editedItemId = null;
-    private boolean editorActive = false;
+    // Haulmont API
+    protected Object editedItemId = null;
+    // Haulmont API
+    protected boolean editorActive = false;
 
     /**
      * True while the editor is storing the field values, i.e. commiting the
      * field group.
      */
-    private boolean editorSaving = false;
-    private FieldGroup editorFieldGroup = new CustomFieldGroup();
+    // Haulmont API
+    protected boolean editorSaving = false;
+    // Haulmont API
+    protected FieldGroup editorFieldGroup = new CustomFieldGroup();
 
     /**
      * Poperty ID to Field mapping that stores editor fields set by
      * {@link #setEditorField(Object, Field)}.
      */
-    private Map<Object, Field<?>> editorFields = new HashMap<Object, Field<?>>();
+    // Haulmont API
+    protected Map<Object, Field<?>> editorFields = new HashMap<Object, Field<?>>();
 
     private CellStyleGenerator cellStyleGenerator;
     private RowStyleGenerator rowStyleGenerator;
@@ -7056,7 +7063,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
         }
     }
 
-    private void setEditorField(Object propertyId, Field<?> field) {
+    // Haulmont API
+    protected void setEditorField(Object propertyId, Field<?> field) {
         checkColumnExists(propertyId);
 
         Field<?> oldField = editorFieldGroup.getField(propertyId);
@@ -7153,13 +7161,15 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
      *
      * @return a collection of all the fields bound to the item editor
      */
-    Collection<Field<?>> getEditorFields() {
+    // Haulmont API
+    protected Collection<Field<?>> getEditorFields() {
         Collection<Field<?>> fields = editorFieldGroup.getFields();
         assert allAttached(fields);
         return fields;
     }
 
-    private boolean allAttached(Collection<? extends Component> components) {
+    // Haulmont API
+    protected boolean allAttached(Collection<? extends Component> components) {
         for (Component component : components) {
             if (component.getParent() != this) {
                 return false;

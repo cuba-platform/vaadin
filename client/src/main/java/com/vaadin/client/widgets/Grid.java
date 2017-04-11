@@ -4156,7 +4156,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     private final UserSorter sorter = new UserSorter();
 
-    private final Editor<T> editor = GWT.create(Editor.class);
+    private final Editor<T> editor = createEditor();
+
+    protected Editor<T> createEditor() {
+        return GWT.create(Editor.class);
+    }
 
     /**
      * The cell a click event originated from
