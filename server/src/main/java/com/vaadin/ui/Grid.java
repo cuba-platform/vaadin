@@ -4911,7 +4911,8 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                     final boolean moving = !opening && !editedItemId.equals(id);
 
                     final boolean allowMove = !isEditorBuffered()
-                            && getEditorFieldGroup().isValid();
+                            && getEditorFieldGroup().isValid()
+                            && isEditorFieldsValid(); // Haulmont API
 
                     if (opening || !moving || allowMove) {
                         doBind(id);
@@ -4983,6 +4984,11 @@ public class Grid extends AbstractFocusable implements SelectionNotifier,
                         .error(new ConnectorErrorEvent(Grid.this, e));
             }
         });
+    }
+
+    // Haumont API
+    protected boolean isEditorFieldsValid() {
+        return true;
     }
 
     @Override
