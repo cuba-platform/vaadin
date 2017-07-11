@@ -332,7 +332,7 @@ public class VNotification extends VOverlay {
                 fireEvent(new HideEvent(this));
                 int removedIdx = notifications.indexOf(this);
                 if (notifications.remove(this)) {
-                    afterRemoveThisNotification(this, removedIdx);
+                    afterRemoveNotificationFromCollection(this, removedIdx);
                 }
                 // Haulmont API
                 if (delegate != null) {
@@ -759,6 +759,6 @@ public class VNotification extends VOverlay {
     }
 
     // Haulmont API
-    protected void afterRemoveThisNotification(VNotification removedNotification, int removedIdx) {
+    protected void afterRemoveNotificationFromCollection(VNotification removedNotification, int removedIdx) {
     }
 }
