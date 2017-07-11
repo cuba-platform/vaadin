@@ -81,7 +81,7 @@ public class VNotification extends VOverlay {
     public static final int Z_INDEX_BASE = 20000;
     public static final String STYLE_SYSTEM = "system";
 
-    private static final ArrayList<VNotification> notifications = new ArrayList<VNotification>();
+    protected static final ArrayList<VNotification> notifications = new ArrayList<VNotification>();
 
     private boolean infiniteDelay = false;
     private int hideDelay = 0;
@@ -260,6 +260,7 @@ public class VNotification extends VOverlay {
         setPosition(position);
         super.show();
         updatePositionOffsets(position);
+        beforeAddNotificationToCollection();
         notifications.add(this);
         positionOrSizeUpdated();
 
@@ -329,7 +330,10 @@ public class VNotification extends VOverlay {
             } else {
                 VNotification.super.hide();
                 fireEvent(new HideEvent(this));
-                notifications.remove(this);
+                int removedIdx = notifications.indexOf(this);
+                if (notifications.remove(this)) {
+                    afterRemoveThisNotification(this, removedIdx);
+                }
                 // Haulmont API
                 if (delegate != null) {
                     delegate.hide();
@@ -748,5 +752,13 @@ public class VNotification extends VOverlay {
     // Haulmont API
     public static void setRelativeZIndex(boolean relativeZIndex) {
         VNotification.relativeZIndex = relativeZIndex;
+    }
+
+    // Haulmont API
+    protected void beforeAddNotificationToCollection() {
+    }
+
+    // Haulmont API
+    protected void afterRemoveThisNotification(VNotification removedNotification, int removedIdx) {
     }
 }
