@@ -1041,8 +1041,14 @@ public class GridConnector extends AbstractHasComponentsConnector
         CustomGridColumn column = columnIdToColumn.get(columnState.id);
 
         columnsUpdatedFromState = true;
+        // Haulmont API
+        preUpdateColumnFromState(column, columnState);
         updateColumnFromState(column, columnState);
         columnsUpdatedFromState = false;
+    }
+
+    // Haulmont API
+    protected void preUpdateColumnFromState(Column<?, JsonObject> column, GridColumnState columnState) {
     }
 
     /**
