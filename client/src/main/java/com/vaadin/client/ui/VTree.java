@@ -100,7 +100,8 @@ public class VTree extends FocusElementPanel
     @Deprecated
     public static final MultiSelectMode MULTISELECT_MODE_SIMPLE = MultiSelectMode.SIMPLE;
 
-    private static final int CHARCODE_SPACE = 32;
+    // Haulmont API
+    protected static final int CHARCODE_SPACE = 32;
 
     /** For internal use only. May be removed or replaced in the future. */
     public final FlowPanel body = new FlowPanel();
@@ -764,7 +765,8 @@ public class VTree extends FocusElementPanel
                     if (selectable) {
                         // caption click = selection change && possible click
                         // event
-                        if (handleClickSelection(
+                        // Haulmont API
+                        if (!customSelectableHandling(event) && handleClickSelection(
                                 event.getCtrlKey() || event.getMetaKey(),
                                 event.getShiftKey())) {
                             event.preventDefault();
@@ -839,6 +841,11 @@ public class VTree extends FocusElementPanel
                     event.preventDefault(); // text selection
                 }
             }
+        }
+
+        // Haulmont API
+        protected boolean customSelectableHandling(Event event) {
+            return false;
         }
 
         /**
@@ -1879,7 +1886,10 @@ public class VTree extends FocusElementPanel
         }
 
         // Selection
-        if (keycode == getNavigationSelectKey()) {
+        // Haulmont API
+        if (customKeySelectionHandling(keycode)) {
+            return true;
+        } else if (keycode == getNavigationSelectKey()) {
             if (!focusedNode.isSelected()) {
                 selectNode(focusedNode,
                         (!isMultiselect
@@ -1924,6 +1934,11 @@ public class VTree extends FocusElementPanel
             return true;
         }
 
+        return false;
+    }
+
+    // Haulmont API
+    protected boolean customKeySelectionHandling(int keycode) {
         return false;
     }
 
