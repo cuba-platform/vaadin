@@ -237,6 +237,9 @@ public class VDragAndDropManager {
      */
     private boolean isStarted;
 
+    // Haulmont API
+    protected boolean handleFileDragAndDrop = true;
+
     /**
      * This method is used to start Vaadin client side drag and drop operation.
      * Operation may be started by virtually any Widget.
@@ -270,6 +273,11 @@ public class VDragAndDropManager {
 
             @Override
             public void execute() {
+                // Haulmont API
+                if (!handleFileDragAndDrop && isFileEvent(startEvent)) {
+                    return;
+                }
+
                 isStarted = true;
                 addActiveDragSourceStyleName();
                 VDropHandler dh = null;
@@ -399,6 +407,39 @@ public class VDragAndDropManager {
 
         return currentDrag;
     }
+
+    // Haulmont API
+    protected native boolean isFileEvent(NativeEvent event) /*-{
+        // Chrome >= v21 and Opera >= v?
+        if (event.dataTransfer && event.dataTransfer.items) {
+            for (var i = 0; i < event.dataTransfer.items.length; i++) {
+                var item = event.dataTransfer.items[i];
+                if (typeof item.webkitGetAsEntry == "function") {
+                    var entry = item.webkitGetAsEntry();
+                    if (typeof entry !== "undefined" && entry !== null && entry.isFile) {
+                        return true;
+                    }
+                }
+
+                if (item.kind && item.kind == "file") {
+                    return true;
+                }
+            }
+        }
+
+        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+            return true;
+        }
+
+        if (event.types) {
+            for (var j = 0; j < event.types.length; j++) {
+                if (event.types[j] == "Files") {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }-*/;
 
     protected void updateDragImagePosition(NativeEvent gwtEvent,
             Element dragImage) {
