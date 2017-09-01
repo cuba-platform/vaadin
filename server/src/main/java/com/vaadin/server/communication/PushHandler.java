@@ -467,6 +467,11 @@ public class PushHandler {
                         "sendNotificationAndDisconnect called for resource no longer in scope");
                 return;
             }
+
+            // force correct encoding
+            resource.getResponse().setCharacterEncoding("UTF-8");
+            resource.getResponse().setContentType("text/html; charset=UTF-8");
+
             resource.getResponse().getWriter().write(notificationJson);
             resource.resume();
         } catch (Exception e) {
