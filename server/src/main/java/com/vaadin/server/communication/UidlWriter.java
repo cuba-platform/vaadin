@@ -16,35 +16,23 @@
 
 package com.vaadin.server.communication;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.annotations.StyleSheet;
-import com.vaadin.server.ClientConnector;
-import com.vaadin.server.JsonPaintTarget;
-import com.vaadin.server.LegacyCommunicationManager;
+import com.vaadin.server.*;
 import com.vaadin.server.LegacyCommunicationManager.ClientCache;
-import com.vaadin.server.SystemMessages;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.UI;
-
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.impl.JsonUtil;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.Writer;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Serializes pending server-side changes to UI state to JSON. This includes
@@ -307,6 +295,9 @@ public class UidlWriter implements Serializable {
                 }
             }
 
+            // Haulmont API
+            handleAdditionalDependencies(newConnectorTypes, scriptDependencies, styleDependencies);
+
             // Include script dependencies in output if there are any
             if (!scriptDependencies.isEmpty()) {
                 writer.write(", \"scriptDependencies\": "
@@ -332,6 +323,11 @@ public class UidlWriter implements Serializable {
         } finally {
             uiConnectorTracker.setWritingResponse(false);
         }
+    }
+
+    // Haulmont API
+    protected void handleAdditionalDependencies(List<Class<? extends ClientConnector>> newConnectorTypes,
+                                                List<String> scriptDependencies, List<String> styleDependencies) {
     }
 
     private JsonArray toJsonArray(List<String> list) {

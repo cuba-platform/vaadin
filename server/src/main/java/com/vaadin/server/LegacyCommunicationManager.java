@@ -16,6 +16,14 @@
 
 package com.vaadin.server;
 
+import com.vaadin.server.ClientConnector.ConnectorErrorEvent;
+import com.vaadin.shared.ApplicationConstants;
+import com.vaadin.shared.JavaScriptConnectorState;
+import com.vaadin.shared.communication.SharedState;
+import com.vaadin.ui.*;
+import elemental.json.JsonObject;
+import elemental.json.JsonValue;
+
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,19 +35,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.vaadin.server.ClientConnector.ConnectorErrorEvent;
-import com.vaadin.shared.ApplicationConstants;
-import com.vaadin.shared.JavaScriptConnectorState;
-import com.vaadin.shared.communication.SharedState;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.ConnectorTracker;
-import com.vaadin.ui.HasComponents;
-import com.vaadin.ui.SelectiveRenderer;
-import com.vaadin.ui.UI;
-
-import elemental.json.JsonObject;
-import elemental.json.JsonValue;
 
 /**
  * This is a common base class for the server-side implementations of the
@@ -54,6 +49,8 @@ import elemental.json.JsonValue;
 @Deprecated
 @SuppressWarnings("serial")
 public class LegacyCommunicationManager implements Serializable {
+    // Haulmont API
+    protected static final String VAADIN_WEBJARS_PREFIX = "VAADIN/webjars";
 
     // TODO Refactor (#11410)
     private final HashMap<Integer, ClientCache> uiToClientCache = new HashMap<Integer, ClientCache>();
@@ -180,6 +177,11 @@ public class LegacyCommunicationManager implements Serializable {
             }
         } else {
             publishedFileContexts.put(name, context);
+        }
+
+        // Haulmont API
+        if (name.startsWith(VAADIN_WEBJARS_PREFIX)) {
+            return name;
         }
 
         return ApplicationConstants.PUBLISHED_PROTOCOL_PREFIX + "/" + name;

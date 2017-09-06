@@ -15,42 +15,6 @@
  */
 package com.vaadin.server;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.VaadinServletConfiguration.InitParameterName;
 import com.vaadin.sass.internal.ScssStylesheet;
@@ -60,10 +24,22 @@ import com.vaadin.shared.JsonConstants;
 import com.vaadin.shared.Version;
 import com.vaadin.ui.UI;
 import com.vaadin.util.CurrentInstance;
-
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("serial")
 public class VaadinServlet extends HttpServlet implements Constants {
@@ -1294,8 +1270,9 @@ public class VaadinServlet extends HttpServlet implements Constants {
     }
 
     protected boolean isStaticResourceRequest(HttpServletRequest request) {
-        return request.getRequestURI()
-                .startsWith(request.getContextPath() + "/VAADIN/");
+        String requestURI = request.getRequestURI();
+        return requestURI.startsWith(request.getContextPath() + "/VAADIN/") &&
+                !requestURI.startsWith(request.getContextPath() + "/VAADIN/webjars");
     }
 
     /**
