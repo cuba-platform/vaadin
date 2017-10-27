@@ -453,7 +453,7 @@ public class VDragAndDropManager {
      */
     protected VDropHandler findDragTarget(Element element) {
         try {
-            Widget w = WidgetUtil.findWidget(element, null);
+            Widget w = WidgetUtil.findWidget(element);
             if (w == null) {
                 return null;
             }

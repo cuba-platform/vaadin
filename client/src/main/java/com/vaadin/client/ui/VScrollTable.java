@@ -6797,7 +6797,7 @@ public class VScrollTable extends FlowPanel
             // Haulmont API dependency
             protected Element getElementTdOrTr(Element element) {
 
-                Widget widget = WidgetUtil.findWidget(element, null);
+                Widget widget = WidgetUtil.findWidget(element);
 
                 if (widget != this) {
                     /*
@@ -8719,7 +8719,7 @@ public class VScrollTable extends FlowPanel
     @Override
     public String getSubPartName(
             com.google.gwt.user.client.Element subElement) {
-        Widget widget = WidgetUtil.findWidget(subElement, null);
+        Widget widget = WidgetUtil.findWidget(subElement);
         if (widget instanceof HeaderCell) {
             return SUBPART_HEADER + "[" + tHead.visibleCells.indexOf(widget)
                     + "]";

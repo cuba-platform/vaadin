@@ -1,0 +1,44 @@
+---
+title: Contents
+order: 1
+layout: page
+---
+
+= Community articles for Vaadin 7
+
+[discrete]
+== Articles
+- <<LazyQueryContainer#lazy-query-container,"Lazy query container">>
+- <<UsingJDBCwithLazyQueryContainerAndFilteringTable#using-jdbc-with-lazy-query-container-and-filteringtable,"Using JDBC with Lazy Query Container and FilteringTable">>
+- <<OfflineModeForTouchKit4MobileApps#offline-mode-for-touchkit-4-mobile-apps,"Offline mode for TouchKit 4 mobile apps">>
+- <<CreatingYourOwnConverterForString#creating-your-own-converter-for-string-mytype-conversion,"Creating your own converter for String">>
+- <<ChangingTheDefaultConvertersForAnApplication#changing-the-default-converters-for-an-application,"Changing the default converters for an application">>
+- <<CreatingAnApplicationWithDifferentFeaturesForDifferentClients#creating-an-application-with-different-features-for-different-clients,"Creating an application with different features for different clients">>
+- <<VAccessControl#v-access-control,"V - Access control">>
+- <<FindingTheCurrentRootAndApplication#finding-the-current-root-and-application,"Finding the current root and application">>
+- <<CreatingABasicApplication#creating-a-basic-application,"Creating a basic application">>
+- <<JasperReportsOnVaadinSample#jasper-reports-on-vaadin-sample,"Jasper reports on Vaadin sample">>
+- <<BuildingVaadinApplicationsOnTopOfActiviti#building-vaadin-applications-on-top-of-activiti,"Building Vaadin applications on top of Activiti">>
+- <<UsingVaadinInAnExistingGWTProject#using-vaadin-in-an-existing-gwt-project,"Using Vaadin in an existing GWT project">>
+- <<UsingPython#developing-vaadin-apps-with-python,"Using Python">>
+- <<UsingPhoneGapBuildWithVaadinTouchKit#using-phonegap-build-with-vaadin-touchkit,"Using PhoneGap Build with Vaadin TouchKit">>
+- <<ScalaAndVaadinHOWTO#scala-and-vaadin-how-to,"Scala and Vaadin how-to">>
+- <<UsingHibernateWithVaadin#using-hibernate-with-vaadin,"Using Hibernate with Vaadin">>
+- <<AddingJPAToTheAddressBookDemo#adding-jpa-to-the-address-book-demo,"Adding JPA to the address book demo">>
+- <<SimplifiedRPCusingJavaScript#simplified-rpc-using-javascript,"Simplified RPC using JavaScript">>
+- <<JMeterTesting#how-to-test-vaadin-web-application-performance-with-jmeter,"JMeter testing">>
+- <<AutoGeneratingAFormBasedOnABeanVaadin6StyleForm#auto-generating-a-form-based-on-a-bean-vaadin-6-style-form,"Auto-generating a form based on a bean - Vaadin 6 style Form">>
+- <<CreatingAReusableVaadinThemeInEclipse#creating-a-reusable-vaadin-theme-in-eclipse,"Creating a reusable Vaadin theme in Eclipse">>
+- <<CreatingATextFieldForIntegerOnlyInputWhenNotUsingADataSource#creating-a-textfield-for-integer-only-input-when-not-using-a-data-source,"Creating a TextField for integer only input when not using a data source">>
+- <<FormattingDataInGrid#formatting-data-in-grid,"Formatting data in grid">>
+- <<ConfiguringGridColumnWidths#configuring-grid-column-widths,"Configuring Grid column widths">>
+- <<Vaadin7HierarchicalContainerAndTreeComponentExampleWithLiferayOrganizationService#vaadin-7-hierarchical-container-and-treecomponent-example-with-liferay-organizationservice,"Vaadin 7 hierarchical container and TreeComponent example with Liferay OrganizationService">>
+- <<CreatingACustomFieldForEditingTheAddressOfAPerson#creating-a-customfield-for-editing-the-address-of-a-person,"Creating a CustomField for editing the address of a person">>
+- <<CreatingAMasterDetailsViewForEditingPersons#creating-a-master-details-view-for-editing-persons,"Creating a master details view for editing persons">>
+- <<ShowingExtraDataForGridRows#showing-extra-data-for-grid-rows,"Showing extra data for Grid rows">>
+- <<CreatingATextFieldForIntegerOnlyInputUsingADataSource#creating-a-textfield-for-integer-only-input-using-a-data-source,"Creating a TextField for integer only input using a data source">>
+- <<UsingGridWithAContainer#using-grid-with-a-container,"Using Grid with a Container">>
+- <<ShowingDataInGrid#showing-data-in-grid,"Showing data in Grid">>
+- <<UsingGridWithInlineData#using-grid-with-inline-data,"Using Grid with inline data">>
+- <<MigratingFromVaadin6ToVaadin7#migrating-from-vaadin-6-to-vaadin-7,"Migrating from Vaadin 6 to Vaadin 7">>
+- <<MigratingFromVaadin7%2E0ToVaadin7%2E1#migrating-from-vaadin-7.0-to-vaadin-7.1,"Migrating from Vaadin 7.0 to Vaadin 7.1">>

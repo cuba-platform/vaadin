@@ -1782,9 +1782,6 @@ public class Table extends AbstractSelect implements Action.Container,
         if (rows > 0) {
             pageBufferFirstIndex = firstIndex;
         }
-        if (getPageLength() != 0) {
-            removeUnnecessaryRows();
-        }
 
         setRowCacheInvalidated(true);
         markAsDirty();
@@ -1848,48 +1845,6 @@ public class Table extends AbstractSelect implements Action.Container,
             return table;
         }
 
-    }
-
-    /**
-     * Removes rows that fall outside the required cache.
-     */
-    private void removeUnnecessaryRows() {
-        int minPageBufferIndex = getMinPageBufferIndex();
-        int maxPageBufferIndex = getMaxPageBufferIndex();
-
-        int maxBufferSize = maxPageBufferIndex - minPageBufferIndex + 1;
-
-        /*
-         * Number of rows that were previously cached. This is not necessarily
-         * the same as pageLength if we do not have enough rows in the
-         * container.
-         */
-        int currentlyCachedRowCount = pageBuffer[CELL_ITEMID].length;
-
-        if (currentlyCachedRowCount <= maxBufferSize) {
-            // removal unnecessary
-            return;
-        }
-
-        /* Figure out which rows to get rid of. */
-        int firstCacheRowToRemoveInPageBuffer = -1;
-        if (minPageBufferIndex > pageBufferFirstIndex) {
-            firstCacheRowToRemoveInPageBuffer = pageBufferFirstIndex;
-        } else if (maxPageBufferIndex < pageBufferFirstIndex
-                + currentlyCachedRowCount) {
-            firstCacheRowToRemoveInPageBuffer = maxPageBufferIndex + 1;
-        }
-
-        if (firstCacheRowToRemoveInPageBuffer
-                - pageBufferFirstIndex < currentlyCachedRowCount) {
-            /*
-             * Unregister all components that fall beyond the cache limits after
-             * inserting the new rows.
-             */
-            unregisterComponentsAndPropertiesInRows(
-                    firstCacheRowToRemoveInPageBuffer, currentlyCachedRowCount
-                            - firstCacheRowToRemoveInPageBuffer);
-        }
     }
 
     /**
