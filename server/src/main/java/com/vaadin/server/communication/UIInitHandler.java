@@ -305,11 +305,13 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
     /**
      * Gets the security key (and generates one if needed) as UIDL.
      *
+     * Haulmont API dependency.
+     *
      * @param session
      *            the vaadin session to which the security key belongs
      * @return the security key UIDL or "" if the feature is turned off
      */
-    private static String getSecurityKeyUIDL(VaadinSession session) {
+    protected static String getSecurityKeyUIDL(VaadinSession session) {
         String seckey = session.getCsrfToken();
 
         return "\"" + ApplicationConstants.UIDL_SECURITY_TOKEN_ID + "\":\""
@@ -319,12 +321,14 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
     /**
      * Gets the push connection identifier as UIDL.
      *
+     * Haulmont API dependency.
+     *
      * @param session
      *            the vaadin session to which the security key belongs
      * @return the push identifier UIDL
      * @since 7.7.11
      */
-    private static String getPushIdUIDL(VaadinSession session) {
+    protected static String getPushIdUIDL(VaadinSession session) {
         return "\"" + ApplicationConstants.UIDL_PUSH_ID + "\":\""
                 + session.getPushId() + "\",";
     }
