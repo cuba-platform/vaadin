@@ -16,16 +16,7 @@
 
 package com.vaadin.client.ui.embedded;
 
-import java.util.Map;
-import java.util.logging.Logger;
-
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.ObjectElement;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.vaadin.client.VTooltip;
@@ -38,6 +29,10 @@ import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.embedded.EmbeddedServerRpc;
 import com.vaadin.shared.ui.embedded.EmbeddedState;
 import com.vaadin.ui.Embedded;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 @Connect(Embedded.class)
 public class EmbeddedConnector extends AbstractComponentConnector {
@@ -134,7 +129,7 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                 setResourceUrl(getResourceUrl("src"));
                 clearBrowserElement = false;
             } else {
-                getLogger().severe(
+                getLogger().error(
                         "Unknown Embedded type '" + widget.type + "'");
             }
         } else if (state.mimeType != null) {
@@ -199,10 +194,10 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                     obj.setInnerText(state.altText);
                 }
             } else {
-                getLogger().severe("Unknown Embedded mimetype '" + mime + "'");
+                getLogger().error("Unknown Embedded mimetype '" + mime + "'");
             }
         } else {
-            getLogger().severe("Unknown Embedded; no type or mimetype attribute");
+            getLogger().error("Unknown Embedded; no type or mimetype attribute");
         }
 
         if (clearBrowserElement) {
@@ -254,6 +249,6 @@ public class EmbeddedConnector extends AbstractComponentConnector {
     };
 
     private static Logger getLogger() {
-        return Logger.getLogger(EmbeddedConnector.class.getName());
+        return LoggerFactory.getLogger(EmbeddedConnector.class);
     }
 }

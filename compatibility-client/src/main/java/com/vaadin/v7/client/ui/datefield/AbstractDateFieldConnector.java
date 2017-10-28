@@ -15,10 +15,6 @@
  */
 package com.vaadin.v7.client.ui.datefield;
 
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.LocaleNotLoadedException;
 import com.vaadin.client.Paintable;
@@ -27,6 +23,10 @@ import com.vaadin.v7.client.ui.AbstractFieldConnector;
 import com.vaadin.v7.client.ui.VDateField;
 import com.vaadin.v7.shared.ui.datefield.DateFieldConstants;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 public class AbstractDateFieldConnector extends AbstractFieldConnector
         implements Paintable {
@@ -52,10 +52,10 @@ public class AbstractDateFieldConnector extends AbstractFieldConnector
                 getWidget().setCurrentLocale(locale);
             } catch (final LocaleNotLoadedException e) {
                 getWidget().setCurrentLocale(getWidget().dts.getLocale());
-                getLogger().severe("Tried to use an unloaded locale \"" + locale
+                getLogger().error("Tried to use an unloaded locale \"" + locale
                         + "\". Using default locale ("
                         + getWidget().getCurrentLocale() + ").");
-                getLogger().log(Level.SEVERE,
+                getLogger().error(
                         e.getMessage() == null ? "" : e.getMessage(), e);
             }
         }
@@ -123,6 +123,6 @@ public class AbstractDateFieldConnector extends AbstractFieldConnector
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(AbstractDateFieldConnector.class.getName());
+        return LoggerFactory.getLogger(AbstractDateFieldConnector.class);
     }
 }

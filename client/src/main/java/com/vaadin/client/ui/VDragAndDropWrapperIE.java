@@ -16,12 +16,12 @@
 
 package com.vaadin.client.ui;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VDragAndDropWrapperIE extends VDragAndDropWrapper {
     private AnchorElement anchor = null;
@@ -94,6 +94,6 @@ public class VDragAndDropWrapperIE extends VDragAndDropWrapper {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VDragAndDropWrapperIE.class.getName());
+        return LoggerFactory.getLogger(VDragAndDropWrapperIE.class);
     }
 }

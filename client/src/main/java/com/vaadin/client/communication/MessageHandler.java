@@ -15,53 +15,16 @@
  */
 package com.vaadin.client.communication;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.google.gwt.core.client.Duration;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayString;
-import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConfiguration;
-import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.*;
 import com.vaadin.client.ApplicationConnection.ApplicationState;
 import com.vaadin.client.ApplicationConnection.MultiStepDuration;
 import com.vaadin.client.ApplicationConnection.ResponseHandlingStartedEvent;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorHierarchyChangeEvent;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.FastStringSet;
-import com.vaadin.client.HasComponentsConnector;
-import com.vaadin.client.JsArrayObject;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.LocaleService;
-import com.vaadin.client.Paintable;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.ServerConnector;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.Util;
-import com.vaadin.client.VCaption;
-import com.vaadin.client.VConsole;
-import com.vaadin.client.ValueMap;
-import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
-import com.vaadin.client.metadata.ConnectorBundleLoader;
-import com.vaadin.client.metadata.NoDataException;
-import com.vaadin.client.metadata.Property;
-import com.vaadin.client.metadata.Type;
-import com.vaadin.client.metadata.TypeData;
+import com.vaadin.client.metadata.*;
 import com.vaadin.client.ui.AbstractConnector;
 import com.vaadin.client.ui.VNotification;
 import com.vaadin.client.ui.dd.VDragAndDropManager;
@@ -70,10 +33,13 @@ import com.vaadin.client.ui.window.WindowConnector;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.communication.MethodInvocation;
 import com.vaadin.shared.communication.SharedState;
-
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * A MessageHandler is responsible for handling all incoming messages (JSON)
@@ -221,7 +187,7 @@ public class MessageHandler {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(MessageHandler.class.getName());
+        return LoggerFactory.getLogger(MessageHandler.class);
     }
 
     /**
@@ -237,7 +203,7 @@ public class MessageHandler {
                     "The json to handle cannot be null");
         }
         if (getServerId(json) == -1) {
-            getLogger().severe("Response didn't contain a server id. "
+            getLogger().error("Response didn't contain a server id. "
                     + "Please verify that the server is up-to-date and that the response data has not been modified in transmission.");
         }
 
@@ -249,7 +215,7 @@ public class MessageHandler {
             connection.setApplicationRunning(true);
             connection.executeWhenCSSLoaded(() -> handleJSON(json));
         } else {
-            getLogger().warning(
+            getLogger().warn(
                     "Ignored received message because application has already been stopped");
             return;
         }
@@ -284,7 +250,7 @@ public class MessageHandler {
                 // Unexpected server id
                 if (serverId <= lastSeenServerSyncId) {
                     // Why is the server re-sending an old package? Ignore it
-                    getLogger().warning("Received message with server id "
+                    getLogger().warn("Received message with server id "
                             + serverId + " but have already seen "
                             + lastSeenServerSyncId + ". Ignoring it");
                     endRequestIfResponse(json);
@@ -508,8 +474,7 @@ public class MessageHandler {
                         layoutManager.layoutNow();
                     }
                 } catch (final Throwable e) {
-                    getLogger().log(Level.SEVERE, "Error processing layouts",
-                            e);
+                    getLogger().error("Error processing layouts", e);
                 }
                 Profiler.leave("Layout processing");
 
@@ -547,7 +512,7 @@ public class MessageHandler {
                     if (fetchStart != 0) {
                         int time = (int) (Duration.currentTimeMillis()
                                 - fetchStart);
-                        getLogger().log(Level.INFO, "First response processed "
+                        getLogger().info("First response processed "
                                 + time + " ms after fetchStart");
                     }
 
@@ -754,7 +719,7 @@ public class MessageHandler {
                     try {
                         sce.getConnector().fireEvent(sce);
                     } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE,
+                        getLogger().error(
                                 "Error sending state change events", e);
                     }
                 }
@@ -773,7 +738,7 @@ public class MessageHandler {
                     ServerConnector c = currentConnectors.get(i);
                     if (c.getParent() != null) {
                         if (!c.getParent().getChildren().contains(c)) {
-                            getLogger().severe("ERROR: Connector "
+                            getLogger().error("ERROR: Connector "
                                     + c.getConnectorId()
                                     + " is connected to a parent but the parent ("
                                     + c.getParent().getConnectorId()
@@ -787,7 +752,7 @@ public class MessageHandler {
                     } else {
                         // The connector has been detached from the
                         // hierarchy but was not unregistered.
-                        getLogger().severe("ERROR: Connector "
+                        getLogger().error("ERROR: Connector "
                                 + c.getConnectorId()
                                 + " is not attached to a parent but has not been unregistered");
                     }
@@ -880,8 +845,7 @@ public class MessageHandler {
                             createdConnectors.push(connectorId);
                         }
                     } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE,
-                                "Error handling type data", e);
+                        getLogger().error("Error handling type data", e);
                     }
                 }
 
@@ -927,12 +891,12 @@ public class MessageHandler {
                                 Profiler.leave(key);
                             }
                         } else if (legacyConnector == null) {
-                            getLogger().severe("Received update for "
+                            getLogger().error("Received update for "
                                     + uidl.getTag()
                                     + ", but there is no such paintable ("
                                     + connectorId + ") rendered.");
                         } else {
-                            getLogger().severe(
+                            getLogger().error(
                                     "Server sent Vaadin 6 style updates for "
                                             + Util.getConnectorString(
                                                     legacyConnector)
@@ -940,7 +904,7 @@ public class MessageHandler {
                         }
 
                     } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE, "Error handling UIDL", e);
+                        getLogger().error("Error handling UIDL", e);
                     }
                 }
 
@@ -962,7 +926,7 @@ public class MessageHandler {
                         logHierarchyChange(event);
                         event.getConnector().fireEvent(event);
                     } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE,
+                        getLogger().error(
                                 "Error sending hierarchy change events", e);
                     }
                 }
@@ -1078,8 +1042,7 @@ public class MessageHandler {
                             Profiler.leave("updateConnectorState inner loop");
                         }
                     } catch (final Throwable e) {
-                        getLogger().log(Level.SEVERE,
-                                "Error updating connector states", e);
+                        getLogger().error("Error updating connector states", e);
                     }
                 }
 
@@ -1225,7 +1188,7 @@ public class MessageHandler {
                         ServerConnector childConnector = connectorMap
                                 .getConnector(childConnectorId);
                         if (childConnector == null) {
-                            getLogger().severe("Hierarchy claims that "
+                            getLogger().error("Hierarchy claims that "
                                     + childConnectorId + " is a child for "
                                     + connectorId + " ("
                                     + parentConnector.getClass().getName()
@@ -1287,7 +1250,7 @@ public class MessageHandler {
                             result.events.add(event);
                         }
                     } else if (!newComponents.isEmpty()) {
-                        getLogger().severe("Hierachy claims "
+                        getLogger().error("Hierachy claims "
                                 + Util.getConnectorString(parentConnector)
                                 + " has component children even though it isn't a HasComponentsConnector");
                     }
@@ -1325,8 +1288,7 @@ public class MessageHandler {
                     Profiler.leave(
                             "updateConnectorHierarchy find removed children");
                 } catch (final Throwable e) {
-                    getLogger().log(Level.SEVERE,
-                            "Error updating connector hierarchy", e);
+                    getLogger().error("Error updating connector hierarchy", e);
                 } finally {
                     Profiler.leave("updateConnectorHierarchy hierarchy entry");
                 }
@@ -1478,7 +1440,7 @@ public class MessageHandler {
                             }
 
                         } catch (final Throwable e) {
-                            getLogger().log(Level.SEVERE,
+                            getLogger().error(
                                     "Error performing server to client RPC calls",
                                     e);
                         }
@@ -1553,7 +1515,7 @@ public class MessageHandler {
             if (!responseHandlingLocks.isEmpty()) {
                 // Lock which was never release -> bug in locker or things just
                 // too slow
-                getLogger().warning(
+                getLogger().warn(
                         "WARNING: reponse handling was never resumed, forcibly removing locks...");
                 responseHandlingLocks.clear();
             } else {
@@ -1561,7 +1523,7 @@ public class MessageHandler {
                 // Do one final check and resynchronize if the message is not
                 // there. The final check is only a precaution as this timer
                 // should have been cancelled if the message has arrived
-                getLogger().warning("Gave up waiting for message "
+                getLogger().warn("Gave up waiting for message "
                         + getExpectedServerId() + " from the server");
 
             }
@@ -1787,7 +1749,7 @@ public class MessageHandler {
                     + "ms");
             return json;
         } catch (final Exception e) {
-            getLogger().severe("Unable to parse JSON: " + jsonText);
+            getLogger().error("Unable to parse JSON: " + jsonText);
             return null;
         }
     }

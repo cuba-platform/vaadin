@@ -15,20 +15,20 @@
  */
 package com.vaadin.client.ui.datefield;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.vaadin.client.LocaleNotLoadedException;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.AbstractFieldConnector;
 import com.vaadin.client.ui.VDateField;
 import com.vaadin.shared.ui.datefield.AbstractDateFieldServerRpc;
 import com.vaadin.shared.ui.datefield.AbstractDateFieldState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AbstractDateFieldConnector<R extends Enum<R>>
         extends AbstractFieldConnector {
@@ -107,10 +107,10 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
             widget.setCurrentLocale(locale);
         } catch (final LocaleNotLoadedException e) {
             widget.setCurrentLocale(widget.dts.getLocale());
-            getLogger().severe("Tried to use an unloaded locale \"" + locale
+            getLogger().error("Tried to use an unloaded locale \"" + locale
                     + "\". Using default locale (" + widget.getCurrentLocale()
                     + ").");
-            getLogger().log(Level.SEVERE,
+            getLogger().error(
                     e.getMessage() == null ? "" : e.getMessage(), e);
         }
 
@@ -134,6 +134,6 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(AbstractDateFieldConnector.class.getName());
+        return LoggerFactory.getLogger(AbstractDateFieldConnector.class);
     }
 }

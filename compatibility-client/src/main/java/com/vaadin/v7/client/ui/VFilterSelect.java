@@ -16,24 +16,12 @@
 
 package com.vaadin.v7.client.ui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.logging.Logger;
-
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
@@ -42,33 +30,14 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.HasDirection.Direction;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ComputedStyle;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.DeferredWorker;
+import com.vaadin.client.*;
 import com.vaadin.client.Focusable;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.WidgetUtil;
-import com.vaadin.client.ui.Field;
-import com.vaadin.client.ui.Icon;
-import com.vaadin.client.ui.SubPartAware;
-import com.vaadin.client.ui.VLazyExecutor;
-import com.vaadin.client.ui.VOverlay;
+import com.vaadin.client.ui.*;
 import com.vaadin.client.ui.aria.AriaHelper;
 import com.vaadin.client.ui.aria.HandlesAriaCaption;
 import com.vaadin.client.ui.aria.HandlesAriaInvalid;
@@ -80,6 +49,10 @@ import com.vaadin.shared.EventId;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Client side implementation of the Select component.
@@ -2060,7 +2033,7 @@ public class VFilterSelect extends Composite
 
     private void debug(String string) {
         if (enableDebug) {
-            getLogger().severe(string);
+            getLogger().error(string);
         }
     }
 
@@ -2681,6 +2654,6 @@ public class VFilterSelect extends Composite
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VFilterSelect.class.getName());
+        return LoggerFactory.getLogger(VFilterSelect.class);
     }
 }

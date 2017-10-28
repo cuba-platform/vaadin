@@ -15,25 +15,17 @@
  */
 package com.vaadin.client.ui;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.ContextMenuHandler;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.WidgetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractClickEventHandler implements MouseDownHandler,
         MouseUpHandler, DoubleClickHandler, ContextMenuHandler {
@@ -240,7 +232,7 @@ public abstract class AbstractClickEventHandler implements MouseDownHandler,
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(AbstractClickEventHandler.class.getName());
+        return LoggerFactory.getLogger(AbstractClickEventHandler.class);
     }
 
 }

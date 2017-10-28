@@ -26,12 +26,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * Lightweight profiling tool that can be used to collect profiling data with
@@ -444,7 +447,7 @@ public class Profiler {
      */
     public static void logTimings() {
         if (!isEnabled()) {
-            getLogger().warning(
+            getLogger().warn(
                     "Profiler is not enabled, no data has been collected.");
             return;
         }
@@ -454,7 +457,7 @@ public class Profiler {
         stack.add(rootNode);
         JsArray<GwtStatsEvent> gwtStatsEvents = getGwtStatsEvents();
         if (gwtStatsEvents.length() == 0) {
-            getLogger().warning(
+            getLogger().warn(
                     "No profiling events recorded, this might happen if another __gwtStatsEvent handler is installed.");
             return;
         }
@@ -494,7 +497,7 @@ public class Profiler {
 
             if (type.equals("end")) {
                 if (!inEvent) {
-                    getLogger().severe("Got end event for " + eventName
+                    getLogger().error("Got end event for " + eventName
                             + " but is currently in " + stackTop.getName());
                     return;
                 }
@@ -528,7 +531,7 @@ public class Profiler {
         }
 
         if (stack.size() != 1) {
-            getLogger().warning("Not all nodes are left, the last node is "
+            getLogger().warn("Not all nodes are left, the last node is "
                     + stack.getLast().getName());
             return;
         }
@@ -671,7 +674,7 @@ public class Profiler {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(Profiler.class.getName());
+        return LoggerFactory.getLogger(Profiler.class);
     }
 
     private static native boolean hasHighPrecisionTime()

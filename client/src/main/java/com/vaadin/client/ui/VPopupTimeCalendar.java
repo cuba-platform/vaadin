@@ -15,22 +15,17 @@
  */
 package com.vaadin.client.ui;
 
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.DAY;
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.HOUR;
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.MINUTE;
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.MONTH;
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.SECOND;
-import static com.vaadin.shared.ui.datefield.DateTimeResolution.YEAR;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.vaadin.client.LocaleNotLoadedException;
 import com.vaadin.client.LocaleService;
 import com.vaadin.shared.ui.datefield.DateTimeResolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.Map;
+
+import static com.vaadin.shared.ui.datefield.DateTimeResolution.*;
 
 /**
  * Represents a date-time selection component with a text field and a popup date
@@ -181,7 +176,7 @@ public class VPopupTimeCalendar extends
         } catch (LocaleNotLoadedException e) {
             // TODO should die instead? Can the component survive
             // without format string?
-            getLogger().log(Level.SEVERE,
+            getLogger().error(
                     e.getMessage() == null ? "" : e.getMessage(), e);
             return null;
         }
@@ -205,6 +200,6 @@ public class VPopupTimeCalendar extends
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VPopupTimeCalendar.class.getName());
+        return LoggerFactory.getLogger(VPopupTimeCalendar.class);
     }
 }

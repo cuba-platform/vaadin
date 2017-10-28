@@ -15,16 +15,9 @@
  */
 package com.vaadin.client.ui.dd;
 
-import java.util.Locale;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.*;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -33,19 +26,17 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.MouseEventDetailsBuilder;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.ValueMap;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.extensions.DragSourceExtensionConnector;
 import com.vaadin.client.extensions.DropTargetExtensionConnector;
 import com.vaadin.client.ui.VOverlay;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.dd.DragEventType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Locale;
 
 /**
  * Helper class to manage the state of drag and drop event on Vaadin client
@@ -745,7 +736,7 @@ public class VDragAndDropManager {
             ApplicationConnection connection = getCurrentDragApplicationConnection();
             Element dragImageParent;
             if (connection == null) {
-                getLogger().severe(
+                getLogger().error(
                         "Could not determine ApplicationConnection for current drag operation. The drag image will likely look broken");
                 dragImageParent = RootPanel.getBodyElement();
             } else {
@@ -805,6 +796,6 @@ public class VDragAndDropManager {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VDragAndDropManager.class.getName());
+        return LoggerFactory.getLogger(VDragAndDropManager.class);
     }
 }

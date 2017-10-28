@@ -16,9 +16,6 @@
 
 package com.vaadin.client.ui;
 
-import java.util.List;
-import java.util.logging.Logger;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasScrollHandlers;
 import com.google.gwt.event.dom.client.ScrollEvent;
@@ -30,17 +27,15 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.Focusable;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.ui.ShortcutActionHandler.ShortcutActionHandlerOwner;
 import com.vaadin.client.ui.TouchScrollDelegate.TouchScrollHandler;
 import com.vaadin.client.ui.ui.UIConnector;
 import com.vaadin.shared.ApplicationConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  *
@@ -420,6 +415,6 @@ public class VUI extends SimplePanel implements ResizeHandler,
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VUI.class.getName());
+        return LoggerFactory.getLogger(VUI.class);
     }
 }

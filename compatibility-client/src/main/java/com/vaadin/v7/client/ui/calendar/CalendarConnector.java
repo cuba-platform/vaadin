@@ -15,16 +15,6 @@
  */
 package com.vaadin.v7.client.ui.calendar;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -33,11 +23,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.Paintable;
-import com.vaadin.client.TooltipInfo;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.communication.RpcProxy;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.Action;
@@ -48,34 +34,20 @@ import com.vaadin.shared.ui.Connect.LoadStyle;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.v7.client.ui.AbstractLegacyComponentConnector;
 import com.vaadin.v7.client.ui.VCalendar;
-import com.vaadin.v7.client.ui.VCalendar.BackwardListener;
-import com.vaadin.v7.client.ui.VCalendar.DateClickListener;
-import com.vaadin.v7.client.ui.VCalendar.EventClickListener;
-import com.vaadin.v7.client.ui.VCalendar.EventMovedListener;
-import com.vaadin.v7.client.ui.VCalendar.EventResizeListener;
-import com.vaadin.v7.client.ui.VCalendar.ForwardListener;
-import com.vaadin.v7.client.ui.VCalendar.MouseEventListener;
-import com.vaadin.v7.client.ui.VCalendar.RangeSelectListener;
-import com.vaadin.v7.client.ui.VCalendar.WeekClickListener;
-import com.vaadin.v7.client.ui.calendar.schedule.CalendarDay;
-import com.vaadin.v7.client.ui.calendar.schedule.CalendarEvent;
-import com.vaadin.v7.client.ui.calendar.schedule.DateCell;
+import com.vaadin.v7.client.ui.VCalendar.*;
+import com.vaadin.v7.client.ui.calendar.schedule.*;
 import com.vaadin.v7.client.ui.calendar.schedule.DateCell.DateCellSlot;
-import com.vaadin.v7.client.ui.calendar.schedule.DateCellDayEvent;
-import com.vaadin.v7.client.ui.calendar.schedule.DateUtil;
-import com.vaadin.v7.client.ui.calendar.schedule.HasTooltipKey;
-import com.vaadin.v7.client.ui.calendar.schedule.MonthEventLabel;
-import com.vaadin.v7.client.ui.calendar.schedule.SimpleDayCell;
 import com.vaadin.v7.client.ui.calendar.schedule.dd.CalendarDropHandler;
 import com.vaadin.v7.client.ui.calendar.schedule.dd.CalendarMonthDropHandler;
 import com.vaadin.v7.client.ui.calendar.schedule.dd.CalendarWeekDropHandler;
-import com.vaadin.v7.shared.ui.calendar.CalendarClientRpc;
-import com.vaadin.v7.shared.ui.calendar.CalendarEventId;
-import com.vaadin.v7.shared.ui.calendar.CalendarServerRpc;
-import com.vaadin.v7.shared.ui.calendar.CalendarState;
+import com.vaadin.v7.shared.ui.calendar.*;
 import com.vaadin.v7.shared.ui.calendar.CalendarState.EventSortOrder;
-import com.vaadin.v7.shared.ui.calendar.DateConstants;
 import com.vaadin.v7.ui.Calendar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * Handles communication between Calendar on the server side and
@@ -515,7 +487,7 @@ public class CalendarConnector extends AbstractLegacyComponentConnector
                     actionStartDate = getActionStartDate(actionKey);
                     actionEndDate = getActionEndDate(actionKey);
                 } catch (ParseException pe) {
-                    getLogger().severe("Failed to parse action date");
+                    getLogger().error("Failed to parse action date");
                     continue;
                 }
 
@@ -667,7 +639,7 @@ public class CalendarConnector extends AbstractLegacyComponentConnector
                 a.setActionStartDate(getActionStartDate(actionKey));
                 a.setActionEndDate(getActionEndDate(actionKey));
             } catch (ParseException pe) {
-                getLogger().log(Level.SEVERE,
+                getLogger().error(
                         pe.getMessage() == null ? "" : pe.getMessage(), pe);
             }
 
@@ -746,6 +718,6 @@ public class CalendarConnector extends AbstractLegacyComponentConnector
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(CalendarConnector.class.getName());
+        return LoggerFactory.getLogger(CalendarConnector.class);
     }
 }

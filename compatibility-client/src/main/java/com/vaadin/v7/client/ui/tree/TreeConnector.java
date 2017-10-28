@@ -15,22 +15,10 @@
  */
 package com.vaadin.v7.client.ui.tree;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.Paintable;
-import com.vaadin.client.TooltipInfo;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.Connect;
@@ -42,6 +30,13 @@ import com.vaadin.v7.shared.ui.tree.TreeConstants;
 import com.vaadin.v7.shared.ui.tree.TreeServerRpc;
 import com.vaadin.v7.shared.ui.tree.TreeState;
 import com.vaadin.v7.ui.Tree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 @Connect(Tree.class)
 public class TreeConnector extends AbstractLegacyComponentConnector
@@ -235,7 +230,7 @@ public class TreeConnector extends AbstractLegacyComponentConnector
                 levelProperty = Integer.valueOf(levelPropertyString);
             } catch (NumberFormatException e) {
                 levelProperty = 1;
-                getLogger().log(Level.SEVERE,
+                getLogger().error(
                         e.getMessage() == null ? "" : e.getMessage(), e);
             }
 
@@ -422,7 +417,7 @@ public class TreeConnector extends AbstractLegacyComponentConnector
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(TreeConnector.class.getName());
+        return LoggerFactory.getLogger(TreeConnector.class);
     }
 
     // Haulmont API

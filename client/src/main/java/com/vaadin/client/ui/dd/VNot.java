@@ -15,12 +15,12 @@
  */
 package com.vaadin.client.ui.dd;
 
-import java.util.logging.Logger;
-
 import com.vaadin.client.UIDL;
 import com.vaadin.event.dd.acceptcriteria.Not;
 import com.vaadin.shared.ui.dd.AcceptCriterion;
 import com.vaadin.ui.dnd.DropTargetExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -72,6 +72,6 @@ public final class VNot extends VAcceptCriterion {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VNot.class.getName());
+        return LoggerFactory.getLogger(VNot.class);
     }
 }

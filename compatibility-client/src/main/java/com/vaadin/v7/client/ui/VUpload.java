@@ -16,8 +16,6 @@
 
 package com.vaadin.v7.client.ui;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -30,12 +28,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.*;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.ConnectorMap;
@@ -44,6 +37,8 @@ import com.vaadin.client.ui.VButton;
 import com.vaadin.v7.client.ui.upload.UploadConnector;
 import com.vaadin.v7.client.ui.upload.UploadIFrameOnloadStrategy;
 import com.vaadin.v7.shared.ui.upload.UploadServerRpc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -396,6 +391,6 @@ public class VUpload extends SimplePanel {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VUpload.class.getName());
+        return LoggerFactory.getLogger(VUpload.class);
     }
 }

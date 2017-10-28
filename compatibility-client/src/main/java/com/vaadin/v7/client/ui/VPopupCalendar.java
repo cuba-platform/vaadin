@@ -16,22 +16,12 @@
 
 package com.vaadin.v7.client.ui;
 
-import java.util.Date;
-import java.util.logging.Logger;
-
 import com.google.gwt.aria.client.Id;
 import com.google.gwt.aria.client.LiveValue;
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -39,13 +29,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.ui.VOverlay;
@@ -54,6 +39,10 @@ import com.vaadin.v7.client.ui.VCalendarPanel.FocusOutListener;
 import com.vaadin.v7.client.ui.VCalendarPanel.SubmitListener;
 import com.vaadin.v7.shared.ui.datefield.PopupDateFieldState;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * Represents a date selection component with a text field and a popup date
@@ -406,7 +395,7 @@ public class VPopupCalendar extends VTextualDate
             popup.setHeight("");
             popup.setPopupPositionAndShow(new PopupPositionCallback());
         } else {
-            getLogger().severe("Cannot reopen popup, it is already open!");
+            getLogger().error("Cannot reopen popup, it is already open!");
         }
     }
 
@@ -716,6 +705,6 @@ public class VPopupCalendar extends VTextualDate
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VPopupCalendar.class.getName());
+        return LoggerFactory.getLogger(VPopupCalendar.class);
     }
 }

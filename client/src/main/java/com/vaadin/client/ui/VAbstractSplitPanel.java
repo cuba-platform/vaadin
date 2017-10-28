@@ -18,7 +18,6 @@ package com.vaadin.client.ui;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -44,6 +43,8 @@ import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.TouchScrollDelegate.TouchScrollHandler;
 import com.vaadin.client.ui.VAbstractSplitPanel.SplitterMoveHandler.SplitterMoveEvent;
 import com.vaadin.shared.ui.Orientation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class VAbstractSplitPanel extends ComplexPanel {
 
@@ -850,6 +851,6 @@ public abstract class VAbstractSplitPanel extends ComplexPanel {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VAbstractSplitPanel.class.getName());
+        return LoggerFactory.getLogger(VAbstractSplitPanel.class);
     }
 }

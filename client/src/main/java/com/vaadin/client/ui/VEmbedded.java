@@ -16,22 +16,17 @@
 
 package com.vaadin.client.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.Util;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.shared.ui.embedded.EmbeddedState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class VEmbedded extends HTML {
     public static String CLASSNAME = "v-embedded";
@@ -257,6 +252,6 @@ public class VEmbedded extends HTML {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VEmbedded.class.getName());
+        return LoggerFactory.getLogger(VEmbedded.class);
     }
 }

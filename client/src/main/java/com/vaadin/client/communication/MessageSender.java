@@ -15,8 +15,6 @@
  */
 package com.vaadin.client.communication;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.vaadin.client.ApplicationConfiguration;
@@ -28,11 +26,12 @@ import com.vaadin.client.VLoadingIndicator;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.Version;
 import com.vaadin.shared.ui.ui.UIState.PushConfigurationState;
-
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MessageSender is responsible for sending messages to the server.
@@ -72,12 +71,12 @@ public class MessageSender {
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(MessageSender.class.getName());
+        return LoggerFactory.getLogger(MessageSender.class);
     }
 
     public void sendInvocationsToServer() {
         if (!connection.isApplicationRunning()) {
-            getLogger().warning(
+            getLogger().warn(
                     "Trying to send RPC from not yet started or stopped application");
             return;
         }
@@ -113,7 +112,7 @@ public class MessageSender {
         if (reqJson.length() == 0) {
             // Nothing to send, all invocations were filtered out (for
             // non-existing connectors)
-            getLogger().warning(
+            getLogger().warn(
                     "All RPCs filtered out, not sending anything to the server");
             return;
         }
@@ -222,7 +221,7 @@ public class MessageSender {
 
     public void startRequest() {
         if (hasActiveRequest) {
-            getLogger().severe(
+            getLogger().error(
                     "Trying to start a new request while another is active");
         }
         hasActiveRequest = true;
@@ -231,7 +230,7 @@ public class MessageSender {
 
     public void endRequest() {
         if (!hasActiveRequest) {
-            getLogger().severe("No active request");
+            getLogger().error("No active request");
         }
         // After sendInvocationsToServer() there may be a new active
         // request, so we must set hasActiveRequest to false before, not after,
@@ -383,7 +382,7 @@ public class MessageSender {
                 getLogger().info("Updating client-to-server id to "
                         + nextExpectedId + " based on server");
             } else {
-                getLogger().warning(
+                getLogger().warn(
                         "Server expects next client-to-server id to be "
                                 + nextExpectedId + " but we were going to use "
                                 + clientToServerMessageId + ". Will use "

@@ -16,19 +16,10 @@
 
 package com.vaadin.client.ui;
 
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.user.client.ui.TextBox;
@@ -41,6 +32,10 @@ import com.vaadin.client.ui.aria.HandlesAriaCaption;
 import com.vaadin.client.ui.aria.HandlesAriaInvalid;
 import com.vaadin.client.ui.aria.HandlesAriaRequired;
 import com.vaadin.shared.EventId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * Abstract textual date field base implementation. Provides a text box as an
@@ -136,7 +131,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
         } catch (LocaleNotLoadedException e) {
             // TODO should die instead? Can the component survive
             // without format string?
-            getLogger().log(Level.SEVERE,
+            getLogger().error(
                     e.getMessage() == null ? "" : e.getMessage(), e);
             return null;
         }
@@ -248,7 +243,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
                 // remove possibly added invalid value indication
                 removeStyleName(getStylePrimaryName() + PARSE_ERROR_CLASSNAME);
             } catch (final Exception e) {
-                getLogger().log(Level.INFO,
+                getLogger().info(
                         e.getMessage() == null ? "" : e.getMessage(), e);
 
                 addStyleName(getStylePrimaryName() + PARSE_ERROR_CLASSNAME);
@@ -510,7 +505,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VAbstractTextualDate.class.getName());
+        return LoggerFactory.getLogger(VAbstractTextualDate.class);
     }
 
 }

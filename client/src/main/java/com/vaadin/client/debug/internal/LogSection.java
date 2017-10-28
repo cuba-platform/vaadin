@@ -15,12 +15,6 @@
  */
 package com.vaadin.client.debug.internal;
 
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.logging.client.HtmlLogFormatter;
 import com.google.gwt.storage.client.Storage;
@@ -32,6 +26,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.ValueMap;
+
+import java.util.logging.*;
 
 /**
  * Displays the log messages.
@@ -149,6 +145,7 @@ public class LogSection implements Section {
             selectText(el);
         });
 
+        // Set up logging in JUL, since slf4j-gwt use it as backend
         // Add handler to the root logger
         Logger.getLogger("").addHandler(new LogSectionHandler());
     }

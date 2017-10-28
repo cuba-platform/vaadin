@@ -35,8 +35,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
@@ -4444,7 +4444,7 @@ public class Grid extends AbstractComponent
             try {
                 encodedValue = renderer.encode(presentationValue);
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "Unable to encode data", e);
+                getLogger().error("Unable to encode data", e);
                 encodedValue = renderer.encode(null);
             }
 
@@ -4452,7 +4452,7 @@ public class Grid extends AbstractComponent
         }
 
         private static Logger getLogger() {
-            return Logger.getLogger(AbstractRenderer.class.getName());
+            return LoggerFactory.getLogger(AbstractRenderer.class);
         }
     }
 
@@ -6913,8 +6913,7 @@ public class Grid extends AbstractComponent
             try {
                 dataSource.removeItem(itemId);
             } catch (Exception e2) {
-                getLogger().log(Level.SEVERE,
-                        "Error recovering from exception in addRow", e);
+                getLogger().error("Error recovering from exception in addRow", e);
             }
             throw e;
         }
@@ -6948,7 +6947,7 @@ public class Grid extends AbstractComponent
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(Grid.class.getName());
+        return LoggerFactory.getLogger(Grid.class);
     }
 
     /**

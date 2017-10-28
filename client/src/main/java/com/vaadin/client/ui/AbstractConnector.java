@@ -21,7 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
@@ -48,6 +47,8 @@ import com.vaadin.shared.communication.ClientRpc;
 import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.shared.communication.SharedState;
 import com.vaadin.shared.communication.URLReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An abstract implementation of Connector.
@@ -532,6 +533,6 @@ public abstract class AbstractConnector
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(AbstractConnector.class.getName());
+        return LoggerFactory.getLogger(AbstractConnector.class);
     }
 }

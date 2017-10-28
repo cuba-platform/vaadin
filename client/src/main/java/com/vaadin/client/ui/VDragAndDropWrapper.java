@@ -15,12 +15,6 @@
  */
 package com.vaadin.client.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.Scheduler;
@@ -35,25 +29,17 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.MouseEventDetailsBuilder;
-import com.vaadin.client.Util;
-import com.vaadin.client.ValueMap;
-import com.vaadin.client.WidgetUtil;
-import com.vaadin.client.ui.dd.DDUtil;
-import com.vaadin.client.ui.dd.VAbstractDropHandler;
-import com.vaadin.client.ui.dd.VDragAndDropManager;
-import com.vaadin.client.ui.dd.VDragEvent;
-import com.vaadin.client.ui.dd.VDropHandler;
-import com.vaadin.client.ui.dd.VHasDropHandler;
-import com.vaadin.client.ui.dd.VHtml5DragEvent;
-import com.vaadin.client.ui.dd.VHtml5File;
-import com.vaadin.client.ui.dd.VTransferable;
+import com.vaadin.client.*;
+import com.vaadin.client.ui.dd.*;
 import com.vaadin.shared.ui.dd.HorizontalDropLocation;
 import com.vaadin.shared.ui.dd.VerticalDropLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * A wrapper for Drag and Drop. Must have features pending:
@@ -702,6 +688,6 @@ public class VDragAndDropWrapper extends VCustomComponent
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(VDragAndDropWrapper.class.getName());
+        return LoggerFactory.getLogger(VDragAndDropWrapper.class);
     }
 }

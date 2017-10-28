@@ -15,36 +15,19 @@
  */
 package com.vaadin.client.ui;
 
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
-import com.google.gwt.event.dom.client.ContextMenuEvent;
-import com.google.gwt.event.dom.client.MouseEvent;
-import com.google.gwt.event.dom.client.TouchEndEvent;
-import com.google.gwt.event.dom.client.TouchMoveEvent;
-import com.google.gwt.event.dom.client.TouchMoveHandler;
-import com.google.gwt.event.dom.client.TouchStartEvent;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.HasComponentsConnector;
-import com.vaadin.client.LayoutManager;
-import com.vaadin.client.MouseEventDetailsBuilder;
-import com.vaadin.client.Profiler;
-import com.vaadin.client.ServerConnector;
-import com.vaadin.client.StyleConstants;
-import com.vaadin.client.TooltipInfo;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.Util;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.WidgetUtil.ErrorUtil;
 import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -54,16 +37,13 @@ import com.vaadin.client.metadata.NoDataException;
 import com.vaadin.client.metadata.Type;
 import com.vaadin.client.metadata.TypeData;
 import com.vaadin.client.ui.ui.UIConnector;
-import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.ComponentConstants;
-import com.vaadin.shared.Connector;
-import com.vaadin.shared.ContextClickRpc;
-import com.vaadin.shared.EventId;
-import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.*;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.TabIndexState;
 import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
 import com.vaadin.shared.ui.ui.UIState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractComponentConnector extends AbstractConnector
         implements HasErrorIndicator, HasContextHelpConnector {
@@ -524,7 +504,7 @@ public abstract class AbstractComponentConnector extends AbstractConnector
             if (parent instanceof HasComponentsConnector) {
                 ((HasComponentsConnector) parent).updateCaption(this);
             } else if (parent == null && !(this instanceof UIConnector)) {
-                getLogger().severe("Parent of connector "
+                getLogger().error("Parent of connector "
                         + Util.getConnectorString(this)
                         + " is null. This is typically an indication of a broken component hierarchy");
             }
@@ -773,7 +753,7 @@ public abstract class AbstractComponentConnector extends AbstractConnector
         // at this point.
         if (getWidget() != null && getWidget().isAttached()) {
             getWidget().removeFromParent();
-            getLogger().severe(
+            getLogger().error(
                     "Widget is still attached to the DOM after the connector ("
                             + Util.getConnectorString(this)
                             + ") has been unregistered. Widget was removed.");
@@ -929,6 +909,6 @@ public abstract class AbstractComponentConnector extends AbstractConnector
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(AbstractComponentConnector.class.getName());
+        return LoggerFactory.getLogger(AbstractComponentConnector.class);
     }
 }

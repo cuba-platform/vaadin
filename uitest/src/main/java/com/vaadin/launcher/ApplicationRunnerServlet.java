@@ -15,6 +15,20 @@
  */
 package com.vaadin.launcher;
 
+import com.vaadin.launcher.CustomDeploymentConfiguration.Conf;
+import com.vaadin.server.*;
+import com.vaadin.shared.ApplicationConstants;
+import com.vaadin.tests.components.TestBase;
+import com.vaadin.ui.UI;
+import com.vaadin.util.CurrentInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,8 +45,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -118,7 +130,7 @@ public class ApplicationRunnerServlet extends LegacyVaadinServlet {
             try {
                 path = new URI(path).getPath();
             } catch (URISyntaxException e) {
-                getLogger().log(Level.FINE, "Failed to decode url", e);
+                getLogger().debug("Failed to decode url", e);
             }
             File comVaadinTests = new File(path).getParentFile()
                     .getParentFile();
@@ -409,7 +421,7 @@ public class ApplicationRunnerServlet extends LegacyVaadinServlet {
                     // Ignore as this is expected for many packages
                 } catch (Exception e2) {
                     // TODO: handle exception
-                    getLogger().log(Level.FINE,
+                    getLogger().debug(
                             "Failed to find application class " + pkg + "."
                                     + baseName,
                             e2);
@@ -425,7 +437,7 @@ public class ApplicationRunnerServlet extends LegacyVaadinServlet {
     }
 
     private Logger getLogger() {
-        return Logger.getLogger(ApplicationRunnerServlet.class.getName());
+        return LoggerFactory.getLogger(ApplicationRunnerServlet.class);
     }
 
     @Override
