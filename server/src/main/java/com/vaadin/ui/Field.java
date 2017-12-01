@@ -20,6 +20,8 @@ import com.vaadin.data.BufferedValidatable;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Component.Focusable;
 
+import static com.vaadin.ui.Component.*;
+
 /**
  * Field interface is implemented by all classes (field components) that have a
  * value that the user can change through the user interface.
@@ -38,7 +40,7 @@ import com.vaadin.ui.Component.Focusable;
  */
 public interface Field<T> extends Component, BufferedValidatable, Property<T>,
         Property.ValueChangeNotifier, Property.ValueChangeListener,
-        Property.Editor, Focusable {
+        Property.Editor, Focusable, HasContextHelp {
 
     /**
      * Is this field required.

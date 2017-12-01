@@ -49,13 +49,21 @@ public abstract class AbstractFieldConnector
         if (!isEnabled() && !isShowErrorForDisabledState()) {
             info.setErrorMessage(null);
         }
+        // Haulmont API
+        if (getState().contextHelpText != null
+                && !getState().contextHelpText.isEmpty()) {
+            info.setContextHelp(getState().contextHelpText);
+            info.setContextHelpHtmlEnabled(getState().contextHelpTextHtmlEnabled);
+        }
+
         return info;
     }
 
     @Override
     public boolean hasTooltip() {
         if (isEnabled()) {
-            return super.hasTooltip();
+            return super.hasTooltip()
+                    || getState().contextHelpText != null && !getState().contextHelpText.isEmpty();
         } else {
             AbstractComponentState state = getState();
             return state.description != null && !state.description.equals("")

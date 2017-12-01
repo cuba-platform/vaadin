@@ -33,6 +33,12 @@ public class AbstractFieldState extends TabIndexState {
     // Haulmont API
     public boolean showErrorForDisabledState = true;
 
+    // Haulmont API
+    public String contextHelpText = "";
+
+    // Haulmont API
+    public boolean contextHelpTextHtmlEnabled = false;
+
     /**
      * The component which should receive focus events instead of the custom
      * field wrapper.

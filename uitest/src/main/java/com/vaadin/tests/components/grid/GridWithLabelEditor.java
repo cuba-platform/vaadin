@@ -137,6 +137,14 @@ public class GridWithLabelEditor extends AbstractTestUI {
         public void clear() {
         }
 
+        @Override
+        public String getContextHelpText() {
+            return null;
+        }
+
+        @Override
+        public void setContextHelpText(String contextHelpText) {
+        }
     }
 
     @Override

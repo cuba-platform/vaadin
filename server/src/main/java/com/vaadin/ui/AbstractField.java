@@ -1896,4 +1896,28 @@ public abstract class AbstractField<T> extends AbstractComponent
     private static final Logger getLogger() {
         return Logger.getLogger(AbstractField.class.getName());
     }
+
+    @Override
+    public String getContextHelpText() {
+        return getState(false).contextHelpText;
+    }
+
+    @Override
+    public void setContextHelpText(String contextHelpText) {
+        if (!equalValues(getState(false).contextHelpText, contextHelpText)) {
+            getState().contextHelpText = contextHelpText;
+        }
+    }
+
+    @Override
+    public boolean isContextHelpTextHtmlEnabled() {
+        return getState(false).contextHelpTextHtmlEnabled;
+    }
+
+    @Override
+    public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
+        if (!equalValues(getState(false).contextHelpTextHtmlEnabled, contextHelpTextHtmlEnabled)) {
+            getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
+        }
+    }
 }

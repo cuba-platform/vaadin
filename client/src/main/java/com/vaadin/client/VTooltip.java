@@ -51,7 +51,8 @@ public class VTooltip extends VOverlay {
     public static final int TOOLTIP_EVENTS = Event.ONKEYDOWN | Event.ONMOUSEOVER
             | Event.ONMOUSEOUT | Event.ONMOUSEMOVE | Event.ONCLICK;
     VErrorMessage em = new VErrorMessage();
-    Element description = DOM.createDiv();
+    // Haulmont API dependency
+    protected Element description = DOM.createDiv();
 
     private TooltipInfo currentTooltipInfo = new TooltipInfo(" ");
 
