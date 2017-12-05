@@ -2131,6 +2131,7 @@ public class VScrollTable extends FlowPanel
         return null;
     }
 
+    // Haulmont API dependency
     /**
      * Returns the next row to the given row
      *
@@ -2139,7 +2140,7 @@ public class VScrollTable extends FlowPanel
      *
      * @return The next row or null if no row exists
      */
-    private VScrollTableRow getNextRow(VScrollTableRow row, int offset) {
+    public VScrollTableRow getNextRow(VScrollTableRow row, int offset) {
         final Iterator<Widget> it = scrollBody.iterator();
         VScrollTableRow r = null;
         while (it.hasNext()) {
@@ -2157,6 +2158,7 @@ public class VScrollTable extends FlowPanel
         return null;
     }
 
+    // Haulmont API dependency
     /**
      * Returns the previous row from the given row
      *
@@ -2164,7 +2166,7 @@ public class VScrollTable extends FlowPanel
      *            The row to calculate from
      * @return The previous row or null if no row exists
      */
-    private VScrollTableRow getPreviousRow(VScrollTableRow row, int offset) {
+    public VScrollTableRow getPreviousRow(VScrollTableRow row, int offset) {
         final Iterator<Widget> it = scrollBody.iterator();
         final Iterator<Widget> offsetIt = scrollBody.iterator();
         VScrollTableRow r = null;
@@ -8079,13 +8081,14 @@ public class VScrollTable extends FlowPanel
         return false;
     }
 
+    // Haulmont API dependency
     /**
      * Ensures that the row is visible
      *
      * @param row
      *            The row to ensure is visible
      */
-    private void ensureRowIsVisible(VScrollTableRow row) {
+    public void ensureRowIsVisible(VScrollTableRow row) {
         if (BrowserInfo.get().isTouchDevice()) {
             // Skip due to android devices that have broken scrolltop will may
             // get odd scrolling here.
