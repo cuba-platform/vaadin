@@ -16,25 +16,7 @@
 
 package com.vaadin.ui;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.event.FieldEvents.BlurNotifier;
-import com.vaadin.event.FieldEvents.FocusAndBlurServerRpcDecorator;
-import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.FieldEvents.FocusNotifier;
+import com.vaadin.event.FieldEvents.*;
 import com.vaadin.event.HasUserOriginated;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.KeyMapper;
@@ -50,6 +32,12 @@ import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignException;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * TabSheet component.
@@ -1699,5 +1687,25 @@ public class TabSheet extends AbstractComponentContainer
      */
     public boolean isTabCaptionsAsHtml() {
         return getState(false).tabCaptionsAsHtml;
+    }
+
+    // Haulmont API
+    protected List<Component> _components() {
+        return components;
+    }
+
+    // Haulmont API
+    protected Map<Component, Tab> _tabs() {
+        return tabs;
+    }
+
+    // Haulmont API
+    protected Component _selected() {
+        return selected;
+    }
+
+    // Haulmont API
+    protected CloseHandler _closeHandler() {
+        return closeHandler;
     }
 }
