@@ -2284,8 +2284,14 @@ public class Table extends AbstractSelect implements Action.Container,
                 : null;
         cells[CELL_GENERATED_ROW][i] = generatedRow;
 
+        // Haulmont API dependency
+        if (!isItemNeedsToRefreshRendered(id))
+            return;
+
         for (int j = 0; j < cols; j++) {
-            if (isColumnCollapsed(colids[j])) {
+            // Haulmont API dependency
+            if (isColumnCollapsed(colids[j])
+                    || !isColumnNeedsToRefreshRendered(colids[j])) {
                 continue;
             }
             Property<?> p = null;
@@ -2801,13 +2807,16 @@ public class Table extends AbstractSelect implements Action.Container,
     /**
      * Gets items ids from a range of key values
      *
+     * <br/>
+     * Haulmont API dependency
+     *
      * @param itemId
      *            The start key
      * @param length
      *            amount of items to be retrieved
      * @return
      */
-    private LinkedHashSet<Object> getItemIdsInRange(Object itemId,
+    protected LinkedHashSet<Object> getItemIdsInRange(Object itemId,
             final int length) {
         LinkedHashSet<Object> ids = new LinkedHashSet<Object>();
         for (int i = 0; i < length; i++) {
@@ -3072,6 +3081,9 @@ public class Table extends AbstractSelect implements Action.Container,
                 clientNeedsContentRefresh = true;
             }
         }
+
+        // Haulmont API dependency
+        clientNeedsContentRefresh |= changeVariables(variables);
 
         enableContentRefreshing(clientNeedsContentRefresh);
 
@@ -3866,7 +3878,9 @@ public class Table extends AbstractSelect implements Action.Container,
         for (final Iterator<Object> it = visibleColumns.iterator(); it
                 .hasNext(); currentColumn++) {
             final Object columnId = it.next();
-            if (columnId == null || isColumnCollapsed(columnId)) {
+            // Haulmont API dependency
+            if (columnId == null || isColumnCollapsed(columnId)
+                    || !isCellPaintingNeeded(itemId, columnId)) {
                 continue;
             }
             /*
@@ -6490,5 +6504,54 @@ public class Table extends AbstractSelect implements Action.Container,
      */
     public CollapseMenuContent getCollapseMenuContent() {
         return getState(false).collapseMenuContent;
+    }
+
+    // Haulmont API
+    protected KeyMapper<Object> _columnIdMap() {
+        return columnIdMap;
+    }
+
+    // Haulmont API
+    protected Map<Object, ColumnGenerator> _columnGenerators() {
+        return columnGenerators;
+    }
+
+    /**
+     * Haulmont API
+     *
+     * @return True if column needs to refresh rendered cells
+     */
+    protected boolean isColumnNeedsToRefreshRendered(Object colId) {
+        return true;
+    }
+
+    /**
+     * Haulmont API dependency
+     *
+     * @return True if item needs to refresh rendered cells
+     */
+    protected boolean isItemNeedsToRefreshRendered(Object itemId) {
+        return true;
+    }
+
+    // Haulmont API dependency
+    protected void _setCurrentPageFirstItemIndex(int newIndex,
+                                                boolean needsPageBufferReset) {
+        setCurrentPageFirstItemIndex(newIndex, needsPageBufferReset);
+    }
+
+    /**
+     * Haulmont API
+     *
+     * @param variables variables from client
+     * @return True if client needs to refresh rendered
+     */
+    protected boolean changeVariables(Map<String, Object> variables) {
+        return false;
+    }
+
+    // Haulmont API
+    protected boolean isCellPaintingNeeded(Object itemId, Object columnId) {
+        return true;
     }
 }
