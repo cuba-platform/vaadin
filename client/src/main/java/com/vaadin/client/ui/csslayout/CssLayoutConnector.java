@@ -192,9 +192,11 @@ public class CssLayoutConnector extends AbstractLayoutConnector {
 
         String childId = child.getConnectorId();
         VCaption caption = childIdToCaption.get(childId);
-        if (VCaption.isNeeded(child)) {
+        // Haulmont API
+        if (isCaptionNeeded(child)) {
             if (caption == null) {
-                caption = new VCaption(child, getConnection());
+                // Haulmont API
+                caption = createCaption(child);
                 childIdToCaption.put(childId, caption);
             }
             if (!caption.isAttached()) {
@@ -206,5 +208,15 @@ public class CssLayoutConnector extends AbstractLayoutConnector {
             childIdToCaption.remove(childId);
             getWidget().remove(caption);
         }
+    }
+
+    // Haulmont API
+    protected boolean isCaptionNeeded(ComponentConnector child) {
+        return VCaption.isNeeded(child);
+    }
+
+    // Haulmont API
+    protected VCaption createCaption(ComponentConnector child) {
+        return new VCaption(child, getConnection());
     }
 }

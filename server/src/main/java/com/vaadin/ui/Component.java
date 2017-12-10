@@ -16,6 +16,7 @@
 
 package com.vaadin.ui;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.jsoup.nodes.Element;
@@ -1137,6 +1138,20 @@ public interface Component extends ClientConnector, Sizeable {
          */
         public void setTabIndex(int tabIndex);
 
+    }
+
+    /**
+     * A sub-interface implemented by components that can provide a context help.
+     */
+    interface HasContextHelp extends Serializable {
+        // todo: Java Doc
+        String getContextHelpText();
+        // todo: Java Doc
+        void setContextHelpText(String contextHelpText);
+        // todo: Java Doc
+        boolean isContextHelpTextHtmlEnabled();
+        // todo: Java Doc
+        void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled);
     }
 
 }

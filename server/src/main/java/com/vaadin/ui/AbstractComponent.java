@@ -78,7 +78,7 @@ import com.vaadin.util.ReflectTools;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractComponent extends AbstractClientConnector
-        implements Component, ContextClickNotifier {
+        implements Component, ContextClickNotifier, Component.HasContextHelp {
 
     /* Private members */
 
@@ -1496,4 +1496,27 @@ public abstract class AbstractComponent extends AbstractClientConnector
                         + AbstractFieldState.class.getSimpleName());
     }
 
+    @Override
+    public String getContextHelpText() {
+        return getState(false).contextHelpText;
+    }
+
+    @Override
+    public void setContextHelpText(String contextHelpText) {
+        if (!Objects.equals(getState(false).contextHelpText, contextHelpText)) {
+            getState().contextHelpText = contextHelpText;
+        }
+    }
+
+    @Override
+    public boolean isContextHelpTextHtmlEnabled() {
+        return getState(false).contextHelpTextHtmlEnabled;
+    }
+
+    @Override
+    public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
+        if (!Objects.equals(getState(false).contextHelpTextHtmlEnabled, contextHelpTextHtmlEnabled)) {
+            getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
+        }
+    }
 }

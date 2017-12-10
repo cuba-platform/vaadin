@@ -59,7 +59,8 @@ public class VTooltip extends VOverlay {
     private static final int EVENT_XY_POSITION_OUTSIDE = -5000;
 
     VErrorMessage em = new VErrorMessage();
-    HTML description = GWT.create(HTML.class);
+    // Haulmont API dependency
+    protected HTML description = GWT.create(HTML.class);
 
     private TooltipInfo currentTooltipInfo = new TooltipInfo(" ");
 

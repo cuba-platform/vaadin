@@ -33,6 +33,10 @@ public class TooltipInfo {
 
     private ErrorLevel errorLevel;
 
+    private String contextHelp;
+
+    private boolean contextHelpHtmlEnabled = false;
+
     // Contains the tooltip's identifier. If a tooltip's contents and this
     // identifier haven't changed, the tooltip won't be updated in subsequent
     // events.
@@ -241,6 +245,53 @@ public class TooltipInfo {
     }
 
     /**
+     * Gets the context help.
+     * <p>
+     * Haulmont API.
+     *
+     * @return the context help
+     */
+    public String getContextHelp() {
+        return contextHelp;
+    }
+
+    /**
+     * Sets the context help.
+     * <p>
+     * Haulmont API.
+     *
+     * @param contextHelp
+     *            the context help to set
+     */
+    public void setContextHelp(String contextHelp) {
+        this.contextHelp = contextHelp;
+    }
+
+    /**
+     * Gets if a context help can be presented in HTML format.
+     * <p>
+     * Haulmont API.
+     *
+     * @return if a context help can be presented in HTML format
+     */
+    public boolean isContextHelpHtmlEnabled() {
+        return contextHelpHtmlEnabled;
+    }
+
+    /**
+     * Sets if a context help can be presented in HTML format.
+     * <p>
+     * Haulmont API.
+     *
+     * @param enabled
+     *            true if field accepts context help text
+     *            in HTML format, false otherwise
+     */
+    public void setContextHelpHtmlEnabled(boolean enabled) {
+        this.contextHelpHtmlEnabled = enabled;
+    }
+
+    /**
      * Gets the tooltip title's content mode.
      *
      * @return the content mode
@@ -288,7 +339,8 @@ public class TooltipInfo {
      */
     public boolean hasMessage() {
         return (title != null && !title.isEmpty())
-                || (errorMessageHtml != null && !errorMessageHtml.isEmpty());
+                || (errorMessageHtml != null && !errorMessageHtml.isEmpty())
+                || (contextHelp != null && !contextHelp.isEmpty());
     }
 
     /**
@@ -304,6 +356,8 @@ public class TooltipInfo {
         return (other != null && SharedUtil.equals(other.title, title)
                 && SharedUtil.equals(other.errorMessageHtml, errorMessageHtml)
                 && SharedUtil.equals(other.errorLevel, errorLevel)
+                && SharedUtil.equals(other.contextHelp, contextHelp)
+                && SharedUtil.equals(other.contextHelpHtmlEnabled, contextHelpHtmlEnabled)
                 && other.identifier == identifier);
     }
 }

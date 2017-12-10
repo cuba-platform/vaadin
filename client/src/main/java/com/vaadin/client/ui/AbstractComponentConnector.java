@@ -779,16 +779,26 @@ public abstract class AbstractComponentConnector extends AbstractConnector
 
     @Override
     public TooltipInfo getTooltipInfo(Element element) {
-        return new TooltipInfo(getState().description,
+        TooltipInfo info = new TooltipInfo(getState().description,
                 getState().descriptionContentMode, getState().errorMessage,
                 null, getState().errorLevel);
+
+        // Haulmont API
+        if (getState().contextHelpText != null
+                && !getState().contextHelpText.isEmpty()) {
+            info.setContextHelp(getState().contextHelpText);
+            info.setContextHelpHtmlEnabled(getState().contextHelpTextHtmlEnabled);
+        }
+
+        return info;
     }
 
     @Override
     public boolean hasTooltip() {
         // Normally, there is a tooltip if description or errorMessage is set
         AbstractComponentState state = getState();
-        if (state.description != null && !state.description.isEmpty()) {
+        if ((state.description != null && !state.description.isEmpty())
+                || (getState().contextHelpText != null && !getState().contextHelpText.isEmpty())) {
             return true;
         }
         return state.errorMessage != null && !state.errorMessage.isEmpty();
