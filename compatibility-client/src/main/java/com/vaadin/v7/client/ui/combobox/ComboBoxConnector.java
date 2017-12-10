@@ -209,8 +209,8 @@ public class ComboBoxConnector extends AbstractFieldConnector
                         .equals(uidl.getStringVariable("filter")))
                 || popupOpenAndCleared) {
 
-            widget.suggestionPopup.showSuggestions(widget.currentSuggestions,
-                    widget.currentPage, widget.totalMatches);
+            // Haulmont API
+            getWidget().applyNewSuggestions();
 
             widget.waitingForFilteringResponse = false;
 
@@ -276,7 +276,8 @@ public class ComboBoxConnector extends AbstractFieldConnector
         // VFilterSelect.Select.NONE; // reset
     }
 
-    private void performSelection(String selectedKey) {
+    // Haulmont API dependency
+    protected void performSelection(String selectedKey) {
         VFilterSelect widget = getWidget();
         // some item selected
         for (FilterSelectSuggestion suggestion : widget.currentSuggestions) {
@@ -313,7 +314,8 @@ public class ComboBoxConnector extends AbstractFieldConnector
                         .equals(getWidget().tb.getText());
     }
 
-    private void resetSelection() {
+    // Haulmont API dependency
+    protected void resetSelection() {
         VFilterSelect widget = getWidget();
         if (!widget.waitingForFilteringResponse || widget.popupOpenerClicked) {
             // select nulled

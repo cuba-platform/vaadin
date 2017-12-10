@@ -103,6 +103,7 @@ public class VFilterSelect extends Composite
         FocusHandler, BlurHandler, Focusable, SubPartAware, HandlesAriaCaption,
         HandlesAriaInvalid, HandlesAriaRequired, DeferredWorker {
 
+
     /**
      * Represents a suggestion in the suggestion popup box.
      */
@@ -451,14 +452,14 @@ public class VFilterSelect extends Composite
 
                     setPopupPosition(x, topPosition);
 
-                    int nullOffset = (nullSelectionAllowed
+                    int nullOffset = (isShowNullItem()
                             && "".equals(lastFilter) ? 1 : 0);
                     boolean firstPage = (currentPage == 0);
                     final int first = currentPage * pageLength + 1
                             - (firstPage ? 0 : nullOffset);
                     final int last = first + currentSuggestions.size() - 1
                             - (firstPage && "".equals(lastFilter) ? nullOffset
-                                    : 0);
+                            : 0);
                     final int matches = totalSuggestions - nullOffset;
                     if (last > 0) {
                         // nullsel not counted, as requested by user
@@ -1717,6 +1718,8 @@ public class VFilterSelect extends Composite
     /**
      * Filters the options at certain page using the given filter
      *
+     * Haulmont API
+     *
      * @param page
      *            The page to filter
      * @param filter
@@ -1724,14 +1727,14 @@ public class VFilterSelect extends Composite
      * @param immediate
      *            Whether to send the options request immediately
      */
-    private void filterOptions(int page, String filter, boolean immediate) {
+    protected void filterOptions(int page, String filter, boolean immediate) {
         debug("VFS: filterOptions(" + page + ", " + filter + ", " + immediate
                 + ")");
 
         if (filter.equals(lastFilter) && currentPage == page) {
             if (!suggestionPopup.isAttached()) {
-                suggestionPopup.showSuggestions(currentSuggestions, currentPage,
-                        totalMatches);
+                // Haulmont API extracted method
+                applyNewSuggestions();
             }
             return;
         }
@@ -1760,6 +1763,16 @@ public class VFilterSelect extends Composite
     public void updateReadOnly() {
         debug("VFS: updateReadOnly()");
         tb.setReadOnly(readonly || !textInputEnabled);
+    }
+
+    // Haulmont API
+    protected boolean isShowNullItem() {
+        return nullSelectionAllowed;
+    }
+
+    // Haulmont API
+    public void applyNewSuggestions() {
+        suggestionPopup.showSuggestions(currentSuggestions, currentPage, totalMatches);
     }
 
     public void setTextInputEnabled(boolean textInputEnabled) {
@@ -2055,10 +2068,12 @@ public class VFilterSelect extends Composite
     /**
      * Triggered when a key is pressed in the text box
      *
+     * Haulmont API dependency
+     *
      * @param event
      *            The KeyDownEvent
      */
-    private void inputFieldKeyDown(KeyDownEvent event) {
+    protected void inputFieldKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VFS: inputFieldKeyDown(" + event.getNativeKeyCode() + ")");
         }
@@ -2099,10 +2114,12 @@ public class VFilterSelect extends Composite
     /**
      * Triggered when a key was pressed in the suggestion popup.
      *
+     * Haulmont API dependency
+     *
      * @param event
      *            The KeyDownEvent of the key
      */
-    private void popupKeyDown(KeyDownEvent event) {
+    protected void popupKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VFS: popupKeyDown(" + event.getNativeKeyCode() + ")");
         }
@@ -2218,8 +2235,10 @@ public class VFilterSelect extends Composite
 
     /**
      * Resets the Select to its initial state
+     *
+     * Haulmont API dependency
      */
-    private void reset() {
+    protected void reset() {
         debug("VFS: reset()");
         if (currentSuggestion != null) {
             String text = currentSuggestion.getReplacementString();
