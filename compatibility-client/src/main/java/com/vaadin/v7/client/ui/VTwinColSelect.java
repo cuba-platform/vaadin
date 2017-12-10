@@ -52,9 +52,11 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
     private static final int DEFAULT_COLUMN_COUNT = 10;
 
-    private final DoubleClickListBox options;
+    //Haulmont API
+    protected final DoubleClickListBox options;
 
-    private final DoubleClickListBox selections;
+    //Haulmont API
+    protected final DoubleClickListBox selections;
 
     /** For internal use only. May be removed or replaced in the future. */
     public FlowPanel captionWrapper;
@@ -63,11 +65,14 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
     private HTML selectionsCaption = null;
 
-    private final VButton add;
+    //Haulmont API
+    protected final VButton add;
 
-    private final VButton remove;
+    //Haulmont API
+    protected final VButton remove;
 
-    private final FlowPanel buttons;
+    //Haulmont API
+    protected final FlowPanel buttons;
 
     private final Panel panel;
 
@@ -96,13 +101,13 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
 
         captionWrapper = new FlowPanel();
 
-        options = new DoubleClickListBox();
+        options = createOptionsBox();
         options.addClickHandler(this);
         options.addDoubleClickHandler(this);
         options.setVisibleItemCount(VISIBLE_COUNT);
         options.setStyleName(CLASSNAME + "-options");
 
-        selections = new DoubleClickListBox();
+        selections = createSelectionsBox();
         selections.addClickHandler(this);
         selections.addDoubleClickHandler(this);
         selections.setVisibleItemCount(VISIBLE_COUNT);
@@ -141,6 +146,18 @@ public class VTwinColSelect extends VOptionGroupBase implements KeyDownHandler,
         selections.addKeyDownHandler(this);
 
         updateEnabledState();
+    }
+
+    //Haulmont API
+    protected DoubleClickListBox createOptionsBox() {
+        DoubleClickListBox options = new VTwinColSelect.DoubleClickListBox();
+        return options;
+    }
+
+    //Haulmont API
+    protected DoubleClickListBox createSelectionsBox() {
+        DoubleClickListBox selections = new DoubleClickListBox();
+        return selections;
     }
 
     public HTML getOptionsCaption() {
