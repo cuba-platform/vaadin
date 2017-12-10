@@ -203,10 +203,12 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
      * Note : The Item is not removed from the underlying Container.
      * </p>
      *
+     * Haulmont API dependency
+     *
      * @param itemId
      *            the ID of the item to remove from the hierarchy.
      */
-    private void removeFromHierarchyWrapper(Object itemId) {
+    protected void removeFromHierarchyWrapper(Object itemId) {
 
         LinkedList<Object> oprhanedChildren = children.remove(itemId);
         if (oprhanedChildren != null) {
@@ -233,10 +235,12 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
      * The new item is added as a root Item. The underlying container is not
      * modified.
      *
+     * Haulmont API dependency
+     *
      * @param itemId
      *            the ID of the item to add to the hierarchy.
      */
-    private void addToHierarchyWrapper(Object itemId) {
+    protected void addToHierarchyWrapper(Object itemId) {
         roots.add(itemId);
 
     }
@@ -863,4 +867,19 @@ public class ContainerHierarchicalWrapper implements Container.Hierarchical,
         }
 
     }
+
+    // Haulmont API
+    protected Container _container() {
+        return container;
+    }
+
+    // Haulmont API
+    protected Map<Object, LinkedList<Object>> _children() {
+        return children;
+    }
+
+    // Haulmont API
+    protected boolean _hierarchical() {
+        return hierarchical;
+    };
 }
