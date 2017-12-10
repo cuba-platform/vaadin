@@ -16,12 +16,7 @@
 
 package com.vaadin.v7.data.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.v7.data.Container;
@@ -91,6 +86,9 @@ public class ContainerOrderedWrapper implements Container.Ordered,
      * container does not send ItemSetChangeEvents.
      */
     private int lastKnownSize = -1;
+
+    // Haulmont API
+    private boolean resetOnItemSetChange = false;
 
     /**
      * Constructs a new ordered wrapper for an existing Container. Works even if
@@ -216,7 +214,8 @@ public class ContainerOrderedWrapper implements Container.Ordered,
             final Collection<?> ids = container.getItemIds();
 
             // Recreates ordering if some parts of it are missing
-            if (next == null || first == null || last == null || prev == null) {
+            if (next == null || first == null || last == null || prev == null
+                    || resetOnItemSetChange) {
                 first = null;
                 last = null;
                 next = new Hashtable<Object, Object>();
@@ -238,6 +237,16 @@ public class ContainerOrderedWrapper implements Container.Ordered,
                 }
             }
         }
+    }
+
+    // Haulmont API
+    public boolean isResetOnItemSetChange() {
+        return resetOnItemSetChange;
+    }
+
+    // Haulmont API
+    public void setResetOnItemSetChange(boolean resetOnItemSetChange) {
+        this.resetOnItemSetChange = resetOnItemSetChange;
     }
 
     /*
