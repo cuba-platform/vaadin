@@ -46,4 +46,7 @@ public class AbstractFieldState extends AbstractLegacyComponentState {
      * @since 7.7.5
      */
     public Connector focusDelegate;
+
+    // Haulmont API
+    public boolean showErrorForDisabledState = true;
 }

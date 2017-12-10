@@ -15,10 +15,13 @@
  */
 package com.vaadin.v7.client.ui;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Focusable;
 import com.vaadin.client.StyleConstants;
+import com.vaadin.client.TooltipInfo;
 import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.ui.HasRequiredIndicator;
+import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.v7.shared.AbstractFieldState;
 
 @Deprecated
@@ -97,6 +100,31 @@ public abstract class AbstractFieldConnector
         // (instead of AbstractComponentConnector)
         if (getWidget() instanceof Focusable) {
             ((Focusable) getWidget()).setTabIndex(getState().tabIndex);
+        }
+    }
+
+    // Haulmont API
+    public boolean isShowErrorForDisabledState() {
+        return getState().showErrorForDisabledState;
+    }
+
+    @Override
+    public TooltipInfo getTooltipInfo(Element element) {
+        TooltipInfo info = super.getTooltipInfo(element);
+        if (!isEnabled() && !isShowErrorForDisabledState()) {
+            info.setErrorMessage(null);
+        }
+        return info;
+    }
+
+    @Override
+    public boolean hasTooltip() {
+        if (isEnabled()) {
+            return super.hasTooltip();
+        } else {
+            AbstractComponentState state = getState();
+            return state.description != null && !state.description.equals("")
+                    || isShowErrorForDisabledState() && state.errorMessage != null && !state.errorMessage.equals("");
         }
     }
 }

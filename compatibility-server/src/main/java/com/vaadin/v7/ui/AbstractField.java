@@ -1355,6 +1355,18 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
         }
     }
 
+    // Haulmont API
+    public boolean isShowErrorForDisabledState() {
+        return getState(false).showErrorForDisabledState;
+    }
+
+    // Haulmont API
+    public void setShowErrorForDisabledState(boolean show) {
+        if (getState(false).showErrorForDisabledState != show) {
+            getState().showErrorForDisabledState = show;
+        }
+    }
+
     /**
      * Returns the internal field value, which might not match the data source
      * value e.g. if the field has been modified and is not in write-through
