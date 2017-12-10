@@ -3426,7 +3426,8 @@ public class Grid extends AbstractComponent
          *
          * @return the internal state of the column
          */
-        GridColumnState getState() {
+        // Haulmont API
+        public GridColumnState getState() {
             return state;
         }
 
@@ -4597,7 +4598,8 @@ public class Grid extends AbstractComponent
     /**
      * The data source attached to the grid
      */
-    private Container.Indexed datasource;
+    // Haulmont API
+    protected Container.Indexed datasource;
 
     /**
      * Property id to column instance mapping
@@ -4694,20 +4696,25 @@ public class Grid extends AbstractComponent
     private final Header header = new Header(this);
     private final Footer footer = new Footer(this);
 
-    private Object editedItemId = null;
-    private boolean editorActive = false;
+    // Haulmont API
+    protected Object editedItemId = null;
+    // Haulmont API
+    protected boolean editorActive = false;
     /**
      * True while the editor is storing the field values, i.e. commiting the
      * field group.
      */
-    private boolean editorSaving = false;
-    private FieldGroup editorFieldGroup = new CustomFieldGroup();
+    // Haulmont API
+    protected boolean editorSaving = false;
+    // Haulmont API
+    protected FieldGroup editorFieldGroup = new CustomFieldGroup();
 
     /**
      * Poperty ID to Field mapping that stores editor fields set by
      * {@link #setEditorField(Object, Field)}.
      */
-    private Map<Object, Field<?>> editorFields = new HashMap<Object, Field<?>>();
+    // Haulmont API
+    protected Map<Object, Field<?>> editorFields = new HashMap<Object, Field<?>>();
 
     private CellStyleGenerator cellStyleGenerator;
     private RowStyleGenerator rowStyleGenerator;
