@@ -95,7 +95,7 @@ public class TreeTable extends Table implements Hierarchical {
 
         public Collection<?> getItemIds();
 
-        public void containerItemSetChange(ItemSetChangeEvent event);
+        public void containerItemSetChange(Container.ItemSetChangeEvent event);
     }
 
     private abstract class AbstractStrategy implements ContainerStrategy {
@@ -117,7 +117,7 @@ public class TreeTable extends Table implements Hierarchical {
         }
 
         @Override
-        public void containerItemSetChange(ItemSetChangeEvent event) {
+        public void containerItemSetChange(Container.ItemSetChangeEvent event) {
         }
 
     }
@@ -321,7 +321,7 @@ public class TreeTable extends Table implements Hierarchical {
         }
 
         @Override
-        public void containerItemSetChange(ItemSetChangeEvent event) {
+        public void containerItemSetChange(Container.ItemSetChangeEvent event) {
             // preorder becomes invalid on sort, item additions etc.
             clearPreorderCache();
             super.containerItemSetChange(event);
@@ -735,6 +735,29 @@ public class TreeTable extends Table implements Hierarchical {
                 toggleChildVisibility(itemId, true);
             }
         }
+    }
+
+    // Haulmont API
+    public void expandAllItems() {
+        boolean hasCollapsed = true;
+
+        while (hasCollapsed) {
+            hasCollapsed = false;
+
+            for (Object itemId : getItemIds()) {
+                if (isCollapsed(itemId)) {
+                    getContainerStrategy().toggleChildVisibility(itemId);
+
+                    fireExpandEvent(itemId);
+
+                    hasCollapsed = true;
+                }
+            }
+        }
+
+        setCurrentPageFirstItemIndex(getCurrentPageFirstItemIndex(), false);
+
+        refreshRowCache();
     }
 
     /**
