@@ -140,7 +140,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setId(String id) {
-        getState().id = id;
+        if (!Objects.equals(getState(false).id, id)) {
+            getState().id = id;
+        }
     }
 
     /*
@@ -159,8 +161,10 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @see com.vaadin.ui.Component#setId(java.lang.String)
      */
     @Override
-    public void setCubaId(String id) {
-        getState().cubaId = id;
+    public void setCubaId(String cubaId) {
+        if (!Objects.equals(getState(false).cubaId, cubaId)) {
+            getState().cubaId = cubaId;
+        }
     }
 
     /*
@@ -230,8 +234,10 @@ public abstract class AbstractComponent extends AbstractClientConnector
     }
 
     @Override
-    public void setPrimaryStyleName(String style) {
-        getState().primaryStyleName = style;
+    public void setPrimaryStyleName(String primaryStyleName) {
+        if (!Objects.equals(getState(false).primaryStyleName, primaryStyleName)) {
+            getState().primaryStyleName = primaryStyleName;
+        }
     }
 
     @Override
@@ -311,7 +317,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     @Override
     public void setCaption(String caption) {
-        getState().caption = caption;
+        if (!Objects.equals(getState(false).caption, caption)) {
+            getState().caption = caption;
+        }
     }
 
     /**
@@ -328,7 +336,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      *            as plain text
      */
     public void setCaptionAsHtml(boolean captionAsHtml) {
-        getState().captionAsHtml = captionAsHtml;
+        if (getState(false).captionAsHtml != captionAsHtml) {
+            getState().captionAsHtml = captionAsHtml;
+        }
     }
 
     /**
@@ -429,7 +439,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     @Override
     public void setEnabled(boolean enabled) {
-        getState().enabled = enabled;
+        if (getState(false).enabled != enabled) {
+            getState().enabled = enabled;
+        }
     }
 
     /*
@@ -526,8 +538,12 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @since 8.0
      */
     public void setDescription(String description, ContentMode mode) {
-        getState().description = description;
-        getState().descriptionContentMode = mode;
+        if (!Objects.equals(getState(false).description, description)) {
+            getState().description = description;
+        }
+        if (!Objects.equals(getState(false).descriptionContentMode, mode)) {
+            getState().descriptionContentMode = mode;
+        }
     }
 
     /*
@@ -1445,7 +1461,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     protected void setRequiredIndicatorVisible(boolean visible) {
         if (getState(false) instanceof AbstractFieldState) {
-            ((AbstractFieldState) getState()).required = visible;
+            if (((AbstractFieldState) getState(false)).required != visible) {
+                ((AbstractFieldState) getState()).required = visible;
+            }
         } else {
             throw new IllegalStateException(
                     "This component does not support the required indicator, since state is of type "

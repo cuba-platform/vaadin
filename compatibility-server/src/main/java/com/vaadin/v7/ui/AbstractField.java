@@ -346,7 +346,9 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
     }
 
     private void setModified(boolean modified) {
-        getState().modified = modified;
+        if (getState(false).modified != modified) {
+            getState().modified = modified;
+        }
     }
 
     /**
@@ -1348,7 +1350,9 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
      */
     @Override
     public void setTabIndex(int tabIndex) {
-        getState().tabIndex = tabIndex;
+        if (getState(false).tabIndex != tabIndex) {
+            getState().tabIndex = tabIndex;
+        }
     }
 
     /**
@@ -1460,7 +1464,9 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
 
     @Override
     public void setRequired(boolean required) {
-        getState().required = required;
+        if (getState(false).required != required) {
+            getState().required = required;
+        }
     }
 
     /**

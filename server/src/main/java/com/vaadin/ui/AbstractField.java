@@ -213,7 +213,9 @@ public abstract class AbstractField<T> extends AbstractComponent
 
     @Override
     public void setTabIndex(int tabIndex) {
-        getState().tabIndex = tabIndex;
+        if (getState(false).tabIndex != tabIndex) {
+            getState().tabIndex = tabIndex;
+        }
     }
 
     @Override
