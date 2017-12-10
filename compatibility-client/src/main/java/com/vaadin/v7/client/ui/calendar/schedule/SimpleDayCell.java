@@ -50,16 +50,22 @@ import com.vaadin.v7.shared.ui.calendar.DateConstants;
 public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
         MouseDownHandler, MouseOverHandler, MouseMoveHandler {
 
-    private static int bottomSpacerHeight = -1;
-    private static int eventHeight = -1;
+    // Haulmont API dependency
+    protected static int bottomSpacerHeight = -1;
+    // Haulmont API dependency
+    protected static int eventHeight = -1;
     private static final int BORDERPADDINGSIZE = 1;
 
     // Haulmont API dependency
     protected final VCalendar calendar;
-    private Date date;
-    private int intHeight;
-    private final HTML bottomspacer;
-    private final Label caption;
+    // Haulmont API dependency
+    protected Date date;
+    // Haulmont API dependency
+    protected int intHeight;
+    // Haulmont API dependency
+    protected final HTML bottomspacer;
+    // Haulmont API dependency
+    protected final Label caption;
     private final CalendarEvent[] events = new CalendarEvent[10];
     private final int cell;
     private final int row;
@@ -70,6 +76,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
     private boolean monthEventMouseDown;
     // Haulmont API dependency
     protected boolean labelMouseDown;
+    //Haulmont API
+    protected HTML additionInfo;
     private int eventCount = 0;
 
     private int startX = -1;
@@ -195,8 +203,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
         } else {
             // Dynamic height by the content
             DOM.removeElementAttribute(getElement(), "height");
-            int captionOffsetHeight = caption.getOffsetHeight() + getSlotsCaptionOffsetHeight();
-            slots = (intHeight - captionOffsetHeight - bottomSpacerHeight) / eventHeight;
+            //Haulmont API
+            slots = countingSlots();
             if (slots > 10) {
                 slots = 10;
             }
@@ -204,6 +212,12 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
 
         updateEvents(slots, clear);
 
+    }
+
+    //Haulmont API
+    protected int countingSlots() {
+        return (intHeight - (caption.getOffsetHeight() + getSlotsCaptionOffsetHeight()) - bottomSpacerHeight)
+                / eventHeight;
     }
 
     //Haulmont API
@@ -279,6 +293,17 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
                 bottomspacer.setText("");
             }
         }
+
+        //Haulmont API
+        additionInfo = createAdditionInfo();
+        if (additionInfo != null) {
+            add(additionInfo);
+        }
+    }
+
+    // Haulmont API
+    protected HTML createAdditionInfo() {
+        return null;
     }
 
     //Haulmont API
@@ -354,7 +379,15 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
             }
         }
 
+        // Haulmont API
+        setSpecificStyle(e, eventDiv);
+
         return eventDiv;
+    }
+
+    // Haulmont API
+    protected void setSpecificStyle(CalendarEvent e, MonthEventLabel eventDiv) {
+        return;
     }
 
     private void setUnlimitedCellHeight() {
