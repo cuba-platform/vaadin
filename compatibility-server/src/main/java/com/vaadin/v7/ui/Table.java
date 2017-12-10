@@ -6560,8 +6560,14 @@ public class Table extends AbstractSelect implements Action.Container,
         return true;
     }
 
+    // Haulmont API
     protected List<Object> _visibleColumns() {
         return visibleColumns;
+    }
+
+    // Haulmont API
+    protected Set<Component> visibleComponents() {
+        return visibleComponents;
     }
 
     // Haulmont API

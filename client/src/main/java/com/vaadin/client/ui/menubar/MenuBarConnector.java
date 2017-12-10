@@ -72,7 +72,7 @@ public class MenuBarConnector extends AbstractComponentConnector
 
         UIDL options = uidl.getChildUIDL(0);
 
-        if (null != getState()
+        if (null != getState() && isUseMoreMenuItem()
                 && !ComponentStateUtil.isUndefinedWidth(getState())) {
             UIDL moreItemUIDL = options.getChildUIDL(0);
             StringBuilder itemHTML = new StringBuilder();
@@ -182,6 +182,11 @@ public class MenuBarConnector extends AbstractComponentConnector
     @Override
     public void layout() {
         getWidget().iLayout();
+    }
+
+    // Haulmont API
+    public boolean isUseMoreMenuItem() {
+        return true;
     }
 
     @Override
