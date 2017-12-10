@@ -2456,7 +2456,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * An initial height that is given to new details rows before rendering the
      * appropriate widget that we then can be measure
      *
-     * @see GridSpacerUpdater
+     * see GridSpacerUpdater
      */
     private static final double DETAILS_ROW_INITIAL_HEIGHT = 50;
 
@@ -6151,8 +6151,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 if (getHeader().getRow(event.getFocusedCell().getRowIndex())
                         .isDefault()) {
                     // Only sort for enter on the default header
-                    sorter.sort(event.getFocusedCell().getColumn(),
-                            event.isShiftKeyDown());
+                    sortWithSorter(event.getFocusedCell().getColumn(), event.isShiftKeyDown());
                 }
             }
         });
@@ -7697,7 +7696,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 if (sorter.isDelayedSortScheduled()) {
                     // Not a long tap yet, perform single sort
                     sorter.cancelDelayedSort();
-                    sorter.sort(event.getCell().getColumn(), false);
+                    sortWithSorter(event.getCell().getColumn(), false);
                 }
 
                 event.setHandled(true);
@@ -7713,11 +7712,20 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             } else if (BrowserEvents.CLICK
                     .equals(event.getDomEvent().getType())) {
 
-                sorter.sort(event.getCell().getColumn(),
-                        event.getDomEvent().getShiftKey());
+                sortWithSorter(event.getCell().getColumn(), event.getDomEvent().getShiftKey());
             }
         }
     };
+
+    // Haulmont API
+    protected void sortWithSorter(Column<?, ?> column, boolean shiftKeyDown) {
+        sorter.sort(column, shiftKeyDown);
+    }
+
+    // Haulmont API
+    protected void sortAfterDelayWithSorter(int delay, boolean multisort) {
+        sorter.sortAfterDelay(delay, multisort);
+    }
 
     @Override
     @SuppressWarnings("deprecation")
