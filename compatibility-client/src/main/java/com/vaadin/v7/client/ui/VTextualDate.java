@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.LocaleNotLoadedException;
@@ -51,7 +52,7 @@ public class VTextualDate extends VDateField
     private static final String PARSE_ERROR_CLASSNAME = "-parseerror";
 
     /** For internal use only. May be removed or replaced in the future. */
-    public final TextBox text;
+    public final TextBoxBase text;
 
     /** For internal use only. May be removed or replaced in the future. */
     public String formatStr;
@@ -71,7 +72,8 @@ public class VTextualDate extends VDateField
 
     public VTextualDate() {
         super();
-        text = new TextBox();
+        //Haulmont API
+        text = createImpl();
         text.addChangeHandler(this);
         text.addFocusHandler(new FocusHandler() {
             @Override
@@ -116,6 +118,14 @@ public class VTextualDate extends VDateField
             addDomHandler(this, KeyDownEvent.getType());
         }
         add(text);
+    }
+
+    protected TextBoxBase createImpl(){
+        return new TextBox();
+    }
+
+    public TextBoxBase getImpl() {
+        return text;
     }
 
     protected void updateStyleNames() {
