@@ -4065,7 +4065,7 @@ public class Table extends AbstractSelect implements Action.Container,
      */
     protected Object getPropertyValue(Object rowId, Object colId,
             Property property) {
-        if (isEditable() && fieldFactory != null) {
+        if (isColumnEditable(colId, editable) && fieldFactory != null) {
             final Field<?> f = fieldFactory
                     .createField(getContainerDataSource(), rowId, colId, this);
             if (f != null) {
@@ -6554,5 +6554,19 @@ public class Table extends AbstractSelect implements Action.Container,
     // Haulmont API
     protected boolean isCellPaintingNeeded(Object itemId, Object columnId) {
         return true;
+    }
+
+    protected List<Object> _visibleColumns() {
+        return visibleColumns;
+    }
+
+    // Haulmont API
+    protected boolean isColumnEditable(Object columnId, boolean editable) {
+        return editable;
+    }
+
+    // Haulmont API
+    protected TableFieldFactory _fieldFactory() {
+        return fieldFactory;
     }
 }
