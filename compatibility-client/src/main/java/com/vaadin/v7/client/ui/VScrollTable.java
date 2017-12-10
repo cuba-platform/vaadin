@@ -78,20 +78,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComponentConnector;
-import com.vaadin.client.ConnectorMap;
-import com.vaadin.client.DeferredWorker;
-import com.vaadin.client.Focusable;
+import com.vaadin.client.*;
 import com.vaadin.client.HasChildMeasurementHintConnector.ChildMeasurementHint;
-import com.vaadin.client.MouseEventDetailsBuilder;
-import com.vaadin.client.StyleConstants;
-import com.vaadin.client.TooltipInfo;
-import com.vaadin.client.UIDL;
-import com.vaadin.client.Util;
-import com.vaadin.client.VTooltip;
-import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.Action;
 import com.vaadin.client.ui.ActionOwner;
 import com.vaadin.client.ui.FocusableScrollPanel;
@@ -2104,6 +2092,14 @@ public class VScrollTable extends FlowPanel
 
         // Set body column width
         scrollBody.setColWidth(colIndex, w);
+
+        // Haulmont API
+        reassignHeaderCellWidth(colIndex, hcell, minWidth);
+    }
+
+    // Haulmont API
+    protected void reassignHeaderCellWidth(int colIndex, HeaderCell hcell, int minWidth) {
+        // do nothing
     }
 
     // Haulmont API dependency
@@ -3837,6 +3833,17 @@ public class VScrollTable extends FlowPanel
                         }
                         // save min width without indent
                         c.setWidth(widthWithoutAddedIndent, true);
+
+                        // Recalculate the column decimal width
+                        final int finalMinWidth = minWidth;
+                        final HeaderCell finalC = c;
+                        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                            @Override
+                            public void execute() {
+                                int colIx = getColIndexByKey(cid);
+                                reassignHeaderCellWidth(colIx, finalC, finalMinWidth);
+                            }
+                        });
                     }
                 } else if (col.hasAttribute("er")) {
                     c.setExpandRatio(col.getFloatAttribute("er"));
@@ -5799,6 +5806,18 @@ public class VScrollTable extends FlowPanel
                 }
             }
 
+            // Haulmont API
+            public double getRealCellWidth(int cellIx) {
+                if (cellIx >= getElement().getChildCount()) {
+                    return -1;
+                }
+
+                Element cell = DOM.getChild(getElement(), cellIx);
+                ComputedStyle cs = new ComputedStyle(cell);
+
+                return cs.getWidth() + cs.getPaddingWidth() + cs.getBorderWidth();
+            }
+
             protected void setCellWidth(int cellIx, int width) {
                 final Element cell = DOM.getChild(getElement(), cellIx);
                 Style wrapperStyle = cell.getFirstChildElement().getStyle();
@@ -6997,6 +7016,16 @@ public class VScrollTable extends FlowPanel
                         description, td);
             }
 
+            // Haulmont API
+            @Override
+            public double getRealCellWidth(int cellIx) {
+                if (isSpanColumns()) {
+                    return -1;
+                }
+
+                return super.getRealCellWidth(cellIx);
+            }
+
             @Override
             protected void setCellWidth(int cellIx, int width) {
                 if (isSpanColumns()) {
@@ -7395,6 +7424,8 @@ public class VScrollTable extends FlowPanel
 
             forceRealignColumnHeaders();
 
+            forceReassignColumnWidths();
+
             if (colWidthChanged) {
                 // Haulmont API
                 scheduleLayoutForChildWidgets();
@@ -7402,6 +7433,11 @@ public class VScrollTable extends FlowPanel
         }
 
     };
+
+    // Haulmont API
+    public void forceReassignColumnWidths() {
+
+    }
 
     // Haulmont API
     public void scheduleLayoutForChildWidgets() {
