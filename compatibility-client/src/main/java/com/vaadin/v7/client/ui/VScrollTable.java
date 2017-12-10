@@ -1029,14 +1029,25 @@ public class VScrollTable extends FlowPanel
                 return setRowFocus(
                         (VScrollTableRow) scrollBody.iterator().next());
             } else {
-                VScrollTableRow next = getNextRow(focusedRow, offset);
+                // Haulmont API
+                VScrollTableRow next = getNextRowToFocus(focusedRow, offset);
                 if (next != null) {
-                    return setRowFocus(next);
+                    return setRowFocus(next) || needToSelectFocused(next);
                 }
             }
         }
 
         return false;
+    }
+
+    // Haulmont API
+    protected boolean needToSelectFocused(VScrollTableRow currentRow) {
+        return false;
+    }
+
+    // Haulmont API
+    protected VScrollTableRow getNextRowToFocus(VScrollTableRow currentRow, int offset) {
+        return getNextRow(currentRow, offset);
     }
 
     /**
