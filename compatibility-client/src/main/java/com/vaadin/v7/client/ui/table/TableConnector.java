@@ -248,6 +248,10 @@ public class TableConnector extends AbstractFieldConnector
         } else {
             getWidget().postponeSanityCheckForLastRendered = false;
             UIDL rowData = uidl.getChildByTagName("rows");
+
+            // Haulmont API
+            boolean additionalDataUpdated = false;
+
             if (rowData != null) {
                 // we may have pending cache row fetch, cancel it. See #2136
                 getWidget().rowRequestHandler.cancel();
@@ -257,12 +261,21 @@ public class TableConnector extends AbstractFieldConnector
                     getWidget().updateBody(rowData,
                             uidl.getIntAttribute("firstrow"),
                             uidl.getIntAttribute("rows"));
+
+                    // Haulmont API
+                    updateAdditionalRowData(uidl);
+                    additionalDataUpdated = true;
+
                     if (getWidget().headerChangedDuringUpdate) {
                         getWidget().triggerLazyColumnAdjustment(true);
                     }
                 } else {
                     getWidget().initializeRows(uidl, rowData);
                 }
+            }
+            // Haulmont API
+            if (!additionalDataUpdated) {
+                updateAdditionalRowData(uidl);
             }
         }
 
@@ -372,6 +385,10 @@ public class TableConnector extends AbstractFieldConnector
         getWidget().headerChangedDuringUpdate = false;
 
         getWidget().collapsibleMenuContent = getState().collapseMenuContent;
+    }
+
+    // Haulmont API dependency
+    protected void updateAdditionalRowData(UIDL uidl) {
     }
 
     @Override
