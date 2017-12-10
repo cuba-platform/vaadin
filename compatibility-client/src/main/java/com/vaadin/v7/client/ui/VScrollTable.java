@@ -6662,7 +6662,8 @@ public class VScrollTable extends FlowPanel
                 return getElementTdOrTr(eventTarget);
             }
 
-            private Element getElementTdOrTr(Element element) {
+            // Haulmont API dependency
+            protected Element getElementTdOrTr(Element element) {
 
                 Widget widget = WidgetUtil.findWidget(element, null);
 
