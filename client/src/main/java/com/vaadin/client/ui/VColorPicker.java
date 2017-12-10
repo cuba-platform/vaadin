@@ -29,13 +29,18 @@ public class VColorPicker extends VButton {
 
     private boolean isOpen = false;
 
+    // Haulmont API
+    private boolean readonly = false;
+
     private HTML colorIcon;
 
     @Override
     public void onClick(ClickEvent event) {
         super.onClick(event);
 
-        setOpen(!isOpen);
+        if (!isReadonly()) {
+            setOpen(!isOpen);
+        }
     }
 
     /**
@@ -82,4 +87,13 @@ public class VColorPicker extends VButton {
         }
     }
 
+    // Haulmont API
+    public boolean isReadonly() {
+        return readonly;
+    }
+
+    // Haulmont API
+    public void setReadonly(boolean readonly) {
+        this.readonly = readonly;
+    }
 }
