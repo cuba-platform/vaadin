@@ -52,18 +52,21 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
     private int width;
     private int eventRangeStart = -1;
     private int eventRangeStop = -1;
-    final WeekGrid weekgrid;
+    //Haulmont API
+    protected final WeekGrid weekgrid;
     private boolean disabled = false;
     private int height;
     private final Element[] slotElements;
-    private final List<DateCellSlot> slots = new ArrayList<DateCellSlot>();
+    //Haulmont API
+    protected final List<DateCellSlot> slots = new ArrayList<DateCellSlot>();
     private int[] slotElementHeights;
     private int startingSlotHeight;
     private Date today;
     private Element todaybar;
     private final List<HandlerRegistration> handlers;
     private final int numberOfSlots;
-    private final int firstHour;
+    //Haulmont API
+    protected  final int firstHour;
     private final int lastHour;
 
     public class DateCellSlot extends Widget {
@@ -489,8 +492,8 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
 
     public void addEvent(Date targetDay, CalendarEvent calendarEvent) {
         Element main = getElement();
-        DateCellDayEvent dayEvent = new DateCellDayEvent(this, weekgrid,
-                calendarEvent);
+        //Haulmont API
+        DateCellDayEvent dayEvent = createDateCellDayEvent(calendarEvent);
         dayEvent.setSlotHeightInPX(getSlotHeight());
         dayEvent.setDisabled(isDisabled());
 
@@ -499,6 +502,11 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
         }
 
         add(dayEvent, main);
+    }
+
+    //Haulmont API
+    protected DateCellDayEvent createDateCellDayEvent(CalendarEvent calendarEvent) {
+        return new DateCellDayEvent(this, weekgrid, calendarEvent);
     }
 
     // date methods are not deprecated in GWT
@@ -769,11 +777,17 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
             getElement().appendChild(todaybar);
         }
 
+        //Haulmont API
+        setTodaybarWidth(todaybar, width);
+
+        // position is calculated later, when we know the cell heights
+    }
+
+    //Haulmont API
+    protected void setTodaybarWidth(Element todaybar, int width) {
         if (width != -1) {
             todaybar.getStyle().setWidth(width, Unit.PX);
         }
-
-        // position is calculated later, when we know the cell heights
     }
 
     public Element getTodaybarElement() {
