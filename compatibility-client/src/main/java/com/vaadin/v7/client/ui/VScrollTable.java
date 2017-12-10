@@ -7246,6 +7246,9 @@ public class VScrollTable extends FlowPanel
                 }
             }
 
+            // Haulmont API
+            boolean colWidthChanged = false;
+
             // we have some space that can be divided optimally
             colIndex = 0;
             int checksum = 0;
@@ -7278,12 +7281,15 @@ public class VScrollTable extends FlowPanel
                     }
                     checksum += newSpace;
                     setColWidth(colIndex, newSpace, false);
-
+                    // Haulmont API
+                    colWidthChanged = true;
                 } else {
                     if (hierarchyHeaderInNeedOfFurtherHandling == hCell) {
                         // defined with enforced into indent width
                         checksum += hierarchyColumnIndent;
                         setColWidth(colIndex, hierarchyColumnIndent, false);
+                        // Haulmont API
+                        colWidthChanged = true;
                     } else {
                         int cellWidth = hCell.getWidthWithIndent();
                         checksum += cellWidth;
@@ -7291,6 +7297,8 @@ public class VScrollTable extends FlowPanel
                             // update in case the indent has changed
                             // (not detectable earlier)
                             setColWidth(colIndex, cellWidth, true);
+                            // Haulmont API
+                            colWidthChanged = true;
                         }
                     }
                 }
@@ -7310,6 +7318,9 @@ public class VScrollTable extends FlowPanel
                         setColWidth(colIndex,
                                 hc.getWidthWithIndent() + availW - checksum,
                                 false);
+
+                        // Haulmont API
+                        colWidthChanged = true;
                         break;
                     }
                     colIndex++;
@@ -7333,9 +7344,19 @@ public class VScrollTable extends FlowPanel
             }
 
             forceRealignColumnHeaders();
+
+            if (colWidthChanged) {
+                // Haulmont API
+                scheduleLayoutForChildWidgets();
+            }
         }
 
     };
+
+    // Haulmont API
+    public void scheduleLayoutForChildWidgets() {
+        // implement in descendants
+    }
 
     private void forceRealignColumnHeaders() {
         if (BrowserInfo.get().isIE()) {
