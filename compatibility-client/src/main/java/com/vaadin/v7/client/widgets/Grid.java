@@ -4006,7 +4006,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * UI and functionality related to hiding columns with toggles in the
      * sidebar.
      */
-    private final class ColumnHider {
+    // Haulmont API dependency
+    protected final class ColumnHider {
 
         /** Map from columns to their hiding toggles, component might change */
         private Map<Column<?, T>, MenuItem> columnToHidingToggleMap = new HashMap<Column<?, T>, MenuItem>();
@@ -4055,7 +4056,15 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             } else {
                 buf.append("v-on");
             }
-            buf.append("\"><div>");
+            buf.append("\"");
+
+            // Haulmont API
+            String customHtmlAttributes = getCustomHtmlAttributes(column);
+            if (customHtmlAttributes != null) {
+                buf.append(" ").append(customHtmlAttributes);
+            }
+
+            buf.append("><div>");
             String caption = column.getHidingToggleCaption();
             if (caption == null) {
                 caption = column.headerCaption;
@@ -4064,6 +4073,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             buf.append("</div></span>");
 
             return buf.toString();
+        }
+
+        // Haulmont API
+        protected String getCustomHtmlAttributes(Column<?, T> column) {
+            return null;
         }
 
         private void updateTogglesOrder() {
@@ -5724,6 +5738,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                             cell);
                 }
 
+                // Haulmont API
+                if (staticRow instanceof HeaderRow || staticRow instanceof FooterRow) {
+                    addAdditionalData(staticRow, cell);
+                }
+
                 // Assign colspan to cell before rendering
                 cell.setColSpan(metadata.getColspan());
 
@@ -5942,6 +5961,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
                 cellFocusHandler.updateFocusedCellStyle(cell, container);
             }
+        }
+
+        // Haulmont API
+        protected void addAdditionalData(StaticSection.StaticRow<?> staticRow, FlyweightCell cell) {
         }
 
         private void addSortingIndicatorsToHeaderRow(HeaderRow headerRow,
