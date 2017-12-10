@@ -169,7 +169,8 @@ public class VTree extends FocusElementPanel
     /** For internal use only. May be removed or replaced in the future. */
     public int dragMode;
 
-    private boolean selectionHasChanged = false;
+    // Haulmont API dependency
+    protected boolean selectionHasChanged = false;
 
     /*
      * to fix #14388. The cause of defect #14388: event 'clickEvent' is sent to
@@ -490,6 +491,9 @@ public class VTree extends FocusElementPanel
      */
     private void sendSelectionToServer() {
         Command command = new Command() {
+            // Haulmont API
+            final boolean immediateValue = immediate;
+
             @Override
             public void execute() {
                 /*
@@ -671,6 +675,10 @@ public class VTree extends FocusElementPanel
 
                 @Override
                 public void execute() {
+                    // Haulmont API
+                    boolean needToHandleClick = isNeedToHandleClick();
+                    if (!needToHandleClick)
+                        return;
 
                     if (multiSelectMode == MultiSelectMode.SIMPLE
                             || !isMultiselect) {
@@ -705,6 +713,11 @@ public class VTree extends FocusElementPanel
                 }
             });
 
+            return true;
+        }
+
+        // Haulmont API
+        protected boolean isNeedToHandleClick() {
             return true;
         }
 
@@ -831,7 +844,8 @@ public class VTree extends FocusElementPanel
                     || (icon != null && target == icon.getElement()));
         }
 
-        private void fireClick(final Event evt) {
+        // Haulmont API dependency
+        protected void fireClick(final Event evt) {
             /*
              * Ensure we have focus in tree before sending variables. Otherwise
              * previously modified field may contain dirty variables.
@@ -850,6 +864,10 @@ public class VTree extends FocusElementPanel
 
             final MouseEventDetails details = MouseEventDetailsBuilder
                     .buildMouseEventDetails(evt);
+
+            // Haulmont API
+            final int eventType = DOM.eventGetType(evt);
+            prepareToFireClick(eventType);
 
             executeEventCommand(new ScheduledCommand() {
 
@@ -875,6 +893,10 @@ public class VTree extends FocusElementPanel
                             clickEventPending = false;
                         }
                     }
+
+                    // Haulmont API
+                    clickEventPending = isNeedToSendDoubleClick(eventType, clickEventPending);
+
                     client.updateVariable(paintableId, "clickedKey", key,
                             false);
                     client.updateVariable(paintableId, "clickEvent",
@@ -883,11 +905,22 @@ public class VTree extends FocusElementPanel
             });
         }
 
+        // Haulmont API
+        protected void prepareToFireClick(int eventType) {
+        }
+
+        // Haulmont API
+        protected boolean isNeedToSendDoubleClick(int eventType, boolean sendClickEventNow) {
+            return sendClickEventNow;
+        }
+
         /*
          * Must wait for Safari to focus before sending click and value change
          * events (see #6373, #6374)
+         *
+         * Haulmont API dependency
          */
-        private void executeEventCommand(ScheduledCommand command) {
+        protected void executeEventCommand(ScheduledCommand command) {
             if (BrowserInfo.get().isWebkit() && !treeHasFocus) {
                 Scheduler.get().scheduleDeferred(command);
             } else {
@@ -895,7 +928,8 @@ public class VTree extends FocusElementPanel
             }
         }
 
-        private void toggleSelection() {
+        // Haulmont API dependency
+        protected void toggleSelection() {
             if (selectable) {
                 VTree.this.setSelected(this, !isSelected());
             }
