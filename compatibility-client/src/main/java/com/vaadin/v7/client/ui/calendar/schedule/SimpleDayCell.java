@@ -368,7 +368,8 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
                 eventDiv.addStyleDependentName("continued-from");
                 eventDiv.setCaption(e.getCaption());
             }
-            if (toCompareToDate == 0) {
+            // Haulmont API
+            if (isEndDate(date, to, e.isAllDay())) {
                 eventDiv.addStyleDependentName("end");
             } else if (toCompareToDate > 0
                     && (cell + 1) == getMonthGrid().getCellCount(row)) {
@@ -383,6 +384,11 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
         setSpecificStyle(e, eventDiv);
 
         return eventDiv;
+    }
+
+    // Haulmont API
+    protected boolean isEndDate(Date date, Date to, boolean allDay) {
+        return to.compareTo(date) == 0;
     }
 
     // Haulmont API

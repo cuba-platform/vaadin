@@ -499,7 +499,8 @@ public class VCalendar extends Composite implements VHasDropHandler {
      */
     @SuppressWarnings("deprecation")
     // Date methods are not deprecated in GWT
-    private boolean isEventInDayWithTime(Date from, Date to, Date date,
+    // Haulmont API
+    protected boolean isEventInDayWithTime(Date from, Date to, Date date,
             Date endTime, boolean isAllDay) {
         return (isAllDay || !(to.getDay() == date.getDay()
                 && from.getDay() != to.getDay() && isMidnight(endTime)));
