@@ -547,6 +547,11 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
         }
     }
 
+    // Haulmont API
+    public void setValueIgnoreReadOnly(T newFieldValue) {
+        setValue(newFieldValue, false, true);
+    }
+
     @Deprecated
     static boolean equals(Object value1, Object value2) {
         return SharedUtil.equals(value1, value2);
