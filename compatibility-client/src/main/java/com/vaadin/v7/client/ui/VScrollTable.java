@@ -993,14 +993,15 @@ public class VScrollTable extends FlowPanel
      *            the columns to trigger the events for.
      */
     protected void sendColumnWidthUpdates(Collection<HeaderCell> columns) {
-        String[] newSizes = new String[columns.size()];
+        List<String> newSizesList = new ArrayList<String>();
         int ix = 0;
         for (HeaderCell cell : columns) {
-            // Haulmont API call
+            // Haulmont API call - update only permitted columns
             if (checkColumnForUpdateWidth(cell)) {
-                newSizes[ix++] = cell.getColKey() + ":" + cell.getWidth();
+                newSizesList.add(cell.getColKey() + ":" + cell.getWidth());
             }
         }
+        String[] newSizes = newSizesList.toArray(new String[newSizesList.size()]);
         client.updateVariable(paintableId, "columnWidthUpdates", newSizes,
                 false);
     }
