@@ -4980,8 +4980,12 @@ public class Grid extends AbstractComponent
 
             private void doBind(Object id) {
                 editedItemId = id;
-                doEditItem();
-                getEditorRpc().confirmBind(true);
+                if (isEditingPermitted(id)) {
+                    doEditItem();
+                    getEditorRpc().confirmBind(true);
+                } else {
+                    getEditorRpc().confirmBind(false);
+                }
             }
 
             private void failBind(Exception e) {
@@ -5038,6 +5042,11 @@ public class Grid extends AbstractComponent
                         .error(new ConnectorErrorEvent(Grid.this, e));
             }
         });
+    }
+
+    // Haumont API
+    protected boolean isEditingPermitted(Object id) {
+        return true;
     }
 
     // Haumont API
