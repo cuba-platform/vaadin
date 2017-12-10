@@ -6323,7 +6323,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * @param columnIndexDOM
      *            index (excluding hidden columns) of cell to focus
      */
-    void focusCell(int rowIndex, int columnIndexDOM) {
+    // Haulmont API
+    public void focusCell(int rowIndex, int columnIndexDOM) {
         final Range rowRange = Range.between(0, dataSource.size());
         final Range columnRange = Range.between(0, getVisibleColumns().size());
 
