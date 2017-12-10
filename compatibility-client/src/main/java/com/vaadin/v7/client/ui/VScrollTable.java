@@ -311,8 +311,10 @@ public class VScrollTable extends FlowPanel
     /**
      * multiple of pagelength which component will cache when requesting more
      * rows
+     *
+     * Haulmont API dependency
      */
-    private double cacheRate = CACHE_RATE_DEFAULT;
+    protected double cacheRate = CACHE_RATE_DEFAULT;
     /**
      * fraction of pageLength which can be scrolled without making new request
      */
@@ -323,7 +325,8 @@ public class VScrollTable extends FlowPanel
     public static final char ALIGN_RIGHT = 'e';
     private static final int CHARCODE_SPACE = 32;
     private int firstRowInViewPort = 0;
-    private int pageLength = 15;
+    // Haulmont API dependency
+    protected int pageLength = 15;
     // to detect "serverside scroll"
     private int lastRequestedFirstvisible = 0;
     // To detect if the first visible
@@ -2839,7 +2842,8 @@ public class VScrollTable extends FlowPanel
         Element floatingCopyOfHeaderCell;
 
         private boolean sortable = false;
-        private final String cid;
+        // Haulmont API dependency
+        protected final String cid;
 
         private boolean dragging;
         private Integer currentDragX = null; // is used to resolve #14796
@@ -3270,28 +3274,7 @@ public class VScrollTable extends FlowPanel
                     // mouse event was a click to header -> sort column
                     if (sortable && WidgetUtil
                             .isTouchEventOrLeftMouseButton(event)) {
-                        if (sortColumn.equals(cid)) {
-                            // just toggle order
-                            client.updateVariable(paintableId, "sortascending",
-                                    !sortAscending, false);
-                        } else {
-                            // set table sorted by this column
-                            client.updateVariable(paintableId, "sortcolumn",
-                                    cid, false);
-                        }
-                        // get also cache columns at the same request
-                        scrollBodyPanel.setScrollPosition(0);
-                        firstvisible = 0;
-                        rowRequestHandler.setReqFirstRow(0);
-                        rowRequestHandler
-                                .setReqRows((int) (2 * pageLength * cacheRate
-                                        + pageLength));
-                        // some validation and defer 250ms
-                        // instead of waiting
-                        rowRequestHandler.deferRowFetch();
-                        rowRequestHandler.cancel();
-                        // run immediately
-                        rowRequestHandler.run();
+                        sortColumn();
                     }
                     fireHeaderClickedEvent(event);
                     if (WidgetUtil.isTouchEvent(event)) {
@@ -3367,6 +3350,32 @@ public class VScrollTable extends FlowPanel
             default:
                 break;
             }
+        }
+
+        // Haulmont API dependency
+        protected void sortColumn() {
+            if (sortColumn.equals(cid)) {
+                // just toggle order
+                client.updateVariable(paintableId, "sortascending",
+                        !sortAscending, false);
+            } else {
+                // set table sorted by this column
+                client.updateVariable(paintableId, "sortcolumn",
+                        cid, false);
+            }
+            // get also cache columns at the same request
+            scrollBodyPanel.setScrollPosition(0);
+            firstvisible = 0;
+            rowRequestHandler.setReqFirstRow(0);
+            rowRequestHandler
+                    .setReqRows((int) (2 * pageLength * cacheRate
+                            + pageLength));
+            // some validation and defer 250ms
+            // instead of waiting
+            rowRequestHandler.deferRowFetch();
+            rowRequestHandler.cancel();
+            // run immediately
+            rowRequestHandler.run();
         }
 
         private void onResizeEvent(Event event) {
@@ -3715,7 +3724,7 @@ public class VScrollTable extends FlowPanel
                 String caption = buildCaptionHtmlSnippet(col);
                 HeaderCell c = getHeaderCell(cid);
                 if (c == null) {
-                    c = new HeaderCell(cid, caption);
+                    c = createHeaderCell(cid, caption);
                     availableCells.put(cid, c);
                     if (initializedAndAttached) {
                         // we will need a column width recalculation
@@ -3831,6 +3840,11 @@ public class VScrollTable extends FlowPanel
                     isNewBody = true;
                 }
             }
+        }
+
+        // Haulmont API dependency
+        protected HeaderCell createHeaderCell(String cid, String caption) {
+            return new HeaderCell(cid, caption);
         }
 
         public void enableColumn(String cid, int index) {
