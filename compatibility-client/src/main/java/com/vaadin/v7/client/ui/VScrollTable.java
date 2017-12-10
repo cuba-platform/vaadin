@@ -4188,16 +4188,22 @@ public class VScrollTable extends FlowPanel
             } else {
                 // if columnReordering is disabled, we need different way to get
                 // all available columns
-                cols = visibleColOrder;
-                cols = new Object[visibleColOrder.length
-                        + collapsedColumns.size()];
-                int i;
-                for (i = 0; i < visibleColOrder.length; i++) {
-                    cols[i] = visibleColOrder[i];
+                List colsList = new ArrayList(visibleColOrder.length
+                        + collapsedColumns.size());
+
+                for (int i = 0; i < visibleColOrder.length; i++) {
+                    if (!visibleColOrder[i].contains("-")) {
+                        colsList.add(visibleColOrder[i]);
+                    }
                 }
-                for (final String column : collapsedColumns) {
-                    cols[i++] = column;
+                for (final Iterator<String> it = collapsedColumns.iterator(); it
+                        .hasNext();) {
+                    String col = it.next();
+                    if (!col.contains("-")) {
+                        colsList.add(col);
+                    }
                 }
+                cols = colsList.toArray(new Object[colsList.size()]);
             }
             List<Action> actions = new ArrayList<Action>(cols.length);
 
