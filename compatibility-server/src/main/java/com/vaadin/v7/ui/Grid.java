@@ -4675,7 +4675,8 @@ public class Grid extends AbstractComponent
         }
     };
 
-    private RpcDataProviderExtension datasourceExtension;
+    // Haulmont API
+    protected RpcDataProviderExtension datasourceExtension;
 
     /**
      * The selection model that is currently in use. Never <code>null</code>
