@@ -3672,6 +3672,11 @@ public class VScrollTable extends FlowPanel
                     new RowHeadersHeaderCell());
         }
 
+        // Haulmont API
+        protected String getCustomHtmlAttributes(VisibleColumnAction action) {
+            return null;
+        }
+
         protected void updateStyleNames(String primaryStyleName) {
             hTableWrapper.setClassName(primaryStyleName + "-header");
             columnSelector.setClassName(primaryStyleName + "-column-selector");
@@ -4092,7 +4097,8 @@ public class VScrollTable extends FlowPanel
             }
         }
 
-        class VisibleColumnAction extends Action {
+        // Haulmont API dependency
+        public class VisibleColumnAction extends Action {
 
             String colKey;
             private boolean collapsed;
@@ -4175,7 +4181,14 @@ public class VScrollTable extends FlowPanel
                 if (noncollapsible) {
                     buf.append(" v-disabled");
                 }
-                buf.append("\">");
+
+                // Haulmont API
+                String customHtmlAttributes = getCustomHtmlAttributes(this);
+                if (customHtmlAttributes != null) {
+                    buf.append(" ").append(customHtmlAttributes);
+                }
+
+                buf.append(">");
 
                 buf.append(super.getHTML());
                 buf.append("</span>");
@@ -4183,6 +4196,10 @@ public class VScrollTable extends FlowPanel
                 return buf.toString();
             }
 
+            // Haulmont API
+            public String getColKey() {
+                return colKey;
+            }
         }
 
         /*
