@@ -65,7 +65,7 @@ public class WeekGrid extends SimplePanel {
     public WeekGrid(VCalendar parent, boolean format24h) {
         setCalendar(parent);
         content = new HorizontalPanel();
-        timebar = new Timebar(format24h);
+        timebar = createTimebar(format24h);
         content.add(timebar);
 
         wrapper = new SimplePanel();
@@ -73,6 +73,11 @@ public class WeekGrid extends SimplePanel {
         wrapper.add(content);
 
         setWidget(wrapper);
+    }
+
+    //Haulmont API
+    protected Timebar createTimebar(boolean format24h) {
+        return new Timebar(format24h);
     }
 
     private void setVerticalScroll(boolean isVerticalScrollEnabled) {
@@ -561,19 +566,19 @@ public class WeekGrid extends SimplePanel {
     }
 
     public static class Timebar extends HTML {
-
-        private static final int[] TIMES_FOR_12H = { 12, 1, 2, 3, 4, 5, 6, 7, 8,
+        // Haulmont API
+        protected static final int[] TIMES_FOR_12H = { 12, 1, 2, 3, 4, 5, 6, 7, 8,
                 9, 10, 11 };
-
-        private int height;
-
-        private final int verticalPadding = 7; // FIXME measure this from DOM
-
-        private int[] slotCellHeights;
-
-        private int firstHour;
-
-        private int lastHour;
+        // Haulmont API
+        protected int height;
+        // Haulmont API
+        protected final int verticalPadding = 7; // FIXME measure this from DOM
+        // Haulmont API
+        protected int[] slotCellHeights;
+        // Haulmont API
+        protected int firstHour;
+        // Haulmont API
+        protected int lastHour;
 
         public Timebar(boolean format24h) {
             createTimeBar(format24h);
@@ -592,7 +597,8 @@ public class WeekGrid extends SimplePanel {
             slotCellHeights = cellHeights;
         }
 
-        private void createTimeBar(boolean format24h) {
+        // Haulmont API
+        protected void createTimeBar(boolean format24h) {
             setStylePrimaryName("v-calendar-times");
 
             // Fist "time" is empty
@@ -646,7 +652,8 @@ public class WeekGrid extends SimplePanel {
             createTimeBar(format24h);
         }
 
-        private void clear() {
+        // Haulmont API
+        protected void clear() {
             while (getElement().getChildCount() > 0) {
                 getElement().removeChild(getElement().getChild(0));
             }
@@ -669,7 +676,8 @@ public class WeekGrid extends SimplePanel {
             }
         }
 
-        private void updateChildHeights() {
+        // Haulmont API
+        protected void updateChildHeights() {
             int childCount = getElement().getChildCount();
 
             if (height != -1) {
