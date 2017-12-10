@@ -53,31 +53,53 @@ public class DateCellDayEvent extends FocusableHTML
         implements MouseDownHandler, MouseUpHandler, MouseMoveHandler,
         KeyDownHandler, ContextMenuHandler, HasTooltipKey {
 
-    private final DateCell dateCell;
-    private Element caption = null;
-    private final Element eventContent;
+    //Haulmont API
+    protected final DateCell dateCell;
+    //Haulmont API
+    protected Element caption = null;
+    //Haulmont API
+    protected final Element eventContent;
     //Haulmont API
     protected CalendarEvent calendarEvent = null;
-    private HandlerRegistration moveRegistration;
-    private int startY = -1;
-    private int startX = -1;
-    private String moveWidth;
+    //Haulmont API
+    protected HandlerRegistration moveRegistration;
+    //Haulmont API
+    protected int startY = -1;
+    //Haulmont API
+    protected int startX = -1;
+    //Haulmont API
+    protected String moveWidth;
     public static final int HALF_HOUR_IN_MILLI_SECONDS = 1800 * 1000;
-    private Date startDatetimeFrom;
-    private Date startDatetimeTo;
-    private boolean mouseMoveStarted;
-    private int top;
-    private int startYrelative;
-    private int startXrelative;
-    private boolean disabled;
-    private final WeekGrid weekGrid;
-    private Element topResizeBar;
-    private Element bottomResizeBar;
-    private Element clickTarget;
-    private final Integer eventIndex;
-    private int slotHeight;
-    private final List<HandlerRegistration> handlers;
-    private boolean mouseMoveCanceled;
+    //Haulmont API
+    protected Date startDatetimeFrom;
+    //Haulmont API
+    protected Date startDatetimeTo;
+    //Haulmont API
+    protected boolean mouseMoveStarted;
+    //Haulmont API
+    protected int top;
+    //Haulmont API
+    protected int startYrelative;
+    //Haulmont API
+    protected int startXrelative;
+    //Haulmont API
+    protected boolean disabled;
+    //Haulmont API
+    protected final WeekGrid weekGrid;
+    //Haulmont API
+    protected Element topResizeBar;
+    //Haulmont API
+    protected Element bottomResizeBar;
+    //Haulmont API
+    protected Element clickTarget;
+    //Haulmont API
+    protected final Integer eventIndex;
+    //Haulmont API
+    protected int slotHeight;
+    //Haulmont API
+    protected final List<HandlerRegistration> handlers;
+    //Haulmont API
+    protected boolean mouseMoveCanceled;
 
     public DateCellDayEvent(DateCell dateCell, WeekGrid parent,
             CalendarEvent event) {
@@ -183,7 +205,8 @@ public class DateCellDayEvent extends FocusableHTML
      * @param bigMode
      *            If false, event is so small that caption must be in time-row
      */
-    private void updateCaptions(boolean bigMode) {
+    //Haulmont API
+    protected void updateCaptions(boolean bigMode) {
         //Haulmont API
         String innerHtml = getInnerHTML(bigMode);
         caption.setInnerHTML(innerHtml);
@@ -477,7 +500,8 @@ public class DateCellDayEvent extends FocusableHTML
         }
     }
 
-    private void cancelMouseMove() {
+    //Haulmont API
+    protected void cancelMouseMove() {
         mouseMoveCanceled = true;
 
         // reset and remove everything related to the event handling
@@ -524,7 +548,8 @@ public class DateCellDayEvent extends FocusableHTML
 
     // date methods are not deprecated in GWT
     @SuppressWarnings("deprecation")
-    private long calculateStartFromMinute(long startFromMinutes, Date from,
+    //Haulmont API
+    protected long calculateStartFromMinute(long startFromMinutes, Date from,
             Date to, int dayOffset) {
         boolean eventStartAtDifferentDay = from.getDate() != to.getDate();
         if (eventStartAtDifferentDay) {
@@ -540,7 +565,8 @@ public class DateCellDayEvent extends FocusableHTML
      * @param dateOffset
      * @return the amount of pixels the given date is from the left side
      */
-    private int calculateDateCellOffsetPx(int dateOffset) {
+    //Haulmont API
+    protected int calculateDateCellOffsetPx(int dateOffset) {
         int dateCellOffset = 0;
         int[] dateWidths = weekGrid.getDateCellWidths();
 
@@ -562,30 +588,35 @@ public class DateCellDayEvent extends FocusableHTML
      * @param end
      * @return
      */
-    private boolean isTimeRangeTooSmall(long start, long end) {
+    //Haulmont API
+    protected boolean isTimeRangeTooSmall(long start, long end) {
         return (end - start) >= getMinTimeRange();
     }
 
     /**
      * @return the minimum amount of ms that an event must last when resized
      */
-    private long getMinTimeRange() {
+    //Haulmont API
+    protected long getMinTimeRange() {
         return DateConstants.MINUTEINMILLIS * 30;
     }
 
-    private Date getTargetDateByCurrentPosition(int left) {
+    //Haulmont API
+    protected Date getTargetDateByCurrentPosition(int left) {
         DateCell newParent = (DateCell) weekGrid.content
                 .getWidget((left / getDateCellWidth()) + 1);
         Date targetDate = newParent.getDate();
         return targetDate;
     }
 
-    private int getDateCellWidth() {
+    //Haulmont API
+    protected int getDateCellWidth() {
         return weekGrid.getDateCellWidth();
     }
 
     /* Returns total width of all date cells. */
-    private int getDatesWidth() {
+    //Haulmont API
+    protected int getDatesWidth() {
         if (weekGrid.width == -1) {
             // Undefined width. Needs to be calculated by the known cell
             // widths.
@@ -599,13 +630,15 @@ public class DateCellDayEvent extends FocusableHTML
     /**
      * @return true if the current mouse movement is resizing
      */
-    private boolean clickTargetsResize() {
+    //Haulmont API
+    protected boolean clickTargetsResize() {
         return weekGrid.getCalendar().isEventResizeAllowed()
                 && (clickTarget == topResizeBar
                         || clickTarget == bottomResizeBar);
     }
 
-    private void addGlobalResizeStyle() {
+    //Haulmont API
+    protected void addGlobalResizeStyle() {
         if (clickTarget == topResizeBar) {
             weekGrid.getCalendar().addStyleDependentName("nresize");
         } else if (clickTarget == bottomResizeBar) {
@@ -613,7 +646,8 @@ public class DateCellDayEvent extends FocusableHTML
         }
     }
 
-    private void removeGlobalResizeStyle() {
+    //Haulmont API
+    protected void removeGlobalResizeStyle() {
         weekGrid.getCalendar().removeStyleDependentName("nresize");
         weekGrid.getCalendar().removeStyleDependentName("sresize");
     }
