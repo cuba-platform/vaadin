@@ -2425,7 +2425,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
 
             Element targetElement = Element.as(target);
-            if (grid.isElementInChildWidget(targetElement)) {
+            if (grid.isElementInChildWidget(targetElement)
+                    && !grid.isWidgetAllowsClickHandling(targetElement)) {
                 // Target is some widget inside of Grid
                 return;
             }
@@ -6169,6 +6170,16 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 new RendererEventHandler(),
                 // Moving cell focus by keyboard or mouse
                 new CellFocusEventHandler()));
+    }
+
+    // Haulmont API
+    protected boolean isWidgetAllowsClickHandling(Element targetElement) {
+        return false;
+    }
+
+    // Haulmont API
+    protected boolean isEventHandlerShouldHandleEvent(Element targetElement) {
+        return false;
     }
 
     @Override
