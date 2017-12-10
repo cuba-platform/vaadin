@@ -853,6 +853,11 @@ public class VScrollTable extends FlowPanel
         }
     };
 
+    // Haulmont API
+    protected boolean hideColumnControlAfterClick = true;
+
+    protected static int visibleColumnActionIndex = 0;
+
     public VScrollTable() {
         setMultiSelectMode(MULTISELECT_MODE_DEFAULT);
 
@@ -4071,12 +4076,15 @@ public class VScrollTable extends FlowPanel
             private boolean collapsed;
             private boolean noncollapsible = false;
             private VScrollTableRow currentlyFocusedRow;
+            private int columnActionId;
 
             public VisibleColumnAction(String colKey) {
                 super(VScrollTable.TableHead.this);
                 this.colKey = colKey;
                 caption = tHead.getHeaderCell(colKey).getCaption();
                 currentlyFocusedRow = focusedRow;
+
+                columnActionId = visibleColumnActionIndex++;
             }
 
             @Override
@@ -4084,14 +4092,24 @@ public class VScrollTable extends FlowPanel
                 if (noncollapsible) {
                     return;
                 }
-                client.getContextMenu().hide();
+                // Haulmont API
+                if (hideColumnControlAfterClick)
+                    client.getContextMenu().hide();
                 // toggle selected column
+                String className;
                 if (collapsedColumns.contains(colKey)) {
                     collapsedColumns.remove(colKey);
+                    className = "v-on";
                 } else {
                     tHead.removeCell(colKey);
                     collapsedColumns.add(colKey);
                     triggerLazyColumnAdjustment(true);
+                    className = "v-off";
+                }
+
+                if (!hideColumnControlAfterClick) {
+                    Element actionSpan = Document.get().getElementById("tableVisibleColumnAction" + columnActionId);
+                    actionSpan.setClassName(className);
                 }
 
                 // update variable to server
