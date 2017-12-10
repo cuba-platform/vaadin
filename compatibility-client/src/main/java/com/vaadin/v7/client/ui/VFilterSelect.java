@@ -2635,8 +2635,10 @@ public class VFilterSelect extends Composite
 
     /*
      * Anything that should be set after the client updates the server.
+     *
+     * Haulmont API dependency
      */
-    private void afterUpdateClientVariables() {
+    protected void afterUpdateClientVariables() {
         // We need this here to be consistent with the all the calls.
         // Then set your specific selection type only after
         // client.updateVariable() method call.
