@@ -681,7 +681,8 @@ public class VScrollTable extends FlowPanel
     /** For internal use only. May be removed or replaced in the future. */
     public int totalRows;
 
-    private Set<String> collapsedColumns;
+    // Haulmont API dependency
+    protected Set<String> collapsedColumns;
 
     /** For internal use only. May be removed or replaced in the future. */
     public final RowRequestHandler rowRequestHandler;
@@ -4101,6 +4102,12 @@ public class VScrollTable extends FlowPanel
                 if (noncollapsible) {
                     return;
                 }
+
+                if (!collapsedColumns.contains(colKey)
+                        && !isColumnCollapsingEnabled()) {
+                    return;
+                }
+
                 // Haulmont API
                 if (hideColumnControlAfterClick)
                     client.getContextMenu().hide();
@@ -4116,6 +4123,7 @@ public class VScrollTable extends FlowPanel
                     className = "v-off";
                 }
 
+                // Haulmont API
                 if (!hideColumnControlAfterClick) {
                     Element actionSpan = Document.get().getElementById("tableVisibleColumnAction" + columnActionId);
                     actionSpan.setClassName(className);
@@ -4252,6 +4260,11 @@ public class VScrollTable extends FlowPanel
             sendColumnWidthUpdates(columns);
             forceRealignColumnHeaders();
         }
+    }
+
+    // Haulmont API
+    protected boolean isColumnCollapsingEnabled() {
+        return true;
     }
 
     /**
