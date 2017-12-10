@@ -109,6 +109,9 @@ public class TreeConnector extends AbstractLegacyComponentConnector
                 getWidget().updateDropHandler(childUidl);
                 continue;
             }
+            if (!isNodeUidl(childUidl)) {
+                continue;
+            }
             childTree = createNode(childUidl);
             getConnection().getVTooltip().connectHandlersToWidget(childTree);
             updateNodeFromUIDL(childTree, childUidl, 1);
@@ -185,8 +188,19 @@ public class TreeConnector extends AbstractLegacyComponentConnector
 
     }
 
+    // Haulmont API dependency
     protected TreeNode createNode(UIDL childUidl) {
         return getWidget().new TreeNode();
+    }
+
+    // Haulmont API
+    protected boolean isNodeUidl(UIDL childUidl) {
+        return true;
+    }
+
+    //Haulmont API
+    protected boolean isPopupSelection(UIDL uidl){
+        return false;
     }
 
     @Override
@@ -316,6 +330,9 @@ public class TreeConnector extends AbstractLegacyComponentConnector
             // but current node's actions
             if ("actions".equals(childUidl.getTag())) {
                 updateActionMap(childUidl);
+                continue;
+            }
+            if (!isNodeUidl(childUidl)) {
                 continue;
             }
             final TreeNode childTree = createNode(childUidl);
