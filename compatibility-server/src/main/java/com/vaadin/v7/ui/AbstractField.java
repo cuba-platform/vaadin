@@ -1644,15 +1644,16 @@ public abstract class AbstractField<T> extends AbstractLegacyComponent
                     setCurrentBufferedSourceException(null);
                 }
             } catch (final Throwable e) {
-                // FIXME: What should really be done here if conversion fails?
-
+                // Haulmont API
                 // Sets the buffering state
-                currentBufferedSourceException = new Buffered.SourceException(
-                        this, e);
+                SourceException sourceException = new SourceException(this, e);
+                if (showBufferedSourceException) {
+                    currentBufferedSourceException = sourceException;
+                }
                 markAsDirty();
 
                 // Throws the source exception
-                throw currentBufferedSourceException;
+                throw sourceException;
             }
 
             final boolean wasModified = isModified();
