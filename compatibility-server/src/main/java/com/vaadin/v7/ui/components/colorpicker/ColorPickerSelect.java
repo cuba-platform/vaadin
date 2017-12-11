@@ -46,6 +46,7 @@ public class ColorPickerSelect extends CustomComponent
      *
      * Haulmont API dependency
      */
+    @Deprecated
     protected enum ColorRangePropertyId {
         ALL("All colors"), RED("Red colors"), GREEN("Green colors"), BLUE(
                 "Blue colors");

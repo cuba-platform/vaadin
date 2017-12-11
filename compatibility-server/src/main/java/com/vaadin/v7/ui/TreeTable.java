@@ -73,6 +73,7 @@ import com.vaadin.v7.ui.Tree.ExpandListener;
 public class TreeTable extends Table implements Hierarchical {
 
     // Haulmont API dependency
+    @Deprecated
     public interface ContainerStrategy extends Serializable {
         public int size();
 
@@ -131,6 +132,7 @@ public class TreeTable extends Table implements Hierarchical {
      * open-collapsed logic diverted to container, otherwise use default
      * implementations.
      */
+    @Deprecated
     public class CollapsibleStrategy extends AbstractStrategy {
 
         private Collapsible c() {
@@ -200,6 +202,7 @@ public class TreeTable extends Table implements Hierarchical {
      *
      * Haulmont API
      */
+    @Deprecated
     public class HierarchicalStrategy extends AbstractStrategy {
 
         private final HashSet<Object> openItems = new HashSet<Object>();

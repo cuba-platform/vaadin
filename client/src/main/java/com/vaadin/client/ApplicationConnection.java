@@ -62,6 +62,7 @@ import com.vaadin.client.ui.ui.UIConnector;
 import com.vaadin.shared.VaadinUriResolver;
 import com.vaadin.shared.Version;
 import com.vaadin.shared.communication.LegacyChangeVariablesInvocation;
+import com.vaadin.shared.communication.MethodInvocation;
 import com.vaadin.shared.util.SharedUtil;
 
 /**
