@@ -7228,9 +7228,11 @@ public class Grid extends AbstractComponent
      * When {@link #editItem(Object) editItem} is called, fields are
      * automatically created and bound to any unbound properties.
      *
+     * Haulmont API
+     *
      * @return a collection of all the fields bound to the item editor
      */
-    Collection<Field<?>> getEditorFields() {
+    protected Collection<Field<?>> getEditorFields() {
         Collection<Field<?>> fields = editorFieldGroup.getFields();
         assert allAttached(fields);
         return fields;

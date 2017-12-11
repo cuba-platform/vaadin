@@ -117,7 +117,8 @@ public abstract class AbstractColorPicker extends AbstractLegacyComponent
     protected PopupStyle popupStyle = PopupStyle.POPUP_NORMAL;
 
     /** The popup window. */
-    private ColorPickerPopup window;
+    // Haulmont API
+    protected ColorPickerPopup window;
 
     /** The color. */
     protected Color color;

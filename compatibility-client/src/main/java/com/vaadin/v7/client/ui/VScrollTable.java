@@ -678,9 +678,12 @@ public class VScrollTable extends FlowPanel
     /** For internal use only. May be removed or replaced in the future. */
     public VScrollTableBody scrollBody;
 
-    private int firstvisible = 0;
-    private boolean sortAscending;
-    private String sortColumn;
+    // Haulmont API
+    protected int firstvisible = 0;
+    // Haulmont API
+    protected boolean sortAscending;
+    // Haulmont API
+    protected String sortColumn;
     private String oldSortColumn;
     private boolean columnReordering;
 
@@ -7523,6 +7526,7 @@ public class VScrollTable extends FlowPanel
             containerHeight -= showColHeaders ? tHead.getOffsetHeight() : 0;
             containerHeight -= tFoot.getOffsetHeight();
             containerHeight -= getContentAreaBorderHeight();
+            containerHeight -= getAdditionalRowsHeight();
             if (containerHeight < 0) {
                 containerHeight = 0;
             }
@@ -7536,7 +7540,8 @@ public class VScrollTable extends FlowPanel
     }
 
     private int contentAreaBorderHeight = -1;
-    private int scrollLeft;
+    // Haulmont API
+    protected int scrollLeft;
     private int scrollTop;
 
     /** For internal use only. May be removed or replaced in the future. */
@@ -7549,6 +7554,11 @@ public class VScrollTable extends FlowPanel
 
     /** For internal use only. May be removed or replaced in the future. */
     public CollapseMenuContent collapsibleMenuContent;
+
+    // Haulmont API
+    public int getAdditionalRowsHeight() {
+        return 0;
+    }
 
     /**
      * @return border top + border bottom of the scrollable area of table

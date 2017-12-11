@@ -4007,7 +4007,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * sidebar.
      */
     // Haulmont API dependency
-    protected final class ColumnHider {
+    protected class ColumnHider {
 
         /** Map from columns to their hiding toggles, component might change */
         private Map<Column<?, T>, MenuItem> columnToHidingToggleMap = new HashMap<Column<?, T>, MenuItem>();
@@ -4208,7 +4208,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     private boolean columnReorderingAllowed;
 
-    private ColumnHider columnHider = new ColumnHider();
+    // Haulmont API
+    protected ColumnHider columnHider = createColumnHider();
+
+    // Haulmont API
+    protected ColumnHider createColumnHider() {
+        return new ColumnHider();
+    }
 
     private DragAndDropHandler dndHandler = new DragAndDropHandler();
 

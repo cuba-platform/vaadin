@@ -1506,8 +1506,9 @@ public class Table extends AbstractSelect implements Action.Container,
         return currentPageFirstItemIndex;
     }
 
-    void setCurrentPageFirstItemIndex(int newIndex,
-            boolean needsPageBufferReset) {
+    // Haulmont API dependency
+    protected void setCurrentPageFirstItemIndex(int newIndex,
+                                                boolean needsPageBufferReset) {
 
         if (newIndex < 0) {
             newIndex = 0;
@@ -2768,7 +2769,7 @@ public class Table extends AbstractSelect implements Action.Container,
             super.setContainerDataSource(newDataSource);
         } else {
             super.setContainerDataSource(
-                    new ContainerOrderedWrapper(newDataSource));
+                    createOrderedWrapper(newDataSource));
         }
 
         // Resets page position
@@ -2794,6 +2795,11 @@ public class Table extends AbstractSelect implements Action.Container,
         resetPageBuffer();
 
         enableContentRefreshing(true);
+    }
+
+    // Haulmont API
+    protected Container createOrderedWrapper(Container newDataSource) {
+        return new ContainerOrderedWrapper(newDataSource);
     }
 
     /**
@@ -3292,6 +3298,9 @@ public class Table extends AbstractSelect implements Action.Container,
         paintTableAttributes(target, rows, total);
 
         paintVisibleColumnOrder(target);
+
+        // Haulmont API
+        paintAdditionalData(target);
 
         // Rows
         if (isPartialRowUpdate() && painted && !target.isFullRepaint()) {
@@ -3891,8 +3900,7 @@ public class Table extends AbstractSelect implements Action.Container,
                 .hasNext(); currentColumn++) {
             final Object columnId = it.next();
             // Haulmont API dependency
-            if (columnId == null || isColumnCollapsed(columnId)
-                    || !isCellPaintingNeeded(itemId, columnId)) {
+            if (columnId == null || isColumnCollapsed(columnId) || !isCellPaintingNeeded(itemId, columnId)) {
                 continue;
             }
             /*
@@ -3909,7 +3917,7 @@ public class Table extends AbstractSelect implements Action.Container,
                 }
             }
 
-            if ((iscomponent[currentColumn] || iseditable
+            if ((iscomponent[currentColumn] || isColumnEditable(columnId, editable)
                     || cells[CELL_GENERATED_ROW][indexInRowbuffer] != null)
                     && Component.class.isInstance(cells[CELL_FIRSTCOL
                             + currentColumn][indexInRowbuffer])) {
@@ -6573,8 +6581,13 @@ public class Table extends AbstractSelect implements Action.Container,
     }
 
     // Haulmont API
-    protected Set<Component> visibleComponents() {
+    protected Set<Component> _visibleComponents() {
         return visibleComponents;
+    }
+
+    // Haulmont API
+    protected Map<Field<?>, Property<?>> _associatedProperties() {
+        return associatedProperties;
     }
 
     // Haulmont API

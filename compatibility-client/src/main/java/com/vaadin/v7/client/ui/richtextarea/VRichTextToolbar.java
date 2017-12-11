@@ -294,29 +294,51 @@ public class VRichTextToolbar extends Composite {
     private final FlowPanel outer = new FlowPanel();
     private final FlowPanel topPanel = new FlowPanel();
     private final FlowPanel bottomPanel = new FlowPanel();
-    private ToggleButton bold;
-    private ToggleButton italic;
-    private ToggleButton underline;
-    private ToggleButton subscript;
-    private ToggleButton superscript;
-    private ToggleButton strikethrough;
-    private PushButton indent;
-    private PushButton outdent;
-    private PushButton justifyLeft;
-    private PushButton justifyCenter;
-    private PushButton justifyRight;
-    private PushButton hr;
-    private PushButton ol;
-    private PushButton ul;
-    private PushButton insertImage;
-    private PushButton createLink;
-    private PushButton removeLink;
-    private PushButton removeFormat;
+    // Haulmont API dependency
+    protected ToggleButton bold;
+    // Haulmont API dependency
+    protected ToggleButton italic;
+    // Haulmont API dependency
+    protected ToggleButton underline;
+    // Haulmont API dependency
+    protected ToggleButton subscript;
+    // Haulmont API dependency
+    protected ToggleButton superscript;
+    // Haulmont API dependency
+    protected ToggleButton strikethrough;
+    // Haulmont API dependency
+    protected PushButton indent;
+    // Haulmont API dependency
+    protected PushButton outdent;
+    // Haulmont API dependency
+    protected PushButton justifyLeft;
+    // Haulmont API dependency
+    protected PushButton justifyCenter;
+    // Haulmont API dependency
+    protected PushButton justifyRight;
+    // Haulmont API dependency
+    protected PushButton hr;
+    // Haulmont API dependency
+    protected PushButton ol;
+    // Haulmont API dependency
+    protected PushButton ul;
+    // Haulmont API dependency
+    protected PushButton insertImage;
+    // Haulmont API dependency
+    protected PushButton createLink;
+    // Haulmont API dependency
+    protected PushButton removeLink;
+    // Haulmont API dependency
+    protected PushButton removeFormat;
 
-    private ListBox backColors;
-    private ListBox foreColors;
-    private ListBox fonts;
-    private ListBox fontSizes;
+    // Haulmont API dependency
+    protected ListBox backColors;
+    // Haulmont API dependency
+    protected ListBox foreColors;
+    // Haulmont API dependency
+    protected ListBox fonts;
+    // Haulmont API dependency
+    protected ListBox fontSizes;
 
     /**
      * Creates a new toolbar that drives the given rich text area.
