@@ -644,7 +644,7 @@
                 <module>compatibility-shared</module>
                 <module>compatibility-themes</module>
                 <!--<module>testbench-api</module>-->
-                <module>bom</module>
+                <!--<module>bom</module>-->
             </modules>
         </profile>
         <profile>
@@ -823,7 +823,7 @@
                 <!--<module>liferay-integration</module>-->
                 <!--<module>osgi-integration</module>-->
                 <!--<module>testbench-api</module>-->
-                <module>bom</module>
+                <!--<module>bom</module>-->
             </modules>
 
             <build>
