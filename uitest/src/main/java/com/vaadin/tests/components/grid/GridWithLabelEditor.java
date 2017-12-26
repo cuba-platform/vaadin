@@ -154,6 +154,14 @@ public class GridWithLabelEditor extends AbstractTestUI {
         @Override
         public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
         }
+
+        @Override
+        public void addContextHelpIconClickListener(ContextHelpIconClickListener listener) {
+        }
+
+        @Override
+        public void removeContextHelpIconClickListener(ContextHelpIconClickListener listener) {
+        }
     }
 
     @Override
