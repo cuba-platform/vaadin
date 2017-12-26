@@ -16,13 +16,19 @@
 package com.vaadin.client.ui;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
+import com.vaadin.client.MouseEventDetailsBuilder;
 import com.vaadin.client.StyleConstants;
 import com.vaadin.client.TooltipInfo;
 import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.AbstractFieldState;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
 
 public abstract class AbstractFieldConnector
-        extends AbstractComponentConnector {
+        extends AbstractComponentConnector
+        implements HasContextHelpConnector {
 
     @Override
     public AbstractFieldState getState() {
@@ -50,8 +56,7 @@ public abstract class AbstractFieldConnector
             info.setErrorMessage(null);
         }
         // Haulmont API
-        if (getState().contextHelpText != null
-                && !getState().contextHelpText.isEmpty()) {
+        if (isContextHelpTooltipEnabled()) {
             info.setContextHelp(getState().contextHelpText);
             info.setContextHelpHtmlEnabled(getState().contextHelpTextHtmlEnabled);
         }
@@ -63,12 +68,22 @@ public abstract class AbstractFieldConnector
     public boolean hasTooltip() {
         if (isEnabled()) {
             return super.hasTooltip()
-                    || getState().contextHelpText != null && !getState().contextHelpText.isEmpty();
+                    // Haulmont API
+                    || isContextHelpTooltipEnabled();
         } else {
             AbstractComponentState state = getState();
             return state.description != null && !state.description.equals("")
                     || isShowErrorForDisabledState() && state.errorMessage != null && !state.errorMessage.equals("");
         }
+    }
+
+    // Haulmont API
+    protected boolean isContextHelpTooltipEnabled() {
+        boolean hasListeners = getState().registeredEventListeners != null
+                && getState().registeredEventListeners.contains(AbstractFieldState.CONTEXT_HELP_ICON_CLICK_EVENT);
+
+        return !hasListeners && getState().contextHelpText != null
+                && !getState().contextHelpText.isEmpty();
     }
 
     /**
@@ -95,5 +110,20 @@ public abstract class AbstractFieldConnector
                 StyleConstants.REQUIRED_EXT, isRequired());
 
         getWidget().setStyleName(StyleConstants.REQUIRED, isRequired());
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(NativeEvent event) {
+        MouseEventDetails details = MouseEventDetailsBuilder
+                .buildMouseEventDetails(event, getWidget().getElement());
+
+        getRpcProxy(HasContextHelpServerRpc.class).iconClick(details);
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(MouseEvent event) {
+        contextHelpIconClick(event.getNativeEvent());
     }
 }

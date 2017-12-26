@@ -25,6 +25,9 @@ import com.vaadin.shared.ui.TabIndexState;
  *
  */
 public class AbstractFieldState extends TabIndexState {
+    // Haulmont API
+    public static final String CONTEXT_HELP_ICON_CLICK_EVENT = "chic";
+
     public boolean propertyReadOnly = false;
     public boolean hideErrors = false;
     public boolean required = false;

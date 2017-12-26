@@ -16,20 +16,23 @@
 
 package com.vaadin.ui;
 
-import java.io.Serializable;
-import java.util.Locale;
-
-import org.jsoup.nodes.Element;
-
 import com.vaadin.event.ConnectorEvent;
 import com.vaadin.event.ConnectorEventListener;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.event.MouseEvents;
 import com.vaadin.server.ClientConnector;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.Resource;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.VariableOwner;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.util.ReflectTools;
+import org.jsoup.nodes.Element;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Locale;
 
 /**
  * {@code Component} is the top-level interface that is and must be implemented
@@ -1175,16 +1178,84 @@ public interface Component extends ClientConnector, Sizeable, Serializable {
 
     /**
      * A sub-interface implemented by components that can provide a context help.
+     * <p>
+     * Haulmont API.
      */
-    interface HasContextHelp extends Serializable {
-        // todo: Java Doc
+    interface HasContextHelp extends Component {
+        /**
+         * @return context help text
+         */
         String getContextHelpText();
-        // todo: Java Doc
-        void setContextHelpText(String contextHelpText);
-        // todo: Java Doc
-        boolean isContextHelpTextHtmlEnabled();
-        // todo: Java Doc
-        void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled);
-    }
 
+        /**
+         * Sets context help text.
+         *
+         * @param contextHelpText context help text to be set
+         */
+        void setContextHelpText(String contextHelpText);
+
+        /**
+         * @return true if field accepts context help text in HTML format, false otherwise
+         */
+        boolean isContextHelpTextHtmlEnabled();
+
+        /**
+         * Defines if context help text can be presented as HTML.
+         *
+         * @param contextHelpTextHtmlEnabled true if field accepts context
+         *                                   help text in HTML format, false otherwise
+         */
+        void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled);
+
+        /**
+         * Registers a new context help icon click listener
+         *
+         * @param listener the listener to register
+         */
+        void addContextHelpIconClickListener(ContextHelpIconClickListener listener);
+
+        /**
+         * Removes a previously registered context help icon click listener
+         *
+         * @param listener the listener to remove
+         */
+        void removeContextHelpIconClickListener(ContextHelpIconClickListener listener);
+
+        /**
+         * Listener for context help icon click events.
+         */
+        interface ContextHelpIconClickListener extends Serializable {
+            Method CONTEXT_HELP_ICON_CLICK_METHOD = ReflectTools
+                    .findMethod(ContextHelpIconClickListener.class,
+                            "iconClick", ContextHelpIconClickEvent.class);
+
+            /**
+             * Called when the context help icon click happens.
+             *
+             * @param event en event providing more information
+             */
+            void iconClick(ContextHelpIconClickEvent event);
+        }
+
+        /**
+         * Describes context help icon click event.
+         */
+        class ContextHelpIconClickEvent extends MouseEvents.ClickEvent {
+
+            /**
+             * Constructor for a context help icon click event.
+             *
+             * @param component the Component from which this event originates
+             * @param details   the mouse details of the click
+             */
+            public ContextHelpIconClickEvent(HasContextHelp component, MouseEventDetails details) {
+                super(component, details);
+            }
+
+            @Override
+            public HasContextHelp getSource() {
+                return (HasContextHelp) super.getSource();
+            }
+        }
+    }
 }

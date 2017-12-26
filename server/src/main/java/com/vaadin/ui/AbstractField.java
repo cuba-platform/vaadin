@@ -32,6 +32,8 @@ import com.vaadin.server.AbstractErrorMessage;
 import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.shared.AbstractFieldState;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
@@ -40,7 +42,13 @@ import org.jsoup.nodes.Element;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 /**
@@ -155,12 +163,25 @@ public abstract class AbstractField<T> extends AbstractComponent
     // Haulmont API
     private boolean showBufferedSourceException = true;
 
+    // Haulmont API
+    protected HasContextHelpServerRpc rpc;
+
     /* Component basics */
 
     /*
      * Paints the field. Don't add a JavaDoc comment here, we use the default
      * documentation from the implemented interface.
      */
+
+    protected AbstractField() {
+        rpc = new HasContextHelpServerRpc() {
+            @Override
+            public void iconClick(MouseEventDetails mouseEventDetails) {
+                fireClick(mouseEventDetails);
+            }
+        };
+        registerRpc(rpc);
+    }
 
     /**
      * Returns true if the error indicator be hidden when painting the component
@@ -1897,11 +1918,13 @@ public abstract class AbstractField<T> extends AbstractComponent
         return Logger.getLogger(AbstractField.class.getName());
     }
 
+    // Haulmont API
     @Override
     public String getContextHelpText() {
         return getState(false).contextHelpText;
     }
 
+    // Haulmont API
     @Override
     public void setContextHelpText(String contextHelpText) {
         if (!equalValues(getState(false).contextHelpText, contextHelpText)) {
@@ -1909,15 +1932,37 @@ public abstract class AbstractField<T> extends AbstractComponent
         }
     }
 
+    // Haulmont API
     @Override
     public boolean isContextHelpTextHtmlEnabled() {
         return getState(false).contextHelpTextHtmlEnabled;
     }
 
+    // Haulmont API
     @Override
     public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
         if (!equalValues(getState(false).contextHelpTextHtmlEnabled, contextHelpTextHtmlEnabled)) {
             getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
         }
+    }
+
+    // Haulmont API
+    @Override
+    public void addContextHelpIconClickListener(ContextHelpIconClickListener listener) {
+        addListener(AbstractFieldState.CONTEXT_HELP_ICON_CLICK_EVENT,
+                ContextHelpIconClickEvent.class, listener,
+                ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);
+    }
+
+    // Haulmont API
+    @Override
+    public void removeContextHelpIconClickListener(ContextHelpIconClickListener listener) {
+        removeListener(AbstractFieldState.CONTEXT_HELP_ICON_CLICK_EVENT,
+                ContextHelpIconClickEvent.class, listener);
+    }
+
+    // Haulmont API
+    protected void fireClick(MouseEventDetails details) {
+        fireEvent(new ContextHelpIconClickEvent(this, details));
     }
 }
