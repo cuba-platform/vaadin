@@ -21,8 +21,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
 import com.google.gwt.event.dom.client.TouchMoveHandler;
@@ -60,10 +62,11 @@ import com.vaadin.shared.EventId;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.TabIndexState;
+import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
 import com.vaadin.shared.ui.ui.UIState;
 
 public abstract class AbstractComponentConnector extends AbstractConnector
-        implements HasErrorIndicator {
+        implements HasErrorIndicator, HasContextHelpConnector {
 
     private HandlerRegistration contextHandler = null;
 
@@ -784,8 +787,7 @@ public abstract class AbstractComponentConnector extends AbstractConnector
                 null, getState().errorLevel);
 
         // Haulmont API
-        if (getState().contextHelpText != null
-                && !getState().contextHelpText.isEmpty()) {
+        if (isContextHelpTooltipEnabled()) {
             info.setContextHelp(getState().contextHelpText);
             info.setContextHelpHtmlEnabled(getState().contextHelpTextHtmlEnabled);
         }
@@ -798,10 +800,21 @@ public abstract class AbstractComponentConnector extends AbstractConnector
         // Normally, there is a tooltip if description or errorMessage is set
         AbstractComponentState state = getState();
         if ((state.description != null && !state.description.isEmpty())
-                || (getState().contextHelpText != null && !getState().contextHelpText.isEmpty())) {
+                || (getState().contextHelpText != null && !getState().contextHelpText.isEmpty())
+                // Haulmont API
+                || isContextHelpTooltipEnabled()) {
             return true;
         }
         return state.errorMessage != null && !state.errorMessage.isEmpty();
+    }
+
+    // Haulmont API
+    protected boolean isContextHelpTooltipEnabled() {
+        boolean hasListeners = getState().registeredEventListeners != null
+                && getState().registeredEventListeners.contains(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT);
+
+        return !hasListeners && getState().contextHelpText != null
+                && !getState().contextHelpText.isEmpty();
     }
 
     /**
@@ -836,6 +849,21 @@ public abstract class AbstractComponentConnector extends AbstractConnector
     @Override
     public boolean isErrorIndicatorVisible() {
         return getState().errorMessage != null;
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(NativeEvent event) {
+        MouseEventDetails details = MouseEventDetailsBuilder
+                .buildMouseEventDetails(event, getWidget().getElement());
+
+        getRpcProxy(HasContextHelpServerRpc.class).iconClick(details);
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(MouseEvent event) {
+        contextHelpIconClick(event.getNativeEvent());
     }
 
     /**

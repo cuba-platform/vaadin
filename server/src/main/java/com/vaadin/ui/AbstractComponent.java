@@ -16,24 +16,6 @@
 
 package com.vaadin.ui;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
 import com.vaadin.data.HasValue;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.ConnectorActionManager;
@@ -62,10 +44,28 @@ import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ErrorLevel;
+import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.util.ReflectTools;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * An abstract class that defines default implementation for the
@@ -122,6 +122,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     protected static final String DESIGN_ATTR_PLAIN_TEXT = "plain-text";
 
+    // Haulmont API
+    protected HasContextHelpServerRpc rpc;
+
     /* Constructor */
 
     /**
@@ -129,6 +132,13 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     public AbstractComponent() {
         // ComponentSizeValidator.setCreationLocation(this);
+        rpc = new HasContextHelpServerRpc() {
+            @Override
+            public void iconClick(MouseEventDetails mouseEventDetails) {
+                fireClick(mouseEventDetails);
+            }
+        };
+        registerRpc(rpc);
     }
 
     /* Get/Set component properties */
@@ -1496,11 +1506,13 @@ public abstract class AbstractComponent extends AbstractClientConnector
                         + AbstractFieldState.class.getSimpleName());
     }
 
+    // Haulmont API
     @Override
     public String getContextHelpText() {
         return getState(false).contextHelpText;
     }
 
+    // Haulmont API
     @Override
     public void setContextHelpText(String contextHelpText) {
         if (!Objects.equals(getState(false).contextHelpText, contextHelpText)) {
@@ -1508,15 +1520,31 @@ public abstract class AbstractComponent extends AbstractClientConnector
         }
     }
 
+    // Haulmont API
     @Override
     public boolean isContextHelpTextHtmlEnabled() {
         return getState(false).contextHelpTextHtmlEnabled;
     }
 
+    // Haulmont API
     @Override
     public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
         if (!Objects.equals(getState(false).contextHelpTextHtmlEnabled, contextHelpTextHtmlEnabled)) {
             getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
         }
+    }
+
+    // Haulmont API
+    @Override
+    public Registration addContextHelpIconClickListener(ContextHelpIconClickListener listener) {
+        /*return addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
+                ContextHelpIconClickEvent.class, listener,
+                ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);*/
+        return null;
+    }
+
+    // Haulmont API
+    protected void fireClick(MouseEventDetails details) {
+        fireEvent(new ContextHelpIconClickEvent(this, details));
     }
 }

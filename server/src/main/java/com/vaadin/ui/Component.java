@@ -17,8 +17,12 @@
 package com.vaadin.ui;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Locale;
 
+import com.vaadin.event.MouseEvents;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.util.ReflectTools;
 import org.jsoup.nodes.Element;
 
 import com.vaadin.event.ConnectorEvent;
@@ -1142,16 +1146,79 @@ public interface Component extends ClientConnector, Sizeable {
 
     /**
      * A sub-interface implemented by components that can provide a context help.
+     * <p>
+     * Haulmont API.
      */
-    interface HasContextHelp extends Serializable {
-        // todo: Java Doc
+    interface HasContextHelp extends Component {
+        /**
+         * @return context help text
+         */
         String getContextHelpText();
-        // todo: Java Doc
+
+        /**
+         * Sets context help text.
+         *
+         * @param contextHelpText context help text to be set
+         */
         void setContextHelpText(String contextHelpText);
-        // todo: Java Doc
+
+        /**
+         * @return true if field accepts context help text in HTML format, false otherwise
+         */
         boolean isContextHelpTextHtmlEnabled();
-        // todo: Java Doc
+
+        /**
+         * Defines if context help text can be presented as HTML.
+         *
+         * @param contextHelpTextHtmlEnabled true if field accepts context
+         *                                   help text in HTML format, false otherwise
+         */
         void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled);
+
+        /**
+         * Registers a new context help icon click listener
+         *
+         * @param listener the listener to register
+         * @return a registration object for removing the listener
+         */
+        Registration addContextHelpIconClickListener(ContextHelpIconClickListener listener);
+
+        /**
+         * Listener for context help icon click events.
+         */
+        interface ContextHelpIconClickListener extends Serializable {
+            Method CONTEXT_HELP_ICON_CLICK_METHOD = ReflectTools
+                    .findMethod(ContextHelpIconClickListener.class,
+                            "iconClick", ContextHelpIconClickEvent.class);
+
+            /**
+             * Called when the context help icon click happens.
+             *
+             * @param event en event providing more information
+             */
+            void iconClick(ContextHelpIconClickEvent event);
+        }
+
+        /**
+         * Describes context help icon click event.
+         */
+        class ContextHelpIconClickEvent extends MouseEvents.ClickEvent {
+
+            /**
+             * Constructor for a context help icon click event.
+             *
+             * @param component the Component from which this event originates
+             * @param details   the mouse details of the click
+             */
+            public ContextHelpIconClickEvent(HasContextHelp component, MouseEventDetails details) {
+                super(component, details);
+            }
+
+            @Override
+            public HasContextHelp getSource() {
+                return (HasContextHelp) super.getSource();
+            }
+        }
     }
 
 }

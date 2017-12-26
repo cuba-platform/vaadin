@@ -31,6 +31,9 @@ import com.vaadin.shared.ui.ErrorLevel;
  * @since 7.0
  */
 public class AbstractComponentState extends SharedState {
+    // Haulmont API
+    public static final String CONTEXT_HELP_ICON_CLICK_EVENT = "chic";
+
     public String height = "";
     public String width = "";
     @NoLayout
