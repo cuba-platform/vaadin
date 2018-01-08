@@ -13,37 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.vaadin.shared.ui;
+package com.vaadin.client.widget.escalator.events;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Represents the error levels displayed on components.
+ * Event handler for a spacer visibility changed event.
+ *
  * @author Vaadin Ltd
- * @since 7.7.11
+ * @since 7.7.13
  */
-public enum ErrorLevel {
+public interface SpacerVisibilityChangedHandler extends EventHandler {
 
     /**
-     * Error level for informational messages.
+     * Called when a spacer visibility changed event is fired, when a spacer's
+     * visibility changes.
+     *
+     * @param event
+     *            the spacer visibility changed event
      */
-    INFO,
-
-    /**
-     * Error level for warning messages.
-     */
-    WARNING,
-
-    /**
-     * Error level for regular messages.
-     */
-    ERROR,
-
-    /**
-     * Error level for critical messages.
-     */
-    CRITICAL,
-
-    /**
-     * Error level for system errors and bugs.
-     */
-    SYSTEM
+    public void onSpacerVisibilityChanged(SpacerVisibilityChangedEvent event);
 }

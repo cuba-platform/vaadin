@@ -13,37 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.vaadin.shared.ui;
+package com.vaadin.client.ui.window;
+
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Represents the error levels displayed on components.
+ * Handler for {@link WindowOrderEvent}s.
+ *
+ * @since 7.7.12
+ *
  * @author Vaadin Ltd
- * @since 7.7.11
  */
-public enum ErrorLevel {
+public interface WindowOrderHandler extends EventHandler {
 
     /**
-     * Error level for informational messages.
+     * Called when the VWindow instances changed their order position.
+     *
+     * @param event
+     *            Contains windows whose position has changed
      */
-    INFO,
-
-    /**
-     * Error level for warning messages.
-     */
-    WARNING,
-
-    /**
-     * Error level for regular messages.
-     */
-    ERROR,
-
-    /**
-     * Error level for critical messages.
-     */
-    CRITICAL,
-
-    /**
-     * Error level for system errors and bugs.
-     */
-    SYSTEM
+    public void onWindowOrderChange(WindowOrderEvent event);
 }

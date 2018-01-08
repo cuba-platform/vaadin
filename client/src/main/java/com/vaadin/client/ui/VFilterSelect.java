@@ -16,6 +16,8 @@
 
 package com.vaadin.client.ui;
 
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
@@ -31,6 +33,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.i18n.client.HasDirection.Direction;
 import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
@@ -202,12 +205,12 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             return $entry(function(e) {
                 var deltaX = e.deltaX ? e.deltaX : -0.5*e.wheelDeltaX;
                 var deltaY = e.deltaY ? e.deltaY : -0.5*e.wheelDeltaY;
-
+        
                 // IE8 has only delta y
                 if (isNaN(deltaY)) {
                     deltaY = -0.5*e.wheelDelta;
                 }
-
+        
                 @com.vaadin.client.ui.VFilterSelect.JsniUtil::moveScrollFromEvent(*)(widget, deltaX, deltaY, e, e.deltaMode);
             });
         }-*/;
@@ -300,8 +303,10 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         private int popupOuterPadding = -1;
 
         private int topPosition;
+        private int leftPosition;
 
         private final MouseWheeler mouseWheeler = new MouseWheeler();
+        private boolean scrollPending = false;
 
         /**
          * Default constructor
@@ -389,12 +394,11 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                     getElement().setId("VAADIN_COMBOBOX_OPTIONLIST");
 
                     menu.setSuggestions(currentSuggestions);
-                    final int x = VFilterSelect.this.getAbsoluteLeft();
+                    leftPosition = getDesiredLeftPosition();
 
-                    topPosition = tb.getAbsoluteTop();
-                    topPosition += tb.getOffsetHeight();
+                    topPosition = getDesiredTopPosition();
 
-                    setPopupPosition(x, topPosition);
+                    setPopupPosition(leftPosition, topPosition);
 
                     int nullOffset = (isShowNullItem()
                             && "".equals(lastFilter) ? 1 : 0);
@@ -439,6 +443,22 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
                     }
                 }
             });
+        }
+
+        private native int toInt32(double val)
+        /*-{
+            return val | 0;
+        }-*/;
+
+        private int getDesiredTopPosition() {
+            return toInt32(WidgetUtil.getBoundingClientRect(tb.getElement())
+                    .getBottom()) + Window.getScrollTop();
+        }
+
+        private int getDesiredLeftPosition() {
+            return toInt32(WidgetUtil
+                    .getBoundingClientRect(VFilterSelect.this.getElement())
+                    .getLeft());
         }
 
         /**
@@ -639,6 +659,47 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
              * preventing the default behaviour of the browser. Fixes #4285.
              */
             handleMouseDownEvent(event);
+        }
+
+        @Override
+        protected void onPreviewNativeEvent(NativePreviewEvent event) {
+            // Check all events outside the combobox to see if they scroll the
+            // page. We cannot use e.g. Window.addScrollListener() because the
+            // scrolled element can be at any level on the page.
+
+            // Normally this is only called when the popup is showing, but make
+            // sure we don't accidentally process all events when not showing.
+            if (!scrollPending && isShowing() && !DOM.isOrHasChild(
+                    SuggestionPopup.this.getElement(),
+                    Element.as(event.getNativeEvent().getEventTarget()))) {
+                if (getDesiredLeftPosition() != leftPosition
+                        || getDesiredTopPosition() != topPosition) {
+                    updatePopupPositionOnScroll();
+                }
+            }
+
+            super.onPreviewNativeEvent(event);
+        }
+
+        /**
+         * Make the popup follow the position of the ComboBox when the page is
+         * scrolled.
+         */
+        private void updatePopupPositionOnScroll() {
+            if (!scrollPending) {
+                AnimationScheduler.get()
+                        .requestAnimationFrame(new AnimationCallback() {
+                            public void execute(double timestamp) {
+                                if (isShowing()) {
+                                    leftPosition = getDesiredLeftPosition();
+                                    topPosition = getDesiredTopPosition();
+                                    setPopupPosition(leftPosition, topPosition);
+                                }
+                                scrollPending = false;
+                            }
+                        });
+                scrollPending = true;
+            }
         }
 
         /**
@@ -1261,7 +1322,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         int getItemOffsetHeight() {
             List<MenuItem> items = getItems();
             return items != null && items.size() > 0
-                    ? items.get(0).getOffsetHeight() : 0;
+                    ? items.get(0).getOffsetHeight()
+                    : 0;
         }
 
         /*
@@ -1270,7 +1332,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
         int getItemOffsetWidth() {
             List<MenuItem> items = getItems();
             return items != null && items.size() > 0
-                    ? items.get(0).getOffsetWidth() : 0;
+                    ? items.get(0).getOffsetWidth()
+                    : 0;
         }
 
         /**
