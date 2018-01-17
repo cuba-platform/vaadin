@@ -98,10 +98,9 @@ public class PushRequestHandler
             getLogger().fine("Using pre-initialized Atmosphere for servlet "
                     + vaadinServletConfig.getServletName());
         }
-        pushHandler.setLongPollingSuspendTimeout(
-                atmosphere.getAtmosphereConfig().getInitParameter(
-                        com.vaadin.server.Constants.SERVLET_PARAMETER_PUSH_SUSPEND_TIMEOUT_LONGPOLLING,
-                        -1));
+
+        // Haulmont API
+        pushHandler.setLongPollingSuspendTimeout(getPushLongPollingSuspendTimeout());
         for (AtmosphereHandlerWrapper handlerWrapper : atmosphere
                 .getAtmosphereHandlers().values()) {
             AtmosphereHandler handler = handlerWrapper.atmosphereHandler;
@@ -112,6 +111,13 @@ public class PushRequestHandler
             }
 
         }
+    }
+
+    // Haulmont API
+    protected int getPushLongPollingSuspendTimeout() {
+        return atmosphere.getAtmosphereConfig().getInitParameter(
+                com.vaadin.server.Constants.SERVLET_PARAMETER_PUSH_SUSPEND_TIMEOUT_LONGPOLLING,
+                -1);
     }
 
     /**
