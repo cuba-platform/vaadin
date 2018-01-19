@@ -47,7 +47,8 @@ import com.vaadin.server.VaadinServlet;
  * @since 7.5.0
  * @author Vaadin Ltd
  */
-@WebListener
+//Haulmont API - disabled
+//@WebListener
 public class JSR356WebsocketInitializer implements ServletContextListener {
 
     private static boolean atmosphereAvailable = false;
