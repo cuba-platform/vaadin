@@ -447,7 +447,7 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                     && nativeEvent.getKeyCode() == KeyCodes.KEY_TAB
                     && nativeEvent.getShiftKey()) {
                 nativeEvent.preventDefault();
-                FocusUtil.focusOnLastFocusableElement(this.getElement());
+                FocusUtil.focusOnLastFocusableElement(getElement());
             }
             if (nativeEvent.getEventTarget().cast() == topTabStop
                     && nativeEvent.getKeyCode() == KeyCodes.KEY_BACKSPACE) {
@@ -464,7 +464,7 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
                     && nativeEvent.getKeyCode() == KeyCodes.KEY_TAB
                     && !nativeEvent.getShiftKey()) {
                 nativeEvent.preventDefault();
-                FocusUtil.focusOnFirstFocusableElement(this.getElement());
+                FocusUtil.focusOnFirstFocusableElement(getElement());
             }
             if (nativeEvent.getEventTarget().cast() == bottomTabStop
                     && nativeEvent.getKeyCode() == KeyCodes.KEY_BACKSPACE) {
@@ -709,12 +709,16 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
     public void setVaadinModality(boolean modality) {
         vaadinModality = modality;
         if (vaadinModality) {
+            getElement().setAttribute("aria-modal", "true");
+            Roles.getDialogRole().set(getElement());
             if (isAttached()) {
                 showModalityCurtain();
             }
             addTabBlockHandlers();
             deferOrdering();
         } else {
+            getElement().removeAttribute("aria-modal");
+            Roles.getDialogRole().remove(getElement());
             if (modalityCurtain != null) {
                 if (isAttached()) {
                     hideModalityCurtain();
