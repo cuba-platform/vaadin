@@ -286,4 +286,9 @@ public class PushRequestHandler
         // PushRequestHandler handle it
         return handleRequest(null, request, response);
     }
+
+    // Haulmont API
+    public PushHandler getPushHandler() {
+        return pushHandler;
+    }
 }
