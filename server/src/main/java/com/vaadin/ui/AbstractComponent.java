@@ -23,24 +23,8 @@ import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.ContextClickEvent.ContextClickListener;
 import com.vaadin.event.ContextClickEvent.ContextClickNotifier;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.ClientConnector;
-import com.vaadin.server.ComponentSizeValidator;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.Extension;
-import com.vaadin.server.Resource;
-import com.vaadin.server.Responsive;
-import com.vaadin.server.SizeWithUnit;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.UserError;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.AbstractComponentState;
-import com.vaadin.shared.AbstractFieldState;
-import com.vaadin.shared.ComponentConstants;
-import com.vaadin.shared.ContextClickRpc;
-import com.vaadin.shared.EventId;
-import com.vaadin.shared.MouseEventDetails;
-import com.vaadin.shared.Registration;
+import com.vaadin.server.*;
+import com.vaadin.shared.*;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ErrorLevel;
@@ -54,18 +38,8 @@ import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * An abstract class that defines default implementation for the
@@ -260,6 +234,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
         if (style == null || style.isEmpty()) {
             return;
         }
+        if (getState().styles != null && getState().styles.contains(style)) {
+            return;
+        }
         if (style.contains(" ")) {
             // Split space separated style names and add them one by one.
             StringTokenizer tokenizer = new StringTokenizer(style, " ");
@@ -273,9 +250,7 @@ public abstract class AbstractComponent extends AbstractClientConnector
             getState().styles = new ArrayList<>();
         }
         List<String> styles = getState().styles;
-        if (!styles.contains(style)) {
-            styles.add(style);
-        }
+        styles.add(style);
     }
 
     @Override
