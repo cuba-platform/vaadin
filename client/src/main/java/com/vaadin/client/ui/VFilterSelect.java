@@ -2466,7 +2466,8 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
 
         focused = false;
         if (!readonly) {
-            if (textInputEnabled && allowNewItem) {
+            // Haulmont API
+            if (isDoSelectedItemActionOnBlur()) {
                 suggestionPopup.menu.doSelectedItemAction();
             }
             if (selectedOptionKey == null) {
@@ -2486,6 +2487,11 @@ public class VFilterSelect extends Composite implements Field, KeyDownHandler,
             client.updateVariable(paintableId, EventId.BLUR, "", true);
             afterUpdateClientVariables();
         }
+    }
+
+    // Haulmont API
+    protected boolean isDoSelectedItemActionOnBlur() {
+        return textInputEnabled && allowNewItem;
     }
 
     /*
