@@ -2912,7 +2912,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     private RendererCellReference rendererCellReference = new RendererCellReference(
             (RowReference<Object>) rowReference);
 
-    public final class SelectionColumn extends Column<Boolean, T>
+    // Haulmont API
+    public class SelectionColumn extends Column<Boolean, T>
             implements GridEnabledHandler {
 
         private boolean initDone = false;
@@ -2921,7 +2922,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         private boolean userSelectionAllowed = true;
         private boolean enabled = true;
 
-        SelectionColumn(final Renderer<Boolean> selectColumnRenderer) {
+        // Haulmont API
+        public SelectionColumn(final Renderer<Boolean> selectColumnRenderer) {
             super(selectColumnRenderer);
 
             addEnabledHandler(this);
@@ -2953,44 +2955,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 selectAllCheckBox.setEnabled(enabled && userSelectionAllowed);
                 selectAllCheckBox.setStylePrimaryName(
                         getStylePrimaryName() + SELECT_ALL_CHECKBOX_CLASSNAME);
-                selectAllCheckBox.addValueChangeHandler(
-                        new ValueChangeHandler<Boolean>() {
-
-                            @Override
-                            public void onValueChange(
-                                    ValueChangeEvent<Boolean> event) {
-                                if (!isUserSelectionAllowed()) {
-                                    return;
-                                }
-                                if (event.getValue()) {
-                                    fireEvent(new SelectAllEvent<T>(model));
-                                    selected = true;
-                                } else {
-                                    model.deselectAll();
-                                    selected = false;
-                                }
-                            }
-                        });
+                // Haulmont API
+                selectAllCheckBox.addValueChangeHandler(createValueChangeHandler(model));
                 selectAllCheckBox.setValue(selected);
-
-                addHeaderClickHandler(new HeaderClickHandler() {
-                    @Override
-                    public void onClick(GridClickEvent event) {
-                        if (!userSelectionAllowed) {
-                            return;
-                        }
-
-                        CellReference<?> targetCell = event.getTargetCell();
-                        int defaultRowIndex = getHeader().getRows()
-                                .indexOf(getDefaultHeaderRow());
-
-                        if (targetCell.getColumnIndex() == 0 && targetCell
-                                .getRowIndex() == defaultRowIndex) {
-                            selectAllCheckBox.setValue(
-                                    !selectAllCheckBox.getValue(), true);
-                        }
-                    }
-                });
+                // Haulmont API
+                addHeaderClickHandler(createHeaderClickHandler());
 
                 // Select all with space when "select all" cell is active
                 addHeaderKeyUpHandler(new HeaderKeyUpHandler() {
@@ -3027,6 +2996,49 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
 
             selectionCell.setWidget(selectAllCheckBox);
+        }
+
+        // Haulmont API
+        protected HeaderClickHandler createHeaderClickHandler() {
+            return new HeaderClickHandler() {
+                @Override
+                public void onClick(GridClickEvent event) {
+                    if (!userSelectionAllowed) {
+                        return;
+                    }
+
+                    CellReference<?> targetCell = event.getTargetCell();
+                    int defaultRowIndex = getHeader().getRows()
+                            .indexOf(getDefaultHeaderRow());
+
+                    if (targetCell.getColumnIndex() == 0 && targetCell
+                            .getRowIndex() == defaultRowIndex) {
+                        selectAllCheckBox.setValue(
+                                !selectAllCheckBox.getValue(), true);
+                    }
+                }
+            };
+        }
+
+        // Haulmont API
+        protected ValueChangeHandler<Boolean> createValueChangeHandler(final Multi<T> model) {
+            return new ValueChangeHandler<Boolean>() {
+
+                @Override
+                public void onValueChange(
+                        ValueChangeEvent<Boolean> event) {
+                    if (!isUserSelectionAllowed()) {
+                        return;
+                    }
+                    if (event.getValue()) {
+                        fireEvent(new SelectAllEvent<T>(model));
+                        selected = true;
+                    } else {
+                        model.deselectAll();
+                        selected = false;
+                    }
+                }
+            };
         }
 
         @Override
@@ -7941,7 +7953,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         if (selectColumnRenderer != null) {
             cellFocusHandler.offsetRangeBy(1);
-            selectionColumn = new SelectionColumn(selectColumnRenderer);
+            // Haulmont API
+            selectionColumn = createSelectionColumn(selectColumnRenderer);
 
             addColumnSkipSelectionColumnCheck(selectionColumn, 0);
 
@@ -7953,6 +7966,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         updateFrozenColumns();
+    }
+
+    // Haulmont API
+    protected SelectionColumn createSelectionColumn(Renderer<Boolean> selectColumnRenderer) {
+        return new SelectionColumn(selectColumnRenderer);
     }
 
     /**
