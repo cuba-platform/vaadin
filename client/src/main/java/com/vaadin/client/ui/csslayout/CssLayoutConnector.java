@@ -58,7 +58,8 @@ public class CssLayoutConnector extends AbstractLayoutConnector {
         }
     };
 
-    private final FastStringMap<VCaption> childIdToCaption = FastStringMap
+    // Haulmont API
+    protected final FastStringMap<VCaption> childIdToCaption = FastStringMap
             .create();
 
     /*
