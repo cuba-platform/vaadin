@@ -542,7 +542,9 @@ public class VDragAndDropManager {
                 }
             } else {
                 currentDropHandler.dragLeave(currentDrag);
-                currentDrag.setCurrentGwtEvent(null);
+                if (currentDrag != null) {
+                    currentDrag.setCurrentGwtEvent(null);
+                }
             }
             currentDropHandler = null;
             serverCallback = null;
