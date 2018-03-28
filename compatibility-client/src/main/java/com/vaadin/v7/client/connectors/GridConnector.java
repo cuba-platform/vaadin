@@ -37,6 +37,7 @@ import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.Connect;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.v7.client.connectors.RpcDataSourceConnector.DetailsListener;
 import com.vaadin.v7.client.connectors.RpcDataSourceConnector.RpcDataSource;
 import com.vaadin.v7.client.widget.escalator.events.RowHeightChangedEvent;
@@ -1266,10 +1267,12 @@ public class GridConnector extends AbstractHasComponentsConnector
                     .getObject(GridState.JSONKEY_CELLDESCRIPTION);
 
             if (cellDescriptions != null && cellDescriptions.hasKey(c.id)) {
-                return new TooltipInfo(cellDescriptions.getString(c.id));
+                return createCellTooltipInfo(cellDescriptions.getString(c.id),
+                        getState().cellTooltipContentMode);
             } else if (row.hasKey(GridState.JSONKEY_ROWDESCRIPTION)) {
-                return new TooltipInfo(
-                        row.getString(GridState.JSONKEY_ROWDESCRIPTION));
+                return createCellTooltipInfo(
+                        row.getString(GridState.JSONKEY_ROWDESCRIPTION),
+                        getState().rowTooltipContentMode);
             } else {
                 return null;
             }
@@ -1278,6 +1281,12 @@ public class GridConnector extends AbstractHasComponentsConnector
         return super.getTooltipInfo(element);
     }
 
+    private static TooltipInfo createCellTooltipInfo(String text,
+            ContentMode contentMode) {
+        TooltipInfo info = new TooltipInfo(text);
+        info.setContentMode(contentMode);
+        return info;
+    }
     @Override
     protected void sendContextClickEvent(MouseEventDetails details,
             EventTarget eventTarget) {

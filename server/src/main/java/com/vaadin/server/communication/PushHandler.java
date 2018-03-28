@@ -19,6 +19,7 @@ package com.vaadin.server.communication;
 import com.vaadin.server.*;
 import com.vaadin.server.LegacyCommunicationManager.InvalidUIDLSecurityKeyException;
 import com.vaadin.shared.ApplicationConstants;
+import com.vaadin.shared.JsonConstants;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.UI;
 import elemental.json.JsonException;
@@ -451,8 +452,7 @@ public class PushHandler {
 
             // force correct encoding
             resource.getResponse().setCharacterEncoding("UTF-8");
-            resource.getResponse().setContentType("text/html; charset=UTF-8");
-
+            resource.getResponse().setContentType(JsonConstants.JSON_CONTENT_TYPE);
             resource.getResponse().getWriter().write(notificationJson);
             resource.resume();
         } catch (Exception e) {

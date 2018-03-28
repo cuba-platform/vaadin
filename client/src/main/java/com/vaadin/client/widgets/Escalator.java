@@ -45,6 +45,7 @@ import com.vaadin.client.widget.escalator.RowContainer.BodyRowContainer;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.HorizontalScrollbarBundle;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.VerticalScrollbarBundle;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
+import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
 import com.vaadin.client.widget.grid.events.ScrollEvent;
 import com.vaadin.client.widget.grid.events.ScrollHandler;
 import com.vaadin.client.widgets.Escalator.JsniUtil.TouchHandlerBundle;
@@ -4926,11 +4927,15 @@ public class Escalator extends Widget
             public void show() {
                 getRootElement().getStyle().clearDisplay();
                 getDecoElement().getStyle().clearDisplay();
+                Escalator.this.fireEvent(
+                        new SpacerVisibilityChangedEvent(getRow(), true));
             }
 
             public void hide() {
                 getRootElement().getStyle().setDisplay(Display.NONE);
                 getDecoElement().getStyle().setDisplay(Display.NONE);
+                Escalator.this.fireEvent(
+                        new SpacerVisibilityChangedEvent(getRow(), false));
             }
 
             /**

@@ -15,23 +15,6 @@
  */
 package com.vaadin.client.widgets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
@@ -67,6 +50,8 @@ import com.vaadin.client.widget.escalator.*;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.Direction;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedHandler;
+import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
+import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedHandler;
 import com.vaadin.client.widget.grid.*;
 import com.vaadin.client.widget.grid.AutoScroller.AutoScrollerCallback;
 import com.vaadin.client.widget.grid.AutoScroller.ScrollAxis;
@@ -95,6 +80,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A data grid view that supports columns and lazy loading of data rows from a
@@ -8470,6 +8456,19 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     public HandlerRegistration addRowHeightChangedHandler(
             RowHeightChangedHandler handler) {
         return escalator.addHandler(handler, RowHeightChangedEvent.TYPE);
+    }
+
+    /**
+     * Adds a spacer visibility changed handler to the underlying escalator.
+     *
+     * @param handler
+     *         the handler to be called when a spacer's visibility changes
+     * @return the registration object with which the handler can be removed
+     * @since 8.3.2
+     */
+    public HandlerRegistration addSpacerVisibilityChangedHandler(
+            SpacerVisibilityChangedHandler handler) {
+        return escalator.addHandler(handler, SpacerVisibilityChangedEvent.TYPE);
     }
 
     /**
