@@ -283,13 +283,18 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
                 writer.write(getSecurityKeyUIDL(session));
             }
             writer.write(getPushIdUIDL(session));
-            new UidlWriter().write(uI, writer, false);
+            createUidlWriter().write(uI, writer, false);
             writer.write("}");
 
             String initialUIDL = writer.toString();
             getLogger().trace("Initial UIDL:" + initialUIDL);
             return initialUIDL;
         }
+    }
+
+    //Haulmont API
+    protected UidlWriter createUidlWriter() {
+        return new UidlWriter();
     }
 
     /**

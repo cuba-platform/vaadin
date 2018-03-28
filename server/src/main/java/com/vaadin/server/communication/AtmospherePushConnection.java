@@ -155,12 +155,17 @@ public class AtmospherePushConnection implements PushConnection {
         } else {
             try {
                 Writer writer = new StringWriter();
-                new UidlWriter().write(getUI(), writer, async);
+                createUidlWriter().write(getUI(), writer, async);
                 sendMessage("for(;;);[{" + writer + "}]");
             } catch (Exception e) {
                 throw new RuntimeException("Push failed", e);
             }
         }
+    }
+
+    //Haulmont API
+    protected UidlWriter createUidlWriter() {
+        return new UidlWriter();
     }
 
     /**
