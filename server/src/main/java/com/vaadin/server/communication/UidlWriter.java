@@ -292,6 +292,8 @@ public class UidlWriter implements Serializable {
             dependencies.addAll(Dependency.findDependencies(newConnectorTypes,
                     manager, new FilterContext(session)));
 
+            handleAdditionalDependencies(newConnectorTypes, manager, dependencies);
+
             // Include dependencies in output if there are any
             if (!dependencies.isEmpty()) {
                 writer.write(", \"dependencies\": "
@@ -312,6 +314,12 @@ public class UidlWriter implements Serializable {
             uiConnectorTracker.setWritingResponse(false);
             uiConnectorTracker.cleanConnectorMap(true);
         }
+    }
+
+    // Haulmont API
+    protected void handleAdditionalDependencies(List<Class<? extends ClientConnector>> newConnectorTypes,
+                                              LegacyCommunicationManager manager, List<Dependency> dependencies) {
+        // hook
     }
 
     private JsonArray toJsonArray(List<Dependency> list) {

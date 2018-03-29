@@ -53,6 +53,8 @@ import java.util.logging.Level;
 @Deprecated
 @SuppressWarnings("serial")
 public class LegacyCommunicationManager implements Serializable {
+    // Haulmont API
+    public static final String VAADIN_WEBJARS_PREFIX = "VAADIN/webjars";
 
     // TODO Refactor (#11410)
     private final Map<Integer, ClientCache> uiToClientCache = new HashMap<>();
@@ -212,6 +214,11 @@ public class LegacyCommunicationManager implements Serializable {
             }
         } else {
             publishedFileContexts.put(name, context);
+        }
+
+        // Haulmont API
+        if (name.startsWith(VAADIN_WEBJARS_PREFIX)) {
+            return name;
         }
 
         return ApplicationConstants.PUBLISHED_PROTOCOL_PREFIX + "/" + name;
