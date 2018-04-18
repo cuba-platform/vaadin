@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import com.vaadin.server.VaadinService;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
 import org.atmosphere.util.Version;
@@ -46,6 +47,11 @@ import com.vaadin.ui.UI;
  * @since 7.1
  */
 public class AtmospherePushConnection implements PushConnection {
+
+    // Haulmont API
+    public interface UidlWriterFactory {
+        UidlWriter createUidlWriter();
+    }
 
     public static String getAtmosphereVersion() {
         try {
@@ -165,12 +171,23 @@ public class AtmospherePushConnection implements PushConnection {
         } else {
             try {
                 Writer writer = new StringWriter();
-                new UidlWriter().write(getUI(), writer, async);
+                createUidlWriter(getUI()).write(getUI(), writer, async);
                 sendMessage("for(;;);[{" + writer.toString() + "}]");
             } catch (Exception e) {
                 throw new RuntimeException("Push failed", e);
             }
         }
+    }
+
+    // Haulmont API
+    protected UidlWriter createUidlWriter(UI ui) {
+        VaadinService service = ui.getSession().getService();
+        if (service instanceof UidlWriterFactory) {
+            UidlWriterFactory uidlWriterFactory = (UidlWriterFactory) service;
+            return uidlWriterFactory.createUidlWriter();
+        }
+
+        return new UidlWriter();
     }
 
     /**
