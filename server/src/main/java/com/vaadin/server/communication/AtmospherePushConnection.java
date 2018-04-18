@@ -16,6 +16,7 @@
 
 package com.vaadin.server.communication;
 
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.communication.PushConstants;
 import com.vaadin.ui.UI;
 import org.atmosphere.cpr.AtmosphereResource;
@@ -36,6 +37,11 @@ import java.util.concurrent.TimeoutException;
  * @since 7.1
  */
 public class AtmospherePushConnection implements PushConnection {
+
+    // Haulmont API
+    public interface UidlWriterFactory {
+        UidlWriter createUidlWriter();
+    }
 
     public static String getAtmosphereVersion() {
         try {
@@ -155,16 +161,22 @@ public class AtmospherePushConnection implements PushConnection {
         } else {
             try {
                 Writer writer = new StringWriter();
-                createUidlWriter().write(getUI(), writer, async);
-                sendMessage("for(;;);[{" + writer + "}]");
+                createUidlWriter(getUI()).write(getUI(), writer, async);
+                sendMessage("for(;;);[{" + writer.toString() + "}]");
             } catch (Exception e) {
                 throw new RuntimeException("Push failed", e);
             }
         }
     }
 
-    //Haulmont API
-    protected UidlWriter createUidlWriter() {
+    // Haulmont API
+    protected UidlWriter createUidlWriter(UI ui) {
+        VaadinService service = ui.getSession().getService();
+        if (service instanceof UidlWriterFactory) {
+            UidlWriterFactory uidlWriterFactory = (UidlWriterFactory) service;
+            return uidlWriterFactory.createUidlWriter();
+        }
+
         return new UidlWriter();
     }
 
