@@ -39,7 +39,8 @@ public abstract class AbstractTextFieldConnector extends AbstractFieldConnector
             implements AbstractTextFieldClientRpc {
         @Override
         public void selectRange(int start, int length) {
-            int textLength = getAbstractTextField().getValue().length();
+            // Haulmont API
+            int textLength = getTextFieldValue().length();
             start = restrictTo(start, 0, textLength - 1);
             length = restrictTo(length, 0, textLength - start);
             getAbstractTextField().setSelectionRange(start, length);
@@ -116,7 +117,8 @@ public abstract class AbstractTextFieldConnector extends AbstractFieldConnector
     }
 
     private boolean hasStateChanged() {
-        boolean textChanged = !getAbstractTextField().getValue()
+        // Haulmont API
+        boolean textChanged = !getTextFieldValue()
                 .equals(getState().text);
         boolean cursorPosChanged = getAbstractTextField()
                 .getCursorPos() != lastSentCursorPosition;
@@ -135,8 +137,15 @@ public abstract class AbstractTextFieldConnector extends AbstractFieldConnector
 
         lastSentCursorPosition = getAbstractTextField().getCursorPos();
         getRpcProxy(AbstractTextFieldServerRpc.class).setText(
-                getAbstractTextField().getValue(), lastSentCursorPosition);
-        getState().text = getAbstractTextField().getValue();
+                // Haulmont API
+                getTextFieldValue(), lastSentCursorPosition);
+        // Haulmont API
+        getState().text = getTextFieldValue();
+    }
+
+    // Haulmont API
+    protected String getTextFieldValue() {
+        return getAbstractTextField().getValue();
     }
 
     @Override
