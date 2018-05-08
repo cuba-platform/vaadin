@@ -716,7 +716,8 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
         updateSelectedItemIcon();
     }
 
-    private void updateSelectedItemCaption() {
+    // Haulmont API dependency
+    public void updateSelectedItemCaption() {
         String selectedCaption = null;
         T value = keyToItem(getSelectedKey());
         if (value != null) {

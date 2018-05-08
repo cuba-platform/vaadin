@@ -109,7 +109,8 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
      * */
     protected UI parent;
 
-    private String popupCaption = null;
+    // Haulmont API dependency
+    protected String popupCaption = null;
     private int positionX = 0;
     private int positionY = 0;
 
@@ -441,7 +442,8 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
             Color color = getValue();
 
             if (window == null) {
-                window = new ColorPickerPopup(color);
+                // Haulmont API
+                createPopupWindow(color);
                 window.setCaption(popupCaption);
 
                 window.setRGBTabVisible(rgbVisible);
@@ -452,8 +454,8 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
 
                 window.addCloseListener(
                         event -> getState().popupVisible = false);
-                window.addValueChangeListener(
-                        event -> setValue(event.getValue()));
+                // Haulmont API
+                window.addValueChangeListener(createColorValueChangeListener());
 
                 window.getHistory().setValue(color);
                 window.setPositionX(positionX);
@@ -484,6 +486,18 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
             parent.removeWindow(window);
         }
         getState().popupVisible = open;
+    }
+
+    // Haulmont API
+    protected ValueChangeListener<Color> createColorValueChangeListener() {
+        return event -> setValue(event.getValue());
+    }
+
+    /**
+     * Haulmont API
+     */
+    protected void createPopupWindow(Color color) {
+        window = new ColorPickerPopup(color);
     }
 
     @Override

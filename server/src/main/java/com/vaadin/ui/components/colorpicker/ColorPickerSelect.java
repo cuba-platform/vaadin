@@ -30,11 +30,13 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class ColorPickerSelect extends CustomField<Color> {
 
-    private ComboBox<ColorRange> range;
+    // Haulmont API dependency
+    protected ComboBox<ColorRange> range;
 
     private ColorPickerGrid grid;
 
-    private enum ColorRange {
+    // Haulmont API dependency
+    protected enum ColorRange {
         ALL("All colors"), RED("Red colors"), GREEN("Green colors"), BLUE(
                 "Blue colors");
 

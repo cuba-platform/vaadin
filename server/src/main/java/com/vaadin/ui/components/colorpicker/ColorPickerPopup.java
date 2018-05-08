@@ -44,16 +44,21 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
 
     private Component hsvTab;
 
-    private Component swatchesTab;
+    // Haulmont API dependency
+    protected Component swatchesTab;
 
     /** The layout. */
     private final VerticalLayout layout;
 
-    /** The ok button. */
-    private final Button ok = new Button("OK");
+    /** The ok button.
+     * Haulmont API dependency
+     */
+    protected final Button ok = new Button("OK");
 
-    /** The cancel button. */
-    private final Button cancel = new Button("Cancel");
+    /** The cancel button.
+     * Haulmont API dependency
+     */
+    protected final Button cancel = new Button("Cancel");
 
     /** The resize button. */
     private final Button resize = new Button("show/hide history");
@@ -100,11 +105,15 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     /** The preview on the hsv tab. */
     private ColorPickerPreview hsvPreview;
 
-    /** The preview on the swatches tab. */
-    private ColorPickerPreview selPreview;
+    /** The preview on the swatches tab.
+     * Haulmont API dependency
+     */
+    protected ColorPickerPreview selPreview;
 
-    /** The color select. */
-    private ColorPickerSelect colorSelect;
+    /** The color select.
+     * Haulmont API dependency
+     */
+    protected ColorPickerSelect colorSelect;
 
     /** The selectors. */
     private final Set<HasValue<Color>> selectors = new HashSet<>();
@@ -203,11 +212,8 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
         innerContainer.setHeight(null);
         innerContainer.addComponent(history);
 
-        VerticalLayout outerContainer = new VerticalLayout();
-        outerContainer.setWidth("99%");
-        outerContainer.setHeight("27px");
-        outerContainer.addComponent(innerContainer);
-        historyContainer = outerContainer;
+        // Haulmont API
+        historyContainer = createHistoryOuterContainer(innerContainer);
 
         layout.addComponent(historyContainer);
 
@@ -234,6 +240,15 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
         buttons.setComponentAlignment(ok, Alignment.MIDDLE_CENTER);
         buttons.setComponentAlignment(cancel, Alignment.MIDDLE_CENTER);
         layout.addComponent(buttons);
+    }
+
+    // Haulmont API
+    protected VerticalLayout createHistoryOuterContainer(VerticalLayout innerContainer) {
+        VerticalLayout outerContainer = new VerticalLayout();
+        outerContainer.setWidth("99%");
+        outerContainer.setHeight("27px");
+        outerContainer.addComponent(innerContainer);
+        return outerContainer;
     }
 
     /**
@@ -406,9 +421,11 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     /**
      * Creates the select tab.
      *
+     * Haulmont API dependency
+     *
      * @return the component
      */
-    private Component createSelectTab() {
+    protected Component createSelectTab() {
         VerticalLayout selLayout = new VerticalLayout();
         selLayout.setMargin(new MarginInfo(false, false, true, false));
         selLayout.addComponent(selPreview);
@@ -501,7 +518,8 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
         return Collections.unmodifiableList(history.getHistory());
     }
 
-    private void colorChanged(ValueChangeEvent<Color> event) {
+    // Haulmont API dependency
+    protected void colorChanged(ValueChangeEvent<Color> event) {
         setValue(event.getValue());
 
         updatingColors = true;
@@ -542,6 +560,48 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
             getLogger().warn("Unable to set HSV color value to {},{},{}",
                     hsv[0], hsv[1], hsv[2], e);
         }
+    }
+
+    /** Setting the red slider caption.
+     * Haulmont API dependency
+     */
+    public void setRedSliderCaption(String caption) {
+        redSlider.setCaption(caption);
+    }
+
+    /** Setting the green slider caption.
+     * Haulmont API dependency
+     */
+    public void setGreenSliderCaption(String caption) {
+        greenSlider.setCaption(caption);
+    }
+
+    /** Setting the blue slider caption.
+     * Haulmont API dependency
+     */
+    public void setBlueSliderCaption(String caption) {
+        blueSlider.setCaption(caption);
+    }
+
+    /** Setting the hue slider caption.
+     * Haulmont API dependency
+     */
+    public void setHueSliderCaption(String caption) {
+        hueSlider.setCaption(caption);
+    }
+
+    /** Setting the saturation slider caption.
+     * Haulmont API dependency
+     */
+    public void setSaturationSliderCaption(String caption) {
+        saturationSlider.setCaption(caption);
+    }
+
+    /** Setting the value slider caption.
+     * Haulmont API dependency
+     */
+    public void setValueSliderCaption(String caption) {
+        valueSlider.setCaption(caption);
     }
 
     /**
