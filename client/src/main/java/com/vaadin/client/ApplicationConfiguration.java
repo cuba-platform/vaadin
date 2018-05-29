@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -130,6 +130,25 @@ public class ApplicationConfiguration implements EntryPoint {
         }-*/;
 
         /**
+         * Reads a configuration parameter as an {@link Element} object.
+         * Please note
+         * that the javascript value of the parameter should also be an Element
+         * object,
+         * or else an undefined exception may be thrown when calling this method
+         * or methods on the returned object.
+         *
+         * @param name
+         *         name of the configuration parameter
+         * @return element for the configuration parameter, or <code>null</code> if no
+         *         value is defined
+         * @since 8.4
+         */
+        private native Element getConfigElement(String name)
+        /*-{
+            return this.getConfig(name);
+        }-*/;
+
+        /**
          * Returns a native javascript object containing version information
          * from the server.
          *
@@ -255,6 +274,8 @@ public class ApplicationConfiguration implements EntryPoint {
 
     private Map<Integer, Integer> componentInheritanceMap = new HashMap<>();
     private Map<Integer, String> tagToServerSideClassName = new HashMap<>();
+
+    private Element rootElement;
 
     /**
      * Checks whether path info in requests to the server-side service should be
@@ -445,6 +466,8 @@ public class ApplicationConfiguration implements EntryPoint {
         communicationError = jsoConfiguration.getConfigError("comErrMsg");
         authorizationError = jsoConfiguration.getConfigError("authErrMsg");
         sessionExpiredError = jsoConfiguration.getConfigError("sessExpMsg");
+
+        rootElement = jsoConfiguration.getConfigElement("rootElement");
     }
 
     /**
@@ -891,5 +914,15 @@ public class ApplicationConfiguration implements EntryPoint {
 
     private static org.slf4j.Logger getLogger() {
         return LoggerFactory.getLogger(ApplicationConfiguration.class);
+    }
+
+    /**
+     * Get the root element instance used for this application.
+     *
+     * @return registered root element
+     * @since 8.4
+     */
+    public Element getRootElement() {
+        return rootElement;
     }
 }

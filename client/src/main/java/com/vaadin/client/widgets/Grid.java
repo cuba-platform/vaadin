@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,10 +18,26 @@ package com.vaadin.client.widgets;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableRowElement;
+import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.dom.client.Touch;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -29,11 +45,22 @@ import com.google.gwt.touch.client.Point;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.WidgetUtil.Reference;
 import com.vaadin.client.data.DataChangeHandler;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.data.DataSource.RowHandle;
@@ -46,20 +73,79 @@ import com.vaadin.client.ui.dd.DragAndDropHandler;
 import com.vaadin.client.ui.dd.DragAndDropHandler.DragAndDropCallback;
 import com.vaadin.client.ui.dd.DragHandle;
 import com.vaadin.client.ui.dd.DragHandle.DragHandleCallback;
-import com.vaadin.client.widget.escalator.*;
+import com.vaadin.client.widget.escalator.Cell;
+import com.vaadin.client.widget.escalator.ColumnConfiguration;
+import com.vaadin.client.widget.escalator.EscalatorUpdater;
+import com.vaadin.client.widget.escalator.FlyweightCell;
+import com.vaadin.client.widget.escalator.Row;
+import com.vaadin.client.widget.escalator.RowContainer;
+import com.vaadin.client.widget.escalator.RowVisibilityChangeHandler;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.Direction;
+import com.vaadin.client.widget.escalator.Spacer;
+import com.vaadin.client.widget.escalator.SpacerUpdater;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedHandler;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedHandler;
-import com.vaadin.client.widget.grid.*;
+import com.vaadin.client.widget.grid.AutoScroller;
 import com.vaadin.client.widget.grid.AutoScroller.AutoScrollerCallback;
 import com.vaadin.client.widget.grid.AutoScroller.ScrollAxis;
+import com.vaadin.client.widget.grid.CellReference;
+import com.vaadin.client.widget.grid.CellStyleGenerator;
+import com.vaadin.client.widget.grid.DataAvailableEvent;
+import com.vaadin.client.widget.grid.DataAvailableHandler;
+import com.vaadin.client.widget.grid.DefaultEditorEventHandler;
+import com.vaadin.client.widget.grid.DetailsGenerator;
+import com.vaadin.client.widget.grid.EditorHandler;
 import com.vaadin.client.widget.grid.EditorHandler.EditorRequest;
-import com.vaadin.client.widget.grid.events.*;
+import com.vaadin.client.widget.grid.EventCellReference;
+import com.vaadin.client.widget.grid.GridEventHandler;
+import com.vaadin.client.widget.grid.HeightAwareDetailsGenerator;
+import com.vaadin.client.widget.grid.RendererCellReference;
+import com.vaadin.client.widget.grid.RowReference;
+import com.vaadin.client.widget.grid.RowStyleGenerator;
+import com.vaadin.client.widget.grid.events.AbstractGridKeyEventHandler;
+import com.vaadin.client.widget.grid.events.AbstractGridMouseEventHandler;
+import com.vaadin.client.widget.grid.events.BodyClickHandler;
+import com.vaadin.client.widget.grid.events.BodyDoubleClickHandler;
+import com.vaadin.client.widget.grid.events.BodyKeyDownHandler;
+import com.vaadin.client.widget.grid.events.BodyKeyPressHandler;
+import com.vaadin.client.widget.grid.events.BodyKeyUpHandler;
+import com.vaadin.client.widget.grid.events.ColumnReorderEvent;
+import com.vaadin.client.widget.grid.events.ColumnReorderHandler;
+import com.vaadin.client.widget.grid.events.ColumnResizeEvent;
+import com.vaadin.client.widget.grid.events.ColumnResizeHandler;
+import com.vaadin.client.widget.grid.events.ColumnVisibilityChangeEvent;
+import com.vaadin.client.widget.grid.events.ColumnVisibilityChangeHandler;
+import com.vaadin.client.widget.grid.events.FooterClickHandler;
+import com.vaadin.client.widget.grid.events.FooterDoubleClickHandler;
+import com.vaadin.client.widget.grid.events.FooterKeyDownHandler;
+import com.vaadin.client.widget.grid.events.FooterKeyPressHandler;
+import com.vaadin.client.widget.grid.events.FooterKeyUpHandler;
+import com.vaadin.client.widget.grid.events.GridClickEvent;
+import com.vaadin.client.widget.grid.events.GridDoubleClickEvent;
+import com.vaadin.client.widget.grid.events.GridEnabledEvent;
+import com.vaadin.client.widget.grid.events.GridEnabledHandler;
+import com.vaadin.client.widget.grid.events.GridKeyDownEvent;
+import com.vaadin.client.widget.grid.events.GridKeyPressEvent;
+import com.vaadin.client.widget.grid.events.GridKeyUpEvent;
+import com.vaadin.client.widget.grid.events.GridSelectionAllowedEvent;
+import com.vaadin.client.widget.grid.events.GridSelectionAllowedHandler;
+import com.vaadin.client.widget.grid.events.HeaderClickHandler;
+import com.vaadin.client.widget.grid.events.HeaderDoubleClickHandler;
+import com.vaadin.client.widget.grid.events.HeaderKeyDownHandler;
+import com.vaadin.client.widget.grid.events.HeaderKeyPressHandler;
+import com.vaadin.client.widget.grid.events.HeaderKeyUpHandler;
 import com.vaadin.client.widget.grid.events.ScrollEvent;
 import com.vaadin.client.widget.grid.events.ScrollHandler;
-import com.vaadin.client.widget.grid.selection.*;
+import com.vaadin.client.widget.grid.events.SelectAllEvent;
+import com.vaadin.client.widget.grid.events.SelectAllHandler;
+import com.vaadin.client.widget.grid.selection.HasSelectionHandlers;
+import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
+import com.vaadin.client.widget.grid.selection.SelectionEvent;
+import com.vaadin.client.widget.grid.selection.SelectionHandler;
+import com.vaadin.client.widget.grid.selection.SelectionModel;
+import com.vaadin.client.widget.grid.selection.SelectionModelWithSelectionColumn;
 import com.vaadin.client.widget.grid.sort.Sort;
 import com.vaadin.client.widget.grid.sort.SortEvent;
 import com.vaadin.client.widget.grid.sort.SortHandler;
@@ -72,15 +158,33 @@ import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.shared.Range;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.grid.*;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.shared.ui.grid.ColumnResizeMode;
+import com.vaadin.shared.ui.grid.GridConstants;
 import com.vaadin.shared.ui.grid.GridConstants.Section;
+import com.vaadin.shared.ui.grid.GridStaticCellType;
+import com.vaadin.shared.ui.grid.HeightMode;
+import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * A data grid view that supports columns and lazy loading of data rows from a
@@ -155,6 +259,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             private GridStaticCellType type = GridStaticCellType.TEXT;
 
             private String styleName = null;
+
+            private String description = null;
+
+            private ContentMode descriptionContentMode = ContentMode.TEXT;
 
             /**
              * Sets the text displayed in this cell.
@@ -324,10 +432,82 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
              * @since 7.6.3
              */
             void detach() {
-                if (this.content instanceof Widget) {
+                if (content instanceof Widget) {
                     // Widget in the cell, detach it
-                    section.getGrid().detachWidget((Widget) this.content);
+                    section.getGrid().detachWidget((Widget) content);
                 }
+            }
+
+            /**
+             * Gets the tooltip for the cell.
+             * <p>
+             * The tooltip is shown in the mode returned by
+             * {@link #getDescriptionContentMode()}.
+             *
+             * @return the tooltip text for this cell
+             * @since 8.4
+             */
+            public String getDescription() {
+                return description;
+            }
+
+            /**
+             * Sets the tooltip for the cell.
+             * <p>
+             * By default, tooltips are shown as plain text. For HTML tooltips,
+             * see {@link #setDescription(String, ContentMode)} or
+             * {@link #setDescriptionContentMode(ContentMode)}.
+             *
+             * @param description
+             *            the tooltip to show when hovering the cell
+             * @since 8.4
+             */
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            /**
+             * Sets the tooltip for the cell to be shown with the given content
+             * mode.
+             *
+             * @see ContentMode
+             * @param description
+             *            the tooltip to show when hovering the cell
+             * @param descriptionContentMode
+             *            the content mode to use for the tooltip (HTML or plain
+             *            text)
+             * @since 8.4
+             */
+            public void setDescription(String description,
+                    ContentMode descriptionContentMode) {
+                setDescription(description);
+                setDescriptionContentMode(descriptionContentMode);
+            }
+
+            /**
+             * Gets the content mode for the tooltip.
+             * <p>
+             * The content mode determines how the tooltip is shown.
+             *
+             * @see ContentMode
+             * @return the content mode for the tooltip
+             * @since 8.4
+             */
+            public ContentMode getDescriptionContentMode() {
+                return descriptionContentMode;
+            }
+
+            /**
+             * Sets the content mode for the tooltip.
+             *
+             * @see ContentMode
+             * @param descriptionContentMode
+             *            the content mode for the tooltip
+             * @since 8.4
+             */
+            public void setDescriptionContentMode(
+                    ContentMode descriptionContentMode) {
+                this.descriptionContentMode = descriptionContentMode;
             }
         }
 
@@ -1258,7 +1438,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         private String styleName = null;
 
         private HandlerRegistration hScrollHandler;
-        private HandlerRegistration vScrollHandler;
 
         private final Button saveButton;
         private final Button cancelButton;
@@ -1501,20 +1680,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
             state = State.ACTIVATING;
 
-            final Escalator escalator = grid.getEscalator();
-            if (escalator.getVisibleRowRange().contains(rowIndex)) {
-                show(rowIndex, columnIndexDOM);
-            } else {
-                vScrollHandler = grid.addScrollHandler(event -> {
-                    if (escalator.getVisibleRowRange().contains(rowIndex)) {
-                        show(rowIndex, columnIndexDOM);
-                        vScrollHandler.removeHandler();
-                    }
-                });
-                grid.scrollToRow(rowIndex,
-                        isBuffered() ? ScrollDestination.MIDDLE
-                                : ScrollDestination.ANY);
-            }
+            grid.scrollToRow(rowIndex,
+                    isBuffered() ? ScrollDestination.MIDDLE
+                            : ScrollDestination.ANY,
+                    () -> show(rowIndex, columnIndexDOM));
         }
 
         /**
@@ -2225,8 +2394,15 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             EventTarget target = getNativeEvent().getEventTarget();
             Grid<?> grid = getGrid();
             if (Element.is(target) && grid != null) {
+                final RowContainer container = Stream
+                        .of(grid.escalator.getHeader(),
+                                grid.escalator.getBody(),
+                                grid.escalator.getFooter())
+                        .filter(c -> c.getCell(target.cast()) != null)
+                        .findFirst()
+                        .orElse(grid.cellFocusHandler.containerWithFocus);
+
                 Section section = Section.FOOTER;
-                final RowContainer container = grid.cellFocusHandler.containerWithFocus;
                 if (container == grid.escalator.getHeader()) {
                     section = Section.HEADER;
                 } else if (container == getGrid().escalator.getBody()) {
@@ -4420,7 +4596,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         private void transferCellFocusOnDrop() {
             final Cell focusedCell = cellFocusHandler.getFocusedCell();
-            if (focusedCell != null) {
+            if (focusedCell != null && focusedCell.getElement() != null) {
                 final int focusedColumnIndexDOM = focusedCell.getColumn();
                 final int focusedRowIndex = focusedCell.getRow();
                 final int draggedColumnIndex = eventCell.getColumnIndex();
@@ -7198,6 +7374,45 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     }
 
     /**
+     * Helper method for making sure desired row is visible and it is properly
+     * rendered.
+     * 
+     * @param rowIndex
+     *            the row to look for
+     * @param destination
+     *            the desired scroll destination
+     * @param callback
+     *            the callback command to execute when row is available
+     * @since 8.4
+     */
+    public void scrollToRow(int rowIndex, ScrollDestination destination,
+            Runnable callback) {
+        waitUntilVisible(rowIndex, destination, () -> {
+            Reference<HandlerRegistration> registration = new Reference<>();
+            registration.set(addDataAvailableHandler(event -> {
+                if (event.getAvailableRows().contains(rowIndex)) {
+                    registration.get().removeHandler();
+                    callback.run();
+                }
+            }));
+        });
+    }
+
+    /**
+     * Helper method for making sure desired row is visible and it is properly
+     * rendered.
+     * 
+     * @param rowIndex
+     *            the row to look for
+     * @param whenRendered
+     *            the callback command to execute when row is available
+     * @since 8.4
+     */
+    public void scrollToRow(int rowIndex, Runnable whenRendered) {
+        scrollToRow(rowIndex, ScrollDestination.ANY, whenRendered);
+    }
+
+    /**
      * Scrolls to a certain row using only user-specified parameters.
      * <p>
      * If the details for that row are visible, those will be taken into account
@@ -7232,6 +7447,43 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         escalator.scrollToRowAndSpacer(rowIndex, destination, paddingPx);
+    }
+
+    /**
+     * Helper method for scrolling and making sure row is visible.
+     * 
+     * @param rowIndex
+     *            the row index to make visible
+     * @param destination
+     *            the desired scroll destination
+     * @param whenVisible
+     *            the callback method to call when row is visible
+     */
+    private void waitUntilVisible(int rowIndex, ScrollDestination destination,
+            Runnable whenVisible) {
+        final Escalator escalator = getEscalator();
+        if (escalator.getVisibleRowRange().contains(rowIndex)) {
+            TableRowElement rowElement = escalator.getBody()
+                    .getRowElement(rowIndex);
+            long bottomBorder = Math.round(WidgetUtil.getBorderBottomThickness(
+                    rowElement.getFirstChildElement()) + 0.5d);
+            if (rowElement.getAbsoluteTop() >= escalator.getHeader()
+                    .getElement().getAbsoluteBottom()
+                    && rowElement.getAbsoluteBottom() <= escalator.getFooter()
+                            .getElement().getAbsoluteTop() + bottomBorder) {
+                whenVisible.run();
+                return;
+            }
+        }
+
+        Reference<HandlerRegistration> registration = new Reference<>();
+        registration.set(addScrollHandler(event -> {
+            if (escalator.getVisibleRowRange().contains(rowIndex)) {
+                registration.get().removeHandler();
+                whenVisible.run();
+            }
+        }));
+        scrollToRow(rowIndex, destination);
     }
 
     /**
@@ -7308,7 +7560,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         return escalator.getScrollWidth();
     }
 
-    private static Logger getLogger() {
+    private static org.slf4j.Logger getLogger() {
         return LoggerFactory.getLogger(Grid.class);
     }
 
@@ -8462,7 +8714,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * Adds a spacer visibility changed handler to the underlying escalator.
      *
      * @param handler
-     *         the handler to be called when a spacer's visibility changes
+     *            the handler to be called when a spacer's visibility changes
      * @return the registration object with which the handler can be removed
      * @since 8.3.2
      */

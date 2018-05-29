@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,8 +15,18 @@
  */
 package com.vaadin.ui;
 
-import com.vaadin.server.*;
+import com.vaadin.event.MarkedAsDirtyConnectorEvent;
+import com.vaadin.event.MarkedAsDirtyListener;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.DragAndDropService;
+import com.vaadin.server.GlobalResourceHandler;
+import com.vaadin.server.LegacyCommunicationManager;
+import com.vaadin.server.StreamVariable;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.communication.ConnectorHierarchyWriter;
+import com.vaadin.shared.Registration;
 import elemental.json.Json;
 import elemental.json.JsonException;
 import elemental.json.JsonObject;
@@ -27,7 +37,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * A class which takes care of book keeping of {@link ClientConnector}s for a
@@ -54,6 +73,8 @@ public class ConnectorTracker implements Serializable {
     private final Map<String, ClientConnector> connectorIdToConnector = new HashMap<>();
     private final Set<ClientConnector> dirtyConnectors = new HashSet<>();
     private final Set<ClientConnector> uninitializedConnectors = new HashSet<>();
+
+    private List<MarkedAsDirtyListener> markedDirtyListeners = new ArrayList<>(0);
 
     /**
      * Connectors that have been unregistered and should be cleaned up the next
@@ -481,7 +502,8 @@ public class ConnectorTracker implements Serializable {
     }
 
     /**
-     * Mark the connector as dirty. This should not be done while the response
+     * Mark the connector as dirty and notifies any marked as dirty listeners.
+     * This should not be done while the response
      * is being written.
      *
      * @see #getDirtyConnectors()
@@ -496,11 +518,15 @@ public class ConnectorTracker implements Serializable {
                     "A connector should not be marked as dirty while a response is being written.");
         }
 
-        if (getLogger().isDebugEnabled()) {
-            if (!dirtyConnectors.contains(connector)) {
-                getLogger().debug("{} is now dirty",
+        if (getLogger().isTraceEnabled()) {
+            if (!isDirty(connector)) {
+                getLogger().trace("{} is now dirty",
                         getConnectorAndParentInfo(connector));
             }
+        }
+
+        if(!isDirty(connector)) {
+            notifyMarkedAsDirtyListeners(connector);
         }
 
         dirtyConnectors.add(connector);
@@ -878,4 +904,36 @@ public class ConnectorTracker implements Serializable {
     public int getCurrentSyncId() {
         return currentSyncId;
     }
+
+    /**
+     * Add a marked as dirty listener that will be called when a client
+     * connector is marked as dirty.
+     *
+     * @param listener
+     *         listener to add
+     * @since 8.4
+     * @return registration for removing listener registration
+     */
+    public Registration addMarkedAsDirtyListener(
+            MarkedAsDirtyListener listener) {
+        markedDirtyListeners.add(listener);
+        return () -> markedDirtyListeners.remove(listener);
+    }
+
+    /**
+     * Notify all registered MarkedAsDirtyListeners the given client connector
+     * has been marked as dirty.
+     *
+     * @param connector
+     *         client connector marked as dirty
+     * @since 8.4
+     */
+    public void notifyMarkedAsDirtyListeners(ClientConnector connector) {
+        MarkedAsDirtyConnectorEvent event = new MarkedAsDirtyConnectorEvent(
+                connector, uI);
+        new ArrayList<>(markedDirtyListeners).forEach(listener -> {
+            listener.connectorMarkedAsDirty(event);
+        });
+    }
+
 }

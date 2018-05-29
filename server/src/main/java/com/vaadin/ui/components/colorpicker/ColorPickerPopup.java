@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -155,8 +155,8 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
      */
     public ColorPickerPopup(Color initialColor) {
         this();
-        selectedColor = initialColor;
         initContents();
+        setValue(initialColor);
     }
 
     private void initContents() {
@@ -240,6 +240,7 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
         buttons.setComponentAlignment(ok, Alignment.MIDDLE_CENTER);
         buttons.setComponentAlignment(cancel, Alignment.MIDDLE_CENTER);
         layout.addComponent(buttons);
+        setRgbSliderValues(selectedColor);
     }
 
     // Haulmont API
@@ -454,6 +455,9 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
 
     private void okButtonClick(ClickEvent event) {
         fireEvent(new ValueChangeEvent<>(this, previouslySelectedColor, true));
+        rgbPreview.setValue(getValue());
+        hsvPreview.setValue(getValue());
+        selPreview.setValue(getValue());
         close();
     }
 
@@ -520,6 +524,7 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
 
     // Haulmont API dependency
     protected void colorChanged(ValueChangeEvent<Color> event) {
+        event.getSource().setValue(event.getValue());
         setValue(event.getValue());
 
         updatingColors = true;
@@ -810,5 +815,10 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
                 updateColorComponents(c);
             }
         }
+    }
+
+    @Override
+    public void setModal(boolean modal) {
+        getState().modal = modal;
     }
 }

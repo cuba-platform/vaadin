@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -347,6 +347,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
         private final T item;
         private final Column<T, ?> column;
         private final MouseEventDetails mouseEventDetails;
+        private final int rowIndex;
 
         /**
          * Creates a new {@code ItemClick} event containing the given item and
@@ -354,11 +355,12 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          *
          */
         public ItemClick(Grid<T> source, Column<T, ?> column, T item,
-                MouseEventDetails mouseEventDetails) {
+                MouseEventDetails mouseEventDetails, int rowIndex) {
             super(source);
             this.column = column;
             this.item = item;
             this.mouseEventDetails = mouseEventDetails;
+            this.rowIndex = rowIndex;
         }
 
         /**
@@ -396,6 +398,16 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          */
         public MouseEventDetails getMouseEventDetails() {
             return mouseEventDetails;
+        }
+
+        /**
+         * Returns the clicked rowIndex.
+         *
+         * @return the clicked rowIndex
+         * @since 8.4
+         */
+        public int getRowIndex() {
+            return rowIndex;
         }
     }
 
@@ -625,10 +637,11 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
 
         @Override
         public void itemClick(String rowKey, String columnInternalId,
-                MouseEventDetails details) {
+                MouseEventDetails details, int rowIndex) {
             Column<T, ?> column = getColumnByInternalId(columnInternalId);
             T item = getDataCommunicator().getKeyMapper().get(rowKey);
-            fireEvent(new ItemClick<>(Grid.this, column, item, details));
+            fireEvent(new ItemClick<>(Grid.this, column, item, details,
+                    rowIndex));
         }
 
         @Override
@@ -1334,9 +1347,8 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          */
         public Column<T, V> setSortProperty(String... properties) {
             Objects.requireNonNull(properties, "Sort properties can't be null");
-            sortOrderProvider = dir -> Arrays.stream(properties)
-                    .map(s -> new QuerySortOrder(s, dir));
-            return this;
+            return setSortOrderProvider(dir -> Arrays.stream(properties)
+                    .map(s -> new QuerySortOrder(s, dir)));
         }
 
         /**
@@ -1356,6 +1368,10 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
             Objects.requireNonNull(provider,
                     "Sort order provider can't be null");
             sortOrderProvider = provider;
+
+            // Update state
+            updateSortable();
+
             return this;
         }
 
@@ -2213,7 +2229,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
                 setSortable(false);
             }
             if (design.hasAttr("editable")) {
-                /*
+                /**
                  * This is a fake editor just to have something (otherwise
                  * "setEditable" throws an exception.
                  *
@@ -2515,6 +2531,16 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
             addExtension((Extension) editor);
         }
 
+    }
+
+    /**
+     * Returns the property set used by this grid.
+     *
+     * @return propertySet the property set to return
+     * @since 8.4
+     */
+    protected PropertySet<T> getPropertySet() {
+        return propertySet;
     }
 
     /**
@@ -3058,8 +3084,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * @param rows
      *            The height in terms of number of rows displayed in Grid's
      *            body. If Grid doesn't contain enough rows, white space is
-     *            displayed instead. If <code>null</code> is given, then Grid's
-     *            height is undefined
+     *            displayed instead.
      * @throws IllegalArgumentException
      *             if {@code rows} is zero or less
      * @throws IllegalArgumentException
@@ -3124,7 +3149,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      *            the mode in to which Grid should be set
      */
     public void setHeightMode(HeightMode heightMode) {
-        /*
+        /**
          * This method is a workaround for the fact that Vaadin re-applies
          * widget dimensions (height/width) on each state change event. The
          * original design was to have setHeight and setHeightByRow be equals,
@@ -4086,8 +4111,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * Clear the current sort order, and re-sort the grid.
      */
     public void clearSortOrder() {
-        sortOrder.clear();
-        sort(false);
+        setSortOrder(Collections.emptyList());
     }
 
     /**
@@ -4696,14 +4720,6 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
         getState().sortDirs = directions.toArray(new SortDirection[0]);
 
         sortOrder.clear();
-        if (order.isEmpty()) {
-            // Grid is not sorted anymore.
-            getDataCommunicator().setBackEndSorting(Collections.emptyList());
-            getDataCommunicator().setInMemorySorting(null);
-            fireEvent(new SortEvent<>(this, new ArrayList<>(sortOrder),
-                    userOriginated));
-            return;
-        }
         sortOrder.addAll(order);
         sort(userOriginated);
     }

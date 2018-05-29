@@ -20,27 +20,33 @@ public class NotificationCloseEventTest extends SingleBrowserTest {
         ButtonElement error = $(ButtonElement.class).caption("error").first();
         error.click();
         $(NotificationElement.class).get(0).close();
-        Assert.assertEquals("1. Notification (error) closed", getLogRow(0));
+        Assert.assertEquals("1. Notification (error) closed by user",
+                getLogRow(0));
+    }
+
+    @Test
+    public void testCloseByServer() {
+        openTestURL();
+        ButtonElement warning = $(ButtonElement.class).caption("warning")
+                .first();
+        warning.click();
+        ButtonElement close = $(ButtonElement.class)
+                .caption("Hide all notifications").first();
+        close.click();
+
+        Assert.assertEquals("1. Notification (warning) closed from server",
+                getLogRow(0));
     }
 
     @Test
     public void notificationsStayAwayAfterRefresh() {
         openTestURL();
-        Assert.assertFalse(isElementPresent(NotificationElement.class));
         ButtonElement warning = $(ButtonElement.class).caption("warning")
                 .first();
         warning.click();
-        Assert.assertTrue("Notification should open",
-                isElementPresent(NotificationElement.class));
-        openTestURL();
-        Assert.assertTrue("Notification should still be present.",
-                isElementPresent(NotificationElement.class));
         $(NotificationElement.class).first().close();
-        Assert.assertEquals("1. Notification (warning) closed", getLogRow(0));
-        Assert.assertFalse("No notification should be present",
-                isElementPresent(NotificationElement.class));
         openTestURL();
-        Assert.assertFalse("Reloading should not open notifications",
-                isElementPresent(NotificationElement.class));
+
+        Assert.assertEquals(0, $(NotificationElement.class).all().size());
     }
 }

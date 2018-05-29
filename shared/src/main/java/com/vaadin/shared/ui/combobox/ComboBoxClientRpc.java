@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright 2000-2016 Vaadin Ltd.
+=======
+ * Copyright 2000-2018 Vaadin Ltd.
+>>>>>>> 23912118536c47ce533aaefd7ecca2f0f13da901
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -127,7 +127,7 @@ public class Notification extends AbstractExtension {
      * @since 8.2
      */
     private NotificationServerRpc rpc = () -> {
-        close();
+        close(true);
     };
 
     /**
@@ -398,18 +398,30 @@ public class Notification extends AbstractExtension {
      * <p>
      * If the notification is not shown, does nothing.
      *
+     * @since 8.4
+     */
+    public void close() {
+        close(false);
+    }
+
+    /**
+     * Closes (hides) the notification.
+     * <p>
+     * If the notification is not shown, does nothing.
+     *
      * @param userOriginated
      *            <code>true</code> if the notification was closed because the
      *            user clicked on it, <code>false</code> if the notification was
      *            closed from the server
+     * @since 8.4
      */
-    private void close() {
+    protected void close(boolean userOriginated) {
         if (!isAttached()) {
             return;
         }
 
         remove();
-        fireEvent(new CloseEvent(this));
+        fireEvent(new CloseEvent(this, userOriginated));
     }
 
     @Override
@@ -519,12 +531,21 @@ public class Notification extends AbstractExtension {
      *
      * @since 8.2
      */
-    public static class CloseEvent extends ConnectorEvent {
+    public static class CloseEvent extends ConnectorEvent
+            implements HasUserOriginated {
+
+        private boolean userOriginated;
+
         /**
          * @param source
          */
         public CloseEvent(Notification source) {
+            this(source, true);
+        }
+
+        public CloseEvent(Notification source, boolean userOriginated) {
             super(source);
+            this.userOriginated = userOriginated;
         }
 
         /**
@@ -534,6 +555,11 @@ public class Notification extends AbstractExtension {
          */
         public Notification getNotification() {
             return (Notification) getSource();
+        }
+
+        @Override
+        public boolean isUserOriginated() {
+            return userOriginated;
         }
     }
 

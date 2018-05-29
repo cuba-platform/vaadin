@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,26 +24,54 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableRowElement;
+import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.dom.client.Touch;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.*;
+import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.DeferredWorker;
+import com.vaadin.client.Profiler;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.SubPartAware;
-import com.vaadin.client.widget.escalator.*;
+import com.vaadin.client.widget.escalator.Cell;
+import com.vaadin.client.widget.escalator.ColumnConfiguration;
+import com.vaadin.client.widget.escalator.EscalatorUpdater;
+import com.vaadin.client.widget.escalator.FlyweightCell;
+import com.vaadin.client.widget.escalator.FlyweightRow;
+import com.vaadin.client.widget.escalator.PositionFunction;
 import com.vaadin.client.widget.escalator.PositionFunction.Translate3DPosition;
 import com.vaadin.client.widget.escalator.PositionFunction.TranslatePosition;
 import com.vaadin.client.widget.escalator.PositionFunction.WebkitTranslate3DPosition;
+import com.vaadin.client.widget.escalator.Row;
+import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.escalator.RowContainer.BodyRowContainer;
+import com.vaadin.client.widget.escalator.RowVisibilityChangeEvent;
+import com.vaadin.client.widget.escalator.RowVisibilityChangeHandler;
+import com.vaadin.client.widget.escalator.ScrollbarBundle;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.HorizontalScrollbarBundle;
 import com.vaadin.client.widget.escalator.ScrollbarBundle.VerticalScrollbarBundle;
+import com.vaadin.client.widget.escalator.Spacer;
+import com.vaadin.client.widget.escalator.SpacerUpdater;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
 import com.vaadin.client.widget.grid.events.ScrollEvent;
@@ -55,10 +83,21 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 /*-
 
@@ -531,7 +570,6 @@ public class Escalator extends Widget
                     yMov.moveTouch(event);
                     xMov.validate(yMov);
                     yMov.validate(xMov);
-                    event.getNativeEvent().preventDefault();
                     moveScrollFromEvent(escalator, xMov.delta, yMov.delta,
                             event.getNativeEvent());
                 }
@@ -583,21 +621,36 @@ public class Escalator extends Widget
                 final double deltaX, final double deltaY,
                 final NativeEvent event) {
 
+            boolean scrollPosXChanged = false;
+            boolean scrollPosYChanged = false;
+
             if (!Double.isNaN(deltaX)) {
+                double oldScrollPosX = escalator.horizontalScrollbar
+                        .getScrollPos();
                 escalator.horizontalScrollbar.setScrollPosByDelta(deltaX);
+                if (oldScrollPosX != escalator.horizontalScrollbar
+                        .getScrollPos()) {
+                    scrollPosXChanged = true;
+                }
             }
 
             if (!Double.isNaN(deltaY)) {
+                double oldScrollPosY = escalator.verticalScrollbar
+                        .getScrollPos();
                 escalator.verticalScrollbar.setScrollPosByDelta(deltaY);
+                if (oldScrollPosY != escalator.verticalScrollbar
+                        .getScrollPos()) {
+                    scrollPosYChanged = true;
+                }
             }
 
             /*
-             * TODO: only prevent if not scrolled to end/bottom. Or no? UX team
-             * needs to decide.
+             * Only prevent if internal scrolling happened. If there's no more
+             * room to scroll internally, allow the event to pass further.
              */
-            final boolean warrantedYScroll = deltaY != 0
+            final boolean warrantedYScroll = deltaY != 0 && scrollPosYChanged
                     && escalator.verticalScrollbar.showsScrollHandle();
-            final boolean warrantedXScroll = deltaX != 0
+            final boolean warrantedXScroll = deltaX != 0 && scrollPosXChanged
                     && escalator.horizontalScrollbar.showsScrollHandle();
             if (warrantedYScroll || warrantedXScroll) {
                 event.preventDefault();
@@ -5771,6 +5824,38 @@ public class Escalator extends Widget
         setupScrollbars(root);
 
         tableWrapper = DivElement.as(DOM.createDiv());
+
+        Event.sinkEvents(tableWrapper, Event.ONSCROLL | Event.KEYEVENTS);
+
+        Event.setEventListener(tableWrapper, event -> {
+            if (event.getKeyCode() != KeyCodes.KEY_TAB) {
+                return;
+            }
+
+            boolean browserScroll = tableWrapper.getScrollLeft() != 0
+                    || tableWrapper.getScrollTop() != 0;
+            boolean keyEvent = event.getType().startsWith("key");
+
+            if (browserScroll || keyEvent) {
+
+                // Browser is scrolling our div automatically, reset
+                tableWrapper.setScrollLeft(0);
+                tableWrapper.setScrollTop(0);
+
+                Element focused = WidgetUtil.getFocusedElement();
+                Stream.of(header, body, footer).forEach(container -> {
+                    Cell cell = container.getCell(focused);
+                    if (cell == null) {
+                        return;
+                    }
+
+                    scrollToColumn(cell.getColumn(), ScrollDestination.ANY, 0);
+                    if (container == body) {
+                        scrollToRow(cell.getRow(), ScrollDestination.ANY, 0);
+                    }
+                });
+            }
+        });
 
         root.appendChild(tableWrapper);
 

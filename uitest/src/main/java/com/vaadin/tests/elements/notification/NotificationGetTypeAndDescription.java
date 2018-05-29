@@ -41,6 +41,19 @@ public class NotificationGetTypeAndDescription extends AbstractTestUIWithLog {
         btn.setId("showid");
         btn.addClickListener(event -> Notification.show("test"));
         addComponent(btn);
+
+        Button hide = new Button("Hide all notifications");
+        hide.setId("hide");
+        hide.addClickListener(event -> {
+            List<Notification> notifications = new ArrayList<>();
+            getAllChildrenIterable(getUI()).forEach(conn -> {
+                if (conn instanceof Notification) {
+                    notifications.add((Notification) conn);
+                }
+            });
+            notifications.forEach(Notification::close);
+        });
+        addComponent(hide);
     }
 
     @Override
@@ -65,7 +78,8 @@ public class NotificationGetTypeAndDescription extends AbstractTestUIWithLog {
             Notification n = Notification.show(captions[index],
                     descriptions[index], types[index]);
             n.addCloseListener(e -> {
-                log("Notification (" + descriptions[index] + ") closed");
+                log("Notification (" + descriptions[index] + ") closed "
+                        + (e.isUserOriginated() ? "by user" : "from server"));
             });
         }
 

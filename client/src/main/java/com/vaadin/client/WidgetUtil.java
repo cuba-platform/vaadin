@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2016 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -44,6 +44,37 @@ import java.util.Map;
  * Utility methods which are related to client side code only.
  */
 public class WidgetUtil {
+
+    /**
+     * Simple object to store another object.
+     * 
+     * @param <T>
+     *            the object type to store
+     * @since 8.4
+     */
+    public static class Reference<T> {
+
+        T reference = null;
+
+        /**
+         * Gets the current object.
+         * 
+         * @return the stored object
+         */
+        public T get() {
+            return reference;
+        }
+
+        /**
+         * Sets the current object.
+         * 
+         * @param reference
+         *            the object to store
+         */
+        public void set(T reference) {
+            this.reference = reference;
+        }
+    }
 
     /**
      * Helper method for debugging purposes.
@@ -772,7 +803,7 @@ public class WidgetUtil {
             com.google.gwt.dom.client.Element el, String p)
     /*-{
         try {
-
+    
         if (el.currentStyle) {
             // IE
             return el.currentStyle[p];
@@ -787,7 +818,7 @@ public class WidgetUtil {
         } catch (e) {
             return "";
         }
-
+    
      }-*/;
 
     /**
@@ -801,7 +832,7 @@ public class WidgetUtil {
         try {
             el.focus();
         } catch (e) {
-
+    
         }
     }-*/;
 
@@ -879,8 +910,10 @@ public class WidgetUtil {
             EventListener eventListener = null;
             while (eventListener == null && element != null) {
                 eventListener = Event.getEventListener(element);
-                if (eventListener == null) {
+                if (eventListener == null
+                        || !(eventListener instanceof Widget)) {
                     element = element.getParentElement();
+                    eventListener = null;
                 }
             }
             if (eventListener instanceof Widget) {
@@ -1152,7 +1185,7 @@ public class WidgetUtil {
        if ($wnd.document.activeElement) {
            return $wnd.document.activeElement;
        }
-
+    
        return null;
      }-*/;
 
@@ -1223,11 +1256,11 @@ public class WidgetUtil {
     /*-{
         var top = elem.offsetTop;
         var height = elem.offsetHeight;
-
+    
         if (elem.parentNode != elem.offsetParent) {
           top -= elem.parentNode.offsetTop;
         }
-
+    
         var cur = elem.parentNode;
         while (cur && (cur.nodeType == 1)) {
           if (top < cur.scrollTop) {
@@ -1236,12 +1269,12 @@ public class WidgetUtil {
           if (top + height > cur.scrollTop + cur.clientHeight) {
             cur.scrollTop = (top + height) - cur.clientHeight;
           }
-
+    
           var offsetTop = cur.offsetTop;
           if (cur.parentNode != cur.offsetParent) {
             offsetTop -= cur.parentNode.offsetTop;
           }
-
+    
           top += offsetTop - cur.scrollTop;
           cur = cur.parentNode;
         }
@@ -1690,7 +1723,7 @@ public class WidgetUtil {
             }
             var heightWithoutBorder = cloneElement.offsetHeight;
             parentElement.removeChild(cloneElement);
-
+    
             return heightWithBorder - heightWithoutBorder;
         }
     }-*/;
@@ -1867,7 +1900,7 @@ public class WidgetUtil {
      * ancestors has the style {@code display: none} applied.
      *
      * @param element
-     *         the element to test for visibility
+     *            the element to test for visibility
      * @return {@code true} if the element is displayed, {@code false} otherwise
      * @since 8.3.2
      */
