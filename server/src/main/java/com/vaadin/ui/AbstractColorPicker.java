@@ -119,7 +119,8 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
     protected boolean textfieldVisible = true;
     private boolean modal;
 
-    private ColorPickerServerRpc rpc = new ColorPickerServerRpc() {
+    // Haulmont API
+    protected ColorPickerServerRpc rpc = new ColorPickerServerRpc() {
         @Override
         public void openPopup(boolean openPopup) {
             showPopup(openPopup);
