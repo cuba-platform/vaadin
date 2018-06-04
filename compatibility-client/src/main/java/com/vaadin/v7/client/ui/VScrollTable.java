@@ -72,7 +72,7 @@ import java.util.*;
  * TODO implement unregistering for child components in Cells
  */
 public class VScrollTable extends FlowPanel
-        implements ScrollHandler, VHasDropHandler, FocusHandler,
+        implements HasWidgets, ScrollHandler, VHasDropHandler, FocusHandler,
         BlurHandler, Focusable, ActionOwner, SubPartAware, DeferredWorker {
 
     /**
@@ -282,7 +282,7 @@ public class VScrollTable extends FlowPanel
     private boolean updatedReqRows = true;
 
     // Haulmont API dependency
-    protected  boolean nullSelectionAllowed = true;
+    protected boolean nullSelectionAllowed = true;
 
     private SelectMode selectMode = SelectMode.NONE;
 
@@ -932,7 +932,6 @@ public class VScrollTable extends FlowPanel
      */
     protected void sendColumnWidthUpdates(Collection<HeaderCell> columns) {
         List<String> newSizesList = new ArrayList<String>();
-        int ix = 0;
         for (HeaderCell cell : columns) {
             // Haulmont API call - update only permitted columns
             if (checkColumnForUpdateWidth(cell)) {
@@ -4116,7 +4115,14 @@ public class VScrollTable extends FlowPanel
             @Override
             public String getHTML() {
                 final StringBuilder buf = new StringBuilder();
-                buf.append("<span class=\"");
+
+                // Haulmont API
+                if (hideColumnControlAfterClick) {
+                    buf.append("<span class=\"");
+                } else {
+                    buf.append("<span id=\"tableVisibleColumnAction").append(columnActionId).append("\" class=\"");
+                }
+
                 if (collapsed) {
                     buf.append("v-off");
                 } else {
@@ -4125,6 +4131,7 @@ public class VScrollTable extends FlowPanel
                 if (noncollapsible) {
                     buf.append(" v-disabled");
                 }
+                buf.append("\"");
 
                 // Haulmont API
                 String customHtmlAttributes = getCustomHtmlAttributes(this);
@@ -5808,7 +5815,10 @@ public class VScrollTable extends FlowPanel
 
             protected void addCellsFromUIDL(UIDL uidl, char[] aligns, int col,
                     int visibleColumnIndex) {
-                for (final Object cell : uidl) {
+                final Iterator<?> cells = uidl.getChildIterator();
+                while (cells.hasNext() && col < visibleColOrder.length) {
+                    // Haulmont API dependency
+                    // final Object cell = cells.next();
                     visibleColumnIndex++;
 
                     String columnId = visibleColOrder[visibleColumnIndex];
@@ -5818,6 +5828,9 @@ public class VScrollTable extends FlowPanel
                         col++;
                         continue;
                     }
+
+                    // Haulmont API dependency
+                    final Object cell = cells.next();
 
                     String style = "";
                     if (uidl.hasAttribute("style-" + columnId)) {
