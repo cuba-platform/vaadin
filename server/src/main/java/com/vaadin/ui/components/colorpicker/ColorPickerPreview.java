@@ -16,8 +16,6 @@
 package com.vaadin.ui.components.colorpicker;
 
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.vaadin.data.HasValue;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
@@ -30,6 +28,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.TextField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A component that represents color selection preview within a color picker.
@@ -37,7 +37,7 @@ import com.vaadin.ui.TextField;
  * @since 7.0.0
  */
 public class ColorPickerPreview extends CssLayout implements HasValue<Color> {
-    private static final Logger LOGGER = Logger
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(ColorPickerPreview.class.getName());
 
     private static final String STYLE_DARK_COLOR = "v-textfield-dark";
@@ -147,7 +147,7 @@ public class ColorPickerPreview extends CssLayout implements HasValue<Color> {
         } catch (NumberFormatException e) {
             // Pattern matching ensures the validity of
             // the input, this should never happen
-            LOGGER.log(Level.INFO, e.getMessage());
+            LOGGER.info(e.getMessage());
             errorMessage = new UserError(getUserErrorText(value),
                     ContentMode.TEXT, ErrorLevel.WARNING);
         }

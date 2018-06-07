@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import org.jsoup.nodes.Element;
@@ -64,6 +62,8 @@ import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignFormatter;
 
 import elemental.json.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A filtering dropdown single-select. Items are filtered based on user input.
@@ -750,7 +750,7 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
      */
     @Deprecated
     public void setNewItemHandler(NewItemHandler newItemHandler) {
-        getLogger().log(Level.WARNING,
+        getLogger().warn(
                 "NewItemHandler is deprecated. Please use NewItemProvider instead.");
         this.newItemHandler = newItemHandler;
         getState(true).allowNewItems = newItemProvider != null
@@ -997,6 +997,6 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
     }
 
     private static Logger getLogger() {
-        return Logger.getLogger(ComboBox.class.getName());
+        return LoggerFactory.getLogger(ComboBox.class.getName());
     }
 }
