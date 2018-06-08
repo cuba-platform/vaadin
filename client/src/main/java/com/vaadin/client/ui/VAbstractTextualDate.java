@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.TimeZone;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextBoxBase;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.LocaleNotLoadedException;
@@ -59,7 +60,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
     private static final String ISO_DATE_PATTERN = "yyyy-MM-dd";
 
     /** For internal use only. May be removed or replaced in the future. */
-    public final TextBox text;
+    public final TextBoxBase text;
 
     /** For internal use only. May be removed or replaced in the future. */
     public boolean lenient;
@@ -79,7 +80,8 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
 
     public VAbstractTextualDate(R resoluton) {
         super(resoluton);
-        text = new TextBox();
+        //Haulmont API
+        text = createImpl();
         text.addChangeHandler(this);
         text.addFocusHandler(
                 event -> fireBlurFocusEvent(event, true));
@@ -90,6 +92,16 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
         }
         add(text);
         publishJSHelpers(getElement());
+    }
+
+    //Haulmont API
+    protected TextBoxBase createImpl() {
+        return new TextBox();
+    }
+
+    //Haulmont API
+    public TextBoxBase getImpl() {
+        return text;
     }
 
     /**

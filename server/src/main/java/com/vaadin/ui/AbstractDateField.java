@@ -73,67 +73,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         @Override
         public void update(String newDateString,
                 Map<String, Integer> resolutions) {
-            Set<String> resolutionNames = getResolutions().map(Enum::name)
-                    .collect(Collectors.toSet());
-            resolutionNames.retainAll(resolutions.keySet());
-            if (!isReadOnly()
-                    && (!resolutionNames.isEmpty() || newDateString != null)) {
-
-                // Old and new dates
-                final T oldDate = getValue();
-
-                T newDate;
-
-                boolean hasChanges = false;
-
-                if ("".equals(newDateString)) {
-
-                    newDate = null;
-                } else {
-                    newDate = reconstructDateFromFields(resolutions, oldDate);
-                }
-
-                hasChanges |= !Objects.equals(dateString, newDateString)
-                        || !Objects.equals(oldDate, newDate);
-
-                if (hasChanges) {
-                    dateString = newDateString;
-                    currentParseErrorMessage = null;
-                    if (newDateString == null || newDateString.isEmpty()) {
-                        setValue(newDate, true);
-                    } else {
-                        // invalid date string
-                        if (resolutions.isEmpty()) {
-                            Result<T> parsedDate = handleUnparsableDateString(
-                                    dateString);
-                            // If handleUnparsableDateString returns the same
-                            // date as current, force update state to display
-                            // correct representation
-                            parsedDate.ifOk(v -> {
-                                if (!setValue(v, true)
-                                        && !isDifferentValue(v)) {
-                                    updateDiffstate("resolutions",
-                                            Json.createObject());
-                                    doSetValue(v);
-                                }
-                            });
-                            if (parsedDate.isError()) {
-                                dateString = null;
-                                currentParseErrorMessage = parsedDate
-                                        .getMessage().orElse("Parsing error");
-
-                                if (!isDifferentValue(null)) {
-                                    doSetValue(null);
-                                } else {
-                                    setValue(null, true);
-                                }
-                            }
-                        } else {
-                            setValue(newDate, true);
-                        }
-                    }
-                }
-            }
+            // Haulmont API
+            updateInternal(newDateString, resolutions);
         }
 
         @Override
@@ -146,6 +87,71 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
             fireEvent(new BlurEvent(AbstractDateField.this));
         }
     };
+
+    // Haulmont API
+    protected void updateInternal(String newDateString, Map<String, Integer> resolutions) {
+        Set<String> resolutionNames = getResolutions().map(Enum::name)
+                .collect(Collectors.toSet());
+        resolutionNames.retainAll(resolutions.keySet());
+        if (!isReadOnly()
+                && (!resolutionNames.isEmpty() || newDateString != null)) {
+
+            // Old and new dates
+            final T oldDate = getValue();
+
+            T newDate;
+
+            boolean hasChanges = false;
+
+            if ("".equals(newDateString)) {
+
+                newDate = null;
+            } else {
+                newDate = reconstructDateFromFields(resolutions, oldDate);
+            }
+
+            hasChanges |= !Objects.equals(dateString, newDateString)
+                    || !Objects.equals(oldDate, newDate);
+
+            if (hasChanges) {
+                dateString = newDateString;
+                currentParseErrorMessage = null;
+                if (newDateString == null || newDateString.isEmpty()) {
+                    setValue(newDate, true);
+                } else {
+                    // invalid date string
+                    if (resolutions.isEmpty()) {
+                        Result<T> parsedDate = handleUnparsableDateString(
+                                dateString);
+                        // If handleUnparsableDateString returns the same
+                        // date as current, force update state to display
+                        // correct representation
+                        parsedDate.ifOk(v -> {
+                            if (!setValue(v, true)
+                                    && !isDifferentValue(v)) {
+                                updateDiffstate("resolutions",
+                                        Json.createObject());
+                                doSetValue(v);
+                            }
+                        });
+                        if (parsedDate.isError()) {
+                            dateString = null;
+                            currentParseErrorMessage = parsedDate
+                                    .getMessage().orElse("Parsing error");
+
+                            if (!isDifferentValue(null)) {
+                                doSetValue(null);
+                            } else {
+                                setValue(null, true);
+                            }
+                        }
+                    } else {
+                        setValue(newDate, true);
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Value of the field.
@@ -168,7 +174,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
 
     private String dateString = "";
 
-    private String currentParseErrorMessage;
+    // Haulmont API
+    protected String currentParseErrorMessage;
 
     private String defaultParseErrorMessage = "Date format not recognized";
 
@@ -832,8 +839,9 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      */
     protected abstract Date convertToDate(T date);
 
+    // Haulmont API
     @SuppressWarnings("unchecked")
-    private Stream<R> getResolutions() {
+    protected Stream<R> getResolutions() {
         Type resolutionType = GenericTypeReflector.getTypeParameter(getClass(),
                 AbstractDateField.class.getTypeParameters()[1]);
         if (resolutionType instanceof Class<?>) {
