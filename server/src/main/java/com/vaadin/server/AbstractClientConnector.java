@@ -742,6 +742,11 @@ public abstract class AbstractClientConnector
         }
     }
 
+    // Haulmont API
+    public void setConnectorResource(String key, Resource resource) {
+        setResource(key, resource);
+    }
+
     /* Listener code starts. Should be refactored. */
 
     /**
