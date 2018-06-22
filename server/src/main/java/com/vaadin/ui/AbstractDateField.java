@@ -73,7 +73,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         @Override
         public void update(String newDateString,
                 Map<String, Integer> resolutions) {
-            // Haulmont API
+            // Haulmont API - extracted method
             updateInternal(newDateString, resolutions);
         }
 
@@ -110,14 +110,19 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                 newDate = reconstructDateFromFields(resolutions, oldDate);
             }
 
+            boolean parseErrorWasSet = currentParseErrorMessage != null;
             hasChanges |= !Objects.equals(dateString, newDateString)
-                    || !Objects.equals(oldDate, newDate);
+                    || !Objects.equals(oldDate, newDate)
+                    || parseErrorWasSet;
 
             if (hasChanges) {
                 dateString = newDateString;
                 currentParseErrorMessage = null;
                 if (newDateString == null || newDateString.isEmpty()) {
-                    setValue(newDate, true);
+                    boolean valueChanged = setValue(newDate, true);
+                    if(!valueChanged && parseErrorWasSet) {
+                        doSetValue(newDate);
+                    }
                 } else {
                     // invalid date string
                     if (resolutions.isEmpty()) {
