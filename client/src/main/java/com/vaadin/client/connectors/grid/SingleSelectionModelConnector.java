@@ -125,7 +125,13 @@ public class SingleSelectionModelConnector
     protected void initSelectionModel() {
         getGrid().setSelectionModel(new SingleSelectionModel());
 
-        clickSelectHandler = new ClickSelectHandler<>(getParent().getWidget());
+        // Haulmont API
+        clickSelectHandler = createClickSelectHandler();
+    }
+
+    // Haulmont API
+    protected ClickSelectHandler<JsonObject> createClickSelectHandler() {
+        return new ClickSelectHandler<>(getParent().getWidget());
     }
 
     @Override

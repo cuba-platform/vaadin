@@ -1100,13 +1100,15 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
             return jsonObject.getObject(key);
         }
 
+        // Haulmont API dependency
         @Override
-        protected ColumnState getState() {
+        public ColumnState getState() {
             return getState(true);
         }
 
+        // Haulmont API dependency
         @Override
-        protected ColumnState getState(boolean markAsDirty) {
+        public ColumnState getState(boolean markAsDirty) {
             return (ColumnState) super.getState(markAsDirty);
         }
 

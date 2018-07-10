@@ -2544,7 +2544,9 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 }
             }
 
-            return childWidget && !handleWidgetEvent;
+            return childWidget && !handleWidgetEvent
+                    // Haulmont API
+                    && !grid.isWidgetAllowsClickHandling(targetElement);
         }
 
         protected abstract void doDispatch(HANDLER handler, Section section);
@@ -2981,7 +2983,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
     }
 
-    public final class SelectionColumn extends Column<Boolean, T>
+    // Haulmont API
+    public class SelectionColumn extends Column<Boolean, T>
             implements GridEnabledHandler, GridSelectionAllowedHandler {
 
         private boolean initDone = false;
@@ -2990,7 +2993,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         private boolean selectAllCheckBoxVisible;
         private HeaderCell selectionCell;
 
-        SelectionColumn(final Renderer<Boolean> selectColumnRenderer) {
+        // Haulmont API
+        public SelectionColumn(final Renderer<Boolean> selectColumnRenderer) {
             super(selectColumnRenderer);
 
             addEnabledHandler(this);
@@ -3175,7 +3179,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
         }
 
-        private void onHeaderClickEvent(GridClickEvent event) {
+        // Haulmont API
+        protected void onHeaderClickEvent(GridClickEvent event) {
             if (selectAllCheckBox.isEnabled()) {
                 CellReference<?> targetCell = event.getTargetCell();
                 int defaultRowIndex = getHeader().getRows()
@@ -3218,13 +3223,14 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * completely internal class, and is, as such, safe to re-name should a more
      * descriptive name come to mind.
      */
-    private final class UserSorter {
+    // Haulmont API dependency
+    protected class UserSorter {
 
         private final Timer timer;
         private boolean scheduledMultisort;
         private Column<?, T> column;
 
-        private UserSorter() {
+        protected UserSorter() {
             timer = new Timer() {
 
                 @Override
@@ -4121,7 +4127,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * UI and functionality related to hiding columns with toggles in the
      * sidebar.
      */
-    private final class ColumnHider {
+    // Haulmont API
+    protected class ColumnHider {
 
         /** Map from columns to their hiding toggles, component might change */
         private Map<Column<?, T>, MenuItem> columnToHidingToggleMap = new HashMap<>();
@@ -4165,7 +4172,18 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             } else {
                 buf.append("v-on");
             }
-            buf.append("\"><div>");
+
+            // Haulmont API
+            buf.append("\"");
+
+            // Haulmont API
+            String customHtmlAttributes = getCustomHtmlAttributes(column);
+            if (customHtmlAttributes != null) {
+                buf.append(" ").append(customHtmlAttributes);
+            }
+
+            // Haulmont API
+            buf.append("><div>");
             String caption = column.getHidingToggleCaption();
             if (caption == null) {
                 caption = column.headerCaption;
@@ -4174,6 +4192,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             buf.append("</div></span>");
 
             return buf.toString();
+        }
+
+        // Haulmont API
+        protected String getCustomHtmlAttributes(Column<?, T> column) {
+            return null;
         }
 
         private void updateTogglesOrder() {
@@ -4261,7 +4284,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     protected final CellFocusHandler cellFocusHandler;
 
-    private final UserSorter sorter = new UserSorter();
+    // Haulmont API
+    private final UserSorter sorter = createUserSorter();
+
+    // Haulmont API
+    protected UserSorter createUserSorter() {
+        return new UserSorter();
+    }
 
     private final Editor<T> editor = GWT.create(Editor.class);
 
@@ -4300,7 +4329,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     private boolean columnReorderingAllowed;
 
-    private ColumnHider columnHider = new ColumnHider();
+    // Haulmont API
+    private ColumnHider columnHider = createColumnHider();
+
+    // Haulmont API
+    protected ColumnHider createColumnHider() {
+        return new ColumnHider();
+    }
 
     private DragAndDropHandler dndHandler = new DragAndDropHandler();
 
@@ -5915,6 +5950,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                             cell);
                 }
 
+                // Haulmont API
+                if (staticRow instanceof HeaderRow || staticRow instanceof FooterRow) {
+                    addAdditionalData(staticRow, cell);
+                }
+
                 // Assign colspan to cell before rendering
                 cell.setColSpan(metadata.getColspan());
 
@@ -6136,6 +6176,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
                 cellFocusHandler.updateFocusedCellStyle(cell, container);
             }
+        }
+
+        // Haulmont API
+        protected void addAdditionalData(StaticRow<?> staticRow, FlyweightCell cell) {
+
         }
 
         private void addAriaLabelToHeaderRow(FlyweightCell cell) {
@@ -7790,6 +7835,16 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         return w != null;
     }
 
+    // Haulmont API
+    protected boolean isWidgetAllowsClickHandling(Element targetElement) {
+        return false;
+    }
+
+    // Haulmont API
+    protected boolean isEventHandlerShouldHandleEvent(Element targetElement) {
+        return false;
+    }
+
     private class EditorEventHandler implements GridEventHandler<T> {
 
         @Override
@@ -7833,8 +7888,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             if (event.isHandled()) {
                 return;
             }
-            event.setHandled(isElementInChildWidget(
-                    Element.as(event.getDomEvent().getEventTarget())));
+            Element targetElement = Element.as(event.getDomEvent().getEventTarget());
+            event.setHandled(isElementInChildWidget(targetElement)
+                    // Haulmont API
+                    && !isEventHandlerShouldHandleEvent(targetElement));
         }
     };
 
@@ -8168,7 +8225,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         if (selectColumnRenderer != null) {
             cellFocusHandler.offsetRangeBy(1);
-            selectionColumn = new SelectionColumn(selectColumnRenderer);
+            // Haulmont API
+            selectionColumn = createSelectionColumn(selectColumnRenderer);
 
             addColumnsSkipSelectionColumnCheck(
                     Collections.singleton(selectionColumn), 0);
@@ -8180,6 +8238,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         updateFrozenColumns();
+    }
+
+    // Haulmont API
+    protected SelectionColumn createSelectionColumn(Renderer<Boolean> selectColumnRenderer) {
+        return new SelectionColumn(selectColumnRenderer);
     }
 
     /**
