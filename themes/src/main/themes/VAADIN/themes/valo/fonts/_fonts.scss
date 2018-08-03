@@ -10,7 +10,7 @@
 /// since Vaadin Framework version 8.0 (#7979)
 /// https://vaadin.com/icons
 
-$v-icons: true !default;
+$v-icons: false !default;
 
 /// Set the value of this variable to `false` if you want to exclude the Font Awesome icons.
 /// Only included to ease migration, and will not be updated in the future.
