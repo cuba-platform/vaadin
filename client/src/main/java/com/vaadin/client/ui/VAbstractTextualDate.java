@@ -51,9 +51,8 @@ import java.util.Date;
  */
 public abstract class VAbstractTextualDate<R extends Enum<R>>
         extends VDateField<R>
-        implements ChangeHandler, Focusable,
-        SubPartAware, HandlesAriaCaption, HandlesAriaInvalid,
-        HandlesAriaRequired, KeyDownHandler {
+        implements ChangeHandler, Focusable, SubPartAware, HandlesAriaCaption,
+        HandlesAriaInvalid, HandlesAriaRequired, KeyDownHandler {
 
     private static final String PARSE_ERROR_CLASSNAME = "-parseerror";
     private static final String ISO_DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
@@ -80,13 +79,11 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
 
     public VAbstractTextualDate(R resoluton) {
         super(resoluton);
-        //Haulmont API
+        // Haulmont API
         text = createImpl();
         text.addChangeHandler(this);
-        text.addFocusHandler(
-                event -> fireBlurFocusEvent(event, true));
-        text.addBlurHandler(
-                event -> fireBlurFocusEvent(event, false));
+        text.addFocusHandler(event -> fireBlurFocusEvent(event, true));
+        text.addBlurHandler(event -> fireBlurFocusEvent(event, false));
         if (BrowserInfo.get().isIE()) {
             addDomHandler(this, KeyDownEvent.getType());
         }
@@ -94,12 +91,12 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
         publishJSHelpers(getElement());
     }
 
-    //Haulmont API
+    // Haulmont API
     protected TextBoxBase createImpl() {
         return new TextBox();
     }
 
-    //Haulmont API
+    // Haulmont API
     public TextBoxBase getImpl() {
         return text;
     }
@@ -143,8 +140,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
         } catch (LocaleNotLoadedException e) {
             // TODO should die instead? Can the component survive
             // without format string?
-            getLogger().error(
-                    e.getMessage() == null ? "" : e.getMessage(), e);
+            getLogger().error(e.getMessage() == null ? "" : e.getMessage(), e);
             return null;
         }
     }
@@ -266,8 +262,8 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
                 // remove possibly added invalid value indication
                 removeStyleName(getStylePrimaryName() + PARSE_ERROR_CLASSNAME);
             } catch (final Exception e) {
-                getLogger().info(
-                        e.getMessage() == null ? "" : e.getMessage(), e);
+                getLogger().info(e.getMessage() == null ? "" : e.getMessage(),
+                        e);
 
                 addStyleName(getStylePrimaryName() + PARSE_ERROR_CLASSNAME);
                 setDate(null);
@@ -285,7 +281,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
      *
      * @since 8.2
      * @deprecated Use {@link #updateBufferedResolutions()} and
-     * {@link #sendBufferedValues()} instead.
+     *             {@link #sendBufferedValues()} instead.
      */
     @Deprecated
     protected final void updateAndSendBufferedValues() {
@@ -416,8 +412,7 @@ public abstract class VAbstractTextualDate<R extends Enum<R>>
         }
     }
 
-    private void fireBlurFocusEvent(DomEvent<?> event,
-            boolean focus) {
+    private void fireBlurFocusEvent(DomEvent<?> event, boolean focus) {
         String styleName = VTextField.CLASSNAME + "-"
                 + VTextField.CLASSNAME_FOCUS;
         if (focus) {

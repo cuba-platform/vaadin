@@ -445,7 +445,8 @@ public class VTabsheet extends VTabsheetBase
     }
 
     // Haulmont API dependency, implements ContextMenuHandler
-    public static class TabBar extends ComplexPanel implements VCloseHandler, ContextMenuHandler {
+    public static class TabBar extends ComplexPanel
+            implements VCloseHandler, ContextMenuHandler {
 
         private final Element tr = DOM.createTR();
 
@@ -651,7 +652,7 @@ public class VTabsheet extends VTabsheetBase
 
             for (int i = oldPosition - 1; i >= 0; i--) {
                 Tab tab = getTab(i);
-                if (!tab.isHiddenOnServer()) {
+                if (tab != null && !tab.isHiddenOnServer()) {
                     return i;
                 }
             }
@@ -761,7 +762,8 @@ public class VTabsheet extends VTabsheetBase
     }
 
     // Haulmont API
-    protected void onTabContextMenu(final int tabIndex, ContextMenuEvent event) {
+    protected void onTabContextMenu(final int tabIndex,
+            ContextMenuEvent event) {
         // to implement in descendant
     }
 
@@ -846,7 +848,7 @@ public class VTabsheet extends VTabsheetBase
     /**
      * @return Whether the tab could be selected or not.
      *
-     * Haulmont API dependency
+     *         Haulmont API dependency
      */
     protected boolean canSelectTab(final int tabIndex) {
         Tab tab = tb.getTab(tabIndex);
@@ -1435,9 +1437,10 @@ public class VTabsheet extends VTabsheetBase
 
     private boolean isClippedTabs() {
         // Haulmont API
-        return (tb.getOffsetWidth() - DOM.getElementPropertyInt((Element) tb
-                .getContainerElement().getLastChild().cast(), "offsetWidth")) + getOtherComponentsWidth() > getOffsetWidth()
-                - (isScrolledTabs() ? scroller.getOffsetWidth() : 0);
+        return (tb.getOffsetWidth() - DOM.getElementPropertyInt(
+                (Element) tb.getContainerElement().getLastChild().cast(),
+                "offsetWidth")) + getOtherComponentsWidth() > getOffsetWidth()
+                        - (isScrolledTabs() ? scroller.getOffsetWidth() : 0);
     }
 
     // Haulmont API
@@ -1642,8 +1645,6 @@ public class VTabsheet extends VTabsheetBase
              *
              * @param blurSource
              *            the source.
-             * @param focusedTabProvider
-             *            provides the current focused tab.
              */
             public BlurCommand(Tab blurSource) {
                 this.blurSource = blurSource;

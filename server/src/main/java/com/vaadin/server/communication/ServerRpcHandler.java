@@ -107,8 +107,7 @@ public class ServerRpcHandler implements Serializable {
                 clientToServerMessageId = (int) json
                         .getNumber(ApplicationConstants.CLIENT_TO_SERVER_ID);
             } else {
-                getLogger()
-                        .warn("Server message without client id received");
+                getLogger().warn("Server message without client id received");
                 clientToServerMessageId = -1;
             }
             invocations = json.getArray(ApplicationConstants.RPC_INVOCATIONS);
@@ -245,8 +244,8 @@ public class ServerRpcHandler implements Serializable {
                 // Just a duplicate message due to a bad connection or similar
                 // It has already been handled by the server so it is safe to
                 // ignore
-                getLogger()
-                        .debug("Ignoring old message from the client. Expected: "
+                getLogger().debug(
+                        "Ignoring old message from the client. Expected: "
                                 + expectedId + ", got: "
                                 + rpcRequest.getClientToServerId());
             } else {

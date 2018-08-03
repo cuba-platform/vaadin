@@ -304,8 +304,7 @@ public class FileUploadHandler implements RequestHandler {
 
             // Multipart requests contain boundary string
             doHandleSimpleMultipartFileUpload(session, request, response,
-                    streamVariable, variableName, source,
-                    boundary);
+                    streamVariable, variableName, source, boundary);
         } else {
             // if boundary string does not exist, the posted file is from
             // XHR2.post(File)
@@ -696,8 +695,7 @@ public class FileUploadHandler implements RequestHandler {
     /**
      * Sends the upload response.
      *
-     * Haulmont API dependency
-     * Added parameters
+     * Haulmont API dependency Added parameters
      *
      * @param request
      * @param response
@@ -706,8 +704,8 @@ public class FileUploadHandler implements RequestHandler {
      * @throws IOException
      */
     protected void sendUploadResponse(VaadinRequest request,
-                                      VaadinResponse response,
-                                      String filename, long contentLength) throws IOException {
+            VaadinResponse response, String filename, long contentLength)
+            throws IOException {
         response.setContentType(
                 ApplicationConstants.CONTENT_TYPE_TEXT_HTML_UTF_8);
         try (OutputStream out = response.getOutputStream()) {

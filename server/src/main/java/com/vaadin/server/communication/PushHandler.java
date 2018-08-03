@@ -56,6 +56,8 @@ public class PushHandler {
 
     private int longPollingSuspendTimeout = -1;
 
+    private final ServerRpcHandler rpcHandler = createRpcHandler();
+
     /**
      * Callback interface used internally to process an event with the
      * corresponding UI properly locked.
@@ -116,8 +118,7 @@ public class PushHandler {
      */
     private final PushEventCallback receiveCallback = (
             AtmosphereResource resource, UI ui) -> {
-        getLogger().trace("Received message from resource {}", resource.uuid
-                ());
+        getLogger().trace("Received message from resource {}", resource.uuid());
 
         AtmosphereRequest req = resource.getRequest();
 
@@ -141,15 +142,14 @@ public class PushHandler {
         assert vaadinRequest != null;
 
         try {
-            new ServerRpcHandler().handleRpc(ui, reader, vaadinRequest);
+            rpcHandler.handleRpc(ui, reader, vaadinRequest);
             connection.push(false);
         } catch (JsonException e) {
             getLogger().error("Error writing JSON to response", e);
             // Refresh on client side
             sendRefreshAndDisconnect(resource);
         } catch (InvalidUIDLSecurityKeyException e) {
-            getLogger().warn(
-                    "Invalid security key received from {}",
+            getLogger().warn("Invalid security key received from {}",
                     resource.getRequest().getRemoteHost());
             // Refresh on client side
             sendRefreshAndDisconnect(resource);
@@ -160,6 +160,16 @@ public class PushHandler {
 
     public PushHandler(VaadinServletService service) {
         this.service = service;
+    }
+
+    /**
+     * Creates the ServerRpcHandler to use.
+     *
+     * @return the ServerRpcHandler to use
+     * @since 8.5
+     */
+    protected ServerRpcHandler createRpcHandler() {
+        return new ServerRpcHandler();
     }
 
     /**
@@ -314,7 +324,8 @@ public class PushHandler {
         AtmosphereResource resource = event.getResource();
 
         if (resource == null) {
-            getLogger().error("Could not get resource. This should never happen.");
+            getLogger()
+                    .error("Could not get resource. This should never happen.");
             return;
         }
 
@@ -325,14 +336,16 @@ public class PushHandler {
         try {
             session = service.findVaadinSession(vaadinRequest);
         } catch (ServiceException e) {
-            getLogger().error("Could not get session. This should never happen", e);
+            getLogger().error("Could not get session. This should never happen",
+                    e);
             return;
         } catch (SessionExpiredException e) {
             // This happens at least if the server is restarted without
             // preserving the session. After restart the client reconnects, gets
             // a session expired notification and then closes the connection and
             // ends up here
-            getLogger().trace("Session expired before push disconnect event was received",
+            getLogger().trace(
+                    "Session expired before push disconnect event was received",
                     e);
             return;
         }
@@ -347,17 +360,16 @@ public class PushHandler {
                 /*
                  * UI not found, could be because FF has asynchronously closed
                  * the websocket connection and Atmosphere has already done
-                 * cleanup of the request attributes.
-                 *
-                 * In that case, we still have a chance of finding the right UI
-                 * by iterating through the UIs in the session looking for one
-                 * using the same AtmosphereResource.
+                 * cleanup of the request attributes. In that case, we still
+                 * have a chance of finding the right UI by iterating through
+                 * the UIs in the session looking for one using the same
+                 * AtmosphereResource.
                  */
                 ui = findUiUsingResource(resource, session.getUIs());
 
                 if (ui == null) {
-                    getLogger().debug(
-                            "Could not get UI. This should never happen,"
+                    getLogger()
+                            .debug("Could not get UI. This should never happen,"
                                     + " except when reloading in Firefox and Chrome -"
                                     + " see http://dev.vaadin.com/ticket/14251.");
                     return;
@@ -459,15 +471,15 @@ public class PushHandler {
                         "sendNotificationAndDisconnect called for resource no longer in scope");
                 return;
             }
-
             // force correct encoding
             resource.getResponse().setCharacterEncoding("UTF-8");
-            resource.getResponse().setContentType(JsonConstants.JSON_CONTENT_TYPE);
+            resource.getResponse()
+                    .setContentType(JsonConstants.JSON_CONTENT_TYPE);
             resource.getResponse().getWriter().write(notificationJson);
             resource.resume();
         } catch (Exception e) {
-            getLogger().trace(
-                    "Failed to send critical notification to client", e);
+            getLogger().trace("Failed to send critical notification to client",
+                    e);
         }
     }
 

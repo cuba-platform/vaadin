@@ -79,10 +79,8 @@ public class DragAndDropWrapperConnector extends CustomComponentConnector
                         }
                     } else {
                         if (widget.fileIdToReceiver.containsKey(fileId)
-                                && receiverUrl != null
-                                && !receiverUrl
-                                        .equals(widget.fileIdToReceiver
-                                                .get(fileId))) {
+                                && receiverUrl != null && !receiverUrl.equals(
+                                        widget.fileIdToReceiver.get(fileId))) {
                             getLogger().error(
                                     "Overwriting file receiver mapping for fileId "
                                             + fileId + " . Old receiver URL: "
@@ -109,10 +107,9 @@ public class DragAndDropWrapperConnector extends CustomComponentConnector
                         .getConnector(dragImageComponentConnectorId);
 
                 if (connector == null) {
-                    getLogger().warn(
-                            "DragAndDropWrapper drag image component"
-                                    + " connector now found. Make sure the"
-                                    + " component is attached.");
+                    getLogger().warn("DragAndDropWrapper drag image component"
+                            + " connector now found. Make sure the"
+                            + " component is attached.");
                 } else {
                     widget.setDragAndDropWidget(connector.getWidget());
                 }

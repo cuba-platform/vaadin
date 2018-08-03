@@ -55,6 +55,7 @@ import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.ConnectorMap;
 import com.vaadin.client.Focusable;
+import com.vaadin.client.HasComponentsConnector;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.debug.internal.VDebugWindow;
@@ -255,11 +256,16 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
          * Restores the previously stored focused element.
          *
          * When the focus was changed outside the window while the window was
-         * open, the originally stored element is restored.
+         * open, the originally stored element is not restored.
+         *
+         * IE returns null and other browsers HTMLBodyElement, if no element is
+         * focused after window is closed.
          */
-        getApplicationConnection().getUIConnector().getWidget()
-                .focusStoredElement();
-
+        if (WidgetUtil.getFocusedElement() == null || "body".equalsIgnoreCase(
+                WidgetUtil.getFocusedElement().getTagName())) {
+            getApplicationConnection().getUIConnector().getWidget()
+                    .focusStoredElement();
+        }
         removeTabBlockHandlers();
         // If you click while the window is being closed,
         // a new dragging curtain might be added and will
@@ -636,6 +642,15 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
              */
             WidgetUtil
                     .runWebkitOverflowAutoFix(contents.getFirstChildElement());
+            Scheduler.get().scheduleFinally(() -> {
+                List<ComponentConnector> childComponents = ((HasComponentsConnector) ConnectorMap
+                        .get(client).getConnector(this)).getChildComponents();
+                if (!childComponents.isEmpty()) {
+                    LayoutManager layoutManager = getLayoutManager();
+                    layoutManager.setNeedsMeasure(childComponents.get(0));
+                    layoutManager.layoutNow();
+                }
+            });
         }
     }
 
@@ -719,7 +734,6 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
             hideResizingCurtain();
         }
         super.hide();
-
         int curIndex = getWindowOrder();
         // Remove window from windowOrder to avoid references being left
         // hanging.
@@ -1362,15 +1376,18 @@ public class VWindow extends VOverlay implements ShortcutActionHandlerOwner,
     // Haulmont API
     protected boolean isChildOfTopPopup(Element target) {
         VWindow topmostWindow = getTopmostWindow();
-        String topmostZIndex = topmostWindow.getElement().getStyle().getZIndex();
+        String topmostZIndex = topmostWindow.getElement().getStyle()
+                .getZIndex();
 
         Widget w = WidgetUtil.findWidget(target, null);
         if (w != null) {
             PopupPanel popupPanel = findPopupPanel(w);
             if (popupPanel != null) {
-                String popupZIndex = popupPanel.getElement().getStyle().getZIndex();
+                String popupZIndex = popupPanel.getElement().getStyle()
+                        .getZIndex();
                 try {
-                    if (Integer.parseInt(topmostZIndex) < Integer.parseInt(popupZIndex)) {
+                    if (Integer.parseInt(topmostZIndex) < Integer
+                            .parseInt(popupZIndex)) {
                         return true;
                     }
                 } catch (NumberFormatException e) {

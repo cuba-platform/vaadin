@@ -101,8 +101,9 @@ public class ServerRpcQueue {
     }
 
     // Haulmont API
-    public void removeMatching(ApplicationConnection.MethodInvocationFilter invocationFilter,
-                               ApplicationConnection.RemoveMethodInvocationCallback callback) {
+    public void removeMatching(
+            ApplicationConnection.MethodInvocationFilter invocationFilter,
+            ApplicationConnection.RemoveMethodInvocationCallback callback) {
         Iterator<MethodInvocation> iter = pendingInvocations.values()
                 .iterator();
         while (iter.hasNext()) {

@@ -40,8 +40,7 @@ import java.io.IOException;
  * @author Vaadin Ltd
  * @since 7.1
  */
-public class PushRequestHandler
-        implements SessionExpiredHandler {
+public class PushRequestHandler implements SessionExpiredHandler {
 
     private AtmosphereFramework atmosphere;
     private PushHandler pushHandler;
@@ -64,11 +63,9 @@ public class PushRequestHandler
             try {
                 atmosphere = initAtmosphere(vaadinServletConfig);
             } catch (Exception e) {
-                getLogger().warn(
-                        "Failed to initialize Atmosphere for "
-                                + service.getServlet().getServletName()
-                                + ". Push will not work.",
-                        e);
+                getLogger().warn("Failed to initialize Atmosphere for "
+                        + service.getServlet().getServletName()
+                        + ". Push will not work.", e);
                 return;
             }
         } else {

@@ -139,6 +139,34 @@ public interface Component extends ClientConnector, Sizeable {
     public void setStyleName(String style);
 
     /**
+     * Adds or removes a style name. Multiple styles can be specified as a
+     * space-separated list of style names.
+     *
+     * If the {@code add} parameter is true, the style name is added to the
+     * component. If the {@code add} parameter is false, the style name is
+     * removed from the component.
+     * <p>
+     * Functionally this is equivalent to using {@link #addStyleName(String)} or
+     * {@link #removeStyleName(String)}
+     *
+     * @since 8.5
+     * @param style
+     *            the style name to be added or removed
+     * @param add
+     *            <code>true</code> to add the given style, <code>false</code>
+     *            to remove it
+     * @see #addStyleName(String)
+     * @see #removeStyleName(String)
+     */
+    public default void setStyleName(String style, boolean add) {
+        if (add) {
+            addStyleName(style);
+        } else {
+            removeStyleName(style);
+        }
+    }
+
+    /**
      * Adds one or more style names to this component. Multiple styles can be
      * specified as a space-separated list of style names. The style name will
      * be rendered as a HTML class name, which can be used in a CSS definition.
@@ -1145,7 +1173,8 @@ public interface Component extends ClientConnector, Sizeable {
     }
 
     /**
-     * A sub-interface implemented by components that can provide a context help.
+     * A sub-interface implemented by components that can provide a context
+     * help.
      * <p>
      * Haulmont API.
      */
@@ -1158,43 +1187,49 @@ public interface Component extends ClientConnector, Sizeable {
         /**
          * Sets context help text.
          *
-         * @param contextHelpText context help text to be set
+         * @param contextHelpText
+         *            context help text to be set
          */
         void setContextHelpText(String contextHelpText);
 
         /**
-         * @return true if field accepts context help text in HTML format, false otherwise
+         * @return true if field accepts context help text in HTML format, false
+         *         otherwise
          */
         boolean isContextHelpTextHtmlEnabled();
 
         /**
          * Defines if context help text can be presented as HTML.
          *
-         * @param contextHelpTextHtmlEnabled true if field accepts context
-         *                                   help text in HTML format, false otherwise
+         * @param contextHelpTextHtmlEnabled
+         *            true if field accepts context help text in HTML format,
+         *            false otherwise
          */
         void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled);
 
         /**
          * Registers a new context help icon click listener
          *
-         * @param listener the listener to register
+         * @param listener
+         *            the listener to register
          * @return a registration object for removing the listener
          */
-        Registration addContextHelpIconClickListener(ContextHelpIconClickListener listener);
+        Registration addContextHelpIconClickListener(
+                ContextHelpIconClickListener listener);
 
         /**
          * Listener for context help icon click events.
          */
         interface ContextHelpIconClickListener extends Serializable {
-            Method CONTEXT_HELP_ICON_CLICK_METHOD = ReflectTools
-                    .findMethod(ContextHelpIconClickListener.class,
-                            "iconClick", ContextHelpIconClickEvent.class);
+            Method CONTEXT_HELP_ICON_CLICK_METHOD = ReflectTools.findMethod(
+                    ContextHelpIconClickListener.class, "iconClick",
+                    ContextHelpIconClickEvent.class);
 
             /**
              * Called when the context help icon click happens.
              *
-             * @param event en event providing more information
+             * @param event
+             *            en event providing more information
              */
             void iconClick(ContextHelpIconClickEvent event);
         }
@@ -1207,10 +1242,13 @@ public interface Component extends ClientConnector, Sizeable {
             /**
              * Constructor for a context help icon click event.
              *
-             * @param component the Component from which this event originates
-             * @param details   the mouse details of the click
+             * @param component
+             *            the Component from which this event originates
+             * @param details
+             *            the mouse details of the click
              */
-            public ContextHelpIconClickEvent(HasContextHelp component, MouseEventDetails details) {
+            public ContextHelpIconClickEvent(HasContextHelp component,
+                    MouseEventDetails details) {
                 super(component, details);
             }
 

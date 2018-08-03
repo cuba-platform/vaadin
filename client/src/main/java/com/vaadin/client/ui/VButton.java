@@ -275,7 +275,7 @@ public class VButton extends FocusWidget
         // handling.
         // Haulmont API invocation
         if (!handleKeyboardEvents(event)
-            && (event.getTypeInt() & Event.KEYEVENTS) != 0) {
+                && (event.getTypeInt() & Event.KEYEVENTS) != 0) {
             switch (type) {
             case Event.ONKEYDOWN:
                 // Stop propagation when the user starts pressing a button that

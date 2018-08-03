@@ -208,8 +208,7 @@ public abstract class ConnectorBundleLoader {
 
                 @Override
                 public void failed(Throwable reason) {
-                    getLogger().error(
-                            "Error loading deferred bundle", reason);
+                    getLogger().error("Error loading deferred bundle", reason);
                 }
             });
         }

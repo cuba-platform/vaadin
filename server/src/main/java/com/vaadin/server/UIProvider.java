@@ -220,14 +220,11 @@ public abstract class UIProvider implements Serializable {
             try {
                 return cls.newInstance();
             } catch (InstantiationException e) {
-                getLogger().info(
-                        "Unexpected trying to instantiate class {}",
-                        cls.getName(),
-                        e);
+                getLogger().info("Unexpected trying to instantiate class {}",
+                        cls.getName(), e);
             } catch (IllegalAccessException e) {
-                getLogger().info(
-                        "Unexpected trying to access class {}", cls.getName(),
-                        e);
+                getLogger().info("Unexpected trying to access class {}",
+                        cls.getName(), e);
             }
         }
         return null;

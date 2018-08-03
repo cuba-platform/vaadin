@@ -88,8 +88,7 @@ public class UidlRequestHandler extends SynchronizedRequestHandler
             writeRefresh(request, response);
             return true;
         } catch (InvalidUIDLSecurityKeyException e) {
-            getLogger().warn(
-                    "Invalid security key received from {}",
+            getLogger().warn("Invalid security key received from {}",
                     request.getRemoteHost());
             // Refresh on client side
             writeRefresh(request, response);
@@ -118,7 +117,7 @@ public class UidlRequestHandler extends SynchronizedRequestHandler
         closeJsonMessage(writer);
     }
 
-    //Haulmont API
+    // Haulmont API
     protected UidlWriter createUidlWriter() {
         return new UidlWriter();
     }

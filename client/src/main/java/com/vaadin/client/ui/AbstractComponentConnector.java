@@ -21,13 +21,28 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Touch;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ContextMenuEvent;
+import com.google.gwt.event.dom.client.MouseEvent;
+import com.google.gwt.event.dom.client.TouchEndEvent;
+import com.google.gwt.event.dom.client.TouchMoveEvent;
+import com.google.gwt.event.dom.client.TouchMoveHandler;
+import com.google.gwt.event.dom.client.TouchStartEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.*;
+import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.HasComponentsConnector;
+import com.vaadin.client.LayoutManager;
+import com.vaadin.client.MouseEventDetailsBuilder;
+import com.vaadin.client.Profiler;
+import com.vaadin.client.ServerConnector;
+import com.vaadin.client.StyleConstants;
+import com.vaadin.client.TooltipInfo;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.Util;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.WidgetUtil.ErrorUtil;
 import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -37,7 +52,12 @@ import com.vaadin.client.metadata.NoDataException;
 import com.vaadin.client.metadata.Type;
 import com.vaadin.client.metadata.TypeData;
 import com.vaadin.client.ui.ui.UIConnector;
-import com.vaadin.shared.*;
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.ComponentConstants;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.ContextClickRpc;
+import com.vaadin.shared.EventId;
+import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.TabIndexState;
 import com.vaadin.shared.ui.hascontexthelp.HasContextHelpServerRpc;
@@ -88,17 +108,16 @@ public abstract class AbstractComponentConnector extends AbstractConnector
     @OnStateChange("registeredEventListeners")
     void handleContextClickListenerChange() {
         if (contextHandler == null && hasEventListener(EventId.CONTEXT_CLICK)) {
-            contextHandler = getWidget()
-                    .addDomHandler(event -> {
-                        final MouseEventDetails mouseEventDetails = MouseEventDetailsBuilder
-                                .buildMouseEventDetails(event.getNativeEvent(),
-                                        getWidget().getElement());
+            contextHandler = getWidget().addDomHandler(event -> {
+                final MouseEventDetails mouseEventDetails = MouseEventDetailsBuilder
+                        .buildMouseEventDetails(event.getNativeEvent(),
+                                getWidget().getElement());
 
-                        event.preventDefault();
-                        event.stopPropagation();
-                        sendContextClickEvent(mouseEventDetails,
-                                event.getNativeEvent().getEventTarget());
-                    }, ContextMenuEvent.getType());
+                event.preventDefault();
+                event.stopPropagation();
+                sendContextClickEvent(mouseEventDetails,
+                        event.getNativeEvent().getEventTarget());
+            }, ContextMenuEvent.getType());
 
             // if the widget has a contextclick listener, add touch support as
             // well.
@@ -161,8 +180,7 @@ public abstract class AbstractComponentConnector extends AbstractConnector
             }
 
             // Prevent selection for the element while pending long tap.
-            WidgetUtil.setTextSelectionEnabled(widget.getElement(),
-                    false);
+            WidgetUtil.setTextSelectionEnabled(widget.getElement(), false);
 
             if (BrowserInfo.get().isAndroid()) {
                 // Android fires ContextMenu events automatically.
@@ -170,9 +188,9 @@ public abstract class AbstractComponentConnector extends AbstractConnector
             }
 
             /*
-             * we need to build mouseEventDetails eagerly - the event won't
-             * be guaranteed to be around when the timer executes. At least
-             * this was the case with iOS devices.
+             * we need to build mouseEventDetails eagerly - the event won't be
+             * guaranteed to be around when the timer executes. At least this
+             * was the case with iOS devices.
              */
 
             final MouseEventDetails mouseEventDetails = MouseEventDetailsBuilder
@@ -390,7 +408,8 @@ public abstract class AbstractComponentConnector extends AbstractConnector
             // Haulmont API
             // Selenium UI Testing Support
             if (getState().cubaId != null) {
-                getWidget().getElement().setAttribute("cuba-id",getState().cubaId);
+                getWidget().getElement().setAttribute("cuba-id",
+                        getState().cubaId);
             } else if (!stateChangeEvent.isInitialStateChange()) {
                 getWidget().getElement().removeAttribute("cuba-id");
             }
@@ -479,7 +498,8 @@ public abstract class AbstractComponentConnector extends AbstractConnector
             HasErrorIndicatorElement hasErrorIndicatorElement = (HasErrorIndicatorElement) widget;
             if (getState().errorMessage != null) {
                 hasErrorIndicatorElement.setErrorIndicatorElementVisible(true);
-                ErrorUtil.setErrorLevelStyle(hasErrorIndicatorElement.getErrorIndicatorElement(),
+                ErrorUtil.setErrorLevelStyle(
+                        hasErrorIndicatorElement.getErrorIndicatorElement(),
                         StyleConstants.STYLE_NAME_ERROR_INDICATOR,
                         getState().errorLevel);
             } else {
@@ -769,7 +789,8 @@ public abstract class AbstractComponentConnector extends AbstractConnector
         // Haulmont API
         if (isContextHelpTooltipEnabled()) {
             info.setContextHelp(getState().contextHelpText);
-            info.setContextHelpHtmlEnabled(getState().contextHelpTextHtmlEnabled);
+            info.setContextHelpHtmlEnabled(
+                    getState().contextHelpTextHtmlEnabled);
         }
 
         return info;
@@ -780,7 +801,8 @@ public abstract class AbstractComponentConnector extends AbstractConnector
         // Normally, there is a tooltip if description or errorMessage is set
         AbstractComponentState state = getState();
         if ((state.description != null && !state.description.isEmpty())
-                || (getState().contextHelpText != null && !getState().contextHelpText.isEmpty())
+                || (getState().contextHelpText != null
+                        && !getState().contextHelpText.isEmpty())
                 // Haulmont API
                 || isContextHelpTooltipEnabled()) {
             return true;
@@ -791,7 +813,8 @@ public abstract class AbstractComponentConnector extends AbstractConnector
     // Haulmont API
     protected boolean isContextHelpTooltipEnabled() {
         boolean hasListeners = getState().registeredEventListeners != null
-                && getState().registeredEventListeners.contains(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT);
+                && getState().registeredEventListeners.contains(
+                        AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT);
 
         return !hasListeners && getState().contextHelpText != null
                 && !getState().contextHelpText.isEmpty();

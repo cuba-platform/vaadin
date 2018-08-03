@@ -1,7 +1,5 @@
 package com.vaadin.tests.components;
 
-import java.io.File;
-
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -18,6 +16,8 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PushConfiguration;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+
+import java.io.File;
 
 public abstract class AbstractTestUI extends UI {
 
@@ -99,11 +99,10 @@ public abstract class AbstractTestUI extends UI {
         long currentWidgetsetTimestamp = currentWidgetsetFolder.lastModified();
         int halfHour = 30 * 60 * 1000;
         if (currentWidgetsetTimestamp + halfHour < newestWidgetsetTimestamp) {
-            Notification.show(
-                    "The currently used widgetset (" + usedWidgetset
-                            + ") was compiled long before the most recently compiled one ("
-                            + newestWidgetsetName
-                            + "). Are you sure you have compiled the right widgetset?",
+            Notification.show("The currently used widgetset (" + usedWidgetset
+                    + ") was compiled long before the most recently compiled one ("
+                    + newestWidgetsetName
+                    + "). Are you sure you have compiled the right widgetset?",
                     Type.WARNING_MESSAGE);
         }
     }

@@ -512,8 +512,8 @@ public class MessageHandler {
                     if (fetchStart != 0) {
                         int time = (int) (Duration.currentTimeMillis()
                                 - fetchStart);
-                        getLogger().info("First response processed "
-                                + time + " ms after fetchStart");
+                        getLogger().info("First response processed " + time
+                                + " ms after fetchStart");
                     }
 
                     bootstrapTime = calculateBootstrapTime();
@@ -719,8 +719,8 @@ public class MessageHandler {
                     try {
                         sce.getConnector().fireEvent(sce);
                     } catch (final Throwable e) {
-                        getLogger().error(
-                                "Error sending state change events", e);
+                        getLogger().error("Error sending state change events",
+                                e);
                     }
                 }
 

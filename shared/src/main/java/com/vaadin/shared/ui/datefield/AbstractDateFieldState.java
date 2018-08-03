@@ -15,12 +15,11 @@
  */
 package com.vaadin.shared.ui.datefield;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.vaadin.shared.AbstractFieldState;
 import com.vaadin.shared.annotations.NoLayout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Shared state for the AbstractDateField component.
@@ -122,7 +121,7 @@ public class AbstractDateFieldState extends AbstractFieldState {
     /**
      * Map of custom style names that correspond with given dates. Each date
      * must be set to midnight for the handling logic to work correctly.
-     * 
+     *
      * @since 8.3
      */
     public Map<String, String> dateStyles = new HashMap<String, String>();

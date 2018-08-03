@@ -48,6 +48,6 @@ public class TabState implements Serializable {
     public String id;
     public String iconAltText;
 
-    //Haulmont API
+    // Haulmont API
     public String cubaId;
 }

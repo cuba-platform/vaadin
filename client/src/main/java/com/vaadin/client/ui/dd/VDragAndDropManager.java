@@ -401,36 +401,36 @@ public class VDragAndDropManager {
 
     // Haulmont API
     protected native boolean isFileEvent(NativeEvent event) /*-{
-        // Chrome >= v21 and Opera >= v?
-        if (event.dataTransfer && event.dataTransfer.items) {
-            for (var i = 0; i < event.dataTransfer.items.length; i++) {
-                var item = event.dataTransfer.items[i];
-                if (typeof item.webkitGetAsEntry == "function") {
-                    var entry = item.webkitGetAsEntry();
-                    if (typeof entry !== "undefined" && entry !== null && entry.isFile) {
-                        return true;
-                    }
-                }
+                                                            // Chrome >= v21 and Opera >= v?
+                                                            if (event.dataTransfer && event.dataTransfer.items) {
+                                                            for (var i = 0; i < event.dataTransfer.items.length; i++) {
+                                                            var item = event.dataTransfer.items[i];
+                                                            if (typeof item.webkitGetAsEntry == "function") {
+                                                            var entry = item.webkitGetAsEntry();
+                                                            if (typeof entry !== "undefined" && entry !== null && entry.isFile) {
+                                                            return true;
+                                                            }
+                                                            }
 
-                if (item.kind && item.kind == "file") {
-                    return true;
-                }
-            }
-        }
+                                                            if (item.kind && item.kind == "file") {
+                                                            return true;
+                                                            }
+                                                            }
+                                                            }
 
-        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
-            return true;
-        }
+                                                            if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {
+                                                            return true;
+                                                            }
 
-        if (event.types) {
-            for (var j = 0; j < event.types.length; j++) {
-                if (event.types[j] == "Files") {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }-*/;
+                                                            if (event.types) {
+                                                            for (var j = 0; j < event.types.length; j++) {
+                                                            if (event.types[j] == "Files") {
+                                                            return true;
+                                                            }
+                                                            }
+                                                            }
+                                                            return false;
+                                                            }-*/;
 
     protected void updateDragImagePosition(NativeEvent gwtEvent,
             Element dragImage) {

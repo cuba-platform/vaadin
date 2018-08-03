@@ -32,16 +32,31 @@ import elemental.json.Json;
 import elemental.json.JsonException;
 import elemental.json.JsonObject;
 import elemental.json.impl.JsonUtil;
-import org.jsoup.nodes.*;
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.DocumentType;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -308,8 +323,7 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         protected String encodeQueryStringParameterValue(String queryString) {
             String encodedString = null;
             try {
-                encodedString = URLEncoder.encode(queryString,
-                        UTF_8.name());
+                encodedString = URLEncoder.encode(queryString, UTF_8.name());
             } catch (UnsupportedEncodingException e) {
                 // should never happen
                 throw new RuntimeException("Could not find UTF-8", e);
@@ -644,8 +658,8 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         mainDiv.attr("id", context.getAppId());
         mainDiv.addClass("v-app");
         mainDiv.addClass(context.getThemeName());
-        mainDiv.addClass(context.getUIClass().getSimpleName()
-                .toLowerCase(Locale.ROOT));
+        mainDiv.addClass(
+                context.getUIClass().getSimpleName().toLowerCase(Locale.ROOT));
         if (style != null && !style.isEmpty()) {
             mainDiv.attr("style", style);
         }
@@ -687,11 +701,10 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         Element mainScriptTag = new Element(Tag.valueOf("script"), "")
                 .attr("type", "text/javascript");
 
-        StringBuilder builder = new StringBuilder()
-                .append("//<![CDATA[\n")
+        StringBuilder builder = new StringBuilder().append("//<![CDATA[\n")
                 .append("if (!window.vaadin) alert(")
-                .append(
-                        JsonUtil.quote("Failed to load the bootstrap javascript: "
+                .append(JsonUtil
+                        .quote("Failed to load the bootstrap javascript: "
                                 + bootstrapLocation))
                 .append(");\n");
 

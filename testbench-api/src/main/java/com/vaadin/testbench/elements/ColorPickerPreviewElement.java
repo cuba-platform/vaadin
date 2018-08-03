@@ -36,9 +36,8 @@ public class ColorPickerPreviewElement extends CssLayoutElement {
     public boolean getColorFieldContainsErrors() {
         List<WebElement> caption = findElements(
                 By.className("v-caption-v-colorpicker-preview-textfield"));
-        return  !caption.isEmpty() &&
-        !caption.get(0).findElements(By.className("v-errorindicator"))
-                        .isEmpty();
+        return !caption.isEmpty() && !caption.get(0)
+                .findElements(By.className("v-errorindicator")).isEmpty();
     }
 
     /**
@@ -70,7 +69,7 @@ public class ColorPickerPreviewElement extends CssLayoutElement {
     /**
      * @return <code>WebElement</code> representing TextField in
      *         ColorPickerPreviewComponent
-     * 
+     *
      * @since 8.4
      */
     public WebElement getColorTextField() {

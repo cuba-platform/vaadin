@@ -1,9 +1,47 @@
 package com.vaadin.tests.tb3;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.vaadin.server.LegacyApplication;
+import com.vaadin.server.UIProvider;
+import com.vaadin.testbench.ScreenshotOnFailureRule;
+import com.vaadin.testbench.TestBenchDriverProxy;
+import com.vaadin.testbench.TestBenchElement;
+import com.vaadin.testbench.annotations.BrowserConfiguration;
+import com.vaadin.testbench.elements.CheckBoxElement;
+import com.vaadin.testbench.elements.LabelElement;
+import com.vaadin.testbench.elements.TableElement;
+import com.vaadin.testbench.elements.VerticalLayoutElement;
+import com.vaadin.testbench.parallel.Browser;
+import com.vaadin.testbench.parallel.BrowserUtil;
+import com.vaadin.testbench.parallel.ParallelTest;
+import com.vaadin.ui.UI;
+import elemental.json.JsonObject;
+import elemental.json.impl.JsonUtil;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpEntityEnclosingRequest;
+import org.junit.Assume;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Keyboard;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.HttpCommandExecutor;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,51 +57,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Level;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.HttpCommandExecutor;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import com.vaadin.server.LegacyApplication;
-import com.vaadin.server.UIProvider;
-import com.vaadin.testbench.TestBenchDriverProxy;
-import com.vaadin.testbench.TestBenchElement;
-import com.vaadin.testbench.annotations.BrowserConfiguration;
-import com.vaadin.testbench.elements.CheckBoxElement;
-import com.vaadin.testbench.elements.LabelElement;
-import com.vaadin.testbench.elements.TableElement;
-import com.vaadin.testbench.elements.VerticalLayoutElement;
-import com.vaadin.testbench.parallel.Browser;
-import com.vaadin.testbench.parallel.BrowserUtil;
-import com.vaadin.testbench.parallel.ParallelTest;
-import com.vaadin.ui.UI;
-
-import elemental.json.JsonObject;
-import elemental.json.impl.JsonUtil;
+import static org.junit.Assert.*;
 
 /**
  * Base class for TestBench 3+ tests. All TB3+ tests in the project should
@@ -87,6 +81,17 @@ public abstract class AbstractTB3Test extends ParallelTest {
 
     @Rule
     public TestName testName = new TestName();
+
+    {
+        // Override default screenshotOnFailureRule to close application
+        screenshotOnFailure = new ScreenshotOnFailureRule(this, true) {
+            @Override
+            protected void finished(Description description) {
+                closeApplication();
+                super.finished(description);
+            }
+        };
+    }
 
     /**
      * Height of the screenshots we want to capture
@@ -136,7 +141,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
      * Method for closing the tested application.
      */
     protected void closeApplication() {
-        if (driver != null) {
+        if (getDriver() != null) {
             try {
                 openTestURL("closeApplication");
             } catch (Exception e) {
@@ -154,10 +159,6 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected WebElement getTooltipElement() {
         return getDriver().findElement(
                 com.vaadin.testbench.By.className("v-tooltip-text"));
-    }
-
-    protected Coordinates getCoordinates(TestBenchElement element) {
-        return ((Locatable) element.getWrappedElement()).getCoordinates();
     }
 
     private boolean hasDebugMessage(String message) {
@@ -1012,10 +1013,7 @@ public abstract class AbstractTB3Test extends ParallelTest {
      */
     protected void selectMenu(String menuCaption, boolean click) {
         WebElement menuElement = getMenuElement(menuCaption);
-        Dimension size = menuElement.getSize();
-        new Actions(getDriver())
-                .moveToElement(menuElement, size.width - 10, size.height / 2)
-                .perform();
+        new Actions(getDriver()).moveToElement(menuElement).perform();
         if (click) {
             new Actions(getDriver()).click().perform();
         }
@@ -1047,6 +1045,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
     protected void selectMenuPath(String... menuCaptions) {
         selectMenu(menuCaptions[0], true);
 
+        // Make sure menu popup is opened.
+        waitUntil(e -> isElementPresent(By.className("gwt-MenuBarPopup"))
+                || isElementPresent(By.className("v-menubar-popup")));
+
         // Move to the menu item opened below the menu bar.
         new Actions(getDriver())
                 .moveByOffset(0,
@@ -1055,7 +1057,9 @@ public abstract class AbstractTB3Test extends ParallelTest {
 
         for (int i = 1; i < menuCaptions.length - 1; i++) {
             selectMenu(menuCaptions[i]);
-            new Actions(getDriver()).moveByOffset(40, 0).build().perform();
+            new Actions(getDriver()).moveByOffset(
+                    getMenuElement(menuCaptions[i]).getSize().getWidth(), 0)
+                    .build().perform();
         }
         selectMenu(menuCaptions[menuCaptions.length - 1], true);
     }
@@ -1178,6 +1182,48 @@ public abstract class AbstractTB3Test extends ParallelTest {
     }
 
     /**
+     * Gets the X offset for
+     * {@link Actions#moveToElement(WebElement, int, int)}. This method takes
+     * into account the W3C specification in browsers that properly implement
+     * it.
+     *
+     * @param element
+     *            the element
+     * @param targetX
+     *            the X coordinate where the move is wanted to go to
+     * @return the correct X offset
+     */
+    protected int getXOffset(WebElement element, int targetX) {
+        if (BrowserUtil.isFirefox(getDesiredCapabilities())) {
+            // Firefox follow W3C spec and moveToElement is relative to center
+            final int width = element.getSize().getWidth();
+            return targetX - ((width + width % 2) / 2);
+        }
+        return targetX;
+    }
+
+    /**
+     * Gets the Y offset for
+     * {@link Actions#moveToElement(WebElement, int, int)}. This method takes
+     * into account the W3C specification in browsers that properly implement
+     * it.
+     *
+     * @param element
+     *            the element
+     * @param targetY
+     *            the Y coordinate where the move is wanted to go to
+     * @return the correct Y offset
+     */
+    protected int getYOffset(WebElement element, int targetY) {
+        if (BrowserUtil.isFirefox(getDesiredCapabilities())) {
+            // Firefox follow W3C spec and moveToElement is relative to center
+            final int height = element.getSize().getHeight();
+            return targetY - ((height + height % 2) / 2);
+        }
+        return targetY;
+    }
+
+    /**
      * Returns client height rounded up instead of as double because of IE9
      * issues: https://dev.vaadin.com/ticket/18469
      */
@@ -1200,6 +1246,10 @@ public abstract class AbstractTB3Test extends ParallelTest {
     }
 
     protected TimeZone getBrowserTimeZone() {
+        Assume.assumeFalse(
+                "Internet Explorer 11 does not support resolvedOptions timeZone",
+                BrowserUtil.isIE(getDesiredCapabilities(), 11));
+
         // Ask TimeZone from browser
         String browserTimeZone = ((JavascriptExecutor) getDriver())
                 .executeScript(

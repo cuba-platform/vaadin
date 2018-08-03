@@ -176,8 +176,7 @@ public class VPopupTimeCalendar extends
         } catch (LocaleNotLoadedException e) {
             // TODO should die instead? Can the component survive
             // without format string?
-            getLogger().error(
-                    e.getMessage() == null ? "" : e.getMessage(), e);
+            getLogger().error(e.getMessage() == null ? "" : e.getMessage(), e);
             return null;
         }
     }

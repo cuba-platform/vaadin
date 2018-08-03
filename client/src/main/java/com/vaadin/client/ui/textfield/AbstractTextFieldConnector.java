@@ -39,10 +39,10 @@ public abstract class AbstractTextFieldConnector extends AbstractFieldConnector
             implements AbstractTextFieldClientRpc {
         @Override
         public void selectRange(int start, int length) {
-            // Haulmont API
             int textLength = getTextFieldValue().length();
-            //Enable setting cursor position after the last character
-            start = restrictTo(start, 0, length == 0 ? textLength : (textLength - 1));
+            // Enable setting cursor position after the last character
+            start = restrictTo(start, 0,
+                    length == 0 ? textLength : (textLength - 1));
             length = restrictTo(length, 0, textLength - start);
             getAbstractTextField().setSelectionRange(start, length);
         }
@@ -119,8 +119,7 @@ public abstract class AbstractTextFieldConnector extends AbstractFieldConnector
 
     private boolean hasStateChanged() {
         // Haulmont API
-        boolean textChanged = !getTextFieldValue()
-                .equals(getState().text);
+        boolean textChanged = !getTextFieldValue().equals(getState().text);
         boolean cursorPosChanged = getAbstractTextField()
                 .getCursorPos() != lastSentCursorPosition;
         return textChanged || cursorPosChanged;

@@ -16,18 +16,6 @@
 
 package com.vaadin.ui;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import org.jsoup.nodes.Element;
-
 import com.vaadin.data.HasFilterableDataProvider;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
@@ -60,10 +48,20 @@ import com.vaadin.shared.ui.combobox.ComboBoxState;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignFormatter;
-
 import elemental.json.JsonObject;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A filtering dropdown single-select. Items are filtered based on user input.
@@ -186,23 +184,21 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
         @Override
         public void createNewItem(String itemValue) {
             // New option entered
+            boolean added = false;
             if (itemValue != null && !itemValue.isEmpty()) {
                 if (getNewItemProvider() != null) {
                     Optional<T> item = getNewItemProvider().apply(itemValue);
-                    if (!item.isPresent()) {
-                        // ensure the client resets the value to previous
-                        // selection
-                        getRpcProxy(ComboBoxClientRpc.class)
-                                .newItemNotAdded(itemValue);
-                    }
+                    added = item.isPresent();
                 } else if (getNewItemHandler() != null) {
                     getNewItemHandler().accept(itemValue);
-                } else {
-                    // selection handling is needed at the client even if
-                    // NewItemHandler is missing
-                    getRpcProxy(ComboBoxClientRpc.class)
-                            .newItemNotAdded(itemValue);
+                    // Up to the user to tell if no item was added.
+                    added = true;
                 }
+            }
+
+            if (!added) {
+                // New item was not handled.
+                getRpcProxy(ComboBoxClientRpc.class).newItemNotAdded(itemValue);
             }
         }
 
@@ -236,7 +232,7 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
      * {@link #setItems(Collection)}
      */
     public ComboBox() {
-        super(new DataCommunicator<T>() {
+        this(new DataCommunicator<T>() {
             @Override
             protected DataKeyMapper<T> createKeyMapper(
                     ValueProvider<T, Object> identifierGetter) {
@@ -249,8 +245,6 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
                 };
             }
         });
-
-        init();
     }
 
     /**
@@ -280,6 +274,18 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
         this(caption);
 
         setItems(options);
+    }
+
+    /**
+     * Constructs and initializes an empty combo box.
+     *
+     * @param dataCommunicator
+     *            the data comnunicator to use with this ComboBox
+     * @since 8.5
+     */
+    protected ComboBox(DataCommunicator<T> dataCommunicator) {
+        super(dataCommunicator);
+        init();
     }
 
     /**
@@ -680,9 +686,6 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
     public void setItemCaptionGenerator(
             ItemCaptionGenerator<T> itemCaptionGenerator) {
         super.setItemCaptionGenerator(itemCaptionGenerator);
-        if (getSelectedItem().isPresent()) {
-            updateSelectedItemCaption();
-        }
     }
 
     /**
@@ -724,10 +727,6 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
     @Override
     public void setItemIconGenerator(IconGenerator<T> itemIconGenerator) {
         super.setItemIconGenerator(itemIconGenerator);
-
-        if (getSelectedItem().isPresent()) {
-            updateSelectedItemIcon();
-        }
     }
 
     @Override
@@ -819,26 +818,24 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
     }
 
     @Override
-    protected void doSetSelectedKey(String key) {
-        super.doSetSelectedKey(key);
+    protected void updateSelectedItemState(T value) {
+        super.updateSelectedItemState(value);
 
-        updateSelectedItemCaption();
-        updateSelectedItemIcon();
+        updateSelectedItemCaption(value);
+        updateSelectedItemIcon(value);
     }
 
     // Haulmont API dependency
-    public void updateSelectedItemCaption() {
+    public void updateSelectedItemCaption(T value) {
         String selectedCaption = null;
-        T value = keyToItem(getSelectedKey());
         if (value != null) {
             selectedCaption = getItemCaptionGenerator().apply(value);
         }
         getState().selectedItemCaption = selectedCaption;
     }
 
-    private void updateSelectedItemIcon() {
+    private void updateSelectedItemIcon(T value) {
         String selectedItemIcon = null;
-        T value = keyToItem(getSelectedKey());
         if (value != null) {
             Resource icon = getItemIconGenerator().apply(value);
             if (icon != null) {
@@ -860,7 +857,8 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
     public void attach() {
         super.attach();
 
-        updateSelectedItemIcon();
+        // Update icon for ConnectorResource
+        updateSelectedItemIcon(getValue());
     }
 
     @Override

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-root</artifactId>
-        <version>8.4-SNAPSHOT</version>
+        <version>8.5-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-uitest</artifactId>
     <name>vaadin-uitest</name>
@@ -241,6 +241,15 @@
 
 
         <plugins>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.dantwining.whitespace-maven-plugin</groupId>
+                <artifactId>whitespace-maven-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>

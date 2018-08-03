@@ -751,13 +751,17 @@ public class VaadinServlet extends HttpServlet implements Constants {
      * resource to the client.
      *
      * @param request
+     *            The request
      * @param response
-     * @return true if a file was served and the request has been handled, false
-     *         otherwise.
+     *            The response
+     * @return {@code true} if a file was served and the request has been
+     *         handled; {@code false} otherwise.
      * @throws IOException
      * @throws ServletException
+     *
+     * @since 8.5
      */
-    private boolean serveStaticResources(HttpServletRequest request,
+    protected boolean serveStaticResources(HttpServletRequest request,
             HttpServletResponse response) throws IOException, ServletException {
 
         String filePath = getStaticFilePath(request);
@@ -775,11 +779,15 @@ public class VaadinServlet extends HttpServlet implements Constants {
      * @param filename
      *            The filename to serve. Should always start with /VAADIN/.
      * @param request
+     *            The request
      * @param response
+     *            The response
      * @throws IOException
      * @throws ServletException
+     *
+     * @since 8.5
      */
-    private void serveStaticResourcesInVAADIN(String filename,
+    protected void serveStaticResourcesInVAADIN(String filename,
             HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
@@ -806,8 +814,8 @@ public class VaadinServlet extends HttpServlet implements Constants {
         // directory
         if (!isAllowedVAADINResourceUrl(request, resourceUrl)) {
             getLogger().info(
-                    "Requested resource [{}] not accessible in the VAADIN " +
-                            "directory or access to it is forbidden.",
+                    "Requested resource [{}] not accessible in the VAADIN "
+                            + "directory or access to it is forbidden.",
                     filename);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
@@ -875,19 +883,15 @@ public class VaadinServlet extends HttpServlet implements Constants {
      * web.xml using resourceCacheTime (defaults to 1 hour).
      *
      * @param filename
+     *            the filename
      * @return cache lifetime for the given filename in seconds
      */
     protected int getCacheTime(String filename) {
-        /*
-         * GWT conventions:
-         *
-         * - files containing .nocache. will not be cached.
-         *
-         * - files containing .cache. will be cached for one year.
-         *
-         * https://developers.google.com/web-toolkit/doc/latest/
-         * DevGuideCompilingAndDebugging#perfect_caching
-         */
+        // GWT conventions:
+        // - files containing .nocache. will not be cached.
+        // - files containing .cache. will be cached for one year.
+        // https://developers.google.com/web-toolkit/doc/latest/DevGuideCompilingAndDebugging#perfect_caching
+
         if (filename.contains(".nocache.")) {
             return 0;
         }

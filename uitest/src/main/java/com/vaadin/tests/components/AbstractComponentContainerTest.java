@@ -1,9 +1,5 @@
 package com.vaadin.tests.components;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-
 import com.vaadin.ui.AbstractComponentContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -19,6 +15,10 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.v7.ui.Table;
 import com.vaadin.v7.ui.TextArea;
 import com.vaadin.v7.ui.TextField;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 public abstract class AbstractComponentContainerTest<T extends AbstractComponentContainer>
         extends AbstractComponentTest<T>
@@ -313,8 +313,8 @@ public abstract class AbstractComponentContainerTest<T extends AbstractComponent
         // addCommands.put("HorizontalLayout", addHorizontalLayoutCommand);
         // addCommands.put("VerticalLayout", addVerticalLayoutCommand);
 
-        ComponentSize[] sizes = {
-                new ComponentSize(null, null), new ComponentSize("200px", null),
+        ComponentSize[] sizes = { new ComponentSize(null, null),
+                new ComponentSize("200px", null),
                 new ComponentSize("100%", null),
                 new ComponentSize(null, "200px"),
                 new ComponentSize(null, "100%"),

@@ -15,13 +15,13 @@
  */
 package com.vaadin.event.dd.acceptcriteria;
 
-import java.io.Serializable;
-
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
+
+import java.io.Serializable;
 
 /**
  * Criterion that can be used create policy to accept/discard dragged content
@@ -60,10 +60,11 @@ public interface AcceptCriterion extends Serializable {
     public void paint(PaintTarget target) throws PaintException;
 
     /**
-     * This needs to be implemented if and only if a criterion does some lazy server side
-     * initialization. The UIDL painted in this method will be passed to client
-     * side drop handler implementation. Implementation can assume that
-     * {@link #accept(DragAndDropEvent)} is called before this method.
+     * This needs to be implemented if and only if a criterion does some lazy
+     * server side initialization. The UIDL painted in this method will be
+     * passed to client side drop handler implementation. Implementation can
+     * assume that {@link #accept(DragAndDropEvent)} is called before this
+     * method.
      *
      * @param target
      * @throws PaintException

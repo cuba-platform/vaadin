@@ -181,7 +181,8 @@ public class MenuBarConnector extends AbstractComponentConnector
     }
 
     // Haulmont API
-    protected void assignAdditionalAttributes(VMenuBar.CustomMenuItem currentItem, UIDL item) {
+    protected void assignAdditionalAttributes(
+            VMenuBar.CustomMenuItem currentItem, UIDL item) {
     }
 
     // Haulmont API

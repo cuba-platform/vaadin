@@ -723,8 +723,8 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
 
         String dateStrResolution = dateStrResolution(date, minResolution);
-        return rangeStart.substring(0,dateStrResolution.length())
-                .compareTo(dateStrResolution) <=0;
+        return rangeStart.substring(0, dateStrResolution.length())
+                .compareTo(dateStrResolution) <= 0;
     }
 
     private String dateStrResolution(Date date, R minResolution) {
@@ -761,7 +761,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
 
         String dateStrResolution = dateStrResolution(date, minResolution);
-        return rangeEnd.substring(0,dateStrResolution.length())
+        return rangeEnd.substring(0, dateStrResolution.length())
                 .compareTo(dateStrResolution) >= 0;
     }
 
@@ -869,10 +869,9 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
 
                 // Set assistive label to read focused date and month/year
                 Roles.getButtonRole().set(day.getElement());
-                Roles.getButtonRole()
-                        .setAriaLabelledbyProperty(day.getElement(),
-                                Id.of(day.getElement()),
-                                Id.of(getFlexCellFormatter().getElement(0, 2)));
+                Roles.getButtonRole().setAriaLabelledbyProperty(
+                        day.getElement(), Id.of(day.getElement()),
+                        Id.of(getFlexCellFormatter().getElement(0, 2)));
 
                 day.setStyleName(getDateField().getStylePrimaryName()
                         + "-calendarpanel-day");
@@ -896,9 +895,8 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                         day.addStyleDependentName(CN_FOCUSED);
 
                         // Reference focused day from calendar panel
-                        Roles.getGridRole()
-                                .setAriaActivedescendantProperty(getElement(),
-                                        Id.of(day.getElement()));
+                        Roles.getGridRole().setAriaActivedescendantProperty(
+                                getElement(), Id.of(day.getElement()));
                     }
                 }
                 if (curr.getMonth() != displayedMonth.getMonth()) {
@@ -1683,30 +1681,33 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * @param date
      */
     private Date adjustDateToFitInsideRange(Date date) {
-        if(!isAcceptedByRangeStart(date,resolution)) {
+        if (!isAcceptedByRangeStart(date, resolution)) {
             date = parseRangeString(rangeStart);
-        } else
-        if(!isAcceptedByRangeEnd(date,resolution)) {
+        } else if (!isAcceptedByRangeEnd(date, resolution)) {
             date = parseRangeString(rangeEnd);
         }
         return date;
     }
 
     private Date parseRangeString(String dateStr) {
-        if(dateStr == null || "".equals(dateStr)) return null;
-        int year = Integer.parseInt(dateStr.substring(0,4)) - 1900;
-        int month = parsePart(dateStr, 5, 2,1) - 1;
-        int day = parsePart(dateStr, 8, 2,1);
-        int hrs = parsePart(dateStr, 11, 2,0);
-        int min = parsePart(dateStr, 14, 2,0);
-        int sec = parsePart(dateStr, 17, 2,0);
+        if (dateStr == null || "".equals(dateStr))
+            return null;
+        int year = Integer.parseInt(dateStr.substring(0, 4)) - 1900;
+        int month = parsePart(dateStr, 5, 2, 1) - 1;
+        int day = parsePart(dateStr, 8, 2, 1);
+        int hrs = parsePart(dateStr, 11, 2, 0);
+        int min = parsePart(dateStr, 14, 2, 0);
+        int sec = parsePart(dateStr, 17, 2, 0);
 
-        return new Date(year,month,day,hrs,min,sec);
+        return new Date(year, month, day, hrs, min, sec);
     }
 
-    private int parsePart(String dateStr, int beginIndex, int length, int defValue) {
-        if(dateStr.length() < beginIndex + length) return defValue;
-        return Integer.parseInt(dateStr.substring(beginIndex, beginIndex + length));
+    private int parsePart(String dateStr, int beginIndex, int length,
+            int defValue) {
+        if (dateStr.length() < beginIndex + length)
+            return defValue;
+        return Integer
+                .parseInt(dateStr.substring(beginIndex, beginIndex + length));
     }
 
     /**
@@ -2113,7 +2114,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Set assistive label for the previous year element.
      *
      * @param label
-     *         the label to set
+     *            the label to set
      * @since 8.4
      */
     public void setAssistiveLabelPreviousYear(String label) {
@@ -2124,7 +2125,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Set assistive label for the next year element.
      *
      * @param label
-     *         the label to set
+     *            the label to set
      * @since 8.4
      */
     public void setAssistiveLabelNextYear(String label) {
@@ -2135,7 +2136,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Set assistive label for the previous month element.
      *
      * @param label
-     *         the label to set
+     *            the label to set
      * @since 8.4
      */
     public void setAssistiveLabelPreviousMonth(String label) {
@@ -2146,7 +2147,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Set assistive label for the next month element.
      *
      * @param label
-     *         the label to set
+     *            the label to set
      * @since 8.4
      */
     public void setAssistiveLabelNextMonth(String label) {

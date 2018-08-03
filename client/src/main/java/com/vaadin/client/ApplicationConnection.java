@@ -784,7 +784,7 @@ public class ApplicationConnection implements HasHandlers {
 
     // Haulmont API
     public void removePendingInvocationsAndBursts(MethodInvocationFilter filter,
-                                                  RemoveMethodInvocationCallback callback) {
+            RemoveMethodInvocationCallback callback) {
         serverRpcQueue.removeMatching(filter, callback);
     }
 
@@ -1420,23 +1420,27 @@ public class ApplicationConnection implements HasHandlers {
     public void setApplicationRunning(boolean applicationRunning) {
         if (getApplicationState() == ApplicationState.TERMINATED) {
             if (applicationRunning) {
-                getLogger().warn("Tried to restart a terminated application. This is not supported");
+                getLogger().warn(
+                        "Tried to restart a terminated application. This is not supported");
             } else {
-                getLogger().warn("Tried to stop a terminated application. This should not be done");
+                getLogger().warn(
+                        "Tried to stop a terminated application. This should not be done");
             }
             return;
         } else if (getApplicationState() == ApplicationState.INITIALIZING) {
             if (applicationRunning) {
                 applicationState = ApplicationState.RUNNING;
             } else {
-                getLogger().warn("Tried to stop the application before it has started. This should not be done");
+                getLogger().warn(
+                        "Tried to stop the application before it has started. This should not be done");
             }
         } else if (getApplicationState() == ApplicationState.RUNNING) {
             if (!applicationRunning) {
                 applicationState = ApplicationState.TERMINATED;
                 eventBus.fireEvent(new ApplicationStoppedEvent());
             } else {
-                getLogger().warn("Tried to start an already running application. This should not be done");
+                getLogger().warn(
+                        "Tried to start an already running application. This should not be done");
             }
         }
     }

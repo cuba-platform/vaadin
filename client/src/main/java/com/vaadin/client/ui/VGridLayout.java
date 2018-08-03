@@ -809,8 +809,10 @@ public class VGridLayout extends ComplexPanel {
         }
 
         // Haulmont API
-        protected ComponentConnectorLayoutSlot createComponentConnectorLayoutSlot(ComponentConnector component) {
-            return new ComponentConnectorLayoutSlot(CLASSNAME, component, getConnector());
+        protected ComponentConnectorLayoutSlot createComponentConnectorLayoutSlot(
+                ComponentConnector component) {
+            return new ComponentConnectorLayoutSlot(CLASSNAME, component,
+                    getConnector());
         }
 
         public void setAlignment(AlignmentInfo alignmentInfo) {

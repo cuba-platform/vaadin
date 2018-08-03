@@ -378,7 +378,8 @@ public class LayoutManager {
                                     Profiler.leave(key);
                                 }
                             } catch (RuntimeException e) {
-                                getLogger().error("Error in resize listener", e);
+                                getLogger().error("Error in resize listener",
+                                        e);
                             }
                         }
                         Profiler.leave(
@@ -421,7 +422,8 @@ public class LayoutManager {
                                 Profiler.leave(key);
                             }
                         } catch (RuntimeException e) {
-                            getLogger().error("Error in ManagedLayout handling", e);
+                            getLogger().error("Error in ManagedLayout handling",
+                                    e);
                         }
                         countLayout(layoutCounts, cl);
                     } else {

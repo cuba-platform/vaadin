@@ -90,8 +90,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @since 7.0
  */
 public abstract class UI extends AbstractSingleComponentContainer
-        implements Action.Notifier, PollNotifier,
-        LegacyComponent, Focusable {
+        implements Action.Notifier, PollNotifier, LegacyComponent, Focusable {
 
     /**
      * The application to which this UI belongs
@@ -206,9 +205,8 @@ public abstract class UI extends AbstractSingleComponentContainer
         @Override
         public void showServerDesign(Connector connector) {
             if (!(connector instanceof Component)) {
-                getLogger().error(
-                        "Tried to output declarative design for {}" +
-                                " which is not a component", connector);
+                getLogger().error("Tried to output declarative design for {}"
+                        + " which is not a component", connector);
                 return;
             }
             if (connector instanceof UI) {
@@ -475,7 +473,8 @@ public abstract class UI extends AbstractSingleComponentContainer
                 try {
                     detach();
                 } catch (Exception e) {
-                    getLogger().warn("Error while detaching UI from session", e);
+                    getLogger().warn("Error while detaching UI from session",
+                            e);
                 }
                 // Disable push when the UI is detached. Otherwise the
                 // push connection and possibly VaadinSession will live

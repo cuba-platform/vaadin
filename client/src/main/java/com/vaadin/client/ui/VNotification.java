@@ -294,13 +294,12 @@ public class VNotification extends VOverlay {
             // in some browsers)
             if (getStyleName()
                     .contains(VOverlay.ADDITIONAL_CLASSNAME_ANIMATE_IN)) {
-                AnimationUtil.addAnimationEndListener(getElement(),
-                        event -> {
-                            if (AnimationUtil.getAnimationName(event).contains(
-                                    VOverlay.ADDITIONAL_CLASSNAME_ANIMATE_IN)) {
-                                VNotification.this.hide();
-                            }
-                        });
+                AnimationUtil.addAnimationEndListener(getElement(), event -> {
+                    if (AnimationUtil.getAnimationName(event).contains(
+                            VOverlay.ADDITIONAL_CLASSNAME_ANIMATE_IN)) {
+                        VNotification.this.hide();
+                    }
+                });
             } else {
                 VNotification.super.hide();
                 fireEvent(new HideEvent(this));
@@ -421,8 +420,9 @@ public class VNotification extends VOverlay {
             if (temporaryStyle == STYLE_SYSTEM) {
                 return true;
             } else if (type == Event.ONKEYDOWN
-                    && ((event.getKeyCode() == KeyCodes.KEY_BACKSPACE)
-                    || (event.getAltKey() && event.getKeyCode() == KeyCodes.KEY_LEFT))) {
+                    && ((event.getKeyCode() == KeyCodes.KEY_BACKSPACE) || (event
+                            .getAltKey()
+                            && event.getKeyCode() == KeyCodes.KEY_LEFT))) {
                 // Haulmont API
                 hide();
                 return false;
@@ -491,8 +491,8 @@ public class VNotification extends VOverlay {
      * @param description
      *            The Notification description, can be {@code null}.
      * @param htmlContentAllowed
-     *            Whether {@code caption} and {@code description}
-     *            are interpreted as HTML or not.
+     *            Whether {@code caption} and {@code description} are
+     *            interpreted as HTML or not.
      * @param iconUri
      *            The icon URI, can be {@code null}.
      * @param styleName
@@ -506,7 +506,8 @@ public class VNotification extends VOverlay {
      */
     public static VNotification showNotification(ApplicationConnection client,
             String caption, String description, boolean htmlContentAllowed,
-            String iconUri, String styleName, Position position, int delayMsec) {
+            String iconUri, String styleName, Position position,
+            int delayMsec) {
         String html = "";
         if (iconUri != null) {
             html += client.getIcon(iconUri).getElement().getString();

@@ -65,7 +65,7 @@ public class PublishedFileHandler implements RequestHandler {
         // classpath instead of relative to the context class
         if (fileName.startsWith("/")) {
             getLogger().warn("Published file request starting with / rejected: "
-                            + fileName);
+                    + fileName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND, fileName);
             return true;
         }
@@ -148,7 +148,8 @@ public class PublishedFileHandler implements RequestHandler {
     }
 
     // Haulmont API
-    protected InputStream getApplicationResourceAsStream(Class<?> contextClass, String fileName) {
+    protected InputStream getApplicationResourceAsStream(Class<?> contextClass,
+            String fileName) {
         return null;
     }
 

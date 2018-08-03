@@ -1,8 +1,8 @@
 package com.vaadin.tests.components.abstractlisting;
 
-import java.util.LinkedHashMap;
-
 import com.vaadin.ui.AbstractSingleSelect;
+
+import java.util.LinkedHashMap;
 
 public abstract class AbstractSingleSelectTestUI<T extends AbstractSingleSelect<Object>>
         extends AbstractListingTestUI<T> {
@@ -16,8 +16,8 @@ public abstract class AbstractSingleSelectTestUI<T extends AbstractSingleSelect<
     }
 
     protected void createListenerMenu() {
-        createListenerAction("Selection listener", "Listeners", c -> c
-                .addSelectionListener(
+        createListenerAction("Selection listener", "Listeners",
+                c -> c.addSelectionListener(
                         event -> log("Selected: " + event.getValue())));
     }
 

@@ -15,11 +15,6 @@
  */
 package com.vaadin.ui;
 
-import java.util.Objects;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
 import com.vaadin.data.HasDataProvider;
 import com.vaadin.data.HasFilterableDataProvider;
 import com.vaadin.data.HasItems;
@@ -37,6 +32,10 @@ import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignException;
 import com.vaadin.ui.declarative.DesignFormatter;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.util.Objects;
 
 /**
  * A base class for listing components. Provides common handling for fetching
@@ -430,9 +429,8 @@ public abstract class AbstractListing<T> extends AbstractComponent
             ((DeclarativeCaptionGenerator) captionGenerator).setCaption(item,
                     caption);
         } else {
-            throw new IllegalStateException(String.format(
-                    "Don't know how "
-                            + "to set caption using current caption generator '%s'",
+            throw new IllegalStateException(String.format("Don't know how "
+                    + "to set caption using current caption generator '%s'",
                     captionGenerator.getClass().getName()));
         }
 
@@ -443,9 +441,8 @@ public abstract class AbstractListing<T> extends AbstractComponent
                         DesignAttributeHandler.readAttribute("icon",
                                 child.attributes(), Resource.class));
             } else {
-                throw new IllegalStateException(String.format(
-                        "Don't know how "
-                                + "to set icon using current caption generator '%s'",
+                throw new IllegalStateException(String.format("Don't know how "
+                        + "to set icon using current caption generator '%s'",
                         iconGenerator.getClass().getName()));
             }
         }

@@ -15,8 +15,6 @@
  */
 package com.vaadin.client.ui.orderedlayout;
 
-import java.util.List;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -46,6 +44,8 @@ import com.vaadin.shared.ui.LayoutClickRpc;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.orderedlayout.AbstractOrderedLayoutServerRpc;
 import com.vaadin.shared.ui.orderedlayout.AbstractOrderedLayoutState;
+
+import java.util.List;
 
 /**
  * Base class for vertical and horizontal ordered layouts.
@@ -461,8 +461,7 @@ public abstract class AbstractOrderedLayoutConnector
             // Update slot style names
             List<String> childStyles = child.getState().styles;
             if (childStyles == null) {
-                widget.setSlotStyleNames(child.getWidget(),
-                        (String[]) null);
+                widget.setSlotStyleNames(child.getWidget(), (String[]) null);
             } else {
                 widget.setSlotStyleNames(child.getWidget(),
                         childStyles.toArray(new String[childStyles.size()]));
@@ -491,11 +490,11 @@ public abstract class AbstractOrderedLayoutConnector
 
         if (needsFixedHeight()) {
             // Add resize listener to ensure the widget itself is measured
-            getLayoutManager().addElementResizeListener(
-                    widget.getElement(), childComponentResizeListener);
+            getLayoutManager().addElementResizeListener(widget.getElement(),
+                    childComponentResizeListener);
         } else {
-            getLayoutManager().removeElementResizeListener(
-                    widget.getElement(), childComponentResizeListener);
+            getLayoutManager().removeElementResizeListener(widget.getElement(),
+                    childComponentResizeListener);
         }
 
         // Then update listeners based on bookkeeping
@@ -509,8 +508,8 @@ public abstract class AbstractOrderedLayoutConnector
             // updateExpandedSizes causes fixed size components to temporarily
             // lose their size. updateExpandCompensation must be delayed until
             // the browser has a chance to measure them.
-            Scheduler.get().scheduleFinally(
-                    () -> widget.updateExpandCompensation());
+            Scheduler.get()
+                    .scheduleFinally(() -> widget.updateExpandCompensation());
         } else {
             widget.clearExpand();
         }

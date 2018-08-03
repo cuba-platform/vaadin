@@ -21,7 +21,12 @@ import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
 import com.vaadin.data.ValueContext;
 import com.vaadin.data.validator.RangeValidator;
-import com.vaadin.event.FieldEvents.*;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.BlurNotifier;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.FieldEvents.FocusNotifier;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.UserError;
 import com.vaadin.shared.Registration;
@@ -45,8 +50,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAdjuster;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -89,7 +102,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     };
 
     // Haulmont API
-    protected void updateInternal(String newDateString, Map<String, Integer> resolutions) {
+    protected void updateInternal(String newDateString,
+            Map<String, Integer> resolutions) {
         Set<String> resolutionNames = getResolutions().map(Enum::name)
                 .collect(Collectors.toSet());
         resolutionNames.retainAll(resolutions.keySet());
@@ -112,15 +126,14 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
 
             boolean parseErrorWasSet = currentParseErrorMessage != null;
             hasChanges |= !Objects.equals(dateString, newDateString)
-                    || !Objects.equals(oldDate, newDate)
-                    || parseErrorWasSet;
+                    || !Objects.equals(oldDate, newDate) || parseErrorWasSet;
 
             if (hasChanges) {
                 dateString = newDateString;
                 currentParseErrorMessage = null;
                 if (newDateString == null || newDateString.isEmpty()) {
                     boolean valueChanged = setValue(newDate, true);
-                    if(!valueChanged && parseErrorWasSet) {
+                    if (!valueChanged && parseErrorWasSet) {
                         doSetValue(newDate);
                     }
                 } else {
@@ -132,8 +145,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                         // date as current, force update state to display
                         // correct representation
                         parsedDate.ifOk(v -> {
-                            if (!setValue(v, true)
-                                    && !isDifferentValue(v)) {
+                            if (!setValue(v, true) && !isDifferentValue(v)) {
                                 updateDiffstate("resolutions",
                                         Json.createObject());
                                 doSetValue(v);
@@ -141,8 +153,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                         });
                         if (parsedDate.isError()) {
                             dateString = null;
-                            currentParseErrorMessage = parsedDate
-                                    .getMessage().orElse("Parsing error");
+                            currentParseErrorMessage = parsedDate.getMessage()
+                                    .orElse("Parsing error");
 
                             if (!isDifferentValue(null)) {
                                 doSetValue(null);
@@ -698,9 +710,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                         .parse(design.attr("value"), clazz);
                 // formatting will return null if it cannot parse the string
                 if (date == null) {
-                    LoggerFactory.getLogger(AbstractDateField.class)
-                            .info("cannot parse {} as date",
-                                    design.attr("value"));
+                    LoggerFactory.getLogger(AbstractDateField.class).info(
+                            "cannot parse {} as date", design.attr("value"));
                 }
                 doSetValue(date);
             } else {

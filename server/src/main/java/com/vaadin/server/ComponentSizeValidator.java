@@ -144,7 +144,8 @@ public class ComponentSizeValidator implements Serializable {
 
             return parentCanDefineHeight(component);
         } catch (Exception e) {
-            getLogger().debug("An exception occurred while validating sizes.", e);
+            getLogger().debug("An exception occurred while validating sizes.",
+                    e);
             return true;
         }
     }
@@ -163,7 +164,8 @@ public class ComponentSizeValidator implements Serializable {
 
             return parentCanDefineWidth(component);
         } catch (Exception e) {
-            getLogger().debug("An exception occurred while validating sizes.", e);
+            getLogger().debug("An exception occurred while validating sizes.",
+                    e);
             return true;
         }
     }
@@ -639,7 +641,8 @@ public class ComponentSizeValidator implements Serializable {
                 map.put(object, cl);
                 return;
             } catch (Exception e) {
-                getLogger().debug("An exception occurred while validating sizes.", e);
+                getLogger().debug(
+                        "An exception occurred while validating sizes.", e);
             }
 
         }

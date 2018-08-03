@@ -213,13 +213,13 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
         session.addUI(ui);
         if (initException != null) {
             ui.getSession().getCommunicationManager()
-            .handleConnectorRelatedException(ui, initException);
+                    .handleConnectorRelatedException(ui, initException);
         }
         // Warn if the window can't be preserved
         if (embedId == null
                 && vaadinService.preserveUIOnRefresh(provider, event)) {
-            getLogger().warn("There is no embed id available for UI "
-                    + uiClass + " that should be preserved.");
+            getLogger().warn("There is no embed id available for UI " + uiClass
+                    + " that should be preserved.");
         }
 
         return ui;
@@ -292,7 +292,7 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
         }
     }
 
-    //Haulmont API
+    // Haulmont API
     protected UidlWriter createUidlWriter() {
         return new UidlWriter();
     }
@@ -310,7 +310,7 @@ public abstract class UIInitHandler extends SynchronizedRequestHandler {
         String seckey = session.getCsrfToken();
 
         return "\"" + ApplicationConstants.UIDL_SECURITY_TOKEN_ID + "\":\""
-        + seckey + "\",";
+                + seckey + "\",";
     }
 
     /**

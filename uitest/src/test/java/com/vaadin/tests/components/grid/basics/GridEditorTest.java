@@ -1,5 +1,9 @@
 package com.vaadin.tests.components.grid.basics;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -12,8 +16,6 @@ import com.vaadin.testbench.By;
 import com.vaadin.testbench.TestBenchElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.GridElement.GridEditorElement;
-
-import static org.junit.Assert.*;
 
 public abstract class GridEditorTest extends GridBasicsTest {
 
@@ -235,6 +237,19 @@ public abstract class GridEditorTest extends GridBasicsTest {
         Assert.assertEquals("Unexpected not-editable column content",
                 "(999, 1)", getEditor()
                         .findElement(By.className("not-editable")).getText());
+    }
+
+    @Test
+    public void testEditorCancelOnOpen() {
+        editRow(2);
+        getGridElement().sendKeys(Keys.ESCAPE);
+
+        selectMenuPath("Component", "Editor", "Cancel next edit");
+        getGridElement().getCell(2, 0).doubleClick();
+        assertEditorClosed();
+
+        editRow(2);
+        assertNoErrorNotifications();
     }
 
     protected WebElement getSaveButton() {

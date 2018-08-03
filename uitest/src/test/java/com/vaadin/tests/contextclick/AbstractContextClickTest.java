@@ -1,22 +1,20 @@
 package com.vaadin.tests.contextclick;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.vaadin.testbench.elements.AbstractComponentElement;
+import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.parallel.BrowserUtil;
+import com.vaadin.testbench.parallel.TestCategory;
+import com.vaadin.tests.tb3.MultiBrowserTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
-import com.vaadin.testbench.elements.AbstractComponentElement;
-import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.parallel.BrowserUtil;
-import com.vaadin.testbench.parallel.TestCategory;
-import com.vaadin.tests.tb3.MultiBrowserTest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.Assert.assertTrue;
 
 @TestCategory("contextclick")
 public abstract class AbstractContextClickTest extends MultiBrowserTest {
@@ -126,7 +124,9 @@ public abstract class AbstractContextClickTest extends MultiBrowserTest {
                     "var ev = document.createEvent('MouseEvents'); ev.initMouseEvent('click', true, true, document.defaultView, 1, arguments[1]-5, arguments[2]-5, arguments[1]-5, arguments[2]-5, false, false, false, false, 1, null); arguments[0].dispatchEvent(ev);",
                     e, x, y);
         } else {
-            new Actions(getDriver()).moveToElement(e, xCoord, yCoord)
+            new Actions(getDriver())
+                    .moveToElement(e, getXOffset(e, xCoord),
+                            getYOffset(e, yCoord))
                     .contextClick().moveByOffset(-5, -5).click().perform();
         }
     }

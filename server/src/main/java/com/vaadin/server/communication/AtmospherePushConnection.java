@@ -290,7 +290,8 @@ public class AtmospherePushConnection implements PushConnection {
         if (resource == null) {
             // Already disconnected. Should not happen but if it does, we don't
             // want to cause NPEs
-            getLogger().debug("AtmospherePushConnection.disconnect() called twice, this should not happen");
+            getLogger().debug(
+                    "AtmospherePushConnection.disconnect() called twice, this should not happen");
             return;
         }
         if (resource.isResumed()) {
@@ -307,9 +308,11 @@ public class AtmospherePushConnection implements PushConnection {
             try {
                 outgoingMessage.get(1000, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
-                getLogger().info("Timeout waiting for messages to be sent to client before disconnect");
+                getLogger().info(
+                        "Timeout waiting for messages to be sent to client before disconnect");
             } catch (Exception e) {
-                getLogger().info("Error waiting for messages to be sent to client before disconnect");
+                getLogger().info(
+                        "Error waiting for messages to be sent to client before disconnect");
             }
             outgoingMessage = null;
         }

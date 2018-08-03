@@ -382,8 +382,8 @@ public class MessageSender {
                 getLogger().info("Updating client-to-server id to "
                         + nextExpectedId + " based on server");
             } else {
-                getLogger().warn(
-                        "Server expects next client-to-server id to be "
+                getLogger()
+                        .warn("Server expects next client-to-server id to be "
                                 + nextExpectedId + " but we were going to use "
                                 + clientToServerMessageId + ". Will use "
                                 + nextExpectedId + ".");

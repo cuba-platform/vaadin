@@ -171,8 +171,7 @@ public class DateTimeService {
             return LocaleService.getAmPmStrings(locale);
         } catch (final LocaleNotLoadedException e) {
             // TODO can this practically even happen? Should die instead?
-            getLogger().error(
-                    "Locale not loaded, using fallback : AM/PM", e);
+            getLogger().error("Locale not loaded, using fallback : AM/PM", e);
             return DEFAULT_AMPM_STRINGS;
         }
     }

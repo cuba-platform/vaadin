@@ -297,7 +297,8 @@ public class DefaultDeploymentConfiguration
                     Constants.SERVLET_PARAMETER_RESOURCE_CACHE_TIME,
                     Integer.toString(DEFAULT_RESOURCE_CACHE_TIME)));
         } catch (NumberFormatException e) {
-            getLogger().warn(Constants.WARNING_RESOURCE_CACHING_TIME_NOT_NUMERIC);
+            getLogger()
+                    .warn(Constants.WARNING_RESOURCE_CACHING_TIME_NOT_NUMERIC);
             resourceCacheTime = DEFAULT_RESOURCE_CACHE_TIME;
         }
     }

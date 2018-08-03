@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class ExpandingContainer extends AbstractContainer implements
-        Container.Indexed, Container.ItemSetChangeNotifier {
+public class ExpandingContainer extends AbstractContainer
+        implements Container.Indexed, Container.ItemSetChangeNotifier {
 
     public static final List<String> PROPERTY_IDS = Arrays.asList("id",
             "column1", "column2");

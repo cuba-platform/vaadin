@@ -129,8 +129,8 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                 setResourceUrl(getResourceUrl("src"));
                 clearBrowserElement = false;
             } else {
-                getLogger().error(
-                        "Unknown Embedded type '" + widget.type + "'");
+                getLogger()
+                        .error("Unknown Embedded type '" + widget.type + "'");
             }
         } else if (state.mimeType != null) {
             // remove old style name related to type
@@ -147,8 +147,8 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                 widget.mimetype = "flash";
                 // Handle embedding of Flash
                 widget.addStyleName(VEmbedded.CLASSNAME + "-flash");
-                widget.setHTML(widget.createFlashEmbed(state,
-                        getResourceUrl("src")));
+                widget.setHTML(
+                        widget.createFlashEmbed(state, getResourceUrl("src")));
 
             } else if (mime.equals("image/svg+xml")) {
                 widget.mimetype = "svg";
@@ -197,7 +197,8 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                 getLogger().error("Unknown Embedded mimetype '" + mime + "'");
             }
         } else {
-            getLogger().error("Unknown Embedded; no type or mimetype attribute");
+            getLogger()
+                    .error("Unknown Embedded; no type or mimetype attribute");
         }
 
         if (clearBrowserElement) {

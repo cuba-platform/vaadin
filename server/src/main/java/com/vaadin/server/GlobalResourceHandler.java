@@ -22,6 +22,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.util.CurrentInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpServletResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -121,7 +122,6 @@ public class GlobalResourceHandler implements RequestHandler {
         stream.writeResponse(request, response);
         return true;
     }
-
 
     private String urlEncodedKey(String key) {
         // getPathInfo return path decoded but without decoding plus as spaces

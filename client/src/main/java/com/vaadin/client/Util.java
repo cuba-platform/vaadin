@@ -789,8 +789,7 @@ public class Util {
                 printConnectorInvocations(invocations, curId, c);
             }
         } catch (Exception e) {
-            getLogger().error("Error logging method invocations",
-                    e);
+            getLogger().error("Error logging method invocations", e);
         }
     }
 

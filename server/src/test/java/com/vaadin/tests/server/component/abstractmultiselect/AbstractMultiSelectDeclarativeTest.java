@@ -1,16 +1,15 @@
 package com.vaadin.tests.server.component.abstractmultiselect;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
-import org.junit.Test;
-
 import com.vaadin.tests.design.DeclarativeTestBaseBase;
 import com.vaadin.tests.server.component.abstractlisting.AbstractListingDeclarativeTest;
 import com.vaadin.ui.AbstractMultiSelect;
 import com.vaadin.ui.declarative.DesignContext;
+import org.junit.Test;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * {@link AbstractMultiSelect} component declarative test.
@@ -39,10 +38,10 @@ public abstract class AbstractMultiSelectDeclarativeTest<T extends AbstractMulti
         String type = "com.vaadin.SomeType";
         String attribute = "data-type";
 
-        String design = String.format(
-                "<%s %s='%s'>\n" + "<option item='foo' selected>foo1</option>\n"
-                        + "<option item='bar'>bar1</option>"
-                        + "<option item='foobar' selected>foobar1</option></%s>",
+        String design = String.format("<%s %s='%s'>\n"
+                + "<option item='foo' selected>foo1</option>\n"
+                + "<option item='bar'>bar1</option>"
+                + "<option item='foobar' selected>foobar1</option></%s>",
                 getComponentTag(), attribute, type, getComponentTag());
         T component = getComponentClass().newInstance();
         component.setItems(items);
@@ -69,10 +68,10 @@ public abstract class AbstractMultiSelectDeclarativeTest<T extends AbstractMulti
         String type = "com.vaadin.SomeType";
         String attribute = "data-type";
 
-        String design = String.format(
-                "<%s %s='%s'>\n" + "<option item='foo' selected>foo1</option>\n"
-                        + "<option item='bar'>bar1</option>"
-                        + "<option item='foobar' selected>foobar1</option></%s>",
+        String design = String.format("<%s %s='%s'>\n"
+                + "<option item='foo' selected>foo1</option>\n"
+                + "<option item='bar'>bar1</option>"
+                + "<option item='foobar' selected>foobar1</option></%s>",
                 getComponentTag(), attribute, type, getComponentTag());
         T component = getComponentClass().newInstance();
         component.setItems(items);

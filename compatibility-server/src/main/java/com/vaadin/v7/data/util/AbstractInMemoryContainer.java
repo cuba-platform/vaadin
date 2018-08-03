@@ -15,6 +15,13 @@
  */
 package com.vaadin.v7.data.util;
 
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.v7.data.Container;
+import com.vaadin.v7.data.Container.ItemSetChangeNotifier;
+import com.vaadin.v7.data.Item;
+import com.vaadin.v7.data.util.filter.SimpleStringFilter;
+import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EventObject;
@@ -23,13 +30,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.v7.data.Container;
-import com.vaadin.v7.data.Container.ItemSetChangeNotifier;
-import com.vaadin.v7.data.Item;
-import com.vaadin.v7.data.util.filter.SimpleStringFilter;
-import com.vaadin.v7.data.util.filter.UnsupportedFilterException;
 
 /**
  * Abstract {@link Container} class that handles common functionality for
@@ -441,7 +441,7 @@ public abstract class AbstractInMemoryContainer<ITEMIDTYPE, PROPERTYIDCLASS, ITE
     public boolean removeContainerProperty(Object propertyId)
             throws UnsupportedOperationException {
         throw new UnsupportedOperationException(
-                "Removing container properties not supported. Override the addContainerProperty() method if required.");
+                "Removing container properties not supported. Override the removeContainerProperty() method if required.");
     }
 
     // ItemSetChangeNotifier

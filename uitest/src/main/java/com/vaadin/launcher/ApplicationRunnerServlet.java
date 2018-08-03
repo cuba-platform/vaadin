@@ -1,7 +1,22 @@
 package com.vaadin.launcher;
 
 import com.vaadin.launcher.CustomDeploymentConfiguration.Conf;
-import com.vaadin.server.*;
+import com.vaadin.server.DefaultDeploymentConfiguration;
+import com.vaadin.server.DeploymentConfiguration;
+import com.vaadin.server.LegacyApplication;
+import com.vaadin.server.LegacyVaadinServlet;
+import com.vaadin.server.ServiceException;
+import com.vaadin.server.SystemMessages;
+import com.vaadin.server.SystemMessagesProvider;
+import com.vaadin.server.UIClassSelectionEvent;
+import com.vaadin.server.UICreateEvent;
+import com.vaadin.server.UIProvider;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletRequest;
+import com.vaadin.server.VaadinServletService;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.tests.components.TestBase;
 import com.vaadin.ui.UI;
@@ -30,34 +45,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import com.vaadin.launcher.CustomDeploymentConfiguration.Conf;
-import com.vaadin.server.DefaultDeploymentConfiguration;
-import com.vaadin.server.DeploymentConfiguration;
-import com.vaadin.server.LegacyApplication;
-import com.vaadin.server.LegacyVaadinServlet;
-import com.vaadin.server.ServiceException;
-import com.vaadin.server.SystemMessages;
-import com.vaadin.server.SystemMessagesProvider;
-import com.vaadin.server.UIClassSelectionEvent;
-import com.vaadin.server.UICreateEvent;
-import com.vaadin.server.UIProvider;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinServletRequest;
-import com.vaadin.server.VaadinServletService;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.ApplicationConstants;
-import com.vaadin.tests.components.TestBase;
-import com.vaadin.ui.UI;
-import com.vaadin.util.CurrentInstance;
 
 @SuppressWarnings("serial")
 public class ApplicationRunnerServlet extends LegacyVaadinServlet {
@@ -127,8 +114,8 @@ public class ApplicationRunnerServlet extends LegacyVaadinServlet {
     @Override
     protected void servletInitialized() throws ServletException {
         super.servletInitialized();
-        getService().addSessionInitListener(
-                event -> onVaadinSessionStarted(event.getRequest(), event.getSession()));
+        getService().addSessionInitListener(event -> onVaadinSessionStarted(
+                event.getRequest(), event.getSession()));
     }
 
     private void addDirectories(File parent, LinkedHashSet<String> packages,

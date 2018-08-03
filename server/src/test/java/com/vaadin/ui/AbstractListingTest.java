@@ -1,8 +1,15 @@
 package com.vaadin.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import com.vaadin.data.HasDataProvider;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.data.provider.Query;
+import com.vaadin.ui.AbstractListing.AbstractListingExtension;
+import com.vaadin.ui.declarative.DesignContext;
+import elemental.json.JsonObject;
+import org.jsoup.nodes.Element;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,18 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.jsoup.nodes.Element;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.vaadin.data.HasDataProvider;
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.data.provider.Query;
-import com.vaadin.ui.AbstractListing.AbstractListingExtension;
-import com.vaadin.ui.declarative.DesignContext;
-
-import elemental.json.JsonObject;
+import static org.junit.Assert.*;
 
 public class AbstractListingTest {
 
@@ -30,7 +26,7 @@ public class AbstractListingTest {
 
         /**
          * Used to execute data generation
-         * 
+         *
          * @param initial
          *            {@code true} to mock initial data request; {@code false}
          *            for follow-up request.

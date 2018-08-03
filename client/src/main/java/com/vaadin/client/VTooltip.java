@@ -201,8 +201,7 @@ public class VTooltip extends VOverlay {
     }
 
     /**
-     * Show a popup containing the currentTooltipInfo
-     * <br/>
+     * Show a popup containing the currentTooltipInfo <br/>
      * Haulmont API dependency
      */
     protected void showTooltip() {
@@ -539,15 +538,13 @@ public class VTooltip extends VOverlay {
             BlurHandler, MouseDownHandler, MouseOutHandler {
 
         /**
-         * Marker for handling of tooltip through focus
-         * <br/>
+         * Marker for handling of tooltip through focus <br/>
          * Haulmont API dependency
          */
         protected boolean handledByFocus;
 
         /**
-         * Locate the tooltip for given element
-         * <br/>
+         * Locate the tooltip for given element <br/>
          * Haulmont API dependency
          *
          * @param element
@@ -588,8 +585,7 @@ public class VTooltip extends VOverlay {
         }
 
         /**
-         * Handle hide event
-         * <br/>
+         * Handle hide event <br/>
          * Haulmont API dependency
          */
         protected void handleHideEvent() {

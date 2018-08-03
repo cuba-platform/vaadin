@@ -15,12 +15,26 @@
  */
 package com.vaadin.client;
 
-import com.google.gwt.core.client.*;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.vaadin.client.debug.internal.*;
+import com.vaadin.client.debug.internal.ErrorNotificationHandler;
+import com.vaadin.client.debug.internal.HierarchySection;
+import com.vaadin.client.debug.internal.InfoSection;
+import com.vaadin.client.debug.internal.LogSection;
+import com.vaadin.client.debug.internal.NetworkSection;
+import com.vaadin.client.debug.internal.ProfilerSection;
+import com.vaadin.client.debug.internal.Section;
+import com.vaadin.client.debug.internal.TestBenchSection;
+import com.vaadin.client.debug.internal.VDebugWindow;
 import com.vaadin.client.debug.internal.theme.DebugWindowStyles;
 import com.vaadin.client.event.PointerEventSupport;
 import com.vaadin.client.metadata.NoDataException;
@@ -32,7 +46,11 @@ import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.ui.ui.UIConstants;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -130,17 +148,15 @@ public class ApplicationConfiguration implements EntryPoint {
         }-*/;
 
         /**
-         * Reads a configuration parameter as an {@link Element} object.
-         * Please note
-         * that the javascript value of the parameter should also be an Element
-         * object,
-         * or else an undefined exception may be thrown when calling this method
-         * or methods on the returned object.
+         * Reads a configuration parameter as an {@link Element} object. Please
+         * note that the javascript value of the parameter should also be an
+         * Element object, or else an undefined exception may be thrown when
+         * calling this method or methods on the returned object.
          *
          * @param name
-         *         name of the configuration parameter
-         * @return element for the configuration parameter, or <code>null</code> if no
-         *         value is defined
+         *            name of the configuration parameter
+         * @return element for the configuration parameter, or <code>null</code>
+         *         if no value is defined
          * @since 8.4
          */
         private native Element getConfigElement(String name)
@@ -231,13 +247,13 @@ public class ApplicationConfiguration implements EntryPoint {
 
         // Haulmont API
         public final native void setCaption(String caption) /*-{
-            this.caption = caption;
-        }-*/;
+                                                            this.caption = caption;
+                                                            }-*/;
 
         // Haulmont API
         public final native void setMessage(String message) /*-{
-            this.message = message;
-        }-*/;
+                                                            this.message = message;
+                                                            }-*/;
     }
 
     private static WidgetSet widgetSet = GWT.create(WidgetSet.class);

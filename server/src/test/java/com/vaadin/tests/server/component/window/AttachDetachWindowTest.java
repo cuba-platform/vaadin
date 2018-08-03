@@ -1,10 +1,5 @@
 package com.vaadin.tests.server.component.window;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import com.vaadin.server.ClientConnector;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinSession;
@@ -13,6 +8,10 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import org.junit.Test;
+
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class AttachDetachWindowTest {
 
@@ -219,9 +218,8 @@ public class AttachDetachWindowTest {
         final Window window = new Window();
 
         final boolean[] eventFired = new boolean[1];
-        ui.addComponentAttachListener(
-                event -> eventFired[0] = event.getAttachedComponent()
-                        .equals(window));
+        ui.addComponentAttachListener(event -> eventFired[0] = event
+                .getAttachedComponent().equals(window));
         ui.addWindow(window);
         assertTrue("Attach event is not fired for added window", eventFired[0]);
     }
@@ -232,9 +230,8 @@ public class AttachDetachWindowTest {
         final Window window = new Window();
 
         final boolean[] eventFired = new boolean[1];
-        ui.addComponentDetachListener(
-                event -> eventFired[0] = event.getDetachedComponent()
-                        .equals(window));
+        ui.addComponentDetachListener(event -> eventFired[0] = event
+                .getDetachedComponent().equals(window));
         ui.addWindow(window);
         ui.removeWindow(window);
 

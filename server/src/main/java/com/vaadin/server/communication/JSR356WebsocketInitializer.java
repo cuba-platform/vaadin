@@ -41,8 +41,8 @@ import java.util.Map;
  * @since 7.5.0
  * @author Vaadin Ltd
  */
-//Haulmont API - disabled
-//@WebListener
+// Haulmont API - disabled
+// @WebListener
 public class JSR356WebsocketInitializer implements ServletContextListener {
 
     private static boolean atmosphereAvailable = false;
@@ -81,8 +81,11 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
 
         @Override
         public String getInitParameter(String name) {
-            String initParameterValue = servletRegistration.getInitParameter(name);
-            if (initParameterValue == null && "org.atmosphere.cpr.recoverFromDestroyedBroadcaster".equals(name)) {
+            String initParameterValue = servletRegistration
+                    .getInitParameter(name);
+            if (initParameterValue == null
+                    && "org.atmosphere.cpr.recoverFromDestroyedBroadcaster"
+                            .equals(name)) {
                 return "false";
             }
             return initParameterValue;
@@ -117,10 +120,8 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
                     initAtmosphereForVaadinServlet(servletRegistration,
                             servletContext);
                 } catch (Exception e) {
-                    getLogger().warn(
-                            "Failed to initialize Atmosphere for "
-                                    + servletName,
-                            e);
+                    getLogger().warn("Failed to initialize Atmosphere for "
+                            + servletName, e);
                 }
             }
         }

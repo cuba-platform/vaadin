@@ -52,8 +52,7 @@ public class VConsole {
         if (LogConfiguration.loggingIsEnabled(Level.INFO)) {
             // Check for null, so no NullPointerException is generated when
             // formatting (#12588)
-            getLogger().info(
-                    e.getMessage() == null ? "" : e.getMessage(), e);
+            getLogger().info(e.getMessage() == null ? "" : e.getMessage(), e);
         }
     }
 
@@ -61,8 +60,7 @@ public class VConsole {
         if (LogConfiguration.loggingIsEnabled(Level.SEVERE)) {
             // Check for null, so no NullPointerException is generated when
             // formatting (#12588)
-            getLogger().error(
-                    e.getMessage() == null ? "" : e.getMessage(), e);
+            getLogger().error(e.getMessage() == null ? "" : e.getMessage(), e);
         }
     }
 

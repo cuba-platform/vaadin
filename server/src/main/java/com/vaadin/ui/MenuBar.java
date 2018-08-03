@@ -49,7 +49,7 @@ import com.vaadin.ui.declarative.DesignContext;
  */
 @SuppressWarnings("serial")
 public class MenuBar extends AbstractComponent
-implements LegacyComponent, Focusable {
+        implements LegacyComponent, Focusable {
 
     // Items of the top-level menu
     // Haulmont API dependency
@@ -148,8 +148,10 @@ implements LegacyComponent, Focusable {
             }
 
             ContentMode contentMode = item.getDescriptionContentMode();
-            // If the contentMode is equal to ContentMode.PREFORMATTED, we don't add any attribute.
-            if (contentMode != null && contentMode != ContentMode.PREFORMATTED) {
+            // If the contentMode is equal to ContentMode.PREFORMATTED, we don't
+            // add any attribute.
+            if (contentMode != null
+                    && contentMode != ContentMode.PREFORMATTED) {
                 target.addAttribute(
                         MenuBarConstants.ATTRIBUTE_ITEM_DESCRIPTION_CONTENT_MODE,
                         contentMode.name());
@@ -177,7 +179,8 @@ implements LegacyComponent, Focusable {
     }
 
     // Haulmont API
-    protected void paintAdditionalItemParams(PaintTarget target, MenuItem item) throws PaintException {
+    protected void paintAdditionalItemParams(PaintTarget target, MenuItem item)
+            throws PaintException {
     }
 
     // Haulmont API
@@ -645,7 +648,7 @@ implements LegacyComponent, Focusable {
          */
         public MenuBar.MenuItem addItemBefore(String caption, Resource icon,
                 MenuBar.Command command, MenuBar.MenuItem itemToAddBefore)
-                        throws IllegalStateException {
+                throws IllegalStateException {
             if (isCheckable()) {
                 throw new IllegalStateException(
                         "A checkable item cannot have children");
@@ -1167,11 +1170,13 @@ implements LegacyComponent, Focusable {
                     attr, boolean.class));
         }
         if (menuElement.hasAttr("description")) {
-            String description = DesignAttributeHandler.readAttribute("description", attr, String.class);
+            String description = DesignAttributeHandler
+                    .readAttribute("description", attr, String.class);
             if (menuElement.hasAttr("descriptioncontentmode")) {
                 String contentModeString = DesignAttributeHandler.readAttribute(
                         "descriptioncontentmode", attr, String.class);
-                menu.setDescription(description, ContentMode.valueOf(contentModeString));
+                menu.setDescription(description,
+                        ContentMode.valueOf(contentModeString));
             } else {
                 menu.setDescription(description);
             }

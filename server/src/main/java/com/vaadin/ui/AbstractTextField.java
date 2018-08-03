@@ -16,12 +16,6 @@
 
 package com.vaadin.ui;
 
-import java.util.Collection;
-import java.util.Objects;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -35,8 +29,12 @@ import com.vaadin.shared.ui.textfield.AbstractTextFieldServerRpc;
 import com.vaadin.shared.ui.textfield.AbstractTextFieldState;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
-
 import elemental.json.Json;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Abstract base class for text input components.
@@ -45,7 +43,8 @@ import elemental.json.Json;
  * @since 8.0
  */
 public abstract class AbstractTextField extends AbstractField<String>
-        implements HasValueChangeMode, FieldEvents.FocusNotifier, FieldEvents.BlurNotifier {
+        implements HasValueChangeMode, FieldEvents.FocusNotifier,
+        FieldEvents.BlurNotifier {
 
     private final class AbstractTextFieldServerRpcImpl
             implements AbstractTextFieldServerRpc {

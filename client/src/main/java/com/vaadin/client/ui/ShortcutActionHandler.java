@@ -144,7 +144,8 @@ public class ShortcutActionHandler {
     }
 
     // Haulmont API
-    protected ComponentConnector getTargetConnector(ComponentConnector target, Element et) {
+    protected ComponentConnector getTargetConnector(ComponentConnector target,
+            Element et) {
         return target == null ? Util.findPaintable(client, et) : target;
     }
 

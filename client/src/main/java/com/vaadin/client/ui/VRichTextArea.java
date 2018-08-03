@@ -112,7 +112,7 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
         TouchScrollDelegate.enableTouchScrolling(html, html.getElement());
     }
 
-    //Haulmont API
+    // Haulmont API
     protected void createRichTextToolbar(RichTextArea rta) {
         formatter = new VRichTextToolbar(rta);
     }
@@ -129,7 +129,7 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
                     .forEach(handler -> handler.execute()));
         });
 
-        //Haulmont API
+        // Haulmont API
         createRichTextToolbar(rta);
 
         // Add blur handlers

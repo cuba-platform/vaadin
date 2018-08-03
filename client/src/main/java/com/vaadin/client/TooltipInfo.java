@@ -284,8 +284,8 @@ public class TooltipInfo {
      * Haulmont API.
      *
      * @param enabled
-     *            true if field accepts context help text
-     *            in HTML format, false otherwise
+     *            true if field accepts context help text in HTML format, false
+     *            otherwise
      */
     public void setContextHelpHtmlEnabled(boolean enabled) {
         this.contextHelpHtmlEnabled = enabled;
@@ -357,7 +357,8 @@ public class TooltipInfo {
                 && SharedUtil.equals(other.errorMessageHtml, errorMessageHtml)
                 && SharedUtil.equals(other.errorLevel, errorLevel)
                 && SharedUtil.equals(other.contextHelp, contextHelp)
-                && SharedUtil.equals(other.contextHelpHtmlEnabled, contextHelpHtmlEnabled)
+                && SharedUtil.equals(other.contextHelpHtmlEnabled,
+                        contextHelpHtmlEnabled)
                 && other.identifier == identifier);
     }
 }

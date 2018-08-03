@@ -66,4 +66,5 @@ phantomjsdriver.log
 # TB default error screenshot folder
 error-screenshots/
 
-pom.xml.versionsBackup
+# Backup files
+**/*.versionsBackup

@@ -50,13 +50,13 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     /** The layout. */
     private final VerticalLayout layout;
 
-    /** The ok button.
-     * Haulmont API dependency
+    /**
+     * The ok button. Haulmont API dependency
      */
     protected final Button ok = new Button("OK");
 
-    /** The cancel button.
-     * Haulmont API dependency
+    /**
+     * The cancel button. Haulmont API dependency
      */
     protected final Button cancel = new Button("Cancel");
 
@@ -105,13 +105,13 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     /** The preview on the hsv tab. */
     private ColorPickerPreview hsvPreview;
 
-    /** The preview on the swatches tab.
-     * Haulmont API dependency
+    /**
+     * The preview on the swatches tab. Haulmont API dependency
      */
     protected ColorPickerPreview selPreview;
 
-    /** The color select.
-     * Haulmont API dependency
+    /**
+     * The color select. Haulmont API dependency
      */
     protected ColorPickerSelect colorSelect;
 
@@ -244,7 +244,8 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     }
 
     // Haulmont API
-    protected VerticalLayout createHistoryOuterContainer(VerticalLayout innerContainer) {
+    protected VerticalLayout createHistoryOuterContainer(
+            VerticalLayout innerContainer) {
         VerticalLayout outerContainer = new VerticalLayout();
         outerContainer.setWidth("99%");
         outerContainer.setHeight("27px");
@@ -567,43 +568,43 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
         }
     }
 
-    /** Setting the red slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the red slider caption. Haulmont API dependency
      */
     public void setRedSliderCaption(String caption) {
         redSlider.setCaption(caption);
     }
 
-    /** Setting the green slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the green slider caption. Haulmont API dependency
      */
     public void setGreenSliderCaption(String caption) {
         greenSlider.setCaption(caption);
     }
 
-    /** Setting the blue slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the blue slider caption. Haulmont API dependency
      */
     public void setBlueSliderCaption(String caption) {
         blueSlider.setCaption(caption);
     }
 
-    /** Setting the hue slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the hue slider caption. Haulmont API dependency
      */
     public void setHueSliderCaption(String caption) {
         hueSlider.setCaption(caption);
     }
 
-    /** Setting the saturation slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the saturation slider caption. Haulmont API dependency
      */
     public void setSaturationSliderCaption(String caption) {
         saturationSlider.setCaption(caption);
     }
 
-    /** Setting the value slider caption.
-     * Haulmont API dependency
+    /**
+     * Setting the value slider caption. Haulmont API dependency
      */
     public void setValueSliderCaption(String caption) {
         valueSlider.setCaption(caption);

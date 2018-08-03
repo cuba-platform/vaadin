@@ -1149,7 +1149,8 @@ public abstract class AbstractClientConnector
     }
 
     // Haulmont API
-    public static void setIncorrectConcurrentAccessHandler(IncorrectConcurrentAccessHandler incorrectConcurrentAccessHandler) {
+    public static void setIncorrectConcurrentAccessHandler(
+            IncorrectConcurrentAccessHandler incorrectConcurrentAccessHandler) {
         AbstractClientConnector.incorrectConcurrentAccessHandler = incorrectConcurrentAccessHandler;
     }
 }

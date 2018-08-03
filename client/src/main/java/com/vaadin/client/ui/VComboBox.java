@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.aria.client.Roles;
@@ -234,12 +235,12 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             return $entry(function(e) {
                 var deltaX = e.deltaX ? e.deltaX : -0.5*e.wheelDeltaX;
                 var deltaY = e.deltaY ? e.deltaY : -0.5*e.wheelDeltaY;
-        
+
                 // IE8 has only delta y
                 if (isNaN(deltaY)) {
                     deltaY = -0.5*e.wheelDelta;
                 }
-        
+
                 @com.vaadin.client.ui.VComboBox.JsniUtil::moveScrollFromEvent(*)(widget, deltaX, deltaY, e, e.deltaMode);
             });
         }-*/;
@@ -2337,9 +2338,13 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             case KeyCodes.KEY_ALT:
             case KeyCodes.KEY_DOWN:
             case KeyCodes.KEY_UP:
+            case KeyCodes.KEY_RIGHT:
+            case KeyCodes.KEY_LEFT:
             case KeyCodes.KEY_PAGEDOWN:
             case KeyCodes.KEY_PAGEUP:
             case KeyCodes.KEY_ESCAPE:
+            case KeyCodes.KEY_HOME:
+            case KeyCodes.KEY_END:
                 // NOP
                 break;
             default:

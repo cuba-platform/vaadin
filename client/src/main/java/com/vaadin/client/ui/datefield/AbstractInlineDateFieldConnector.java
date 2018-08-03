@@ -15,8 +15,6 @@
  */
 package com.vaadin.client.ui.datefield;
 
-import java.util.Date;
-
 import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.UIDL;
 import com.vaadin.client.annotations.OnStateChange;
@@ -24,6 +22,8 @@ import com.vaadin.client.communication.StateChangeEvent;
 import com.vaadin.client.ui.VAbstractCalendarPanel;
 import com.vaadin.client.ui.VAbstractDateFieldCalendar;
 import com.vaadin.shared.ui.datefield.InlineDateFieldState;
+
+import java.util.Date;
 
 /**
  * Base class for inline data field connector.
@@ -51,24 +51,22 @@ public abstract class AbstractInlineDateFieldConnector<PANEL extends VAbstractCa
     protected void updateListeners() {
         VAbstractDateFieldCalendar<PANEL, R> widget = getWidget();
         if (isResolutionMonthOrHigher()) {
-            widget.calendarPanel
-                    .setFocusChangeListener(date -> {
-                        Date date2 = new Date();
-                        if (widget.calendarPanel.getDate() != null) {
-                            date2.setTime(widget.calendarPanel.getDate()
-                                    .getTime());
-                        }
-                        /*
-                         * Update the value of calendarPanel
-                         */
-                        date2.setYear(date.getYear());
-                        date2.setMonth(date.getMonth());
-                        widget.calendarPanel.setDate(date2);
-                        /*
-                         * Then update the value from panel to server
-                         */
-                        widget.updateValueFromPanel();
-                    });
+            widget.calendarPanel.setFocusChangeListener(date -> {
+                Date date2 = new Date();
+                if (widget.calendarPanel.getDate() != null) {
+                    date2.setTime(widget.calendarPanel.getDate().getTime());
+                }
+                /*
+                 * Update the value of calendarPanel
+                 */
+                date2.setYear(date.getYear());
+                date2.setMonth(date.getMonth());
+                widget.calendarPanel.setDate(date2);
+                /*
+                 * Then update the value from panel to server
+                 */
+                widget.updateValueFromPanel();
+            });
         } else {
             widget.calendarPanel.setFocusChangeListener(null);
         }

@@ -15,9 +15,6 @@
  */
 package com.vaadin.client.ui.splitpanel;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -41,6 +38,9 @@ import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.splitpanel.AbstractSplitPanelRpc;
 import com.vaadin.shared.ui.splitpanel.AbstractSplitPanelState;
 import com.vaadin.shared.ui.splitpanel.AbstractSplitPanelState.SplitterState;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class AbstractSplitPanelConnector extends
         AbstractComponentContainerConnector implements SimpleManagedLayout {
@@ -139,8 +139,7 @@ public abstract class AbstractSplitPanelConnector extends
         panel.maximumPosition = splitterState.maxPosition
                 + splitterState.maxPositionUnit;
 
-        panel.position = splitterState.position
-                + splitterState.positionUnit;
+        panel.position = splitterState.position + splitterState.positionUnit;
 
         panel.setPositionReversed(splitterState.positionReversed);
 

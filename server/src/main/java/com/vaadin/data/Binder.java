@@ -23,7 +23,11 @@ import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.event.EventRouter;
 import com.vaadin.server.AbstractErrorMessage.ContentMode;
-import com.vaadin.server.*;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.SerializableFunction;
+import com.vaadin.server.SerializablePredicate;
+import com.vaadin.server.Setter;
+import com.vaadin.server.UserError;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ErrorLevel;
 import com.vaadin.ui.AbstractComponent;
@@ -38,7 +42,19 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -182,9 +198,9 @@ public class Binder<BEAN> implements Serializable {
 
         /**
          * Gets the current read-only status for this Binding.
-         * 
+         *
          * @see #setReadOnly(boolean)
-         * 
+         *
          * @return {@code true} if read-only; {@code false} if not
          * @since 8.4
          */
@@ -824,7 +840,8 @@ public class Binder<BEAN> implements Serializable {
             ValueProvider<BEAN, ?> getter = definition.getGetter();
             Setter<BEAN, ?> setter = definition.getSetter().orElse(null);
             if (setter == null) {
-                getLogger().info("{} does not have an accessible setter", propertyName);
+                getLogger().info("{} does not have an accessible setter",
+                        propertyName);
             }
 
             BindingBuilder<BEAN, ?> finalBinding = withConverter(
@@ -2173,8 +2190,8 @@ public class Binder<BEAN> implements Serializable {
      * <p>
      * Added listener is notified every time whenever any bound field value is
      * changed, i.e. the UI component value was changed, passed all the
-     * conversions and validations then propagated to the bound bean field. The same
-     * functionality can be achieved by adding a
+     * conversions and validations then propagated to the bound bean field. The
+     * same functionality can be achieved by adding a
      * {@link ValueChangeListener} to all fields in the {@link Binder}.
      * <p>
      * The listener is added to all fields regardless of whether the method is

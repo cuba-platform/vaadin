@@ -114,8 +114,7 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
             getLogger().error("Tried to use an unloaded locale \"" + locale
                     + "\". Using default locale (" + widget.getCurrentLocale()
                     + ").");
-            getLogger().error(
-                    e.getMessage() == null ? "" : e.getMessage(), e);
+            getLogger().error(e.getMessage() == null ? "" : e.getMessage(), e);
         }
 
         // We show week numbers only if the week starts with Monday, as ISO 8601
@@ -150,17 +149,17 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
      * updates these labels.
      *
      * @param calendar
-     *         the calendar panel for which to set the assistive labels
+     *            the calendar panel for which to set the assistive labels
      * @since 8.4
      */
     protected void setAndUpdateAssistiveLabels(
             VAbstractCalendarPanel calendar) {
-        calendar.setAssistiveLabelPreviousMonth(
-                getState().assistiveLabels.get(AccessibleElement.PREVIOUS_MONTH));
+        calendar.setAssistiveLabelPreviousMonth(getState().assistiveLabels
+                .get(AccessibleElement.PREVIOUS_MONTH));
         calendar.setAssistiveLabelNextMonth(
                 getState().assistiveLabels.get(AccessibleElement.NEXT_MONTH));
-        calendar.setAssistiveLabelPreviousYear(
-                getState().assistiveLabels.get(AccessibleElement.PREVIOUS_YEAR));
+        calendar.setAssistiveLabelPreviousYear(getState().assistiveLabels
+                .get(AccessibleElement.PREVIOUS_YEAR));
         calendar.setAssistiveLabelNextYear(
                 getState().assistiveLabels.get(AccessibleElement.NEXT_YEAR));
 

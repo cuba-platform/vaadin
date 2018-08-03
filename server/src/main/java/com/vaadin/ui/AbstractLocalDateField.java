@@ -15,9 +15,13 @@
  */
 package com.vaadin.ui;
 
+import com.vaadin.data.validator.DateRangeValidator;
+import com.vaadin.data.validator.RangeValidator;
+import com.vaadin.shared.ui.datefield.AbstractTextualDateFieldState;
+import com.vaadin.shared.ui.datefield.DateResolution;
+
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -25,11 +29,6 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
-
-import com.vaadin.data.validator.DateRangeValidator;
-import com.vaadin.data.validator.RangeValidator;
-import com.vaadin.shared.ui.datefield.AbstractTextualDateFieldState;
-import com.vaadin.shared.ui.datefield.DateResolution;
 
 /**
  * Abstract DateField class for {@link LocalDate} type.
@@ -160,6 +159,7 @@ public abstract class AbstractLocalDateField
 
     @Override
     protected LocalDate toType(TemporalAccessor temporalAccessor) {
-        return temporalAccessor == null? null : LocalDate.from(temporalAccessor);
+        return temporalAccessor == null ? null
+                : LocalDate.from(temporalAccessor);
     }
 }

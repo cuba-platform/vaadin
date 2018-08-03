@@ -1,14 +1,5 @@
 package com.vaadin.tests.server.component.abstractlisting;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.junit.Test;
-
 import com.vaadin.data.provider.Query;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
@@ -22,6 +13,14 @@ import com.vaadin.ui.AbstractListing;
 import com.vaadin.ui.IconGenerator;
 import com.vaadin.ui.ItemCaptionGenerator;
 import com.vaadin.ui.declarative.DesignContext;
+import org.junit.Test;
+
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * {@link AbstractListing} component declarative test.
@@ -72,11 +71,11 @@ public abstract class AbstractListingDeclarativeTest<T extends AbstractListing>
 
         List<String> items = Arrays.asList("foo", "bar", "foobar", "barfoo");
 
-        String design = String.format(
-                "<%s>\n" + "<option item='foo' icon='%s'>foo</option>\n"
-                        + "<option item='bar' icon='%s'>bar</option>"
-                        + "<option item='foobar' icon='theme://%s'>foobar</option>"
-                        + "<option item='barfoo'>barfoo</option>" + "</%s>",
+        String design = String.format("<%s>\n"
+                + "<option item='foo' icon='%s'>foo</option>\n"
+                + "<option item='bar' icon='%s'>bar</option>"
+                + "<option item='foobar' icon='theme://%s'>foobar</option>"
+                + "<option item='barfoo'>barfoo</option>" + "</%s>",
                 getComponentTag(), EXTERNAL_URL, FILE_PATH, THEME_PATH,
                 getComponentTag());
 

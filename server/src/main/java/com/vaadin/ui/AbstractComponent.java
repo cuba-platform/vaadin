@@ -23,8 +23,24 @@ import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.ContextClickEvent.ContextClickListener;
 import com.vaadin.event.ContextClickEvent.ContextClickNotifier;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.*;
-import com.vaadin.shared.*;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.ComponentSizeValidator;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.Extension;
+import com.vaadin.server.Resource;
+import com.vaadin.server.Responsive;
+import com.vaadin.server.SizeWithUnit;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.UserError;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.AbstractComponentState;
+import com.vaadin.shared.AbstractFieldState;
+import com.vaadin.shared.ComponentConstants;
+import com.vaadin.shared.ContextClickRpc;
+import com.vaadin.shared.EventId;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.shared.ui.ErrorLevel;
@@ -38,8 +54,18 @@ import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * An abstract class that defines default implementation for the
@@ -219,7 +245,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     @Override
     public void setPrimaryStyleName(String primaryStyleName) {
-        if (!Objects.equals(getState(false).primaryStyleName, primaryStyleName)) {
+        if (!Objects.equals(getState(false).primaryStyleName,
+                primaryStyleName)) {
             getState().primaryStyleName = primaryStyleName;
         }
     }
@@ -260,34 +287,6 @@ public abstract class AbstractComponent extends AbstractClientConnector
             while (tokenizer.hasMoreTokens()) {
                 getState().styles.remove(tokenizer.nextToken());
             }
-        }
-    }
-
-    /**
-     * Adds or removes a style name. Multiple styles can be specified as a
-     * space-separated list of style names.
-     *
-     * If the {@code add} parameter is true, the style name is added to the
-     * component. If the {@code add} parameter is false, the style name is
-     * removed from the component.
-     * <p>
-     * Functionally this is equivalent to using {@link #addStyleName(String)} or
-     * {@link #removeStyleName(String)}
-     *
-     * @since 7.5
-     * @param style
-     *            the style name to be added or removed
-     * @param add
-     *            <code>true</code> to add the given style, <code>false</code>
-     *            to remove it
-     * @see #addStyleName(String)
-     * @see #removeStyleName(String)
-     */
-    public void setStyleName(String style, boolean add) {
-        if (add) {
-            addStyleName(style);
-        } else {
-            removeStyleName(style);
         }
     }
 
@@ -1503,18 +1502,24 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     // Haulmont API
     @Override
-    public void setContextHelpTextHtmlEnabled(boolean contextHelpTextHtmlEnabled) {
-        if (!Objects.equals(getState(false).contextHelpTextHtmlEnabled, contextHelpTextHtmlEnabled)) {
+    public void setContextHelpTextHtmlEnabled(
+            boolean contextHelpTextHtmlEnabled) {
+        if (!Objects.equals(getState(false).contextHelpTextHtmlEnabled,
+                contextHelpTextHtmlEnabled)) {
             getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
         }
     }
 
     // Haulmont API
     @Override
-    public Registration addContextHelpIconClickListener(ContextHelpIconClickListener listener) {
-        /*return addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
-                ContextHelpIconClickEvent.class, listener,
-                ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);*/
+    public Registration addContextHelpIconClickListener(
+            ContextHelpIconClickListener listener) {
+        /*
+         * return
+         * addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
+         * ContextHelpIconClickEvent.class, listener,
+         * ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);
+         */
         return null;
     }
 

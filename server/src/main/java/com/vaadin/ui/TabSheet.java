@@ -1503,6 +1503,7 @@ public class TabSheet extends AbstractComponentContainer
 
     /*
      * (non-Javadoc)
+     *
      * @see com.vaadin.ui.AbstractComponent#readDesign(org.jsoup.nodes .Element,
      * com.vaadin.ui.declarative.DesignContext)
      */
@@ -1638,6 +1639,7 @@ public class TabSheet extends AbstractComponentContainer
 
     /*
      * (non-Javadoc)
+     *
      * @see com.vaadin.ui.AbstractComponent#getCustomAttributes()
      */
     @Override
@@ -1649,6 +1651,7 @@ public class TabSheet extends AbstractComponentContainer
 
     /*
      * (non-Javadoc)
+     *
      * @see com.vaadin.ui.AbstractComponent#writeDesign(org.jsoup.nodes.Element
      * , com.vaadin.ui.declarative.DesignContext)
      */

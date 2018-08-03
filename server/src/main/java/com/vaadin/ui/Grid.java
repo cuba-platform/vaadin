@@ -2102,7 +2102,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          * a row when a component is clicked. For example in the case of a
          * {@link ComboBox} or {@link TextField} it might be problematic as the
          * component gets re-rendered and might lose focus.
-         * 
+         *
          * @param handleWidgetEvents
          *            {@code true} to handle events; {@code false} to not
          * @return this column
@@ -2116,9 +2116,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
         /**
          * Gets whether Grid is handling the events in this Column from
          * Component and Widgets.
-         * 
+         *
          * @see #setHandleWidgetEvents(boolean)
-         * 
+         *
          * @return {@code true} if handling events; {@code false} if not
          * @since 8.3
          */
@@ -2660,7 +2660,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * <p>
      * You can add columns for nested properties with dot notation, eg.
      * <code>"property.nestedProperty"</code>
-     * 
+     *
      * @param propertyName
      *            the property name of the new column, not <code>null</code>
      * @return the newly added column, not <code>null</code>
@@ -2681,7 +2681,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * You can add columns for nested properties with dot notation, eg.
      * <code>"property.nestedProperty"</code>
      *
-     * 
+     *
      * @param propertyName
      *            the property name of the new column, not <code>null</code>
      * @param renderer

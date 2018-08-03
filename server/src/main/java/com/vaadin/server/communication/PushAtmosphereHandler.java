@@ -112,8 +112,7 @@ public class PushAtmosphereHandler extends AbstractReflectorAtmosphereHandler
 
         @Override
         public void onThrowable(AtmosphereResourceEvent event) {
-            getLogger().error(
-                    "Exception in push connection",
+            getLogger().error("Exception in push connection",
                     event.throwable());
             pushHandler.connectionLost(event);
         }

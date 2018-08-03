@@ -15,12 +15,6 @@
  */
 package com.vaadin.event;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.vaadin.event.Action.Container;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.server.KeyMapper;
@@ -28,6 +22,12 @@ import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
 import com.vaadin.server.VariableOwner;
 import com.vaadin.ui.Component;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Javadoc TODO
@@ -41,8 +41,7 @@ import com.vaadin.ui.Component;
  *
  *
  */
-public class ActionManager
-        implements Action.Handler, Action.Notifier {
+public class ActionManager implements Action.Handler, Action.Notifier {
 
     private static final long serialVersionUID = 1641868163608066491L;
 

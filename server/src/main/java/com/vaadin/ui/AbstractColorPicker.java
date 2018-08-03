@@ -15,20 +15,19 @@
  */
 package com.vaadin.ui;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Objects;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
 import com.vaadin.shared.ui.colorpicker.AbstractColorPickerState;
 import com.vaadin.shared.ui.colorpicker.Color;
 import com.vaadin.shared.ui.colorpicker.ColorPickerServerRpc;
 import com.vaadin.ui.components.colorpicker.ColorPickerPopup;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * An abstract class that defines default implementation for a color picker
@@ -94,17 +93,17 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
 
     protected PopupStyle popupStyle = PopupStyle.POPUP_NORMAL;
 
-    /** The popup window.
-     * Haulmont API dependency
+    /**
+     * The popup window. Haulmont API dependency
      */
     protected ColorPickerPopup window;
 
     /** The currently selected color. */
     protected Color color;
 
-    /** The UI.
-     * Haulmont API dependency
-     * */
+    /**
+     * The UI. Haulmont API dependency
+     */
     protected UI parent;
 
     // Haulmont API dependency
@@ -475,11 +474,6 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
                 // Haulmont API
                 window.addValueChangeListener(createColorValueChangeListener());
 
-                window.addValueChangeListener(event -> {
-                    setValue(event.getValue());
-                    rpc.changeColor(event.getValue().getCSS());
-                });
-
                 window.getHistory().setValue(color);
                 window.setPositionX(positionX);
                 window.setPositionY(positionY);
@@ -595,7 +589,7 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
      * Note: It must be set to {@code true} if ColorPicker is a child of modal
      * {@link Window}
      * </p>
-     * 
+     *
      * @see Window#setModal
      * @since 8.4.1
      * @param modal

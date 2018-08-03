@@ -73,7 +73,8 @@ public class LegacyUidlWriter implements Serializable {
 
         writer.write("[");
         for (Component c : legacyComponents) {
-            getLogger().trace("Painting LegacyComponent " + c.getClass().getName()
+            getLogger()
+                    .trace("Painting LegacyComponent " + c.getClass().getName()
                             + "@" + Integer.toHexString(c.hashCode()));
             target.startTag("change");
             final String pid = c.getConnectorId();

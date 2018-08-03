@@ -48,7 +48,7 @@ public class VAbstractOrderedLayout extends FlowPanel {
 
     protected boolean definedHeight = false;
 
-    //Haulmont API
+    // Haulmont API
     protected Map<Widget, Slot> widgetToSlot = new HashMap<>();
 
     private Element expandWrapper;
@@ -643,14 +643,14 @@ public class VAbstractOrderedLayout extends FlowPanel {
                         // TODO check caption position
                         // Haulmont API quick fixed
                         if (vertical) {
-                            int size = layoutManager.getOuterHeight(slot
-                                    .getWidget().getElement());
+                            int size = layoutManager.getOuterHeight(
+                                    slot.getWidget().getElement());
                             // Haulmont API quick check position
-                            if (slot.hasCaption() &&
-                                    slot.getCaptionPosition() == CaptionPosition.TOP ||
-                                    slot.getCaptionPosition() == CaptionPosition.BOTTOM) {
-                                size += layoutManager.getOuterHeight(slot
-                                        .getCaptionElement());
+                            if (slot.hasCaption() && slot
+                                    .getCaptionPosition() == CaptionPosition.TOP
+                                    || slot.getCaptionPosition() == CaptionPosition.BOTTOM) {
+                                size += layoutManager.getOuterHeight(
+                                        slot.getCaptionElement());
                             }
                             if (size > 0) {
                                 totalSize += size;
@@ -663,8 +663,8 @@ public class VAbstractOrderedLayout extends FlowPanel {
                                 int max2 = layoutManager.getOuterWidth(
                                         slot.getCaptionElement());
                                 // Haulmont API quick check position
-                                if (slot.getCaptionPosition() == CaptionPosition.LEFT ||
-                                        slot.getCaptionPosition() == CaptionPosition.RIGHT) {
+                                if (slot.getCaptionPosition() == CaptionPosition.LEFT
+                                        || slot.getCaptionPosition() == CaptionPosition.RIGHT) {
                                     max += max2;
                                 } else {
                                     max = Math.max(max, max2);

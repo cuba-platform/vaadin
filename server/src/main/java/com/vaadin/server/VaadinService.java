@@ -1249,8 +1249,7 @@ public abstract class VaadinService implements Serializable {
         for (final UI ui : uis) {
             if (ui.isClosing()) {
                 ui.accessSynchronously(() -> {
-                    getLogger().debug("Removing closed UI {}",
-                            ui.getUIId());
+                    getLogger().debug("Removing closed UI {}", ui.getUIId());
                     session.removeUI(ui);
                 });
             }
@@ -1268,8 +1267,7 @@ public abstract class VaadinService implements Serializable {
         for (final UI ui : session.getUIs()) {
             if (!isUIActive(ui) && !ui.isClosing()) {
                 ui.accessSynchronously(() -> {
-                    getLogger().debug(
-                            "Closing inactive UI #{0} in session {1}",
+                    getLogger().debug("Closing inactive UI #{0} in session {1}",
                             new Object[] { ui.getUIId(), sessionId });
                     ui.close();
                 });
@@ -1836,10 +1834,8 @@ public abstract class VaadinService implements Serializable {
         }
 
         if (!Constants.REQUIRED_ATMOSPHERE_RUNTIME_VERSION.equals(rawVersion)) {
-            getLogger().warn(
-                    Constants.INVALID_ATMOSPHERE_VERSION_WARNING,
-                    Constants.REQUIRED_ATMOSPHERE_RUNTIME_VERSION,
-                    rawVersion);
+            getLogger().warn(Constants.INVALID_ATMOSPHERE_VERSION_WARNING,
+                    Constants.REQUIRED_ATMOSPHERE_RUNTIME_VERSION, rawVersion);
         }
         return true;
     }

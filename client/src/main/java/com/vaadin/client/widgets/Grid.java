@@ -56,10 +56,7 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.DeferredWorker;
-import com.vaadin.client.Focusable;
-import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.*;
 import com.vaadin.client.WidgetUtil.Reference;
 import com.vaadin.client.data.DataChangeHandler;
 import com.vaadin.client.data.DataSource;
@@ -2545,7 +2542,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
 
             return childWidget && !handleWidgetEvent
-                    // Haulmont API
+            // Haulmont API
                     && !grid.isWidgetAllowsClickHandling(targetElement);
         }
 
@@ -3347,6 +3344,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      */
     private class AutoColumnWidthsRecalculator {
         private double lastCalculatedInnerWidth = -1;
+        private double lastCalculatedInnerHeight = -1;
 
         private final ScheduledCommand calculateCommand = new ScheduledCommand() {
 
@@ -3439,6 +3437,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
             // Update latest width to prevent recalculate on height change.
             lastCalculatedInnerWidth = escalator.getInnerWidth();
+            lastCalculatedInnerHeight = getEscalatorInnerHeight();
         }
 
         private boolean columnsAreGuaranteedToBeWiderThanGrid() {
@@ -3779,10 +3778,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             try {
                 detailsWidget = detailsGenerator.getDetails(rowIndex);
             } catch (Throwable e) {
-                getLogger().error(
-                        "Exception while generating details for row "
-                                + rowIndex,
-                        e);
+                getLogger().error("Exception while generating details for row "
+                        + rowIndex, e);
             }
 
             final double spacerHeight;
@@ -5700,10 +5697,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                         ((ComplexRenderer<?>) renderer)
                                 .init(rendererCellReference);
                     } catch (RuntimeException e) {
-                        getLogger().error(
-                                "Error initing cell in column "
-                                        + cell.getColumn(),
-                                e);
+                        getLogger().error("Error initing cell in column "
+                                + cell.getColumn(), e);
                     }
                 }
             }
@@ -5730,10 +5725,9 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                         // Logical attach
                         setParent(widget, Grid.this);
                     } catch (RuntimeException e) {
-                        getLogger().error(
-                                "Error attaching child widget in column "
-                                        + cell.getColumn(),
-                                e);
+                        getLogger()
+                                .error("Error attaching child widget in column "
+                                        + cell.getColumn(), e);
                     }
                 }
             }
@@ -5782,10 +5776,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                                 .getStyle(rowReference);
                         setCustomStyleName(rowElement, rowStylename);
                     } catch (RuntimeException e) {
-                        getLogger().error(
-                                "Error generating styles for row "
-                                        + row.getRow(),
-                                e);
+                        getLogger().error("Error generating styles for row "
+                                + row.getRow(), e);
                     }
                 } else {
                     // Remove in case there was a generator previously
@@ -5859,10 +5851,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                         cell.getElement().removeAllChildren();
                     }
                 } catch (RuntimeException e) {
-                    getLogger().error(
-                            "Error rendering cell in column "
-                                    + cell.getColumn(),
-                            e);
+                    getLogger().error("Error rendering cell in column "
+                            + cell.getColumn(), e);
                 }
             }
         }
@@ -5884,10 +5874,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                             cell.getElement().removeChild(w.getElement());
                         }
                     } catch (RuntimeException e) {
-                        getLogger().error(
-                                "Error detaching widget in column "
-                                        + cell.getColumn(),
-                                e);
+                        getLogger().error("Error detaching widget in column "
+                                + cell.getColumn(), e);
                     }
                 }
             }
@@ -5910,10 +5898,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                         ((ComplexRenderer) renderer)
                                 .destroy(rendererCellReference);
                     } catch (RuntimeException e) {
-                        getLogger().error(
-                                "Error destroying cell in column "
-                                        + cell.getColumn(),
-                                e);
+                        getLogger().error("Error destroying cell in column "
+                                + cell.getColumn(), e);
                     }
                 }
             }
@@ -5951,7 +5937,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 }
 
                 // Haulmont API
-                if (staticRow instanceof HeaderRow || staticRow instanceof FooterRow) {
+                if (staticRow instanceof HeaderRow
+                        || staticRow instanceof FooterRow) {
                     addAdditionalData(staticRow, cell);
                 }
 
@@ -6179,7 +6166,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         // Haulmont API
-        protected void addAdditionalData(StaticRow<?> staticRow, FlyweightCell cell) {
+        protected void addAdditionalData(StaticRow<?> staticRow,
+                FlyweightCell cell) {
 
         }
 
@@ -7421,7 +7409,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     /**
      * Helper method for making sure desired row is visible and it is properly
      * rendered.
-     * 
+     *
      * @param rowIndex
      *            the row to look for
      * @param destination
@@ -7446,7 +7434,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     /**
      * Helper method for making sure desired row is visible and it is properly
      * rendered.
-     * 
+     *
      * @param rowIndex
      *            the row to look for
      * @param whenRendered
@@ -7496,7 +7484,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     /**
      * Helper method for scrolling and making sure row is visible.
-     * 
+     *
      * @param rowIndex
      *            the row index to make visible
      * @param destination
@@ -7888,7 +7876,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             if (event.isHandled()) {
                 return;
             }
-            Element targetElement = Element.as(event.getDomEvent().getEventTarget());
+            Element targetElement = Element
+                    .as(event.getDomEvent().getEventTarget());
             event.setHandled(isElementInChildWidget(targetElement)
                     // Haulmont API
                     && !isEventHandlerShouldHandleEvent(targetElement));
@@ -8241,7 +8230,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     }
 
     // Haulmont API
-    protected SelectionColumn createSelectionColumn(Renderer<Boolean> selectColumnRenderer) {
+    protected SelectionColumn createSelectionColumn(
+            Renderer<Boolean> selectColumnRenderer) {
         return new SelectionColumn(selectColumnRenderer);
     }
 
@@ -9208,6 +9198,15 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 recalculateColumnWidths();
             }
 
+            if (getEscalatorInnerHeight() != autoColumnWidthsRecalculator.lastCalculatedInnerHeight) {
+                Scheduler.get().scheduleFinally(() -> {
+                    // Trigger re-calculation of all row positions.
+                    RowContainer.BodyRowContainer body = getEscalator()
+                            .getBody();
+                    body.setDefaultRowHeight(body.getDefaultRowHeight());
+                });
+            }
+
             // Vertical resizing could make editor positioning invalid so it
             // needs to be recalculated on resize
             if (isEditorActive()) {
@@ -9219,6 +9218,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             // way to the bottom.
             refreshBody();
         });
+    }
+
+    private double getEscalatorInnerHeight() {
+        return new ComputedStyle(getEscalator().getTableWrapper())
+                .getHeightIncludingBorderPadding();
     }
 
     /**

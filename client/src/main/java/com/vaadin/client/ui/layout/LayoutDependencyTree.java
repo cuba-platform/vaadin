@@ -498,8 +498,8 @@ public class LayoutDependencyTree {
                 connector = (ComponentConnector) ConnectorMap.get(connection)
                         .getConnector(connectorId);
                 if (connector == null) {
-                    getLogger().warn("No connector found for id "
-                            + connectorId + " while creating LayoutDependency");
+                    getLogger().warn("No connector found for id " + connectorId
+                            + " while creating LayoutDependency");
                     return null;
                 }
             }

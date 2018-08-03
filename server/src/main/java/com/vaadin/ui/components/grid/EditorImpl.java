@@ -148,8 +148,8 @@ public class EditorImpl<T> extends AbstractGridExtension<T>
                     return;
                 }
                 doClose();
-                doEdit(getData(key));
                 rpc.confirmBind(true);
+                doEdit(getData(key));
             }
         });
 
@@ -273,15 +273,16 @@ public class EditorImpl<T> extends AbstractGridExtension<T>
         if (!isEnabled()) {
             throw new IllegalStateException("Item editor is not enabled");
         }
-        T beanToEdit = getParent().getDataCommunicator().
-            fetchItemsWithRange(rowNumber, 1).
-            stream().findFirst().orElseThrow(() -> new IllegalArgumentException(
-                "Row number " + rowNumber+ "did not yield any item from data provider"));
+        T beanToEdit = getParent().getDataCommunicator()
+                .fetchItemsWithRange(rowNumber, 1).stream().findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Row number " + rowNumber
+                                + "did not yield any item from data provider"));
         if (!beanToEdit.equals(edited)) {
             if (isBuffered() && edited != null) {
                 throw new IllegalStateException("Editing item " + beanToEdit
-                    + " failed. Item editor is already editing item "
-                    + edited);
+                        + " failed. Item editor is already editing item "
+                        + edited);
             } else {
                 rpc.bind(rowNumber);
             }

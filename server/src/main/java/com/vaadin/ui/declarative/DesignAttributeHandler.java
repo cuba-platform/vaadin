@@ -201,8 +201,8 @@ public class DesignAttributeHandler implements Serializable {
             Attributes attr, Object defaultInstance, DesignContext context) {
         Method getter = findGetterForAttribute(component.getClass(), attribute);
         if (getter == null) {
-            getLogger().warn(
-                    "Could not find getter for attribute " + attribute);
+            getLogger()
+                    .warn("Could not find getter for attribute " + attribute);
         } else {
             try {
                 // compare the value with default value

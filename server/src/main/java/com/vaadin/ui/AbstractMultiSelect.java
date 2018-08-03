@@ -15,19 +15,6 @@
  */
 package com.vaadin.ui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.jsoup.nodes.Element;
-
 import com.vaadin.data.HasValue;
 import com.vaadin.data.SelectionModel;
 import com.vaadin.data.SelectionModel.Multi;
@@ -45,8 +32,19 @@ import com.vaadin.shared.ui.ListingJsonConstants;
 import com.vaadin.shared.ui.abstractmultiselect.AbstractMultiSelectState;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignException;
-
 import elemental.json.JsonObject;
+import org.jsoup.nodes.Element;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Base class for listing components that allow selecting multiple items.
@@ -326,8 +324,8 @@ public abstract class AbstractMultiSelect<T> extends AbstractListing<T>
         DataProvider<T, ?> dataProvider = internalGetDataProvider();
         addedItems.removeIf(item -> {
             Object addedId = dataProvider.getId(item);
-            return removedItems.stream().map(dataProvider::getId)
-                    .anyMatch(addedId::equals)? removedItems.remove(item):false;
+            return removedItems.stream().map(dataProvider::getId).anyMatch(
+                    addedId::equals) ? removedItems.remove(item) : false;
         });
 
         if (isAllSelected(addedItems) && isNoneSelected(removedItems)) {

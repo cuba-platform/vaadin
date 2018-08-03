@@ -74,7 +74,8 @@ public class ConnectorTracker implements Serializable {
     private final Set<ClientConnector> dirtyConnectors = new HashSet<>();
     private final Set<ClientConnector> uninitializedConnectors = new HashSet<>();
 
-    private List<MarkedAsDirtyListener> markedDirtyListeners = new ArrayList<>(0);
+    private List<MarkedAsDirtyListener> markedDirtyListeners = new ArrayList<>(
+            0);
 
     /**
      * Connectors that have been unregistered and should be cleaned up the next
@@ -138,15 +139,14 @@ public class ConnectorTracker implements Serializable {
             uninitializedConnectors.add(connector);
 
             getLogger().debug("Registered {} ({})",
-                        connector.getClass().getSimpleName(), connectorId);
+                    connector.getClass().getSimpleName(), connectorId);
         } else if (previouslyRegistered != connector) {
             throw new RuntimeException("A connector with id " + connectorId
                     + " is already registered!");
         } else if (!wasUnregistered) {
             getLogger().warn(
                     "An already registered connector was registered again: {} ({})",
-                    connector.getClass().getSimpleName(),
-                    connectorId);
+                    connector.getClass().getSimpleName(), connectorId);
         }
         dirtyConnectors.add(connector);
     }
@@ -187,13 +187,11 @@ public class ConnectorTracker implements Serializable {
             // Client side knows about the connector, track it for a while if it
             // becomes reattached
             getLogger().debug("Unregistered {} ({})",
-                    connector.getClass().getSimpleName(),
-                    connectorId);
+                    connector.getClass().getSimpleName(), connectorId);
         } else {
             getLogger().warn(
                     "Unregistered {} ({}) that was already unregistered.",
-                    connector.getClass().getSimpleName(),
-                    connectorId);
+                    connector.getClass().getSimpleName(), connectorId);
         }
     }
 
@@ -311,9 +309,8 @@ public class ConnectorTracker implements Serializable {
                 // registerConnector(connector)
                 // This code should never be called as cleanup should take place
                 // in detach()
-                getLogger().warn(
-                        "cleanConnectorMap unregistered connector {}. " +
-                                "This should have been done when the connector was detached.",
+                getLogger().warn("cleanConnectorMap unregistered connector {}. "
+                        + "This should have been done when the connector was detached.",
                         getConnectorAndParentInfo(connector));
                 if (globalResourceHandler != null) {
                     globalResourceHandler.unregisterConnector(connector);
@@ -503,8 +500,7 @@ public class ConnectorTracker implements Serializable {
 
     /**
      * Mark the connector as dirty and notifies any marked as dirty listeners.
-     * This should not be done while the response
-     * is being written.
+     * This should not be done while the response is being written.
      *
      * @see #getDirtyConnectors()
      * @see #isWritingResponse()
@@ -525,7 +521,7 @@ public class ConnectorTracker implements Serializable {
             }
         }
 
-        if(!isDirty(connector)) {
+        if (!isDirty(connector)) {
             notifyMarkedAsDirtyListeners(connector);
         }
 
@@ -911,7 +907,7 @@ public class ConnectorTracker implements Serializable {
      * connector is marked as dirty.
      *
      * @param listener
-     *         listener to add
+     *            listener to add
      * @since 8.4
      * @return registration for removing listener registration
      */
@@ -926,7 +922,7 @@ public class ConnectorTracker implements Serializable {
      * has been marked as dirty.
      *
      * @param connector
-     *         client connector marked as dirty
+     *            client connector marked as dirty
      * @since 8.4
      */
     public void notifyMarkedAsDirtyListeners(ClientConnector connector) {

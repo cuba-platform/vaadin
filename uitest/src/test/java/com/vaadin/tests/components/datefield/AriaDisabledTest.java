@@ -1,11 +1,10 @@
 package com.vaadin.tests.components.datefield;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import com.vaadin.testbench.By;
 import com.vaadin.tests.tb3.MultiBrowserTest;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class AriaDisabledTest extends MultiBrowserTest {
 
@@ -15,8 +14,8 @@ public class AriaDisabledTest extends MultiBrowserTest {
 
         // Expect aria-disabled="false" on the enabled DateField.
         String ariaDisabled = driver
-                .findElement(By
-                        .vaadin("/VVerticalLayout[0]/VPopupCalendar[1]#popupButton"))
+                .findElement(By.vaadin(
+                        "/VVerticalLayout[0]/VPopupCalendar[1]#popupButton"))
                 .getAttribute("aria-disabled");
         assertEquals("false", ariaDisabled);
 
