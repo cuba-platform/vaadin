@@ -34,7 +34,7 @@ public class VerticalLayout extends AbstractOrderedLayout {
      * Constructs an empty VerticalLayout.
      */
     public VerticalLayout() {
-        setWidth("100%");
+        setWidth(100, Unit.PERCENTAGE);
         setSpacing(true);
         setMargin(true);
     }
