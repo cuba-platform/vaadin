@@ -1413,6 +1413,11 @@ public class Window extends Panel
         }
     }
 
+    // Haulmont API
+    public Integer getBringToFront() {
+        return bringToFront;
+    }
+
     /**
      * Reads the content and possible assistive descriptions from the list of
      * child elements of a design. If an element has an
