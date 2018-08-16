@@ -1414,6 +1414,11 @@ public class Window extends Panel implements FocusNotifier, BlurNotifier {
         return getState(false).assistiveTabStopBottomText;
     }
 
+    // Haulmont API
+    public Integer getBringToFront() {
+        return bringToFront;
+    }
+
     @Override
     public void readDesign(Element design, DesignContext context) {
         super.readDesign(design, context);
