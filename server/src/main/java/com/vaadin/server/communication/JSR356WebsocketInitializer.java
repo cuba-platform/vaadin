@@ -88,6 +88,14 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
                             .equals(name)) {
                 return "false";
             }
+            if (initParameterValue == null
+                    && "org.atmosphere.cpr.asyncSupport".equals(name)) {
+                // try to detect Jetty 9.3.x
+                String jettyVersion = System.getProperty("jetty.version");
+                if (jettyVersion.startsWith("9.3.")) {
+                    return "org.atmosphere.container.Jetty93AsyncSupportWithWebSocket";
+                }
+            }
             return initParameterValue;
         }
 
