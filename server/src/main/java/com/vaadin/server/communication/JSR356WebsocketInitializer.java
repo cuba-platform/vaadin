@@ -20,8 +20,13 @@ import org.atmosphere.cpr.AtmosphereFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRegistration;
 import javax.servlet.annotation.WebListener;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
@@ -91,9 +96,24 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
             if (initParameterValue == null
                     && "org.atmosphere.cpr.asyncSupport".equals(name)) {
                 // try to detect Jetty 9.3.x
-                String jettyVersion = System.getProperty("jetty.version");
-                if (jettyVersion.startsWith("9.3.")) {
-                    return "org.atmosphere.container.Jetty93AsyncSupportWithWebSocket";
+                Class<?> jettyClass = null;
+                try {
+                    ClassLoader classLoader = servletContext.getClassLoader();
+                    jettyClass = classLoader.loadClass("org.eclipse.jetty.util.Jetty");
+                } catch (ClassNotFoundException ignored) {
+                }
+
+                if (jettyClass != null) {
+                    try {
+                        Field versionField = jettyClass.getDeclaredField("VERSION");
+                        String jettyVersion = (String) versionField.get(null);
+
+                        if (jettyVersion.startsWith("9.3.")) {
+                            return "org.atmosphere.container.Jetty93AsyncSupportWithWebSocket";
+                        }
+                    } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
+                        getLogger().error("Unable to determine Jetty version", e);
+                    }
                 }
             }
             return initParameterValue;
