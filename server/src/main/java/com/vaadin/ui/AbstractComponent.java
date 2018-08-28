@@ -26,6 +26,7 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.ClientConnector;
 import com.vaadin.server.ComponentSizeValidator;
+import com.vaadin.server.CompositeErrorMessage;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.Extension;
 import com.vaadin.server.Resource;
@@ -66,6 +67,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Supplier;
 
 /**
  * An abstract class that defines default implementation for the
@@ -124,6 +126,12 @@ public abstract class AbstractComponent extends AbstractClientConnector
 
     // Haulmont API
     protected HasContextHelpServerRpc rpc;
+
+    // Haulmont API
+    protected String requiredError;
+
+    // Haulmont API
+    protected Supplier<ErrorMessage> componentErrorProvider;
 
     /* Constructor */
 
@@ -606,7 +614,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
      *         returned error message contains information about all the errors.
      */
     public ErrorMessage getErrorMessage() {
-        return componentError;
+        // Haulmont API
+        return getComponentError();
     }
 
     /**
@@ -617,6 +626,13 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @return the component's error message.
      */
     public ErrorMessage getComponentError() {
+        // Haulmont API
+        if (getComponentErrorProvider() != null) {
+            ErrorMessage error = getComponentErrorProvider().get();
+            if (error != null) {
+                return new CompositeErrorMessage(componentError, error);
+            }
+        }
         return componentError;
     }
 
@@ -631,6 +647,18 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     public void setComponentError(ErrorMessage componentError) {
         this.componentError = componentError;
+        fireComponentErrorEvent();
+        markAsDirty();
+    }
+
+    // Haulmont API
+    public Supplier<ErrorMessage> getComponentErrorProvider() {
+        return componentErrorProvider;
+    }
+
+    // Haulmont API
+    public void setComponentErrorProvider(Supplier<ErrorMessage> componentErrorProvider) {
+        this.componentErrorProvider = componentErrorProvider;
         fireComponentErrorEvent();
         markAsDirty();
     }
@@ -1478,6 +1506,17 @@ public abstract class AbstractComponent extends AbstractClientConnector
                         + getStateType().getSimpleName()
                         + " and does not inherit "
                         + AbstractFieldState.class.getSimpleName());
+    }
+
+    // Haulmont API
+    public String getRequiredError() {
+        return requiredError;
+    }
+
+    // Haulmont API
+    public void setRequiredError(String requiredMessage) {
+        requiredError = requiredMessage;
+        markAsDirty();
     }
 
     // Haulmont API
