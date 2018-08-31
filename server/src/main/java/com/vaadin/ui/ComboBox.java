@@ -941,8 +941,14 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
                 dataProvider,
                 convertOrNull.apply(getState(false).currentFilterText));
 
-        filterSlot = filter -> providerFilterSlot
-                .accept(convertOrNull.apply(filter));
+        filterSlot = filter -> {
+            providerFilterSlot.accept(convertOrNull.apply(filter));
+            filterChanged(filter);
+        };
+    }
+
+    // Haulmont API
+    protected void filterChanged(String filter) {
     }
 
     /**

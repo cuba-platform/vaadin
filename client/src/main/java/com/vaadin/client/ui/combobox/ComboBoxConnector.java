@@ -333,7 +333,8 @@ public class ComboBoxConnector extends AbstractListingConnector
         return getState().required && !isReadOnly();
     }
 
-    private void refreshData() {
+    // Haulmont API
+    protected void refreshData() {
         updateCurrentPage();
 
         int start = getWidget().currentPage * getWidget().pageLength;

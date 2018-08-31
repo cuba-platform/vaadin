@@ -1431,7 +1431,7 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             if (!waitingForFilteringResponse && suggestionPopup.isAttached()) {
                 showPopup = true;
             }
-            if (showPopup) {
+            if (shouldShowPopup()) {
                 suggestionPopup.showSuggestions(currentPage);
             }
 
@@ -1460,6 +1460,11 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
 
             popupOpenerClicked = false;
             showPopup = false;
+        }
+
+        // Haulmont API
+        protected boolean shouldShowPopup() {
+            return showPopup && hasNewData();
         }
 
         /**
@@ -2069,6 +2074,11 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
         }
     }
 
+    // Haulmont API
+    protected boolean hasNewData() {
+        return true;
+    }
+
     /**
      * Perform selection based on a message from the server.
      *
@@ -2081,7 +2091,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
      *            true to force the text box value to match the suggestion text
      * @param updatePromptAndSelectionIfMatchFound
      */
-    private void performSelection(String selectedKey, boolean forceUpdateText,
+    // Haulmont API
+    protected void performSelection(String selectedKey, boolean forceUpdateText,
             boolean updatePromptAndSelectionIfMatchFound) {
         if (selectedKey == null || selectedKey.isEmpty()) {
             currentSuggestion = null; // #13217
@@ -2201,7 +2212,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
      * @param event
      *            The KeyDownEvent
      */
-    private void inputFieldKeyDown(KeyDownEvent event) {
+    // Haulmont API
+    protected void inputFieldKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VComboBox: inputFieldKeyDown(" + event.getNativeKeyCode()
                     + ")");
@@ -2247,7 +2259,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
      * @param event
      *            The KeyDownEvent of the key
      */
-    private void popupKeyDown(KeyDownEvent event) {
+    // Haulmont API
+    protected void popupKeyDown(KeyDownEvent event) {
         if (enableDebug) {
             debug("VComboBox: popupKeyDown(" + event.getNativeKeyCode() + ")");
         }
@@ -2361,7 +2374,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
     /**
      * Resets the ComboBox to its initial state.
      */
-    private void reset() {
+    // Haulmont API
+    protected void reset() {
         debug("VComboBox: reset()");
 
         // just fetch selected information from state
