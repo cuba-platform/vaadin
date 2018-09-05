@@ -77,7 +77,8 @@ public class VNotification extends VOverlay {
     private static final int Z_INDEX_BASE = 20000;
     public static final String STYLE_SYSTEM = "system";
 
-    private static final List<VNotification> NOTIFICATIONS = new ArrayList<>();
+    // Haulmont API
+    protected static final List<VNotification> NOTIFICATIONS = new ArrayList<>();
 
     private boolean infiniteDelay = false;
     private int hideDelay = 0;
@@ -252,6 +253,10 @@ public class VNotification extends VOverlay {
         setPosition(position);
         super.show();
         updatePositionOffsets(position);
+
+        // Haulmont API
+        beforeAddNotificationToCollection();
+
         NOTIFICATIONS.add(this);
         positionOrSizeUpdated();
         /**
@@ -303,7 +308,12 @@ public class VNotification extends VOverlay {
             } else {
                 VNotification.super.hide();
                 fireEvent(new HideEvent(this));
-                NOTIFICATIONS.remove(this);
+
+                // Haulmont API
+                int removedIdx = NOTIFICATIONS.indexOf(this);
+                if (NOTIFICATIONS.remove(this)) {
+                    afterRemoveNotificationFromCollection(this, removedIdx);
+                }
             }
         }
     }
@@ -690,5 +700,14 @@ public class VNotification extends VOverlay {
             return NOTIFICATIONS.get(NOTIFICATIONS.size() - 1);
         }
         return null;
+    }
+
+    // Haulmont API
+    protected void beforeAddNotificationToCollection() {
+    }
+
+    // Haulmont API
+    protected void afterRemoveNotificationFromCollection(
+            VNotification removedNotification, int removedIdx) {
     }
 }
