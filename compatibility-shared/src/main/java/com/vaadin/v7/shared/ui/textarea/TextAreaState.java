@@ -19,7 +19,7 @@ import com.vaadin.shared.annotations.DelegateToWidget;
 import com.vaadin.shared.annotations.NoLayout;
 import com.vaadin.v7.shared.ui.textfield.AbstractTextFieldState;
 
-@Deprecated
+//@Deprecated
 public class TextAreaState extends AbstractTextFieldState {
     {
         primaryStyleName = "v-textarea";

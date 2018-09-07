@@ -22,7 +22,7 @@ import com.vaadin.v7.shared.AbstractLegacyComponentState;
  *
  * @since 7.0.0
  */
-@Deprecated
+//@Deprecated
 public class ColorPickerGridState extends AbstractLegacyComponentState {
 
     public int rowCount;

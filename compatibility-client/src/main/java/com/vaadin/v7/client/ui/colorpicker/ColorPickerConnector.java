@@ -33,7 +33,7 @@ import com.vaadin.v7.ui.ColorPicker;
  *
  * @since 7.0.0
  */
-@Deprecated
+//@Deprecated
 @Connect(value = ColorPicker.class, loadStyle = LoadStyle.LAZY)
 public class ColorPickerConnector extends AbstractColorPickerConnector {
 

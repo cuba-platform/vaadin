@@ -23,9 +23,9 @@ import com.vaadin.shared.annotations.NoLayout;
  *
  * @author Vaadin Ltd
  * @since 8.0
- * @deprecated only used for Vaadin 7 compatiblity components
+ * // @deprecated only used for Vaadin 7 compatiblity components
  */
-@Deprecated
+//@Deprecated
 public class AbstractLegacyComponentState extends AbstractComponentState {
     @NoLayout
     public boolean immediate = false;

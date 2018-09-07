@@ -24,7 +24,7 @@ import com.vaadin.client.ui.HasRequiredIndicator;
 import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.v7.shared.AbstractFieldState;
 
-@Deprecated
+//@Deprecated
 public abstract class AbstractFieldConnector
         extends AbstractLegacyComponentConnector
         implements HasRequiredIndicator {

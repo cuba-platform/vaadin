@@ -23,7 +23,7 @@ import com.vaadin.v7.shared.AbstractLegacyComponentState;
  *
  * @since 7.0.0
  */
-@Deprecated
+//@Deprecated
 public class ColorPickerState extends AbstractLegacyComponentState {
     {
         primaryStyleName = "v-colorpicker";
