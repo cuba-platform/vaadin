@@ -854,21 +854,6 @@ public abstract class AbstractComponentConnector extends AbstractConnector
         return getState().errorMessage != null;
     }
 
-    // Haulmont API
-    @Override
-    public void contextHelpIconClick(NativeEvent event) {
-        MouseEventDetails details = MouseEventDetailsBuilder
-                .buildMouseEventDetails(event, getWidget().getElement());
-
-        getRpcProxy(HasContextHelpServerRpc.class).iconClick(details);
-    }
-
-    // Haulmont API
-    @Override
-    public void contextHelpIconClick(MouseEvent event) {
-        contextHelpIconClick(event.getNativeEvent());
-    }
-
     /**
      * Invoked when a {@link DragSourceExtensionConnector} has been attached to
      * this component.
@@ -929,6 +914,36 @@ public abstract class AbstractComponentConnector extends AbstractConnector
      */
     public void onDropTargetDetached() {
 
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(NativeEvent event) {
+        MouseEventDetails details = MouseEventDetailsBuilder
+                .buildMouseEventDetails(event, getWidget().getElement());
+
+        getRpcProxy(HasContextHelpServerRpc.class).iconClick(details);
+    }
+
+    // Haulmont API
+    @Override
+    public void contextHelpIconClick(MouseEvent event) {
+        contextHelpIconClick(event.getNativeEvent());
+    }
+
+    // Haulmont API
+    protected boolean isContextHelpIconEnabled(AbstractComponentState state) {
+        return hasContextHelpIconListeners(state)
+                || state != null && state.contextHelpText != null
+                        && !state.contextHelpText.isEmpty();
+    }
+
+    // Haulmont API
+    protected boolean hasContextHelpIconListeners(
+            AbstractComponentState state) {
+        return state.registeredEventListeners != null
+                && state.registeredEventListeners.contains(
+                        AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT);
     }
 
     private static Logger getLogger() {

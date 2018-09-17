@@ -657,7 +657,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
     }
 
     // Haulmont API
-    public void setComponentErrorProvider(Supplier<ErrorMessage> componentErrorProvider) {
+    public void setComponentErrorProvider(
+            Supplier<ErrorMessage> componentErrorProvider) {
         this.componentErrorProvider = componentErrorProvider;
         fireComponentErrorEvent();
         markAsDirty();
@@ -1553,13 +1554,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
     @Override
     public Registration addContextHelpIconClickListener(
             ContextHelpIconClickListener listener) {
-        /*
-         * return
-         * addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
-         * ContextHelpIconClickEvent.class, listener,
-         * ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);
-         */
-        return null;
+        return addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
+                ContextHelpIconClickEvent.class, listener,
+                ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);
     }
 
     // Haulmont API
