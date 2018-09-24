@@ -783,7 +783,8 @@ public class Tree<T> extends Composite
         }
     }
 
-    private SelectionMode getSelectionMode() {
+    // Haulmont API dependency
+    protected SelectionMode getSelectionMode() {
         SelectionModel<T> selectionModel = getSelectionModel();
         SelectionMode mode = null;
         if (selectionModel.getClass().equals(SingleSelectionModelImpl.class)) {
