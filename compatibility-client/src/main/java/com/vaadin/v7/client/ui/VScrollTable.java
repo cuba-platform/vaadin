@@ -2819,7 +2819,8 @@ public class VScrollTable extends FlowPanel
         // Haulmont API dependency
         protected Element td = DOM.createTD();
 
-        Element captionContainer = DOM.createDiv();
+        // Haulmont API dependency
+        protected Element captionContainer = DOM.createDiv();
 
         Element sortIndicator = DOM.createDiv();
 
