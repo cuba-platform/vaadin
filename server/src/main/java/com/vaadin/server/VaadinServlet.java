@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2014 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -697,8 +697,10 @@ public class VaadinServlet extends HttpServlet implements Constants {
      *         otherwise.
      * @throws IOException
      * @throws ServletException
+     * 
+     * @since 7.7.14
      */
-    private boolean serveStaticResources(HttpServletRequest request,
+    protected boolean serveStaticResources(HttpServletRequest request,
             HttpServletResponse response) throws IOException, ServletException {
 
         String pathInfo = request.getPathInfo();
@@ -735,8 +737,10 @@ public class VaadinServlet extends HttpServlet implements Constants {
      * @param response
      * @throws IOException
      * @throws ServletException
+     * 
+     * @since 7.7.14
      */
-    private void serveStaticResourcesInVAADIN(String filename,
+    protected void serveStaticResourcesInVAADIN(String filename,
             HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 

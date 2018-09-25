@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2014 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -2136,8 +2136,20 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         private void updateHorizontalScrollPosition() {
             double scrollLeft = grid.getScrollLeft();
-            cellWrapper.getStyle().setLeft(
-                    frozenCellWrapper.getOffsetWidth() - scrollLeft, Unit.PX);
+            int frozenWidth = frozenCellWrapper.getOffsetWidth();
+            double newLeft = frozenWidth - scrollLeft;
+            cellWrapper.getStyle().setLeft(newLeft, Unit.PX);
+
+            // sometimes focus handling twists the editor row out of alignment
+            // with the grid itself and the position needs to be compensated for
+            TableRowElement rowElement = grid.getEscalator().getBody()
+                    .getRowElement(grid.getEditor().getRow());
+            int rowLeft = rowElement.getAbsoluteLeft();
+            int editorLeft = cellWrapper.getAbsoluteLeft();
+            if (editorLeft != rowLeft + frozenWidth) {
+                cellWrapper.getStyle().setLeft(newLeft + rowLeft - editorLeft,
+                        Unit.PX);
+            }
         }
 
         /**

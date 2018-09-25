@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2014 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,6 +16,7 @@
 package com.vaadin.client;
 
 import com.vaadin.shared.ui.ErrorLevel;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.shared.util.SharedUtil;
 
 /**
@@ -33,6 +34,8 @@ public class TooltipInfo {
     private String contextHelp;
 
     private boolean contextHelpHtmlEnabled = false;
+
+    private ContentMode contentMode = ContentMode.HTML;
 
     // Contains the tooltip's identifier. If a tooltip's contents and this
     // identifier haven't changed, the tooltip won't be updated in subsequent
@@ -256,5 +259,28 @@ public class TooltipInfo {
                 && SharedUtil.equals(other.contextHelp, contextHelp)
                 && SharedUtil.equals(other.contextHelpHtmlEnabled, contextHelpHtmlEnabled)
                 && other.identifier == identifier);
+    }
+
+    /**
+     * Gets the tooltip title's content mode.
+     *
+     * @since 7.7.14
+     *
+     * @return the content mode
+     */
+    public ContentMode getContentMode() {
+        return contentMode;
+    }
+
+    /**
+     * Sets the tooltip title's content mode.
+     *
+     * @since 7.7.14
+     *
+     * @param contentMode
+     *            the content mode to set
+     */
+    public void setContentMode(ContentMode contentMode) {
+        this.contentMode = contentMode;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2014 Vaadin Ltd.
+ * Copyright 2000-2018 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -95,6 +95,9 @@ public class TestDataGenerator {
         c.set(Calendar.YEAR, r.nextInt(100) + 1900);
         c.set(Calendar.MONTH, r.nextInt(12));
         c.set(Calendar.DAY_OF_MONTH, r.nextInt(31));
+        c.set(Calendar.HOUR_OF_DAY, 11);
+        c.set(Calendar.HOUR, 11);
+        c.set(Calendar.AM_PM, Calendar.AM);
 
         return c.getTime();
     }
