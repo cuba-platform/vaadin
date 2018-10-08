@@ -216,6 +216,9 @@ public class Notification extends AbstractExtension {
     }
 
     private void setType(Type type) {
+        // Haulmont API
+        getState(true).typeStyle = type.getStyle();
+
         setStyleName(type.getStyle());
         switch (type) {
         case WARNING_MESSAGE:

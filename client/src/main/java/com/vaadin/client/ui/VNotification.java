@@ -79,6 +79,9 @@ public class VNotification extends VOverlay {
 
     // Haulmont API
     protected static final List<VNotification> NOTIFICATIONS = new ArrayList<>();
+    protected static final List<VNotification> TRAY_BOTTOM_CENTER_NOTIFICATIONS = new ArrayList<>();
+    protected static final List<VNotification> TRAY_BOTTOM_RIGHT_NOTIFICATIONS = new ArrayList<>();
+    protected static final List<VNotification> TRAY_BOTTOM_LEFT_NOTIFICATIONS = new ArrayList<>();
 
     private boolean infiniteDelay = false;
     private int hideDelay = 0;
@@ -92,6 +95,10 @@ public class VNotification extends VOverlay {
 
     private List<EventListener> listeners;
     private static final int TOUCH_DEVICE_IDLE_DELAY = 1000;
+
+    // Haulmont API
+    protected String typeStyle;
+    protected Position position;
 
     /**
      * Default constructor. You should use GWT.create instead.
@@ -343,6 +350,9 @@ public class VNotification extends VOverlay {
     }
 
     public void setPosition(com.vaadin.shared.Position position) {
+        // Haulmont API
+        this.position = position;
+
         final Element el = getElement();
 
         // Remove any previous positions
@@ -516,8 +526,8 @@ public class VNotification extends VOverlay {
      */
     public static VNotification showNotification(ApplicationConnection client,
             String caption, String description, boolean htmlContentAllowed,
-            String iconUri, String styleName, Position position,
-            int delayMsec) {
+            String iconUri, String styleName, Position position, int delayMsec,
+            String typeStyle) {
         String html = "";
         if (iconUri != null) {
             html += client.getIcon(iconUri).getElement().getString();
@@ -541,6 +551,8 @@ public class VNotification extends VOverlay {
 
         VNotification vNotification = createNotification(delayMsec,
                 client.getUIConnector().getWidget());
+        // Haulmont API
+        vNotification.setTypeStyle(typeStyle);
 
         vNotification.show(html, position, styleName);
         return vNotification;
@@ -692,6 +704,21 @@ public class VNotification extends VOverlay {
             WidgetUtil.redirect(url);
         }
 
+    }
+
+    // Haulmont API
+    public Position getPosition() {
+        return position;
+    }
+
+    // Haulmont API
+    public String getTypeStyle() {
+        return typeStyle;
+    }
+
+    // Haulmont API
+    protected void setTypeStyle(String typeStyle) {
+        this.typeStyle = typeStyle;
     }
 
     // Haulmont API

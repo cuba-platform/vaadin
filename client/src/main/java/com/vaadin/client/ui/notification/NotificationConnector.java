@@ -49,7 +49,7 @@ public class NotificationConnector extends AbstractExtensionConnector {
         notification = VNotification.showNotification(target.getConnection(),
                 state.caption, state.description, state.htmlContentAllowed,
                 getResourceUrl("icon"), state.styleName, state.position,
-                state.delay);
+                state.delay, getState().typeStyle);
 
         notification.addCloseHandler(new CloseHandler<PopupPanel>() {
 

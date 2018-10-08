@@ -17,6 +17,7 @@
 package com.vaadin.shared.ui.notification;
 
 import com.vaadin.shared.Position;
+import com.vaadin.shared.annotations.NoLayout;
 import com.vaadin.shared.communication.SharedState;
 
 /**
@@ -59,4 +60,8 @@ public class NotificationState extends SharedState {
      * The delay in milliseconds before disappearing, {@code -1} for forever.
      */
     public int delay;
+
+    // Haulmont API
+    @NoLayout
+    public String typeStyle;
 }
