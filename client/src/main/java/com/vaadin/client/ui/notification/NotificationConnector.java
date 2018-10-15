@@ -20,6 +20,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.vaadin.client.ServerConnector;
 import com.vaadin.client.extensions.AbstractExtensionConnector;
+import com.vaadin.client.ui.NotificationDelegate;
 import com.vaadin.client.ui.VNotification;
 import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.notification.NotificationServerRpc;
@@ -49,7 +50,7 @@ public class NotificationConnector extends AbstractExtensionConnector {
         notification = VNotification.showNotification(target.getConnection(),
                 state.caption, state.description, state.htmlContentAllowed,
                 getResourceUrl("icon"), state.styleName, state.position,
-                state.delay, getState().typeStyle);
+                state.delay, getState().typeStyle, getDelegate());
 
         notification.addCloseHandler(new CloseHandler<PopupPanel>() {
 
@@ -65,6 +66,11 @@ public class NotificationConnector extends AbstractExtensionConnector {
                 notification = null;
             }
         });
+    }
+
+    // Haulmont API
+    protected NotificationDelegate getDelegate() {
+        return null;
     }
 
     @Override

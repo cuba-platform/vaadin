@@ -74,7 +74,8 @@ public class VNotification extends VOverlay {
 
     private static final String STYLENAME = "v-Notification";
     private static final int MOUSE_MOVE_THRESHOLD = 7;
-    private static final int Z_INDEX_BASE = 20000;
+    // Haulmont API
+    public static final int Z_INDEX_BASE = 20000;
     public static final String STYLE_SYSTEM = "system";
 
     // Haulmont API
@@ -99,6 +100,10 @@ public class VNotification extends VOverlay {
     // Haulmont API
     protected String typeStyle;
     protected Position position;
+
+    // Haulmont API
+    protected NotificationDelegate delegate;
+    protected static boolean relativeZIndex = false;
 
     /**
      * Default constructor. You should use GWT.create instead.
@@ -266,6 +271,17 @@ public class VNotification extends VOverlay {
 
         NOTIFICATIONS.add(this);
         positionOrSizeUpdated();
+
+        // Haulmont API
+        int index = NOTIFICATIONS.indexOf(this);
+        if (isRelativeZIndex()) {
+            getElement().getStyle().setZIndex(index + Z_INDEX_BASE);
+        }
+        if (delegate != null) {
+            delegate.show(getOverlayContainer(), getElement(), isShowing(),
+                    style, index);
+        }
+
         /**
          * Android 4 fails to render notifications correctly without a little
          * nudge (#8551) Chrome 41 now requires this too (#17252)
@@ -286,6 +302,10 @@ public class VNotification extends VOverlay {
                 @Override
                 public void run() {
                     VNotification.super.hide();
+                    // Haulmont API
+                    if (delegate != null) {
+                        delegate.hide();
+                    }
                 }
             };
             delay.schedule(hideDelay);
@@ -320,6 +340,10 @@ public class VNotification extends VOverlay {
                 int removedIdx = NOTIFICATIONS.indexOf(this);
                 if (NOTIFICATIONS.remove(this)) {
                     afterRemoveNotificationFromCollection(this, removedIdx);
+                }
+                // Haulmont API
+                if (delegate != null) {
+                    delegate.hide();
                 }
             }
         }
@@ -528,6 +552,16 @@ public class VNotification extends VOverlay {
             String caption, String description, boolean htmlContentAllowed,
             String iconUri, String styleName, Position position, int delayMsec,
             String typeStyle) {
+        return showNotification(client, caption, description,
+                htmlContentAllowed, iconUri, styleName, position, delayMsec,
+                typeStyle, null);
+    }
+
+    // Haulmont API
+    public static VNotification showNotification(ApplicationConnection client,
+            String caption, String description, boolean htmlContentAllowed,
+            String iconUri, String styleName, Position position, int delayMsec,
+            String typeStyle, NotificationDelegate delegate) {
         String html = "";
         if (iconUri != null) {
             html += client.getIcon(iconUri).getElement().getString();
@@ -550,7 +584,7 @@ public class VNotification extends VOverlay {
         }
 
         VNotification vNotification = createNotification(delayMsec,
-                client.getUIConnector().getWidget());
+                client.getUIConnector().getWidget(), delegate);
         // Haulmont API
         vNotification.setTypeStyle(typeStyle);
 
@@ -581,7 +615,14 @@ public class VNotification extends VOverlay {
 
     public static VNotification createNotification(int delayMsec,
             Widget owner) {
+        return createNotification(delayMsec, owner, null);
+    }
+
+    // Haulmont API
+    public static VNotification createNotification(int delayMsec, Widget owner,
+            NotificationDelegate delegate) {
         final VNotification notification = GWT.create(VNotification.class);
+        notification.setDelegate(delegate);
         notification.setWaiAriaRole(null);
         notification.setDelay(delayMsec);
 
@@ -727,6 +768,26 @@ public class VNotification extends VOverlay {
             return NOTIFICATIONS.get(NOTIFICATIONS.size() - 1);
         }
         return null;
+    }
+
+    // Haulmont API
+    public NotificationDelegate getDelegate() {
+        return delegate;
+    }
+
+    // Haulmont API
+    public void setDelegate(NotificationDelegate notificationDelegate) {
+        this.delegate = notificationDelegate;
+    }
+
+    // Haulmont API
+    public static boolean isRelativeZIndex() {
+        return relativeZIndex;
+    }
+
+    // Haulmont API
+    public static void setRelativeZIndex(boolean relativeZIndex) {
+        VNotification.relativeZIndex = relativeZIndex;
     }
 
     // Haulmont API
