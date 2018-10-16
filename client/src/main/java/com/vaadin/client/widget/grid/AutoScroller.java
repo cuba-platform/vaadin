@@ -399,7 +399,8 @@ public class AutoScroller {
     /** The size of the autoscroll acceleration area. */
     private int gradientArea;
 
-    private Grid<?> grid;
+    // Haulmont API
+    protected Grid<?> grid;
 
     private HandlerRegistration nativePreviewHandlerRegistration;
 
@@ -619,13 +620,18 @@ public class AutoScroller {
     private int getRealFrozenColumnCount() {
         if (grid.getFrozenColumnCount() < 0) {
             return 0;
-        } else if (grid
-                .getSelectionModel() instanceof SelectionModelWithSelectionColumn) {
+        } else if (hasSelectionColumn()) {
             // includes the selection column
             return grid.getFrozenColumnCount() + 1;
         } else {
             return grid.getFrozenColumnCount();
         }
+    }
+
+    // Haulmont API
+    protected boolean hasSelectionColumn() {
+        return grid
+                .getSelectionModel() instanceof SelectionModelWithSelectionColumn;
     }
 
     private double getMaxScrollLeft() {

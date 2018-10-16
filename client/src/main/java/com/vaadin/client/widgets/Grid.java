@@ -4336,7 +4336,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     private DragAndDropHandler dndHandler = new DragAndDropHandler();
 
-    private AutoScroller autoScroller = new AutoScroller(this);
+    // Haulmont API
+    private AutoScroller autoScroller = createAutoScroller();
+
+    // Haulmont API
+    protected AutoScroller createAutoScroller() {
+        return new AutoScroller(this);
+    }
 
     private ColumnResizeMode columnResizeMode = ColumnResizeMode.ANIMATED;
 
@@ -4682,7 +4688,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         private int getSelectionAndFrozenColumnCount() {
             // no matter if selection column is frozen or not, it is considered
             // frozen for column dnd reorder
-            if (getSelectionModel() instanceof SelectionModelWithSelectionColumn) {
+            if (hasSelectionColumn(getSelectionModel())) {
                 return Math.max(0, getFrozenColumnCount()) + 1;
             } else {
                 return Math.max(0, getFrozenColumnCount());
@@ -4798,6 +4804,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
     };
+
+    // Haulmont API
+    protected boolean hasSelectionColumn(SelectionModel<T> selectionModel) {
+        return selectionModel instanceof SelectionModelWithSelectionColumn;
+    }
 
     /**
      * Base class for grid columns internally used by the Grid. The user should
