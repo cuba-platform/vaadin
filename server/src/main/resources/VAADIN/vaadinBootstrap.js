@@ -3,6 +3,10 @@
 	var themesLoaded = {};
 	var widgetsets = {};
 
+    if (location.hash.indexOf("\\") >= 0) {
+        location.hash = "";
+        location.reload();
+    }
 
     var log;
     if (typeof console === "undefined" || !window.location.search.match(/[&?]debug(&|$)/)) {
@@ -226,7 +230,11 @@
                 var versionInfo = getConfig('versionInfo');
 
                 var themeUri = vaadinDir + 'themes/' + getConfig('theme');
-                loadTheme(themeUri, versionInfo && versionInfo['vaadinVersion']);
+                var version = versionInfo && versionInfo['vaadinVersion'];
+                if (getConfig('applicationVersion')) {
+                    version = getConfig('applicationVersion');
+                }
+                loadTheme(themeUri, version);
 
                 var widgetset = getConfig('widgetset');
                 var widgetsetUrl = getConfig('widgetsetUrl');
