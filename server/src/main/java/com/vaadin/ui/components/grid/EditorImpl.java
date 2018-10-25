@@ -92,14 +92,20 @@ public class EditorImpl<T> extends AbstractGridExtension<T>
 
     }
 
-    private Binder<T> binder;
-    private Map<Column<T, ?>, Component> columnFields = new HashMap<>();
-    private T edited;
-    private boolean saving = false;
-    private EditorClientRpc rpc;
-    private EventRouter eventRouter = new EventRouter();
-
-    private EditorErrorGenerator<T> errorGenerator = (fieldToColumn,
+    // Haulmont API dependency
+    protected Binder<T> binder;
+    // Haulmont API dependency
+    protected Map<Column<T, ?>, Component> columnFields = new HashMap<>();
+    // Haulmont API dependency
+    protected T edited;
+    // Haulmont API dependency
+    protected boolean saving = false;
+    // Haulmont API dependency
+    protected EditorClientRpc rpc;
+    // Haulmont API dependency
+    protected EventRouter eventRouter = new EventRouter();
+    // Haulmont API dependency
+    protected EditorErrorGenerator<T> errorGenerator = (fieldToColumn,
             status) -> {
         String message = status.getFieldValidationErrors().stream()
                 .filter(e -> e.getMessage().isPresent()
@@ -290,7 +296,8 @@ public class EditorImpl<T> extends AbstractGridExtension<T>
 
     }
 
-    private void doCancel(boolean afterBeingSaved) {
+    // Haulmont API dependency
+    protected void doCancel(boolean afterBeingSaved) {
         T editedBean = edited;
         doClose();
         if (!afterBeingSaved) {

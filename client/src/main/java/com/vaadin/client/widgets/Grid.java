@@ -4281,7 +4281,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
     protected final CellFocusHandler cellFocusHandler;
 
-    // Haulmont API
+    // Haulmont API dependency
     private final UserSorter sorter = createUserSorter();
 
     // Haulmont API
@@ -4289,7 +4289,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         return new UserSorter();
     }
 
-    private final Editor<T> editor = GWT.create(Editor.class);
+    // Haulmont API dependency
+    private final Editor<T> editor = createEditor();
+
+    // Haulmont API
+    protected Editor<T> createEditor() {
+        return GWT.create(Editor.class);
+    }
 
     /**
      * The cell a click event originated from

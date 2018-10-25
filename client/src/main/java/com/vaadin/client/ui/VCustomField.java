@@ -19,7 +19,8 @@ import com.vaadin.client.Focusable;
 
 public class VCustomField extends VCustomComponent implements Focusable {
 
-    private Focusable focusDelegate;
+    // Haulmont API dependency
+    protected Focusable focusDelegate;
 
     @Override
     public void focus() {
