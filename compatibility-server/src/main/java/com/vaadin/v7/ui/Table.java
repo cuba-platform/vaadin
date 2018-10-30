@@ -3565,7 +3565,7 @@ public class Table extends AbstractSelect implements Action.Container,
         return getColumnHeaderMode() != ColumnHeaderMode.HIDDEN;
     }
 
-    private void paintVisibleColumns(PaintTarget target) throws PaintException {
+    protected void paintVisibleColumns(PaintTarget target) throws PaintException {
         target.startTag("visiblecolumns");
         if (rowHeadersAreEnabled()) {
             target.startTag("column");
