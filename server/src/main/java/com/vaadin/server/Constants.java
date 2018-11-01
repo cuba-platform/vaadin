@@ -66,7 +66,7 @@ public interface Constants {
             + "=================================================================";
 
     // Keep the version number in sync with pom.xml
-    static final String REQUIRED_ATMOSPHERE_RUNTIME_VERSION = "2.4.24-1-cuba";
+    static final String REQUIRED_ATMOSPHERE_RUNTIME_VERSION = "2.4.30-1-cuba";
 
     static final String INVALID_ATMOSPHERE_VERSION_WARNING = "\n"
             + "=================================================================\n"

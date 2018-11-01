@@ -99,20 +99,24 @@ public class JSR356WebsocketInitializer implements ServletContextListener {
                 Class<?> jettyClass = null;
                 try {
                     ClassLoader classLoader = servletContext.getClassLoader();
-                    jettyClass = classLoader.loadClass("org.eclipse.jetty.util.Jetty");
+                    jettyClass = classLoader
+                            .loadClass("org.eclipse.jetty.util.Jetty");
                 } catch (ClassNotFoundException ignored) {
                 }
 
                 if (jettyClass != null) {
                     try {
-                        Field versionField = jettyClass.getDeclaredField("VERSION");
+                        Field versionField = jettyClass
+                                .getDeclaredField("VERSION");
                         String jettyVersion = (String) versionField.get(null);
 
                         if (jettyVersion.startsWith("9.3.")) {
                             return "org.atmosphere.container.Jetty93AsyncSupportWithWebSocket";
                         }
-                    } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
-                        getLogger().error("Unable to determine Jetty version", e);
+                    } catch (NoSuchFieldException | IllegalAccessException
+                            | ClassCastException e) {
+                        getLogger().error("Unable to determine Jetty version",
+                                e);
                     }
                 }
             }
