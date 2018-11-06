@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-@Connect(Embedded.class)
+@Connect(value = Embedded.class, loadStyle = Connect.LoadStyle.LAZY)
 public class EmbeddedConnector extends AbstractComponentConnector {
 
     private Element resourceElement;

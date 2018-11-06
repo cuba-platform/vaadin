@@ -33,7 +33,7 @@ import com.vaadin.v7.ui.ProgressIndicator;
  * @deprecated as of 7.1, use {@link ProgressBarConnector} combined with server
  *             push or UI polling.
  */
-@Connect(ProgressIndicator.class)
+@Connect(value = ProgressIndicator.class, loadStyle = Connect.LoadStyle.LAZY)
 @Deprecated
 public class ProgressIndicatorConnector extends ProgressBarConnector {
 

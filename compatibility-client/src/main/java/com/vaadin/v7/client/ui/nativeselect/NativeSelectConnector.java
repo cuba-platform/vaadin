@@ -22,7 +22,7 @@ import com.vaadin.v7.client.ui.VNativeSelect;
 import com.vaadin.v7.client.ui.optiongroup.OptionGroupBaseConnector;
 import com.vaadin.v7.ui.NativeSelect;
 
-@Connect(NativeSelect.class)
+@Connect(value = NativeSelect.class, loadStyle = Connect.LoadStyle.LAZY)
 public class NativeSelectConnector extends OptionGroupBaseConnector {
 
     @Override

@@ -27,7 +27,7 @@ import com.vaadin.v7.client.ui.VSlider;
 import com.vaadin.v7.shared.ui.slider.SliderServerRpc;
 import com.vaadin.v7.shared.ui.slider.SliderState;
 
-@Connect(com.vaadin.v7.ui.Slider.class)
+@Connect(value = com.vaadin.v7.ui.Slider.class, loadStyle = Connect.LoadStyle.LAZY)
 public class SliderConnector extends AbstractFieldConnector
         implements ValueChangeHandler<Double> {
 

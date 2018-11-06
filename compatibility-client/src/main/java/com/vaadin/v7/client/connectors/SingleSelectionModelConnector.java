@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @since 7.6
  * @author Vaadin Ltd
  */
-@Connect(SingleSelectionModel.class)
+@Connect(value = SingleSelectionModel.class, loadStyle = Connect.LoadStyle.LAZY)
 public class SingleSelectionModelConnector extends
         AbstractSelectionModelConnector<SelectionModel.Single<JsonObject>> {
 

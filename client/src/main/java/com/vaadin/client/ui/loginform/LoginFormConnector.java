@@ -37,7 +37,7 @@ import com.vaadin.shared.ui.loginform.LoginFormConstants;
 import com.vaadin.shared.ui.loginform.LoginFormRpc;
 import com.vaadin.shared.ui.loginform.LoginFormState;
 
-@Connect(com.vaadin.ui.LoginForm.class)
+@Connect(value = com.vaadin.ui.LoginForm.class, loadStyle = Connect.LoadStyle.LAZY)
 public class LoginFormConnector
         extends AbstractSingleComponentContainerConnector {
 

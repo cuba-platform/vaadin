@@ -25,7 +25,7 @@ import com.vaadin.v7.ui.Grid.DetailComponentManager;
  *
  * @since 7.6.1
  */
-@Connect(DetailComponentManager.class)
+@Connect(value = DetailComponentManager.class, loadStyle = Connect.LoadStyle.LAZY)
 public class DetailComponentManagerConnector
         extends AbstractExtensionConnector {
 

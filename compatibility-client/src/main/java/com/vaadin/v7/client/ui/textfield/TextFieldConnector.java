@@ -31,7 +31,7 @@ import com.vaadin.v7.shared.ui.textfield.TextFieldConstants;
 import com.vaadin.v7.ui.TextField;
 
 @Deprecated
-@Connect(value = TextField.class, loadStyle = LoadStyle.EAGER)
+@Connect(value = TextField.class, loadStyle = LoadStyle.LAZY)
 public class TextFieldConnector extends AbstractFieldConnector
         implements Paintable {
 

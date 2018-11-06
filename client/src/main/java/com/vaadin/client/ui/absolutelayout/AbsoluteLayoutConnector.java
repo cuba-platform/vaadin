@@ -39,7 +39,7 @@ import com.vaadin.ui.AbsoluteLayout;
  * Connects the server side {@link AbsoluteLayout} with the client side
  * counterpart {@link VAbsoluteLayout}.
  */
-@Connect(AbsoluteLayout.class)
+@Connect(value = AbsoluteLayout.class, loadStyle = Connect.LoadStyle.LAZY)
 public class AbsoluteLayoutConnector extends AbstractComponentContainerConnector
         implements DirectionalManagedLayout {
 

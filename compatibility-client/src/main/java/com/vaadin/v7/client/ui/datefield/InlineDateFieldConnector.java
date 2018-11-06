@@ -30,7 +30,7 @@ import com.vaadin.v7.shared.ui.datefield.InlineDateFieldState;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
 import com.vaadin.v7.ui.InlineDateField;
 
-@Connect(InlineDateField.class)
+@Connect(value = InlineDateField.class, loadStyle = Connect.LoadStyle.LAZY)
 public class InlineDateFieldConnector extends AbstractDateFieldConnector {
 
     @Override

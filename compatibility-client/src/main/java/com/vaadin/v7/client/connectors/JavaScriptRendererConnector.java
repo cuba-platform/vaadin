@@ -45,7 +45,7 @@ import java.util.List;
  */
 // This is really typed to <JsonValue>, but because of the way native strings
 // are not always instanceof JsonValue, we need to accept Object
-@Connect(AbstractJavaScriptRenderer.class)
+@Connect(value = AbstractJavaScriptRenderer.class, loadStyle = Connect.LoadStyle.LAZY)
 public class JavaScriptRendererConnector
         extends AbstractGridRendererConnector<Object>
         implements HasJavaScriptConnectorHelper {

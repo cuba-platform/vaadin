@@ -43,7 +43,7 @@ import com.vaadin.shared.ui.orderedlayout.AbstractOrderedLayoutServerRpc;
 import com.vaadin.shared.ui.orderedlayout.FormLayoutState;
 import com.vaadin.ui.FormLayout;
 
-@Connect(FormLayout.class)
+@Connect(value = FormLayout.class, loadStyle = Connect.LoadStyle.LAZY)
 public class FormLayoutConnector extends AbstractLayoutConnector
         implements PostLayoutListener {
 

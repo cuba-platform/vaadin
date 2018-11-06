@@ -27,7 +27,7 @@ import com.vaadin.v7.client.ui.VLabel;
 import com.vaadin.v7.shared.ui.label.LabelState;
 import com.vaadin.v7.ui.Label;
 
-@Connect(value = Label.class, loadStyle = LoadStyle.EAGER)
+@Connect(value = Label.class, loadStyle = LoadStyle.LAZY)
 public class LabelConnector extends AbstractLegacyComponentConnector {
 
     @Override

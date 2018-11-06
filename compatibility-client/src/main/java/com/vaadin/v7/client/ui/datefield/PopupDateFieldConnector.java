@@ -19,7 +19,7 @@ package com.vaadin.v7.client.ui.datefield;
 import com.vaadin.shared.ui.Connect;
 import com.vaadin.v7.ui.PopupDateField;
 
-@Connect(PopupDateField.class)
+@Connect(value = PopupDateField.class, loadStyle = Connect.LoadStyle.LAZY)
 public class PopupDateFieldConnector extends DateFieldConnector {
 
 }

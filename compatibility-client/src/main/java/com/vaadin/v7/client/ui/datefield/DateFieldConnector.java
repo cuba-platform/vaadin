@@ -33,7 +33,7 @@ import com.vaadin.v7.shared.ui.datefield.PopupDateFieldState;
 import com.vaadin.v7.shared.ui.datefield.Resolution;
 import com.vaadin.v7.ui.DateField;
 
-@Connect(DateField.class)
+@Connect(value = DateField.class, loadStyle = Connect.LoadStyle.LAZY)
 public class DateFieldConnector extends TextualDateConnector {
 
     @Override

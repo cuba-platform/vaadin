@@ -28,7 +28,7 @@ import com.vaadin.shared.ui.Connect;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(com.vaadin.v7.ui.renderers.NumberRenderer.class)
+@Connect(value = com.vaadin.v7.ui.renderers.NumberRenderer.class, loadStyle = Connect.LoadStyle.LAZY)
 public class NumberRendererConnector extends TextRendererConnector {
     // no implementation needed
 }

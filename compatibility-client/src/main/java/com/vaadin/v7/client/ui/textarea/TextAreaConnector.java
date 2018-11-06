@@ -26,7 +26,7 @@ import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
 import com.vaadin.v7.shared.ui.textarea.TextAreaState;
 import com.vaadin.v7.ui.TextArea;
 
-@Connect(TextArea.class)
+@Connect(value = TextArea.class, loadStyle = Connect.LoadStyle.LAZY)
 public class TextAreaConnector extends TextFieldConnector {
 
     @Override

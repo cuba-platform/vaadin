@@ -21,7 +21,7 @@ import com.vaadin.v7.client.ui.VListSelect;
 import com.vaadin.v7.client.ui.optiongroup.OptionGroupBaseConnector;
 import com.vaadin.v7.ui.ListSelect;
 
-@Connect(ListSelect.class)
+@Connect(value = ListSelect.class, loadStyle = Connect.LoadStyle.LAZY)
 public class ListSelectConnector extends OptionGroupBaseConnector {
 
     @Override

@@ -29,7 +29,7 @@ import com.vaadin.v7.ui.ProgressBar;
  * @since 7.1
  * @author Vaadin Ltd
  */
-@Connect(ProgressBar.class)
+@Connect(value = ProgressBar.class, loadStyle = Connect.LoadStyle.LAZY)
 public class ProgressBarConnector extends AbstractFieldConnector {
 
     public ProgressBarConnector() {

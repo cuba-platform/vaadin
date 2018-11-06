@@ -38,7 +38,7 @@ import com.vaadin.v7.client.ui.VForm;
 import com.vaadin.v7.shared.form.FormState;
 import com.vaadin.v7.ui.Form;
 
-@Connect(Form.class)
+@Connect(value = Form.class, loadStyle = Connect.LoadStyle.LAZY)
 public class FormConnector extends AbstractComponentContainerConnector
         implements Paintable, MayScrollChildren,
         com.vaadin.v7.client.ComponentConnector {

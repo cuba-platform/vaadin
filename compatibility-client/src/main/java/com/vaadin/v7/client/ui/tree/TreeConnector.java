@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-@Connect(Tree.class)
+@Connect(value = Tree.class, loadStyle = Connect.LoadStyle.LAZY)
 public class TreeConnector extends AbstractLegacyComponentConnector
         implements Paintable {
 

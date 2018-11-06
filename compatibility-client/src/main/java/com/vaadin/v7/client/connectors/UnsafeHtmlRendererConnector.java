@@ -25,7 +25,7 @@ import com.vaadin.v7.client.widget.grid.RendererCellReference;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(com.vaadin.v7.ui.renderers.HtmlRenderer.class)
+@Connect(value = com.vaadin.v7.ui.renderers.HtmlRenderer.class, loadStyle = Connect.LoadStyle.LAZY)
 public class UnsafeHtmlRendererConnector
         extends AbstractGridRendererConnector<String> {
 

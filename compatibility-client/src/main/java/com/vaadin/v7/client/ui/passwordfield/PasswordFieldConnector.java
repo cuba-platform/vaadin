@@ -22,7 +22,7 @@ import com.vaadin.v7.client.ui.textfield.TextFieldConnector;
 import com.vaadin.v7.ui.PasswordField;
 
 @Deprecated
-@Connect(PasswordField.class)
+@Connect(value = PasswordField.class, loadStyle = Connect.LoadStyle.LAZY)
 public class PasswordFieldConnector extends TextFieldConnector {
 
     @Override

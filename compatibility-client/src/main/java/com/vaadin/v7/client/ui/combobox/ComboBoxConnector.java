@@ -34,7 +34,7 @@ import com.vaadin.v7.shared.ui.combobox.ComboBoxState;
 import com.vaadin.v7.shared.ui.combobox.FilteringMode;
 import com.vaadin.v7.ui.ComboBox;
 
-@Connect(ComboBox.class)
+@Connect(value = ComboBox.class, loadStyle = Connect.LoadStyle.LAZY)
 public class ComboBoxConnector extends AbstractFieldConnector
         implements Paintable, SimpleManagedLayout {
 

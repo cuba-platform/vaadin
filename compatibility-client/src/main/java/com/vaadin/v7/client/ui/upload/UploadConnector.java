@@ -30,7 +30,7 @@ import com.vaadin.v7.shared.ui.upload.UploadClientRpc;
 import com.vaadin.v7.shared.ui.upload.UploadServerRpc;
 import com.vaadin.v7.shared.ui.upload.UploadState;
 
-@Connect(com.vaadin.v7.ui.Upload.class)
+@Connect(value = com.vaadin.v7.ui.Upload.class, loadStyle = Connect.LoadStyle.LAZY)
 public class UploadConnector extends AbstractLegacyComponentConnector
         implements Paintable {
 

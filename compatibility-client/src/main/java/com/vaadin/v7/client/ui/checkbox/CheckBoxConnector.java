@@ -38,7 +38,7 @@ import com.vaadin.v7.shared.ui.checkbox.CheckBoxServerRpc;
 import com.vaadin.v7.shared.ui.checkbox.CheckBoxState;
 import com.vaadin.v7.ui.CheckBox;
 
-@Connect(CheckBox.class)
+@Connect(value = CheckBox.class, loadStyle = Connect.LoadStyle.LAZY)
 public class CheckBoxConnector extends AbstractFieldConnector
         implements ClickHandler {
 

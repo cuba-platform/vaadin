@@ -25,7 +25,7 @@ import com.vaadin.v7.client.ui.optiongroup.OptionGroupBaseConnector;
 import com.vaadin.v7.shared.ui.twincolselect.TwinColSelectState;
 import com.vaadin.v7.ui.TwinColSelect;
 
-@Connect(TwinColSelect.class)
+@Connect(value = TwinColSelect.class, loadStyle = Connect.LoadStyle.LAZY)
 public class TwinColSelectConnector extends OptionGroupBaseConnector
         implements DirectionalManagedLayout {
 

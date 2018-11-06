@@ -30,7 +30,7 @@ import com.vaadin.v7.shared.ui.optiongroup.OptionGroupConstants;
 import com.vaadin.v7.shared.ui.optiongroup.OptionGroupState;
 import com.vaadin.v7.ui.OptionGroup;
 
-@Connect(OptionGroup.class)
+@Connect(value = OptionGroup.class, loadStyle = Connect.LoadStyle.LAZY)
 public class OptionGroupConnector extends OptionGroupBaseConnector {
 
     @Override

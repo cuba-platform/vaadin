@@ -42,7 +42,7 @@ import elemental.json.JsonObject;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(com.vaadin.v7.server.communication.data.RpcDataProviderExtension.class)
+@Connect(value = com.vaadin.v7.server.communication.data.RpcDataProviderExtension.class, loadStyle = Connect.LoadStyle.LAZY)
 public class RpcDataSourceConnector extends AbstractExtensionConnector {
 
     /**
