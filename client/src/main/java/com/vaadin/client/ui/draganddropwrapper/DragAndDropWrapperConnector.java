@@ -37,7 +37,7 @@ import java.util.Set;
  *             {@link DropTargetExtensionConnector}.
  */
 @Deprecated
-@Connect(DragAndDropWrapper.class)
+@Connect(value = DragAndDropWrapper.class, loadStyle = Connect.LoadStyle.LAZY)
 public class DragAndDropWrapperConnector extends CustomComponentConnector
         implements Paintable, VDragAndDropWrapper.UploadHandler {
 

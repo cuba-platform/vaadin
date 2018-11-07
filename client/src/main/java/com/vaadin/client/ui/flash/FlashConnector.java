@@ -24,7 +24,7 @@ import com.vaadin.shared.ui.AbstractEmbeddedState;
 import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.flash.FlashState;
 
-@Connect(com.vaadin.ui.Flash.class)
+@Connect(value = com.vaadin.ui.Flash.class, loadStyle = Connect.LoadStyle.LAZY)
 public class FlashConnector extends AbstractComponentConnector {
 
     @Override
