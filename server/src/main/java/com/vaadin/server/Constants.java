@@ -66,7 +66,7 @@ public interface Constants {
             + "=================================================================";
 
     // Keep the version number in sync with pom.xml
-    static final String REQUIRED_ATMOSPHERE_RUNTIME_VERSION = "2.2.9.vaadin2";
+    static final String REQUIRED_ATMOSPHERE_RUNTIME_VERSION = "2.2.13.vaadin1";
 
     // Haulmont API
     // Keep the version number in sync with cuba build.gradle
