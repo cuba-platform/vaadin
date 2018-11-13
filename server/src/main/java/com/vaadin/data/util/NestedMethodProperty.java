@@ -61,7 +61,11 @@ public class NestedMethodProperty<T> extends AbstractProperty<T> {
 
     private Class<? extends T> type;
 
-    /* Special serialization to handle method references */
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
+    */
+/* Special serialization to handle method references *//*
+
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
         out.defaultWriteObject();
@@ -69,13 +73,16 @@ public class NestedMethodProperty<T> extends AbstractProperty<T> {
         // propertyName
     }
 
-    /* Special serialization to handle method references */
+    */
+/* Special serialization to handle method references *//*
+
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
 
         initialize(instance.getClass(), propertyName);
     }
+*/
 
     /**
      * Constructs a nested method property for a given object instance. The

@@ -92,8 +92,11 @@ public class MethodProperty<T> extends AbstractProperty<T> {
     private static final Object[] DEFAULT_GET_ARGS = new Object[0];
 
     private static final Object[] DEFAULT_SET_ARGS = new Object[1];
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
+    */
+/* Special serialization to handle method references *//*
 
-    /* Special serialization to handle method references */
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
         out.defaultWriteObject();
@@ -119,7 +122,9 @@ public class MethodProperty<T> extends AbstractProperty<T> {
         }
     }
 
-    /* Special serialization to handle method references */
+    */
+/* Special serialization to handle method references *//*
+
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -153,6 +158,7 @@ public class MethodProperty<T> extends AbstractProperty<T> {
             getLogger().log(Level.SEVERE, "Internal deserialization error", e);
         }
     }
+*/
 
     /**
      * <p>

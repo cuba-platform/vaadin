@@ -63,7 +63,11 @@ public class MethodPropertyDescriptor<BT>
         this.writeMethod = writeMethod;
     }
 
-    /* Special serialization to handle method references */
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
+    */
+/* Special serialization to handle method references *//*
+
     private void writeObject(java.io.ObjectOutputStream out)
             throws IOException {
         out.defaultWriteObject();
@@ -92,7 +96,9 @@ public class MethodPropertyDescriptor<BT>
         }
     }
 
-    /* Special serialization to handle method references */
+    */
+/* Special serialization to handle method references *//*
+
     private void readObject(java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -125,6 +131,7 @@ public class MethodPropertyDescriptor<BT>
             getLogger().log(Level.SEVERE, "Internal deserialization error", e);
         }
     }
+*/
 
     @Override
     public String getName() {
