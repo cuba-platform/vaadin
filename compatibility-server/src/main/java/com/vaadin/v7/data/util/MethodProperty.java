@@ -21,13 +21,9 @@ import com.vaadin.data.ValueProvider;
 import com.vaadin.server.Setter;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.v7.data.Property;
-import com.vaadin.v7.util.SerializerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -101,8 +97,10 @@ public class MethodProperty<T> extends AbstractProperty<T> {
     private static final Object[] DEFAULT_GET_ARGS = new Object[0];
 
     private static final Object[] DEFAULT_SET_ARGS = new Object[1];
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
 
-    /* Special serialization to handle method references */
+    *//* Special serialization to handle method references *//*
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         SerializerHelper.writeClass(out, type);
@@ -127,7 +125,7 @@ public class MethodProperty<T> extends AbstractProperty<T> {
         }
     }
 
-    /* Special serialization to handle method references */
+    *//* Special serialization to handle method references *//*
     private void readObject(ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -158,7 +156,7 @@ public class MethodProperty<T> extends AbstractProperty<T> {
         } catch (SecurityException | NoSuchMethodException e) {
             getLogger().error("Internal deserialization error", e);
         }
-    }
+    }*/
 
     /**
      * <p>

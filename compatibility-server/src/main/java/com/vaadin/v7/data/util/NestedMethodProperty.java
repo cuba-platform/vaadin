@@ -15,23 +15,20 @@
  */
 package com.vaadin.v7.data.util;
 
-import static com.vaadin.util.ReflectTools.convertPrimitiveType;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.server.Setter;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.v7.data.Property;
 import com.vaadin.v7.data.util.MethodProperty.MethodException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.vaadin.util.ReflectTools.convertPrimitiveType;
 
 /**
  * Nested accessor based property for a bean.
@@ -69,21 +66,27 @@ public class NestedMethodProperty<T> extends AbstractProperty<T> {
     private Object instance;
 
     private Class<? extends T> type;
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
+    */
+/* Special serialization to handle method references *//*
 
-    /* Special serialization to handle method references */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         // getMethods and setMethod are reconstructed on read based on
         // propertyName
     }
 
-    /* Special serialization to handle method references */
+    */
+/* Special serialization to handle method references *//*
+
     private void readObject(ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
 
         initialize(instance.getClass(), propertyName);
     }
+*/
 
     /**
      * Constructs a nested method property for a given object instance. The

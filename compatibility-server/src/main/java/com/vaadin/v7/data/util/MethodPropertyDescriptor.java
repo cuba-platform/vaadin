@@ -17,13 +17,9 @@ package com.vaadin.v7.data.util;
 
 import com.vaadin.util.ReflectTools;
 import com.vaadin.v7.data.Property;
-import com.vaadin.v7.util.SerializerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 /**
@@ -67,8 +63,11 @@ public class MethodPropertyDescriptor<BT>
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
     }
+/*
+    Prevent CWE-502: Deserialization of Untrusted Data
+    */
+/* Special serialization to handle method references *//*
 
-    /* Special serialization to handle method references */
     private void writeObject(ObjectOutputStream out)
             throws IOException {
         out.defaultWriteObject();
@@ -97,7 +96,9 @@ public class MethodPropertyDescriptor<BT>
         }
     }
 
-    /* Special serialization to handle method references */
+    */
+/* Special serialization to handle method references *//*
+
     private void readObject(ObjectInputStream in)
             throws IOException, ClassNotFoundException {
         in.defaultReadObject();
@@ -128,6 +129,7 @@ public class MethodPropertyDescriptor<BT>
             getLogger().error("Internal deserialization error", e);
         }
     }
+*/
 
     @Override
     public String getName() {
