@@ -34,7 +34,7 @@ import com.vaadin.v7.ui.ColorPicker;
  * @since 7.0.0
  */
 //@Deprecated
-@Connect(value = ColorPicker.class, loadStyle = LoadStyle.LAZY)
+@Connect(value = ColorPicker.class, loadStyle = LoadStyle.NONE)
 public class ColorPickerConnector extends AbstractColorPickerConnector {
 
     private ColorPickerServerRpc rpc = RpcProxy

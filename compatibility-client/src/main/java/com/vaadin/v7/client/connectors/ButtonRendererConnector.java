@@ -28,7 +28,7 @@ import elemental.json.JsonObject;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(value = com.vaadin.v7.ui.renderers.ButtonRenderer.class, loadStyle = Connect.LoadStyle.LAZY)
+@Connect(value = com.vaadin.v7.ui.renderers.ButtonRenderer.class, loadStyle = Connect.LoadStyle.NONE)
 public class ButtonRendererConnector
         extends ClickableRendererConnector<String> {
 

@@ -36,7 +36,7 @@ import com.vaadin.v7.ui.components.colorpicker.ColorPickerGradient;
  *
  * @since 7.0.0
  */
-@Connect(value = ColorPickerGradient.class, loadStyle = LoadStyle.LAZY)
+@Connect(value = ColorPickerGradient.class, loadStyle = LoadStyle.NONE)
 public class ColorPickerGradientConnector
         extends AbstractLegacyComponentConnector implements MouseUpHandler {
 

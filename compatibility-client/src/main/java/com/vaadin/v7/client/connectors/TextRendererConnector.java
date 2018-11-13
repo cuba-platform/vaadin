@@ -24,7 +24,7 @@ import com.vaadin.v7.client.renderers.TextRenderer;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(value = com.vaadin.v7.ui.renderers.TextRenderer.class, loadStyle = Connect.LoadStyle.LAZY)
+@Connect(value = com.vaadin.v7.ui.renderers.TextRenderer.class, loadStyle = Connect.LoadStyle.NONE)
 public class TextRendererConnector
         extends AbstractGridRendererConnector<String> {
 

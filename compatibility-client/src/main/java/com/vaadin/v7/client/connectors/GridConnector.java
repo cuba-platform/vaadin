@@ -72,7 +72,7 @@ import java.util.Map.Entry;
  * @since 7.4
  * @author Vaadin Ltd
  */
-@Connect(value = com.vaadin.v7.ui.Grid.class, loadStyle = Connect.LoadStyle.LAZY)
+@Connect(value = com.vaadin.v7.ui.Grid.class, loadStyle = Connect.LoadStyle.NONE)
 public class GridConnector extends AbstractHasComponentsConnector
         implements SimpleManagedLayout, DeferredWorker {
 

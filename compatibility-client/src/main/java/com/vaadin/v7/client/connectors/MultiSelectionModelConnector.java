@@ -54,7 +54,7 @@ import java.util.*;
  * @since 7.6
  * @author Vaadin Ltd
  */
-@Connect(value = MultiSelectionModel.class, loadStyle = Connect.LoadStyle.LAZY)
+@Connect(value = MultiSelectionModel.class, loadStyle = Connect.LoadStyle.NONE)
 public class MultiSelectionModelConnector extends
         AbstractSelectionModelConnector<SelectionModel.Multi<JsonObject>> {
 

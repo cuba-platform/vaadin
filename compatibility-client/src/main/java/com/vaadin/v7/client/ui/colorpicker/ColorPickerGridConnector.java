@@ -36,7 +36,7 @@ import com.vaadin.v7.ui.components.colorpicker.ColorPickerGrid;
  *
  * @since 7.0.0
  */
-@Connect(value = ColorPickerGrid.class, loadStyle = LoadStyle.LAZY)
+@Connect(value = ColorPickerGrid.class, loadStyle = LoadStyle.NONE)
 public class ColorPickerGridConnector extends AbstractLegacyComponentConnector
         implements ClickHandler {
 

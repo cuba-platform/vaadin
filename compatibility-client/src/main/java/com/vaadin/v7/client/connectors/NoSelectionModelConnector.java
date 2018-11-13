@@ -29,7 +29,7 @@ import elemental.json.JsonObject;
  * @since 7.6
  * @author Vaadin Ltd
  */
-@Connect(value = NoSelectionModel.class, loadStyle = Connect.LoadStyle.LAZY)
+@Connect(value = NoSelectionModel.class, loadStyle = Connect.LoadStyle.NONE)
 public class NoSelectionModelConnector
         extends AbstractSelectionModelConnector<SelectionModel<JsonObject>> {
 

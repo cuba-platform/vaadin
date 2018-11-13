@@ -29,7 +29,7 @@ import com.vaadin.v7.client.ui.VRichTextArea;
 import com.vaadin.v7.shared.ui.textarea.RichTextAreaState;
 import com.vaadin.v7.ui.RichTextArea;
 
-@Connect(value = RichTextArea.class, loadStyle = LoadStyle.LAZY)
+@Connect(value = RichTextArea.class, loadStyle = LoadStyle.NONE)
 public class RichTextAreaConnector extends AbstractFieldConnector
         implements Paintable, SimpleManagedLayout {
 
