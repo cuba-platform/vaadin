@@ -214,7 +214,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench</artifactId>
-            <version>4.3-SNAPSHOT</version>
+            <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
         <!-- This should be removed once tests have been updated to use lang3 -->
