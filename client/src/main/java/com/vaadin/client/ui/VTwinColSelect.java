@@ -81,19 +81,24 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
 
     private static final int DEFAULT_COLUMN_COUNT = 10;
 
-    private final DoubleClickListBox optionsListBox;
+    // Haulmont API
+    protected final DoubleClickListBox optionsListBox;
 
-    private final DoubleClickListBox selectionsListBox;
+    // Haulmont API
+    protected final DoubleClickListBox selectionsListBox;
 
     private final FlowPanel optionsContainer;
 
     private final FlowPanel captionWrapper;
 
-    private final VButton addItemsLeftToRightButton;
+    // Haulmont API
+    protected final VButton addItemsLeftToRightButton;
 
-    private final VButton removeItemsRightToLeftButton;
+    // Haulmont API
+    protected final VButton removeItemsRightToLeftButton;
 
-    private final FlowPanel buttons;
+    // Haulmont API
+    protected final FlowPanel buttons;
 
     private final Panel panel;
 
@@ -101,7 +106,8 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
 
     private HTML selectionsCaption = null;
 
-    private List<BiConsumer<Set<String>, Set<String>>> selectionChangeListeners;
+    // Haulmont API
+    protected List<BiConsumer<Set<String>, Set<String>>> selectionChangeListeners;
 
     private boolean enabled;
     private boolean readOnly;
@@ -138,13 +144,13 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
 
         captionWrapper = new FlowPanel();
 
-        optionsListBox = new DoubleClickListBox();
+        optionsListBox = createOptionsBox();
         optionsListBox.addClickHandler(this);
         optionsListBox.addDoubleClickHandler(this);
         optionsListBox.setVisibleItemCount(VISIBLE_COUNT);
         optionsListBox.setStyleName(CLASSNAME + "-options");
 
-        selectionsListBox = new DoubleClickListBox();
+        selectionsListBox = createSelectionsBox();
         selectionsListBox.addClickHandler(this);
         selectionsListBox.addDoubleClickHandler(this);
         selectionsListBox.setVisibleItemCount(VISIBLE_COUNT);
@@ -281,6 +287,16 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         captionWrapper.setVisible(hasCaptions);
     }
 
+    // Haulmont API
+    protected DoubleClickListBox createOptionsBox() {
+        return new DoubleClickListBox();
+    }
+
+    // Haulmont API
+    protected DoubleClickListBox createSelectionsBox() {
+        return new DoubleClickListBox();
+    }
+
     private void removeOptionsCaption() {
         if (optionsCaption == null) {
             return;
@@ -322,7 +338,19 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         items.removeAll(selection);
 
         updateListBox(optionsListBox, items);
+        // Haulmont API
+        afterUpdatesOptionsBox(items);
         updateListBox(selectionsListBox, selection);
+        // Haulmont API
+        afterUpdatesSelectionsBox(selection);
+    }
+
+    // Haulmont API
+    protected void afterUpdatesOptionsBox(List<JsonObject> items) {
+    }
+
+    // Haulmont API
+    protected void afterUpdatesSelectionsBox(List<JsonObject> selection) {
     }
 
     private static void updateListBox(ListBox listBox,
@@ -356,14 +384,16 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         return selectedIndexes;
     }
 
-    private void moveSelectedItemsLeftToRight() {
+    // Haulmont API
+    protected void moveSelectedItemsLeftToRight() {
         Set<String> movedItems = moveSelectedItems(optionsListBox,
                 selectionsListBox);
         selectionChangeListeners.forEach(listener -> listener.accept(movedItems,
                 Collections.emptySet()));
     }
 
-    private void moveSelectedItemsRightToLeft() {
+    // Haulmont API
+    protected void moveSelectedItemsRightToLeft() {
         Set<String> movedItems = moveSelectedItems(selectionsListBox,
                 optionsListBox);
         selectionChangeListeners.forEach(listener -> listener
