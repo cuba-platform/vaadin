@@ -125,9 +125,6 @@ public abstract class AbstractComponent extends AbstractClientConnector
     protected static final String DESIGN_ATTR_PLAIN_TEXT = "plain-text";
 
     // Haulmont API
-    protected HasContextHelpServerRpc rpc;
-
-    // Haulmont API
     protected String requiredError;
 
     // Haulmont API
@@ -140,13 +137,13 @@ public abstract class AbstractComponent extends AbstractClientConnector
      */
     public AbstractComponent() {
         // ComponentSizeValidator.setCreationLocation(this);
-        rpc = new HasContextHelpServerRpc() {
-            @Override
-            public void iconClick(MouseEventDetails mouseEventDetails) {
-                fireClick(mouseEventDetails);
-            }
-        };
-        registerRpc(rpc);
+    }
+
+    protected void ensureContextHelpInitialized() {
+        if (getRpcManager(HasContextHelpServerRpc.class.getName()) == null) {
+            registerRpc(this::fireContextHelpClick,
+                    HasContextHelpServerRpc.class);
+        }
     }
 
     /* Get/Set component properties */
@@ -1529,6 +1526,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
     // Haulmont API
     @Override
     public void setContextHelpText(String contextHelpText) {
+        ensureContextHelpInitialized();
+
         if (!Objects.equals(getState(false).contextHelpText, contextHelpText)) {
             getState().contextHelpText = contextHelpText;
         }
@@ -1544,6 +1543,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
     @Override
     public void setContextHelpTextHtmlEnabled(
             boolean contextHelpTextHtmlEnabled) {
+        ensureContextHelpInitialized();
+
         if (!Objects.equals(getState(false).contextHelpTextHtmlEnabled,
                 contextHelpTextHtmlEnabled)) {
             getState().contextHelpTextHtmlEnabled = contextHelpTextHtmlEnabled;
@@ -1554,13 +1555,15 @@ public abstract class AbstractComponent extends AbstractClientConnector
     @Override
     public Registration addContextHelpIconClickListener(
             ContextHelpIconClickListener listener) {
+        ensureContextHelpInitialized();
+
         return addListener(AbstractComponentState.CONTEXT_HELP_ICON_CLICK_EVENT,
                 ContextHelpIconClickEvent.class, listener,
                 ContextHelpIconClickListener.CONTEXT_HELP_ICON_CLICK_METHOD);
     }
 
     // Haulmont API
-    protected void fireClick(MouseEventDetails details) {
+    protected void fireContextHelpClick(MouseEventDetails details) {
         fireEvent(new ContextHelpIconClickEvent(this, details));
     }
 }
