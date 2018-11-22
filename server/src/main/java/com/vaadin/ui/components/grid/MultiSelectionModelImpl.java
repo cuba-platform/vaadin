@@ -442,7 +442,6 @@ public class MultiSelectionModelImpl<T> extends AbstractSelectionModel<T>
         }
 
         doUpdateSelection(set -> {
-            DataProvider<T, ?> dataProvider = getGrid().getDataProvider();
             // order of add / remove does not matter since no duplicates
             Set<Object> removedItemIds = removedItems.stream()
                     .map(dataProvider::getId).collect(Collectors.toSet());

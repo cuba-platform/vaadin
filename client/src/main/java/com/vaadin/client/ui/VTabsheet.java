@@ -885,7 +885,7 @@ public class VTabsheet extends VTabsheetBase
     /**
      * @return Whether the tab could be selected or not.
      *
-     * Haulmont API dependency
+     *         Haulmont API dependency
      */
     protected boolean canSelectTab(final int tabIndex) {
         Tab tab = tb.getTab(tabIndex);
@@ -1561,7 +1561,9 @@ public class VTabsheet extends VTabsheetBase
 
     private int getSpacerWidth() {
         int spacerWidth = ((Element) tb.getContainerElement().getLastChild()
-                .cast()).getPropertyInt("offsetWidth") + getOtherComponentsWidth();
+                .cast()).getPropertyInt("offsetWidth")
+                // Haulmont API
+                + getOtherComponentsWidth();
         return spacerWidth;
     }
 
