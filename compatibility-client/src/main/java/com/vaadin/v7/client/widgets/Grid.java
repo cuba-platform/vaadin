@@ -3830,7 +3830,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         private void setHeightToHeaderCellHeight() {
             RowContainer header = grid.escalator.getHeader();
-            if (header.getRowCount() == 0
+            if (header.getDomRowCount() == 0
                     || !header.getRowElement(0).hasChildNodes()) {
                 getLogger().info(
                         "No header cell available when calculating sidebar button height");

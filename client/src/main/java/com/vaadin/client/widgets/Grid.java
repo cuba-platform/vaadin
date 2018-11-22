@@ -3416,6 +3416,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
             // Make SelectAllCheckbox visible
             getSelectionColumn().ifPresent(col -> {
+                if (getDefaultHeaderRow() == null)
+                    return;
                 HeaderCell headerCell = getDefaultHeaderRow().getCell(col);
                 if (headerCell.getType().equals(GridStaticCellType.WIDGET)) {
                     // SelectAllCheckbox is present already
@@ -9220,7 +9222,9 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                     // Trigger re-calculation of all row positions.
                     RowContainer.BodyRowContainer body = getEscalator()
                             .getBody();
-                    body.setDefaultRowHeight(body.getDefaultRowHeight());
+                    if (!body.isAutodetectingRowHeightLater()) {
+                        body.setDefaultRowHeight(body.getDefaultRowHeight());
+                    }
                 });
             }
 

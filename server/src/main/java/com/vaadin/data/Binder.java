@@ -1006,7 +1006,7 @@ public class Binder<BEAN> implements Serializable {
 
         private boolean readOnly;
 
-        private final Registration onValueChange;
+        private Registration onValueChange;
         private boolean valueInit = false;
 
         /**
@@ -1072,7 +1072,8 @@ public class Binder<BEAN> implements Serializable {
 
         /**
          * Removes this binding from its binder and unregisters the
-         * {@code ValueChangeListener} from any bound {@code HasValue}.
+         * {@code ValueChangeListener} from any bound {@code HasValue}. It does
+         * nothing if it is called for an already unbound binding.
          *
          * @since 8.2
          */
@@ -1080,9 +1081,14 @@ public class Binder<BEAN> implements Serializable {
         public void unbind() {
             if (onValueChange != null) {
                 onValueChange.remove();
+                onValueChange = null;
             }
-            binder.removeBindingInternal(this);
-            binder = null;
+
+            if (binder != null) {
+                binder.removeBindingInternal(this);
+                binder = null;
+            }
+
             field = null;
         }
 
@@ -1688,7 +1694,15 @@ public class Binder<BEAN> implements Serializable {
             clearFields();
         } else {
             changedBindings.clear();
-            getBindings().forEach(binding -> binding.initFieldValue(bean));
+            getBindings().forEach(binding -> {
+                // Some bindings may have been removed from binder
+                // during readBean. We should skip those bindings to
+                // avoid NPE inside initFieldValue. It happens e.g. when
+                // we unbind a binding in valueChangeListener of another
+                // field.
+                if (binding.getField() != null)
+                    binding.initFieldValue(bean);
+            });
             getValidationStatusHandler().statusChange(
                     BinderValidationStatus.createUnresolvedStatus(this));
             fireStatusChangeEvent(false);

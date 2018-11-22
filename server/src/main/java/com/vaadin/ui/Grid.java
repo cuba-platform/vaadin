@@ -103,7 +103,9 @@ import com.vaadin.ui.components.grid.Editor;
 import com.vaadin.ui.components.grid.EditorImpl;
 import com.vaadin.ui.components.grid.Footer;
 import com.vaadin.ui.components.grid.FooterRow;
+import com.vaadin.ui.components.grid.GridMultiSelect;
 import com.vaadin.ui.components.grid.GridSelectionModel;
+import com.vaadin.ui.components.grid.GridSingleSelect;
 import com.vaadin.ui.components.grid.Header;
 import com.vaadin.ui.components.grid.Header.Row;
 import com.vaadin.ui.components.grid.HeaderCell;
@@ -1397,6 +1399,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          * Sets the style generator that is used for generating class names for
          * cells in this column. Returning null from the generator results in no
          * custom style name being set.
+         *
+         * Note: The style generator is applied only to the body cells, not to
+         * the Editor.
          *
          * @param cellStyleGenerator
          *            the cell style generator to set, not null
@@ -3010,6 +3015,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
     /**
      * Gets a {@link Column} of this grid by its identifying string.
      *
+     * When you use the Grid constructor with bean class, the columns are 
+     * initialised with columnId being the property name. 
+     *
      * @see Column#setId(String)
      *
      * @param columnId
@@ -3307,6 +3315,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * Sets the style generator that is used for generating class names for rows
      * in this grid. Returning null from the generator results in no custom
      * style name being set.
+     *
+     * Note: The style generator is applied only to the body cells, not to the
+     * Editor.
      *
      * @see StyleGenerator
      *
@@ -3906,14 +3917,8 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * @throws IllegalStateException
      *             if not using a single selection model
      */
-    public SingleSelect<T> asSingleSelect() {
-        GridSelectionModel<T> model = getSelectionModel();
-        if (!(model instanceof SingleSelectionModel)) {
-            throw new IllegalStateException(
-                    "Grid is not in single select mode, it needs to be explicitly set to such with setSelectionModel(SingleSelectionModel) before being able to use single selection features.");
-        }
-
-        return ((SingleSelectionModel<T>) model).asSingleSelect();
+    public GridSingleSelect<T> asSingleSelect() {
+        return new GridSingleSelect<>(this);
     }
 
     public Editor<T> getEditor() {
@@ -3930,13 +3935,8 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
      * @throws IllegalStateException
      *             if not using a multiselection model
      */
-    public MultiSelect<T> asMultiSelect() {
-        GridSelectionModel<T> model = getSelectionModel();
-        if (!(model instanceof MultiSelectionModel)) {
-            throw new IllegalStateException(
-                    "Grid is not in multiselect mode, it needs to be explicitly set to such with setSelectionModel(MultiSelectionModel) before being able to use multiselection features.");
-        }
-        return ((MultiSelectionModel<T>) model).asMultiSelect();
+    public GridMultiSelect<T> asMultiSelect() {
+        return new GridMultiSelect<>(this);
     }
 
     /**

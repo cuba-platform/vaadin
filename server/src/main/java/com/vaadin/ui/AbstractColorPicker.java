@@ -511,8 +511,8 @@ public abstract class AbstractColorPicker extends AbstractField<Color> {
     // Haulmont API
     protected ValueChangeListener<Color> createColorValueChangeListener() {
         return event -> {
-            setValue(event.getValue());
-            rpc.changeColor(event.getValue().getCSS());
+            window.setValue(color);
+            setValue(event.getValue(), true);
         };
     }
 
