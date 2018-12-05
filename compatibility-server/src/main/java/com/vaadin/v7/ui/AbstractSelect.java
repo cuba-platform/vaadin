@@ -1085,12 +1085,23 @@ public abstract class AbstractSelect extends AbstractField<Object> implements
              * #810, #4607, #5281
              */
             // Haulmont API
-            if (resetValueToNullOnContainerChange || !newDataSource.containsId(oldValue)) {
+            boolean containsOldValue = isDataSourceContainsValue(newDataSource, oldValue);
+            if (resetValueToNullOnContainerChange || !containsOldValue) {
                 setValue(null);
             }
 
             markAsDirty();
 
+        }
+    }
+
+    // Haulmont API
+    protected boolean isDataSourceContainsValue(Container dataSource, Object value) {
+        if (isMultiSelect() && value instanceof Collection) {
+            Collection values = (Collection) value;
+            return dataSource.getItemIds().containsAll(values);
+        } else {
+            return dataSource.containsId(value);
         }
     }
 
