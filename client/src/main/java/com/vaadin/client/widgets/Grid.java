@@ -2543,7 +2543,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
             return childWidget && !handleWidgetEvent
             // Haulmont API
-                    && !grid.isWidgetAllowsClickHandling(targetElement);
+                    && !grid.isWidgetAllowsClickHandling(targetElement,
+                            getNativeEvent());
         }
 
         protected abstract void doDispatch(HANDLER handler, Section section);
@@ -7843,12 +7844,14 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     }
 
     // Haulmont API
-    protected boolean isWidgetAllowsClickHandling(Element targetElement) {
+    protected boolean isWidgetAllowsClickHandling(Element targetElement,
+            NativeEvent nativeEvent) {
         return false;
     }
 
     // Haulmont API
-    protected boolean isEventHandlerShouldHandleEvent(Element targetElement) {
+    protected boolean isEventHandlerShouldHandleEvent(Element targetElement,
+            GridEvent<T> event) {
         return false;
     }
 
@@ -7899,7 +7902,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                     .as(event.getDomEvent().getEventTarget());
             event.setHandled(isElementInChildWidget(targetElement)
                     // Haulmont API
-                    && !isEventHandlerShouldHandleEvent(targetElement));
+                    && !isEventHandlerShouldHandleEvent(targetElement, event));
         }
     };
 
