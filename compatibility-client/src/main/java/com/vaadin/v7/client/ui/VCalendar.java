@@ -699,7 +699,6 @@ public class VCalendar extends Composite implements VHasDropHandler {
             dayToolbar.add(realDayNames[dayOfWeek - 1], date,
                     localizedDateFormat, isToday ? "today" : null);
             weeklyLongEvents.addDate(d);
-            weekGrid.addDate(d);
             //Haulmont API
             addDateToWeekGrid(date, d);
             if (isToday) {
