@@ -470,7 +470,8 @@ public class JavaScriptConnectorHelper {
         return initFunctionName;
     }
 
-    private List<String> getPotentialInitFunctionNames() {
+    // Haulmont API dependency
+    protected List<String> getPotentialInitFunctionNames() {
         ApplicationConfiguration conf = connector.getConnection()
                 .getConfiguration();
         List<String> initFunctionNames = new ArrayList<String>();

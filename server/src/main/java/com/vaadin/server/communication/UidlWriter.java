@@ -22,6 +22,7 @@ import com.vaadin.server.LegacyCommunicationManager.ClientCache;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.Dependency;
+import com.vaadin.ui.HasDependencies;
 import com.vaadin.ui.UI;
 import elemental.json.Json;
 import elemental.json.JsonArray;
@@ -76,6 +77,9 @@ public class UidlWriter implements Serializable {
         ConnectorTracker uiConnectorTracker = ui.getConnectorTracker();
         getLogger().debug("* Creating response to client");
 
+        // Haulmont API
+        List<HasDependencies.ClientDependency> additionalDependencies = new ArrayList<>();
+
         while (true) {
             List<ClientConnector> connectorsToProcess = new ArrayList<>();
             for (ClientConnector c : uiConnectorTracker
@@ -112,6 +116,14 @@ public class UidlWriter implements Serializable {
 
                 try {
                     connector.beforeClientResponse(!initialized);
+
+                    if (!initialized && connector instanceof HasDependencies) {
+                        List<HasDependencies.ClientDependency> connectorDependencies = ((HasDependencies) connector)
+                                .getDependencies();
+
+                        addAdditionalDependencies(additionalDependencies,
+                                connectorDependencies);
+                    }
                 } catch (RuntimeException e) {
                     manager.handleConnectorRelatedException(connector, e);
                 }
@@ -292,8 +304,12 @@ public class UidlWriter implements Serializable {
             dependencies.addAll(Dependency.findDependencies(newConnectorTypes,
                     manager, new FilterContext(session)));
 
+            // Haulmont API
             handleAdditionalDependencies(newConnectorTypes, manager,
                     dependencies);
+            // Haulmont API
+            handleAdditionalDependencies(additionalDependencies, dependencies,
+                    manager);
 
             // Include dependencies in output if there are any
             if (!dependencies.isEmpty()) {
@@ -318,10 +334,22 @@ public class UidlWriter implements Serializable {
     }
 
     // Haulmont API
+    protected void addAdditionalDependencies(
+            List<HasDependencies.ClientDependency> allDependencies,
+            List<HasDependencies.ClientDependency> dependenciesToAdd) {
+    }
+
+    // Haulmont API
     protected void handleAdditionalDependencies(
             List<Class<? extends ClientConnector>> newConnectorTypes,
             LegacyCommunicationManager manager, List<Dependency> dependencies) {
         // hook
+    }
+
+    // Haulmont API
+    protected void handleAdditionalDependencies(
+            List<HasDependencies.ClientDependency> dependenciesToAdd,
+            List<Dependency> dependencies, LegacyCommunicationManager manager) {
     }
 
     private JsonArray toJsonArray(List<Dependency> list) {

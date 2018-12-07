@@ -24,17 +24,23 @@ import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
+// Haulmont API dependency
 @Connect(AbstractJavaScriptComponent.class)
-public final class JavaScriptComponentConnector extends
-        AbstractComponentConnector implements HasJavaScriptConnectorHelper {
+public class JavaScriptComponentConnector extends AbstractComponentConnector
+        implements HasJavaScriptConnectorHelper {
 
-    private final JavaScriptConnectorHelper helper = new JavaScriptConnectorHelper(
-            this) {
-        @Override
-        protected void showInitProblem(List<String> attemptedNames) {
-            getWidget().showNoInitFound(attemptedNames);
-        }
-    };
+    // Haulmont API dependency
+    protected final JavaScriptConnectorHelper helper = createJavaScriptConnectorHelper();
+
+    // Haulmont API
+    protected JavaScriptConnectorHelper createJavaScriptConnectorHelper() {
+        return new JavaScriptConnectorHelper(this) {
+            @Override
+            protected void showInitProblem(List<String> attemptedNames) {
+                getWidget().showNoInitFound(attemptedNames);
+            }
+        };
+    }
 
     @Override
     protected Widget createWidget() {
