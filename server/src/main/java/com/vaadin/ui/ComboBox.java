@@ -752,8 +752,9 @@ public class ComboBox<T> extends AbstractSingleSelect<T>
      */
     @Deprecated
     public void setNewItemHandler(NewItemHandler newItemHandler) {
-        getLogger().warn(
-                "NewItemHandler is deprecated. Please use NewItemProvider instead.");
+        // Commented for Haulmont API dependency
+//        getLogger().warn(
+//                "NewItemHandler is deprecated. Please use NewItemProvider instead.");
         this.newItemHandler = newItemHandler;
         getState(true).allowNewItems = newItemProvider != null
                 || newItemHandler != null;
