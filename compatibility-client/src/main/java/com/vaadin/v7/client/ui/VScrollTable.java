@@ -8309,7 +8309,9 @@ public class VScrollTable extends FlowPanel
         hasFocus = false;
         navKeyDown = false;
 
-        if (BrowserInfo.get().isIE()) {
+        if (BrowserInfo.get().isIE()
+                // Haulmont API
+                && !isAggregationEditable()) {
             /*
              * IE sometimes moves focus to a clicked table cell... (#7965)
              * ...and sometimes it sends blur events even though the focus
@@ -8334,6 +8336,11 @@ public class VScrollTable extends FlowPanel
             // Unfocus any row
             setRowFocus(null);
         }
+    }
+
+    // Haulmont API
+    protected boolean isAggregationEditable() {
+        return false;
     }
 
     /**
