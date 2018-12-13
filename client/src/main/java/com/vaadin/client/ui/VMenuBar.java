@@ -903,13 +903,23 @@ public class VMenuBar extends FocusableFlowPanel implements
             super.onLoad();
             if (getParentMenu() != null
                     && getParentMenu().getParentMenu() == null
-                    && getParentMenu().getItems().get(0).equals(this)) {
+                    // Haulmont API
+                    && isFirstMenuItem(this)) {
                 getElement().setAttribute("tabindex", "0");
             } else {
                 getElement().setAttribute("tabindex", "-1");
             }
 
             sinkEvents(Event.KEYEVENTS);
+        }
+
+        // Haulmont API
+        protected boolean isFirstMenuItem(CustomMenuItem item) {
+            List<CustomMenuItem> items = getParentMenu().getItems();
+            if (items != null && !items.isEmpty()) {
+                return items.get(0).equals(item);
+            }
+            return false;
         }
 
         @Override
