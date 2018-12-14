@@ -353,7 +353,8 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
     protected void afterUpdatesSelectionsBox(List<JsonObject> selection) {
     }
 
-    private static void updateListBox(ListBox listBox,
+    // Haulmont API
+    protected static void updateListBox(ListBox listBox,
             List<JsonObject> options) {
         for (int i = 0; i < options.size(); i++) {
             final JsonObject item = options.get(i);
@@ -372,7 +373,8 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         }
     }
 
-    private static boolean[] getSelectionBitmap(ListBox listBox) {
+    // Haulmont API
+    protected static boolean[] getSelectionBitmap(ListBox listBox) {
         final boolean[] selectedIndexes = new boolean[listBox.getItemCount()];
         for (int i = 0; i < listBox.getItemCount(); i++) {
             if (listBox.isItemSelected(i)) {
