@@ -301,8 +301,6 @@ public class UidlWriter implements Serializable {
 
             List<Dependency> dependencies = new ArrayList<>();
             dependencies.addAll(ui.getPage().getPendingDependencies());
-            dependencies.addAll(Dependency.findDependencies(newConnectorTypes,
-                    manager, new FilterContext(session)));
 
             // Haulmont API
             handleAdditionalDependencies(newConnectorTypes, manager,
@@ -310,6 +308,9 @@ public class UidlWriter implements Serializable {
             // Haulmont API
             handleAdditionalDependencies(additionalDependencies, dependencies,
                     manager);
+
+            dependencies.addAll(Dependency.findDependencies(newConnectorTypes,
+                    manager, new FilterContext(session)));
 
             // Include dependencies in output if there are any
             if (!dependencies.isEmpty()) {
