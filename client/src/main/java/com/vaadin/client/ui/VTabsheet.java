@@ -349,9 +349,8 @@ public class VTabsheet extends VTabsheetBase
         private boolean update(TabState tabState) {
             if (tabState.description != null
                     || tabState.componentError != null) {
-                setTooltipInfo(new TooltipInfo(tabState.description,
-                        tabState.componentError, this,
-                        tabState.componentErrorLevel));
+                // Haulmont API dependency
+                setTooltipInfo(createTooltipInfo(tabState));
             } else {
                 setTooltipInfo(null);
             }
@@ -371,6 +370,13 @@ public class VTabsheet extends VTabsheetBase
             setClosable(tabState.closable);
 
             return ret;
+        }
+
+        // Haulmont API dependency
+        protected TooltipInfo createTooltipInfo(TabState tabState) {
+            return new TooltipInfo(tabState.description,
+                    tabState.componentError, this,
+                    tabState.componentErrorLevel);
         }
 
         private boolean hasAttribute(String string) {

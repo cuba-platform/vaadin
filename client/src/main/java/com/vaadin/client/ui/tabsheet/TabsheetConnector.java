@@ -140,8 +140,8 @@ public class TabsheetConnector extends TabsheetBaseConnector
 
         // Find a tooltip for the tab, if the element is a tab
         if (element != getWidget().getElement()) {
-            Object node = WidgetUtil.findWidget(element,
-                    VTabsheet.TabCaption.class);
+            // Haulmont API dependency
+            Object node = findTabCaption(element);
 
             if (node != null) {
                 VTabsheet.TabCaption caption = (VTabsheet.TabCaption) node;
@@ -155,6 +155,12 @@ public class TabsheetConnector extends TabsheetBaseConnector
         }
 
         return info;
+    }
+
+    // Haulmont API dependency
+    protected Object findTabCaption(Element element) {
+        return WidgetUtil.findWidget(element,
+                VTabsheet.TabCaption.class);
     }
 
     @Override
