@@ -2878,8 +2878,7 @@ public class VScrollTable extends FlowPanel
             int captionContainerWidth = width - colResizeWidget.getOffsetWidth()
                     - rightSpacing;
 
-            if (td.getClassName().contains("-asc")
-                    || td.getClassName().contains("-desc")) {
+            if (leaveRoomForSortIndicator()) {
                 // Leave room for the sort indicator
                 captionContainerWidth -= sortIndicator.getOffsetWidth();
             }
@@ -2898,6 +2897,12 @@ public class VScrollTable extends FlowPanel
             } else {
                 colResizeWidget.getStyle().clearMarginLeft();
             }
+        }
+
+        // Haulmont API
+        protected boolean leaveRoomForSortIndicator() {
+            return td.getClassName().contains("-asc")
+                    || td.getClassName().contains("-desc");
         }
 
         public void setNaturalMinimumColumnWidth(int w) {
@@ -3679,6 +3684,14 @@ public class VScrollTable extends FlowPanel
             } else {
                 cell.resizeCaptionContainer(0);
             }
+        }
+
+        // Haulmont API
+        protected boolean shouldRecalcColWidths(HeaderCell cell) {
+            HeaderCell lastCell = getHeaderCell(visibleCells.size() - 1);
+            return cell == lastCell &&
+                    getIconsOffsetWidth() > 0 &&
+                    !hasVerticalScrollbar();
         }
 
         // Haulmont API
