@@ -1610,26 +1610,11 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             performSelection(selectedKey, oldSuggestionTextMatchTheOldSelection,
                     !isWaitingForFilteringResponse() || popupOpenerClicked);
 
-            // currentSuggestion should be set to match the value of the
-            // ComboBox, especially when a new item is added.
-            resetCurrentSuggestionIfNecessary(selectedKey, selectedCaption,
-                    selectedIconUri);
-
             cancelPendingPostFiltering();
 
             setSelectedCaption(selectedCaption);
 
             setSelectedItemIcon(selectedIconUri);
-        }
-
-        private void resetCurrentSuggestionIfNecessary(String selectedKey,
-                String selectedCaption, String selectedIconUri) {
-            if (currentSuggestion == null
-                    && (selectedKey != null || selectedCaption != null))
-                currentSuggestion = new ComboBoxSuggestion(selectedKey,
-                        selectedCaption, "", selectedIconUri);
-            else if (selectedKey == null && selectedCaption == null)
-                currentSuggestion = null;
         }
 
     }
@@ -2105,7 +2090,6 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             currentSuggestion = null; // #13217
             selectedOptionKey = null;
             setText(getEmptySelectionCaption());
-            return;
         }
         // some item selected
         for (ComboBoxSuggestion suggestion : currentSuggestions) {
