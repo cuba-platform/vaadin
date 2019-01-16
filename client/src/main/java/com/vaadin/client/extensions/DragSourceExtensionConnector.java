@@ -607,8 +607,19 @@ public class DragSourceExtensionConnector extends AbstractExtensionConnector {
         return (DragSourceState) super.getState();
     }
 
-    private native boolean getStylePrimaryName(Element element)
+    // Haulmont API
+    protected native boolean getStylePrimaryName(Element element)
     /*-{
         return @com.google.gwt.user.client.ui.UIObject::getStylePrimaryName(Lcom/google/gwt/dom/client/Element;)(element);
     }-*/;
+
+    // Haulmont API
+    protected String getStyleNameDraggable() {
+        return STYLE_NAME_DRAGGABLE;
+    }
+
+    // Haulmont API
+    protected Widget getDragSourceWidget() {
+        return dragSourceWidget;
+    }
 }
