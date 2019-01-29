@@ -403,6 +403,18 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
             scrollIntoView(connector);
         }
 
+        // Haulmont API
+        updateBrowserHistory(uidl);
+
+        if (firstPaint) {
+            // Queue the initial window size to be sent with the following
+            // request.
+            Scheduler.get().scheduleDeferred(() -> ui.sendClientResized());
+        }
+    }
+
+    // Haulmont API
+    protected void updateBrowserHistory(UIDL uidl) {
         if (uidl.hasAttribute(UIConstants.ATTRIBUTE_PUSH_STATE)) {
             Browser.getWindow().getHistory().pushState(null,
                     getState().pageState.title,
@@ -412,12 +424,6 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
             Browser.getWindow().getHistory().replaceState(null,
                     getState().pageState.title, uidl.getStringAttribute(
                             UIConstants.ATTRIBUTE_REPLACE_STATE));
-        }
-
-        if (firstPaint) {
-            // Queue the initial window size to be sent with the following
-            // request.
-            Scheduler.get().scheduleDeferred(() -> ui.sendClientResized());
         }
     }
 
