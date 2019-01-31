@@ -717,6 +717,9 @@
                 <module>compatibility-themes</module>
                 <!--<module>testbench-api</module>-->
                 <!--<module>bom</module>-->
+                <module>migration-shared</module>
+                <module>migration-server</module>
+                <module>migration-client</module>
             </modules>
         </profile>
         <profile>
@@ -762,6 +765,9 @@
                 <!-- Nexus staging bug needs the last module to be deployed. -->
                 <!--<module>testbench-api</module>-->
                 <!-- BOM is built and released separately -->
+                <module>migration-shared</module>
+                <module>migration-server</module>
+                <module>migration-client</module>
             </modules>
 
             <build>
@@ -828,6 +834,9 @@
                 <!-- Nexus staging bug needs the last module to be deployed. -->
                 <!--<module>testbench-api</module>-->
                 <!-- BOM is built and released separately -->
+                <module>migration-shared</module>
+                <module>migration-server</module>
+                <module>migration-client</module>
             </modules>
 
             <build>
@@ -893,6 +902,9 @@
                 <!--<module>osgi-integration</module>-->
                 <!--<module>testbench-api</module>-->
                 <!--<module>bom</module>-->
+                <module>migration-shared</module>
+                <module>migration-server</module>
+                <module>migration-client</module>
             </modules>
 
             <build>
@@ -959,6 +971,9 @@
                 <module>compatibility-shared</module>
                 <!--<module>liferay-integration</module>-->
                 <!--<module>osgi-integration</module>-->
+                <module>migration-shared</module>
+                <module>migration-server</module>
+                <module>migration-client</module>
             </modules>
             <repositories>
                 <repository>
