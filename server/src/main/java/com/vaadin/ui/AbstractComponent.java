@@ -657,8 +657,7 @@ public abstract class AbstractComponent extends AbstractClientConnector
     public void setComponentErrorProvider(
             Supplier<ErrorMessage> componentErrorProvider) {
         this.componentErrorProvider = componentErrorProvider;
-        fireComponentErrorEvent();
-        markAsDirty();
+         markAsDirty();
     }
 
     /*
