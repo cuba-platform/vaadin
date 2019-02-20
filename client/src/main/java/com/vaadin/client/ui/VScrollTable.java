@@ -193,7 +193,10 @@ public class VScrollTable extends FlowPanel
 
             switch (type) {
             case Event.ONCONTEXTMENU:
-                target.showContextMenu(event);
+                // Haulmont API
+                if (!isShowBrowserContextMenu(touchStart)) {
+                    target.showContextMenu(event);
+                }
                 break;
             case Event.ONTOUCHSTART:
                 // save position to fields, touches in events are same
@@ -209,7 +212,9 @@ public class VScrollTable extends FlowPanel
 
                         @Override
                         public void run() {
-                            if (touchStart != null) {
+                            if (touchStart != null
+                                    // Haulmont API
+                                    && !isShowBrowserContextMenu(touchStart)) {
                                 // Open the context menu if finger
                                 // is held in place long enough.
                                 target.showContextMenu(touchStart);
@@ -535,6 +540,11 @@ public class VScrollTable extends FlowPanel
 
         @Override
         public void showContextMenu(Event event) {
+            // Haulmont API
+            if (isShowBrowserContextMenu(event)) {
+                return;
+            }
+
             int left = WidgetUtil.getTouchOrMouseClientX(event);
             int top = WidgetUtil.getTouchOrMouseClientY(event);
             boolean menuShown = handleBodyContextMenu(left, top);
@@ -544,6 +554,11 @@ public class VScrollTable extends FlowPanel
             }
         }
     };
+
+    // Haulmont API
+    protected boolean isShowBrowserContextMenu(Event event) {
+        return false;
+    }
 
     /** Handles touch events to display a context menu for table body */
     private TouchContextProvider touchContextProvider = new TouchContextProvider(
@@ -6307,7 +6322,9 @@ public class VScrollTable extends FlowPanel
 
                                     @Override
                                     public void run() {
-                                        if (touchStart != null) {
+                                        if (touchStart != null
+                                                // Haulmont API
+                                                && !isShowBrowserContextMenu(touchStart)) {
                                             // Open the context menu if finger
                                             // is held in place long enough.
                                             showContextMenu(touchStart);
@@ -6391,6 +6408,11 @@ public class VScrollTable extends FlowPanel
                     final int type = event.getTypeInt();
                     final Element targetTdOrTr = getEventTargetTdOrTr(event);
                     if (type == Event.ONCONTEXTMENU) {
+                        // Haulmont API
+                        if (isShowBrowserContextMenu(event)) {
+                            return;
+                        }
+
                         showContextMenu(event);
                         if (enabled
                                 && (hasContextMenuActions() || client
@@ -6637,7 +6659,9 @@ public class VScrollTable extends FlowPanel
 
                                     @Override
                                     public void run() {
-                                        if (touchStart != null) {
+                                        if (touchStart != null
+                                                // Haulmont API
+                                                && !isShowBrowserContextMenu(touchStart)) {
                                             showContextMenu(touchStart);
                                             touchStart = null;
                                         }
