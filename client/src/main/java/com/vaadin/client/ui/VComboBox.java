@@ -2226,7 +2226,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
              * entered, the popup opener button is clicked to close the popup
              * and enter is then pressed (see #7560).
              */
-            if (!allowNewItems) {
+            // Haulmont API
+            if (!isAllowNewItemsOnInputFieldKeyDown(event)) {
                 return;
             }
 
@@ -2243,6 +2244,11 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             break;
         }
 
+    }
+
+    // Haulmont API
+    protected boolean isAllowNewItemsOnInputFieldKeyDown(KeyDownEvent event) {
+        return allowNewItems;
     }
 
     /**
