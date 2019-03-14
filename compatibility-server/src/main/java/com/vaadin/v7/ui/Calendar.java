@@ -462,6 +462,12 @@ public class Calendar extends AbstractLegacyComponent
         maxTimeInMinutes = null;
         if (events != null) {
             for (CalendarEvent event : events) {
+                Date start = event.getStart();
+                Date end = event.getEnd();
+                if (start == null || end == null) {
+                    throw new IllegalArgumentException("Start or end dates cannot be null");
+                }
+
                 int minuteOfDayStart = getMinuteOfDay(event.getStart());
                 int minuteOfDayEnd = getMinuteOfDay(event.getEnd());
                 if (minTimeInMinutes == null) {
