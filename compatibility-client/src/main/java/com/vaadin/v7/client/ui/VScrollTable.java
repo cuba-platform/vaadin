@@ -541,7 +541,6 @@ public class VScrollTable extends FlowPanel
             // works correctly only if we use a key press handler, other
             // browsers handle it correctly when using a key down handler
             if (!BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
-                VConsole.log(">> Firefox onKeyPress ignored");
                 return;
             }
 
@@ -607,7 +606,6 @@ public class VScrollTable extends FlowPanel
             NativeEvent event = keyDownEvent.getNativeEvent();
             // This is not used for Firefox
             if (BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
-                VConsole.log(">> Firefox onKeyDown ignored");
                 return;
             }
 
