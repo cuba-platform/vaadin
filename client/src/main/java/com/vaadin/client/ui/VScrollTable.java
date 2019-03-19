@@ -597,7 +597,7 @@ public class VScrollTable extends FlowPanel
             // This is used for Firefox only, since Firefox auto-repeat
             // works correctly only if we use a key press handler, other
             // browsers handle it correctly when using a key down handler
-            if (!BrowserInfo.get().isGecko()) {
+            if (!BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
                 return;
             }
 
@@ -662,7 +662,7 @@ public class VScrollTable extends FlowPanel
         public void onKeyDown(KeyDownEvent keyDownEvent) {
             NativeEvent event = keyDownEvent.getNativeEvent();
             // This is not used for Firefox
-            if (BrowserInfo.get().isGecko()) {
+            if (BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
                 return;
             }
 
@@ -882,7 +882,7 @@ public class VScrollTable extends FlowPanel
          * handler, other browsers handle it correctly when using a key down
          * handler
          */
-        if (BrowserInfo.get().isGecko()) {
+        if (BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
             scrollBodyPanel.addKeyPressHandler(navKeyPressHandler);
         } else {
             scrollBodyPanel.addKeyDownHandler(navKeyDownHandler);
