@@ -23,4 +23,6 @@ package com.vaadin.shared.ui;
  */
 public class AbstractLayoutState extends AbstractComponentContainerState {
 
+    // Haulmont API
+    public boolean requiredIndicatorVisible = false;
 }

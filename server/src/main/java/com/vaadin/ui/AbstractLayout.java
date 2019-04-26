@@ -134,4 +134,16 @@ public abstract class AbstractLayout extends AbstractComponentContainer
                     defMargin.hasBottom(), boolean.class, context);
         }
     }
+
+    // Haulmont API
+    @Override
+    public boolean isRequiredIndicatorVisible() {
+        return getState().requiredIndicatorVisible;
+    }
+
+    // Haulmont API
+    @Override
+    public void setRequiredIndicatorVisible(boolean visible) {
+        getState().requiredIndicatorVisible = visible;
+    }
 }
