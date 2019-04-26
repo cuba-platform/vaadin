@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -230,6 +231,9 @@ public class DataCommunicator<T> extends AbstractExtension {
     private Comparator<T> inMemorySorting;
     private final List<QuerySortOrder> backEndSorting = new ArrayList<>();
     private final DataCommunicatorClientRpc rpc;
+
+    // Haulmont API
+    protected Consumer<T> beforeRefreshHandler;
 
     public DataCommunicator() {
         addDataGenerator(handler);
@@ -523,6 +527,18 @@ public class DataCommunicator<T> extends AbstractExtension {
         handler.destroyAllData();
     }
 
+    // Haulmont API
+    protected void fireBeforeRefreshHandler(T data) {
+        if (beforeRefreshHandler != null) {
+            beforeRefreshHandler.accept(data);
+        }
+    }
+
+    // Haulmont API
+    public void setBeforeRefreshHandler(Consumer<T> beforeRefreshHandler) {
+        this.beforeRefreshHandler = beforeRefreshHandler;
+    }
+
     /**
      * Method for internal reset from a change in the component, requiring a
      * full data update.
@@ -530,6 +546,9 @@ public class DataCommunicator<T> extends AbstractExtension {
     public void reset() {
         // Only needed if a full reset is not pending.
         if (!reset) {
+            // Haumont API
+            fireBeforeRefreshHandler(null);
+
             beforeClientResponse(true);
             // Soft reset through client-side re-request.
             getClientRpc().reset(getDataProviderSize());
@@ -551,6 +570,9 @@ public class DataCommunicator<T> extends AbstractExtension {
         Map<Object, T> activeData = getActiveDataHandler().getActiveData();
 
         if (activeData.containsKey(id)) {
+            // Haumont API
+            fireBeforeRefreshHandler(data);
+
             // Item is currently available at the client-side
             if (updatedData.isEmpty()) {
                 markAsDirty();
