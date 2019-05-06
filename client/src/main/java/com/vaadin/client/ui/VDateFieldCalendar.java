@@ -34,7 +34,7 @@ public class VDateFieldCalendar extends VDateField {
 
     public VDateFieldCalendar() {
         super();
-        calendarPanel = new VCalendarPanel();
+        calendarPanel = createCalendarPanel();
         calendarPanel.setParentField(this);
         add(calendarPanel);
         calendarPanel.setSubmitListener(new SubmitListener() {
@@ -56,6 +56,11 @@ public class VDateFieldCalendar extends VDateField {
                 return false;
             }
         });
+    }
+
+    // Haulmont API
+    protected VCalendarPanel createCalendarPanel() {
+        return new VCalendarPanel();
     }
 
     /**

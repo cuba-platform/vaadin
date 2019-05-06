@@ -136,7 +136,7 @@ public class VPopupCalendar extends VTextualDate
         AriaHelper.setVisibleForAssistiveDevicesOnly(
                 descriptionForAssisitveDevicesElement, true);
 
-        calendar = GWT.create(VCalendarPanel.class);
+        calendar = createCalendarPanel();
         calendar.setParentField(this);
         calendar.setFocusOutListener(new FocusOutListener() {
             @Override
@@ -198,6 +198,11 @@ public class VPopupCalendar extends VTextualDate
         sinkEvents(Event.ONKEYDOWN);
 
         updateStyleNames();
+    }
+
+    // Haulmont API
+    protected VCalendarPanel createCalendarPanel() {
+        return GWT.create(VCalendarPanel.class);
     }
 
     @Override

@@ -572,7 +572,7 @@ public class VCalendarPanel extends FocusableFlexTable implements
         }
 
         Date valueDuplicate = (Date) date.clone();
-        Date rangeStartDuplicate = (Date) rangeStart.clone();
+        Date rangeStartDuplicate = getConvertedRangeStart();
 
         if (minResolution == Resolution.YEAR) {
             return valueDuplicate.getYear() >= rangeStartDuplicate.getYear();
@@ -586,6 +586,11 @@ public class VCalendarPanel extends FocusableFlexTable implements
         }
 
         return !rangeStartDuplicate.after(valueDuplicate);
+    }
+
+    // Haulmont API
+    protected Date getConvertedRangeStart() {
+        return (Date) rangeStart.clone();
     }
 
     /**
@@ -608,7 +613,7 @@ public class VCalendarPanel extends FocusableFlexTable implements
         }
 
         Date valueDuplicate = (Date) date.clone();
-        Date rangeEndDuplicate = (Date) rangeEnd.clone();
+        Date rangeEndDuplicate = getConvertedRangeEnd();
 
         if (minResolution == Resolution.YEAR) {
             return valueDuplicate.getYear() <= rangeEndDuplicate.getYear();
@@ -623,6 +628,11 @@ public class VCalendarPanel extends FocusableFlexTable implements
 
         return !rangeEndDuplicate.before(valueDuplicate);
 
+    }
+
+    // Haulmont API
+    protected Date getConvertedRangeEnd() {
+        return (Date) rangeEnd.clone();
     }
 
     private static Date clearDateBelowMonth(Date date) {
@@ -1565,6 +1575,10 @@ public class VCalendarPanel extends FocusableFlexTable implements
      * @param date
      */
     private Date adjustDateToFitInsideRange(Date date) {
+        // Haulmont API
+        Date rangeStart = getConvertedRangeStart();
+        Date rangeEnd = getConvertedRangeEnd();
+
         if (rangeStart != null && rangeStart.after(date)) {
             date = (Date) rangeStart.clone();
         } else if (rangeEnd != null && rangeEnd.before(date)) {
