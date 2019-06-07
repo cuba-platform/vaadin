@@ -4999,6 +4999,12 @@ public class Table extends AbstractSelect implements Action.Container,
         }
     }
 
+    // Haulmont API
+    protected void setContainerSortOptions(Object propertyId, boolean sortAscending) {
+        sortContainerPropertyId = propertyId;
+        this.sortAscending = sortAscending;
+    }
+
     /**
      * Used to create "generated columns"; columns that exist only in the Table,
      * not in the underlying Container. Implement this interface and pass it to
