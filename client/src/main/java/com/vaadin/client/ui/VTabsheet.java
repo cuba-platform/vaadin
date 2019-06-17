@@ -1671,7 +1671,7 @@ public class VTabsheet extends VTabsheetBase
      * event to the main component, otherwise it'll do nothing, so the main
      * component will not generate the blur..
      */
-    // HAulmont API dependency
+    // Haulmont API dependency
     public static class FocusBlurManager {
 
         // The real tab with focus on it. If the focus goes to another element

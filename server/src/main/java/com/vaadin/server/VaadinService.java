@@ -45,6 +45,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -2019,8 +2020,13 @@ public abstract class VaadinService implements Serializable {
 
                     try {
                         pendingAccess.get();
-
                     } catch (Exception exception) {
+                        if (exception instanceof ExecutionException) {
+                            Throwable cause = exception.getCause();
+                            if (cause instanceof Exception) {
+                                exception = (Exception) cause;
+                            }
+                        }
                         pendingAccess.handleError(exception);
                     }
                 }

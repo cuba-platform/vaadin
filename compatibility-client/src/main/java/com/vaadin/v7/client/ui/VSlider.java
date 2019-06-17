@@ -314,8 +314,8 @@ public class VSlider extends SimpleFocusablePanel
         }
     }
 
-    protected boolean isNavigationEvent(Event event) {
-        if (BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65.0) {
+    private boolean isNavigationEvent(Event event) {
+        if (BrowserInfo.get().isGecko() && BrowserInfo.get().getGeckoVersion() < 65) {
             return DOM.eventGetType(event) == Event.ONKEYPRESS;
         } else {
             return DOM.eventGetType(event) == Event.ONKEYDOWN;

@@ -131,6 +131,12 @@ public abstract class UI extends AbstractSingleComponentContainer
             this);
 
     /**
+     * Holder for old navigation state, needed in doRefresh in order not to call
+     * navigateTo too often
+     */
+    private String oldNavigationState;
+
+    /**
      * Scroll Y position.
      */
     private int scrollTop = 0;
@@ -837,6 +843,19 @@ public abstract class UI extends AbstractSingleComponentContainer
 
         page.updateLocation(newLocation.toString(), true, false);
         page.updateBrowserWindowSize(newWidth, newHeight, true);
+
+        // Navigate if there is navigator, this is needed in case of
+        // PushStateNavigation. Call navigateTo only if state have
+        // truly changed
+        Navigator navigator = getNavigator();
+        if (navigator != null) {
+            if (oldNavigationState == null)
+                oldNavigationState = getNavigator().getState();
+            if (!navigator.getState().equals(oldNavigationState)) {
+                navigator.navigateTo(navigator.getState());
+                oldNavigationState = navigator.getState();
+            }
+        }
     }
 
     /**
@@ -1535,16 +1554,44 @@ public abstract class UI extends AbstractSingleComponentContainer
             @Override
             public void handleError(Exception exception) {
                 try {
-                    if (runnable instanceof ErrorHandlingRunnable) {
-                        ErrorHandlingRunnable errorHandlingRunnable = (ErrorHandlingRunnable) runnable;
+                    exception = ErrorHandlingRunnable.processException(runnable,
+                            exception);
 
-                        errorHandlingRunnable.handleError(exception);
-                    } else {
+                    if (exception instanceof UIDetachedException) {
+                        assert session != null;
+                        /*
+                         * UI was detached after access was run, but before
+                         * accessSynchronously. Furthermore, there wasn't an
+                         * ErrorHandlingRunnable that handled the exception.
+                         */
+                        getLogger().warn(
+                                "access() task ignored because UI got detached after the task was enqueued."
+                                        + " To suppress this message, change the task to implement {} and make it handle {}."
+                                        + " Affected task: {}",
+                                new Object[] {
+                                        ErrorHandlingRunnable.class.getName(),
+                                        UIDetachedException.class.getName(),
+                                        runnable });
+                    } else if (exception != null) {
+                        /*
+                         * If no ErrorHandlingRunnable, or if it threw an
+                         * exception of its own.
+                         */
                         ConnectorErrorEvent errorEvent = new ConnectorErrorEvent(
                                 UI.this, exception);
 
                         ErrorHandler errorHandler = com.vaadin.server.ErrorEvent
                                 .findErrorHandler(UI.this);
+
+                        if (errorHandler == null && getSession() == null) {
+                            /*
+                             * Special case where findErrorHandler(UI) cannot
+                             * find the session handler because the UI has
+                             * recently been detached.
+                             */
+                            errorHandler = com.vaadin.server.ErrorEvent
+                                    .findErrorHandler(session);
+                        }
 
                         if (errorHandler == null) {
                             errorHandler = new DefaultErrorHandler();

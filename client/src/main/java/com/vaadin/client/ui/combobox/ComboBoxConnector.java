@@ -130,11 +130,9 @@ public class ComboBoxConnector extends AbstractListingConnector
             getWidget().selectedOptionKey = null;
             getWidget().currentSuggestion = null;
         }
-        if (isNewItemStillPending()
-                && pendingNewItemValue == getState().selectedItemCaption) {
-            // no automated selection handling required
-            clearNewItemHandling();
-        }
+
+        clearNewItemHandlingIfMatch(getState().selectedItemCaption);
+
         getDataReceivedHandler().updateSelectionFromServer(
                 getState().selectedItemKey, getState().selectedItemCaption,
                 getState().selectedItemIcon);
@@ -188,10 +186,11 @@ public class ComboBoxConnector extends AbstractListingConnector
         if (itemValue != null && !itemValue.equals(pendingNewItemValue)) {
             // clear any previous handling as outdated
             clearNewItemHandling();
+
+            pendingNewItemValue = itemValue;
+            rpc.createNewItem(itemValue);
+            getDataReceivedHandler().clearPendingNavigation();
         }
-        pendingNewItemValue = itemValue;
-        rpc.createNewItem(itemValue);
-        getDataReceivedHandler().clearPendingNavigation();
     }
 
     /**
@@ -360,7 +359,7 @@ public class ComboBoxConnector extends AbstractListingConnector
 
         updateSuggestions(start, end);
         getWidget().setTotalSuggestions(getDataSource().size());
-
+        getWidget().resetLastNewItemString();
         getDataReceivedHandler().dataReceived();
     }
 
@@ -452,10 +451,7 @@ public class ComboBoxConnector extends AbstractListingConnector
      * versions.
      */
     private void clearNewItemHandling() {
-        // never clear pending value before it has been handled
-        if (!isNewItemStillPending()) {
-            pendingNewItemValue = null;
-        }
+        pendingNewItemValue = null;
     }
 
     /**

@@ -136,6 +136,28 @@ public class GridConnector extends AbstractHasComponentsConnector
         }
 
         /**
+         * Creates and initializes a custom grid column with attributes of given state.
+         *
+         * @param state with attributes to initialize the column.
+         */
+        @SuppressWarnings("unchecked")
+        private CustomGridColumn(GridColumnState state) {
+            this(state.id, (AbstractGridRendererConnector<Object>) state.rendererConnector);
+            this.hidingToggleCaption = state.hidingToggleCaption;
+            this.hidden = state.hidden;
+            this.hidable = state.hidable;
+            this.resizable = state.resizable;
+            this.sortable = state.sortable;
+            this.headerCaption = state.headerCaption == null ? "" : state.headerCaption;
+            this.widthUser = state.width;
+            this.minimumWidthPx = state.minWidth;
+            this.maximumWidthPx = state.maxWidth;
+            this.expandRatio = state.expandRatio;
+            this.editable = state.editable;
+            setEditorConnector((AbstractComponentConnector) state.editorConnector);
+        }
+
+        /**
          * Sets a new renderer for this column object
          *
          * @param rendererConnector
@@ -431,7 +453,8 @@ public class GridConnector extends AbstractHasComponentsConnector
                 } else {
                     getLogger().warn(
                             "Visibility changed for a unknown column type in Grid: "
-                                    + column + ", type " + column.getClass());
+                            + column.toString() + ", type "
+                            + column.getClass());
                 }
             }
         }
@@ -503,9 +526,13 @@ public class GridConnector extends AbstractHasComponentsConnector
                     if (spacerCellBorderHeights != null
                             && !getLayoutManager().isLayoutRunning()
                             && hasDetailsOpen(rowIndex)) {
-                        double height = getLayoutManager().getOuterHeightDouble(
-                                element) + spacerCellBorderHeights;
-                        getWidget().setDetailsHeight(rowIndex, height);
+                        // Measure and set details height if element is visible
+                        if (WidgetUtil.isDisplayed(element)) {
+                            double height =
+                                getLayoutManager().getOuterHeightDouble(
+                                    element) + spacerCellBorderHeights;
+                            getWidget().setDetailsHeight(rowIndex, height);
+                        }
                     }
                 }
             };
@@ -849,13 +876,8 @@ public class GridConnector extends AbstractHasComponentsConnector
             // Remove old columns
             purgeRemovedColumns();
 
-            // Add new columns
-            for (GridColumnState state : getState().columns) {
-                if (!columnIdToColumn.containsKey(state.id)) {
-                    addColumnFromStateChangeEvent(state);
-                }
-                updateColumnFromStateChangeEvent(state);
-            }
+            // Update all columns
+            updateColumnsFromState();
         }
 
         if (stateChangeEvent.hasPropertyChanged("columnOrder")) {
@@ -1058,43 +1080,39 @@ public class GridConnector extends AbstractHasComponentsConnector
         cell.setStyleName(cellState.styleName);
     }
 
-    /**
-     * Updates a column from a state change event.
-     *
-     * @param columnIndex
-     *            The index of the column to update
-     */
-    private void updateColumnFromStateChangeEvent(GridColumnState columnState) {
-        CustomGridColumn column = columnIdToColumn.get(columnState.id);
 
-        columnsUpdatedFromState = true;
-        // Haulmont API
-        preUpdateColumnFromState(column, columnState);
-        updateColumnFromState(column, columnState);
-        columnsUpdatedFromState = false;
+    /**
+     * Update columns from the current state.
+     *
+     */
+    private void updateColumnsFromState() {
+        this.columnsUpdatedFromState = true;
+        final List<Column<?, JsonObject>> columns = new ArrayList<Column<?, JsonObject>>(getState().columns.size());
+        for (String columnId : getState().columnOrder) {
+            for (GridColumnState state : getState().columns) {
+                if (state.id.equals(columnId)) {
+                    CustomGridColumn column = this.columnIdToColumn.get(state.id);
+                    if (column == null) {
+                        column = new CustomGridColumn(state);
+                        this.columnIdToColumn.put(state.id, column);
+                        this.columnOrder.add(state.id);
+                        columns.add(column);
+                    } else {
+                        // Haulmont API
+                        preUpdateColumnFromState(column, state);
+                        updateColumnFromState(column, state);
+                    }
+                }
+            }
+        }
+        @SuppressWarnings("unchecked")
+        final Column<?, JsonObject>[] columnArray = columns.toArray(new Column[0]);
+        getWidget().addColumns(columnArray);
+        this.columnsUpdatedFromState = false;
     }
 
     // Haulmont API
     protected void preUpdateColumnFromState(Column<?, JsonObject> column, GridColumnState columnState) {
-    }
-
-    /**
-     * Adds a new column to the grid widget from a state change event
-     *
-     * @param columnIndex
-     *            The index of the column, according to how it
-     */
-    private void addColumnFromStateChangeEvent(GridColumnState state) {
-        @SuppressWarnings("unchecked")
-        CustomGridColumn column = new CustomGridColumn(state.id,
-                ((AbstractGridRendererConnector<Object>) state.rendererConnector));
-        columnIdToColumn.put(state.id, column);
-
-        /*
-         * Add column to grid. Reordering is handled as a separate problem.
-         */
-        getWidget().addColumn(column);
-        columnOrder.add(state.id);
     }
 
     /**
@@ -1113,7 +1131,8 @@ public class GridConnector extends AbstractHasComponentsConnector
         column.setMaximumWidth(state.maxWidth);
         column.setExpandRatio(state.expandRatio);
 
-        assert state.rendererConnector instanceof AbstractGridRendererConnector : "GridColumnState.rendererConnector is invalid (not subclass of AbstractGridRendererConnector)";
+        assert state.rendererConnector instanceof AbstractGridRendererConnector : "GridColumnState.rendererConnector is invalid (not subclass of "
+            + "AbstractRendererConnector)";
         column.setRenderer(
                 (AbstractGridRendererConnector<Object>) state.rendererConnector);
 
@@ -1287,6 +1306,7 @@ public class GridConnector extends AbstractHasComponentsConnector
         info.setContentMode(contentMode);
         return info;
     }
+
     @Override
     protected void sendContextClickEvent(MouseEventDetails details,
             EventTarget eventTarget) {

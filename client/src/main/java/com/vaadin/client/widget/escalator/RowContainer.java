@@ -238,7 +238,7 @@ public interface RowContainer {
     /**
      * For internal use only. May be removed or replaced in the future.
      *
-     * @since 8.6
+     * @since 8.7
      * @return {@code true} if row height calculations have been scheduled
      */
     public boolean isAutodetectingRowHeightLater();
