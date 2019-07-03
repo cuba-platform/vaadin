@@ -3898,7 +3898,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      *
      * @since 7.5.0
      */
-    private static class Sidebar extends Composite implements HasEnabled {
+    // Haulmont API dependency
+    protected static class Sidebar extends Composite implements HasEnabled {
 
         private final ClickHandler openCloseButtonHandler = event -> {
             if (!isOpen()) {
@@ -3920,7 +3921,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
         private Overlay overlay;
 
-        private Sidebar(Grid<?> grid) {
+        // Haulmont API dependency
+        protected Sidebar(Grid<?> grid) {
             this.grid = grid;
 
             rootContainer = new FlowPanel();
@@ -3994,6 +3996,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             openCloseButton.addDomHandler(keyDownHandler,
                     KeyDownEvent.getType());
             menuBar.addDomHandler(keyDownHandler, KeyDownEvent.getType());
+        }
+
+        // Haulmont API
+        protected Grid<?> getGrid() {
+            return grid;
         }
 
         /**
@@ -4090,7 +4097,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             openCloseButton.setHeight(height + "px");
         }
 
-        private void updateVisibility() {
+        // Haulmont API dependency
+        protected void updateVisibility() {
             final boolean hasWidgets = content.getWidgetCount() > 0;
             final boolean isVisible = isInDOM();
             if (isVisible && !hasWidgets) {
@@ -4240,13 +4248,28 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     /**
      * Escalator used internally by grid to render the rows
      */
-    private Escalator escalator = GWT.create(Escalator.class);
+    private Escalator escalator = createEscalator();
+
+    protected Escalator createEscalator() {
+        return GWT.create(Escalator.class);
+    }
 
     private final Header header = GWT.create(Header.class);
 
     private final Footer footer = GWT.create(Footer.class);
 
-    private final Sidebar sidebar = new Sidebar(this);
+    // Haulmont API
+    private final Sidebar sidebar = createSidebar();
+
+    // Haulmont API
+    protected Sidebar createSidebar() {
+        return new Sidebar(this);
+    }
+
+    // Haulmont API
+    protected Sidebar getSidebar() {
+        return sidebar;
+    }
 
     /**
      * List of columns in the grid. Order defines the visible order.
@@ -6252,6 +6275,9 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 cellElement.setAttribute("aria-sort", "descending");
             }
 
+            // Haulmont API
+            afterSortingIndicatorAdded(cell);
+
             int sortIndex = Grid.this.getSortOrder().indexOf(sortingOrder);
             if (sortIndex > -1 && Grid.this.getSortOrder().size() > 1) {
                 // Show sort order indicator if column is
@@ -6264,6 +6290,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             if (!sortedBefore) {
                 verifyColumnWidth(column);
             }
+        }
+
+        // Haulmont API
+        protected void afterSortingIndicatorAdded(FlyweightCell cell) {
         }
 
         /**
@@ -6297,7 +6327,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             return null;
         }
 
-        private void cleanup(FlyweightCell cell) {
+        // Haulmont API dependency
+        protected void cleanup(FlyweightCell cell) {
             Element cellElement = cell.getElement();
             cellElement.removeAttribute("sort-order");
             cellElement.removeAttribute("aria-sort");

@@ -262,6 +262,11 @@ public abstract class ScrollbarBundle implements DeferredWorker {
         public Direction getDirection() {
             return Direction.VERTICAL;
         }
+
+        // Haulmont API
+        public boolean isInvisibleScrollbar() {
+            return isInvisibleScrollbar;
+        }
     }
 
     /**

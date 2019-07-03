@@ -733,7 +733,8 @@ public class Escalator extends Widget
     }
 
     /** An inner class that handles all logic related to scrolling. */
-    private class Scroller extends JsniWorkaround {
+    // Haulmont API dependency
+    protected class Scroller extends JsniWorkaround {
         private double lastScrollTop = 0;
         private double lastScrollLeft = 0;
 
@@ -903,6 +904,13 @@ public class Escalator extends Widget
                 hCornerStyle.setDisplay(Display.NONE);
                 fCornerStyle.setDisplay(Display.NONE);
             }
+
+            // Haulmont API
+            afterRecalculateScrollbarsForVirtualViewport();
+        }
+
+        // Haulmont API
+        protected void afterRecalculateScrollbarsForVirtualViewport() {
         }
 
         /**
@@ -5791,6 +5799,11 @@ public class Escalator extends Widget
     private double tBodyScrollLeft = 0;
 
     private final VerticalScrollbarBundle verticalScrollbar = new VerticalScrollbarBundle();
+
+    public VerticalScrollbarBundle getVerticalScrollbar() {
+        return verticalScrollbar;
+    }
+
     private final HorizontalScrollbarBundle horizontalScrollbar = new HorizontalScrollbarBundle();
 
     private final AriaGridHelper ariaGridHelper = new AriaGridHelper();
@@ -5805,7 +5818,12 @@ public class Escalator extends Widget
      */
     private boolean rowHeightChangedEventFired = false;
 
-    private final Scroller scroller = new Scroller();
+    private final Scroller scroller = createScroller();
+
+    // Haulmnot API
+    protected Scroller createScroller() {
+        return new Scroller();
+    }
 
     private final ColumnConfigurationImpl columnConfiguration = new ColumnConfigurationImpl();
     private final DivElement tableWrapper;
@@ -5814,6 +5832,12 @@ public class Escalator extends Widget
     private final DivElement horizontalScrollbarDeco = DivElement
             .as(DOM.createDiv());
     private final DivElement headerDeco = DivElement.as(DOM.createDiv());
+
+    // Haulmont API
+    public DivElement getHeaderDeco() {
+        return headerDeco;
+    }
+
     private final DivElement footerDeco = DivElement.as(DOM.createDiv());
     private final DivElement spacerDecoContainer = DivElement
             .as(DOM.createDiv());
