@@ -6561,7 +6561,8 @@ public class Escalator extends Widget
 
         Profiler.enter("Escalator.recalculateElementSizes");
         widthOfEscalator = Math.max(0, getBoundingWidth(getElement()));
-        heightOfEscalator = Math.max(0, getBoundingHeight(getElement()));
+        // Haulmont API
+        heightOfEscalator = recalculateHeightOfEscalator();
 
         header.recalculateSectionHeight();
         body.recalculateSectionHeight();
@@ -6571,6 +6572,11 @@ public class Escalator extends Widget
         body.verifyEscalatorCount();
         body.reapplySpacerWidths();
         Profiler.leave("Escalator.recalculateElementSizes");
+    }
+
+    // Haulmont API
+    protected double recalculateHeightOfEscalator() {
+        return Math.max(0, getBoundingHeight(getElement()));
     }
 
     /**
