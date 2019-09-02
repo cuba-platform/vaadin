@@ -17,7 +17,9 @@
 package com.vaadin.server;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.DataKeyMapper;
@@ -90,7 +92,7 @@ public class KeyMapper<V> implements DataKeyMapper<V> {
 
     /**
      * Creates a key for a new item.
-     *
+     * <p>
      * This method can be overridden to customize the keys used.
      *
      * @return new key
@@ -139,6 +141,33 @@ public class KeyMapper<V> implements DataKeyMapper<V> {
     public void removeAll() {
         objectIdKeyMap.clear();
         keyObjectMap.clear();
+    }
+
+    /**
+     * Merge Objects into the mapper.
+     * <p>
+     * This method will add the new objects to the mapper and remove inactive
+     * objects from it.
+     *
+     * @param objects
+     *            new objects set needs to be merged.
+     * @since
+     */
+    public void merge(Set<V> objects) {
+        final Set<String> keys = new HashSet<>(keyObjectMap.size());
+
+        for (V object : objects) {
+            if (object == null) {
+                continue;
+            }
+            String key = key(object);
+            keys.add(key);
+        }
+
+        keyObjectMap.entrySet()
+                .removeIf(entry -> !keys.contains(entry.getKey()));
+        objectIdKeyMap.entrySet()
+                .removeIf(entry -> !keys.contains(entry.getValue()));
     }
 
     /**
