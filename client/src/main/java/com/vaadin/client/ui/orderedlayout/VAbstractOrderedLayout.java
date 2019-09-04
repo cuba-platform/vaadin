@@ -643,8 +643,8 @@ public class VAbstractOrderedLayout extends FlowPanel {
                         // TODO check caption position
                         // Haulmont API quick fixed
                         if (vertical) {
-                            int size = layoutManager.getOuterHeight(
-                                    slot.getWidget().getElement());
+                            // Haulmont API
+                            int size = computeWidgetHeight(slot.getWidget());
                             // Haulmont API quick check position
                             if (slot.hasCaption() && slot
                                     .getCaptionPosition() == CaptionPosition.TOP
@@ -719,6 +719,11 @@ public class VAbstractOrderedLayout extends FlowPanel {
                 }
             }
         }
+    }
+
+    // Haulmont API
+    protected int computeWidgetHeight(Widget w) {
+        return layoutManager.getOuterHeight(w.getElement());
     }
 
     /**
