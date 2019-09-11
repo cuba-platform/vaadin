@@ -1409,7 +1409,8 @@ public class VScrollTable extends FlowPanel
         scrollBodyPanel.getElement().getStyle().clearOverflowY();
     }
 
-    private void enableLazyScroller() {
+    // Haulmont API
+    protected void enableLazyScroller() {
         Scheduler.get().scheduleDeferred(lazyScroller);
         lazyScrollerIsActive = true;
         // prevent scrolling to jump in IE11
