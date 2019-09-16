@@ -1873,12 +1873,19 @@ public class VTabsheet extends VTabsheetBase
     /*
      * The tabs selection handler instance.
      */
-    private final TabSelectionHandler selectionHandler = new TabSelectionHandler();
+    // Haulmont API
+    private final TabSelectionHandler selectionHandler = createTabSelectionHandler();
+
+    // Haulmont API
+    protected TabSelectionHandler createTabSelectionHandler() {
+        return new TabSelectionHandler();
+    }
 
     /*
      * Handle the events for selecting the tabs.
      */
-    private class TabSelectionHandler implements FocusHandler, BlurHandler,
+    // Haulmont API
+    protected class TabSelectionHandler implements FocusHandler, BlurHandler,
             KeyDownHandler, ClickHandler, MouseDownHandler {
 
         /** For internal use only. May be removed or replaced in the future. */
@@ -1998,6 +2005,11 @@ public class VTabsheet extends VTabsheetBase
                     }
                 }
             }
+        }
+
+        // Haulmont API
+        protected void setFocusedTabIndex(int focusedTabIndex) {
+            this.focusedTabIndex = focusedTabIndex;
         }
 
         /*
