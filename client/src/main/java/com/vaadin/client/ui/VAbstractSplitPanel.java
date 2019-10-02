@@ -292,7 +292,8 @@ public abstract class VAbstractSplitPanel extends ComplexPanel {
      *         maximumPosition if pos is greater than maximumPosition; pos
      *         otherwise.
      */
-    private String checkSplitPositionLimits(String pos) {
+    // Haulmont API
+    protected String checkSplitPositionLimits(String pos) {
         float positionAsFloat = convertToPixels(pos);
 
         if (maximumPosition != null
