@@ -3614,7 +3614,8 @@ public class VScrollTable extends FlowPanel
         Element hTableContainer = DOM.createDiv();
         Element table = DOM.createTable();
         Element headerTableBody = DOM.createTBody();
-        Element tr = DOM.createTR();
+        // Haulmont API
+        protected Element tr = DOM.createTR();
 
         private final Element columnSelector = DOM.createDiv();
 
