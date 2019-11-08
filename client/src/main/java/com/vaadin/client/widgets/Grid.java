@@ -4256,9 +4256,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             return null;
         }
 
-        private void updateTogglesOrder() {
+        // Haulmont API
+        protected void updateTogglesOrder() {
             if (!hidingColumn) {
-                int lastIndex = 0;
+                // Haulmont API
+                int lastIndex = getFirstColumnToggleIndex();
                 for (Column<?, T> column : getColumns()) {
                     if (column.isHidable()) {
                         final MenuItem menuItem = columnToHidingToggleMap
@@ -4282,6 +4284,10 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             sidebar.menuBar.removeItem(columnToHidingToggleMap.get(column));
         }
 
+        // Haulmont API
+        protected int getFirstColumnToggleIndex() {
+            return 0;
+        }
     }
 
     /**
