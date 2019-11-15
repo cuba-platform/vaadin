@@ -737,6 +737,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
             if (this.generator != generator) {
                 removeAllComponents();
             }
+            getState().hasDetailsGenerator = generator != null;
             this.generator = generator;
             visibleDetails.forEach(this::refresh);
         }
@@ -2096,6 +2097,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          * all currently available row data to be recreated and sent to the
          * client.
          *
+         * Note: Setting a new renderer will reset presentation provider if it
+         * exists.
+         *
          * @param renderer
          *            the new renderer
          * @return this column
@@ -3040,6 +3044,9 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
 
     /**
      * Removes the given column from this {@link Grid}.
+     *
+     * Note: If you have Editor with binding in this Grid to this property, you
+     * need to remove that using removeBinding method provided by Binder.
      *
      * @param column
      *            the column to remove
@@ -4385,7 +4392,7 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
         Objects.requireNonNull(destination,
                 "ScrollDestination can not be null");
 
-        if (row > getDataCommunicator().getDataProviderSize()) {
+        if (row >= getDataCommunicator().getDataProviderSize()) {
             throw new IllegalArgumentException("Row outside dataProvider size");
         }
 

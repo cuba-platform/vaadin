@@ -247,6 +247,13 @@ public abstract class AbstractTB3Test extends ParallelTest {
         openTestURL(uiClass, new HashSet<>(Arrays.asList(parameters)));
     }
 
+    /**
+     * Reloads the current page, as if the user pressed F5.
+     */
+    protected void reloadPage() {
+        driver.navigate().refresh();
+    }
+
     private void openTestURL(Class<?> uiClass, Set<String> parameters) {
         String url = getTestURL(uiClass);
 

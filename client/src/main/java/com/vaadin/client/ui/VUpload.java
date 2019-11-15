@@ -116,6 +116,8 @@ public class VUpload extends SimplePanel {
 
     private boolean immediateMode;
 
+    private String acceptMimeTypes;
+
     private Hidden maxfilesize = new Hidden();
 
     /** For internal use only. May be removed or replaced in the future. */
@@ -221,6 +223,17 @@ public class VUpload extends SimplePanel {
             rebuildPanel();
             submitted = false;
         }
+        ensureUploadButton();
+
+    }
+
+    private void ensureUploadButton() {
+        // when push got enabled, need to ensure the upload is disabled properly
+        // check ticket #11652
+        if (fu.getElement().getParentElement().getParentElement()
+                .hasClassName("v-disabled")) {
+            disableUpload();
+        }
     }
 
     private void setEnabledForSubmitButton(boolean enabled) {
@@ -238,6 +251,9 @@ public class VUpload extends SimplePanel {
         fu = new VFileUpload();
         fu.setName(paintableId + "_file");
         fu.getElement().setPropertyBoolean("disabled", !enabled);
+        if (acceptMimeTypes != null && !acceptMimeTypes.isEmpty()) {
+            InputElement.as(fu.getElement()).setAccept(acceptMimeTypes);
+        }
         panel.add(fu);
         panel.add(submitButton);
         if (isImmediateMode()) {
@@ -408,5 +424,6 @@ public class VUpload extends SimplePanel {
         } else {
             InputElement.as(fu.getElement()).setAccept(acceptMimeTypes);
         }
+        this.acceptMimeTypes = acceptMimeTypes;
     }
 }

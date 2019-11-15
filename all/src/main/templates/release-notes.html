@@ -62,7 +62,7 @@
                 maintenance release that includes a number of bug fixes, as listed in the <a href="#changelog">change log</a> below.
 <!--            feature release that includes -->
 <!--            pre-release for evaluating -->
-<!--            a number of new features and bug fixes, as listed in the <a
+                a number of new features and bug fixes, as listed in the <a
                 href="#enhancements">list of enhancements</a> and <a
                 href="#changelog">change log</a> below.
 		The API in this beta version is not considered final and may change based on your feedback.-->
@@ -83,31 +83,30 @@
             enhancements. Below is a list of the most notable changes:</p>
 
         <ul>
-            <li>Add <tt>StringToUuidConverter</tt></li>
-            <li>Allow value update by clicking on <tt>Slider</tt></li>
-            <li>Allow use Enter and Space keys to fire <tt>Window</tt> header buttons</li>
-            <li>Support more KeyCodes</li>
-            <li>Support customized JSONSerializer</li>
-            <li>Improve the binding of columns defined through string with nested properties in <tt>Grid</tt></li>
+            <li>Adds css class name to <tt>Grid.Editor</tt> on slected row</li>
+	        <li>Improves error handling on <tt>Upload</tt> handler</li>
+            <li>Improves support for detail row index handling on <tt>Escalator</tt></li>
+            <li>Improves support for OSGi</li>
+            <li>Updates <tt>Spring</tt> addon to 3.2.1</li>
         </ul>
 
         </p>
 
         <p>
-            For enhancements introduced in Vaadin Framework 8.7, see the <a
-                href="http://vaadin.com/download/release/8.7/8.7.0/release-notes.html">Release
-                Notes for Vaadin Framework 8.7.0</a>.
+            For enhancements introduced in Vaadin Framework 8.8, see the <a
+                href="http://vaadin.com/download/release/8.8/8.8.0/release-notes.html">Release
+                Notes for Vaadin Framework 8.8.0</a>.
             For migrating from previous framework versions, see <a href="#incompatible">the list of incompatible changes</a> and <a href="#migrating">how to migrate
             to Vaadin Framework 8</a>.
         </p>
 
-        <h2 id="incompatible">Incompatible or Behavior-altering Changes in @version-minor@</h2>
+        <h2 id="incompatible">No Incompatible or Behavior-altering Changes in @version-minor@</h2>
 
         <ul>
-            <li>Public <tt>setCaption(String text)</tt> method in <tt>VPanel</tt> has been refactored to <tt>setCaption(String text, boolean captionAsHtml)</tt> due to internal changes.</li>
+            <li></li>
         </ul>
 
-        <h2>For incompatible or behavior-altering changes in 8.7, please see <a href="https://vaadin.com/download/release/8.7/8.7.0/release-notes.html#incompatible">8.7 release notes</a></h2>
+        <h2>For incompatible or behavior-altering changes in 8.8, please see <a href="https://vaadin.com/download/release/8.8/8.8.0/release-notes.html#incompatible">8.8 release notes</a></h2>
 
         <h3 id="knownissues">Known Issues and Limitations</h3>
         <ul>
@@ -340,9 +339,10 @@
         <h2 id="supportedversions">Supported Technologies</h2>
 
         <p>
-            Vaadin Framework 8 is compatible with <b>Java 8 and 9</b>.
+           The server-side Vaadin Framework 8 is compatible with <b>Java 8 and 11</b>. Note, that the client-side Java code, compiled using GWT to be run as JS on the browser side, only supports language features up to Java 9 and a subset of JDK libraries.
 	Vaadin Framework 8 is developed and tested with Oracle JDK, but other
-		compliant Java distributions should work as well. Vaadin Framework
+		compliant Java distributions should work as well. More about Java support in <a href="https://vaadin.com/faq">
+            FAQ</a>. Vaadin Framework
             8 is especially supported on the following <b>operating
                 systems</b>:
         </p>

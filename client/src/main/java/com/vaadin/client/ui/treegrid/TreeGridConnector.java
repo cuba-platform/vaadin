@@ -194,6 +194,12 @@ public class TreeGridConnector extends GridConnector {
             public void dataRemoved(int firstRowIndex, int numberOfRows) {
                 if (awaitingRowsState == AwaitingRowsState.COLLAPSE) {
                     awaitingRowsState = AwaitingRowsState.NONE;
+                    // make sure the cache stays up to date with the collapsing
+                    Range visibleRowRange = getWidget().getEscalator()
+                            .getVisibleRowRange();
+                    getDataSource().ensureAvailability(
+                            visibleRowRange.getStart(),
+                            visibleRowRange.getEnd());
                 }
                 checkExpand();
             }
@@ -202,6 +208,12 @@ public class TreeGridConnector extends GridConnector {
             public void dataAdded(int firstRowIndex, int numberOfRows) {
                 if (awaitingRowsState == AwaitingRowsState.EXPAND) {
                     awaitingRowsState = AwaitingRowsState.NONE;
+                    // make sure the cache stays up to date with the expanding
+                    Range visibleRowRange = getWidget().getEscalator()
+                            .getVisibleRowRange();
+                    getDataSource().ensureAvailability(
+                            visibleRowRange.getStart(),
+                            visibleRowRange.getEnd());
                 }
                 checkExpand();
             }

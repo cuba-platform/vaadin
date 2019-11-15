@@ -269,13 +269,17 @@ public class FileUploadHandler implements RequestHandler {
         session.lock();
         try {
             UI uI = session.getUIById(Integer.parseInt(uiId));
+            if (uI == null) {
+                throw new IOException(
+                        "File upload ignored because the UI was not found and stream variable cannot be determined");
+            }
+            // Set UI so that it can be used in stream variable clean up
             UI.setCurrent(uI);
 
             streamVariable = uI.getConnectorTracker()
                     .getStreamVariable(connectorId, variableName);
             String secKey = uI.getConnectorTracker().getSeckey(streamVariable);
             if (secKey == null || !secKey.equals(parts[3])) {
-                // TODO Should rethink error handling
                 return true;
             }
 
@@ -475,7 +479,7 @@ public class FileUploadHandler implements RequestHandler {
         try {
             // Store ui reference so we can do cleanup even if connector is
             // detached in some event handler
-            UI ui = connector.getUI();
+            UI ui = UI.getCurrent();
             boolean forgetVariable = streamToReceiver(session, inputStream,
                     streamVariable, filename, mimeType, contentLength);
             if (forgetVariable) {
@@ -636,11 +640,7 @@ public class FileUploadHandler implements RequestHandler {
             } finally {
                 session.unlock();
             }
-            boolean pushEnabled = UI.getCurrent().getPushConfiguration()
-                    .getPushMode().isEnabled();
-            if (!pushEnabled) {
-                return true;
-            }
+            return true;
 
             // Note, we are not throwing interrupted exception forward as it is
             // not a terminal level error like all other exception.
@@ -724,7 +724,20 @@ public class FileUploadHandler implements RequestHandler {
 
     private void cleanStreamVariable(VaadinSession session, final UI ui,
             final ClientConnector owner, final String variableName) {
-        session.accessSynchronously(() -> ui.getConnectorTracker()
-                .cleanStreamVariable(owner.getConnectorId(), variableName));
+        session.accessSynchronously(() -> {
+            ui.getConnectorTracker().cleanStreamVariable(owner.getConnectorId(),
+                    variableName);
+
+            // in case of automatic push mode, the client connector
+            // could already have refreshed its StreamVariable
+            // in the ConnectorTracker. For instance, the Upload component
+            // adds its stream variable in its paintContent method, which is
+            // called (indirectly) on each session unlock in case of automatic
+            // pushes.
+            // To cover this case, mark the client connector as dirty, so that
+            // the unlock after this runnable refreshes the StreamVariable
+            // again.
+            owner.markAsDirty();
+        });
     }
 }

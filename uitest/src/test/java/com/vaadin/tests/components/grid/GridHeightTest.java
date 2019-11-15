@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridRowElement;
@@ -85,7 +86,9 @@ public class GridHeightTest extends MultiBrowserTest {
                 }
 
                 GridRowElement row = grid.getRow(2);
-                row.click(getXOffset(row, 5), getYOffset(row, 5));
+                WebElement cell = row.findElements(By.className("v-grid-cell"))
+                        .get(0);
+                cell.click();
                 waitForElementPresent(By.id("lbl1"));
 
                 int openHeight = grid.getSize().getHeight();
@@ -98,7 +101,7 @@ public class GridHeightTest extends MultiBrowserTest {
                             detailsRowHeight, "opened" });
                 }
 
-                row.click(5, 5);
+                cell.click();
                 waitForElementNotPresent(By.id("lbl1"));
 
                 int afterHeight = grid.getSize().getHeight();

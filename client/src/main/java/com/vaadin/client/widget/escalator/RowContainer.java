@@ -75,6 +75,17 @@ public interface RowContainer {
                 throws IllegalArgumentException;
 
         /**
+         * Checks whether the given rowIndex contains a spacer.
+         *
+         * @param rowIndex
+         *            the row index for the queried spacer.
+         * @return {@code true} if spacer for given row index exists,
+         *         {@code false} otherwise
+         * @since 8.9
+         */
+        boolean spacerExists(int rowIndex);
+
+        /**
          * Sets a new spacer updater.
          * <p>
          * Spacers that are currently visible will be updated, i.e.
@@ -119,6 +130,20 @@ public interface RowContainer {
         @Override
         public void removeRows(int index, int numberOfRows)
                 throws IndexOutOfBoundsException, IllegalArgumentException;
+
+        /**
+         * Recalculates and updates the positions of rows and spacers within the
+         * given range and ensures there is no gap below the rows if there are
+         * enough rows to fill the space. Recalculates the scrollbars for
+         * virtual viewport.
+         *
+         * @param index
+         *            logical index of the first row to reposition
+         * @param numberOfRows
+         *            the number of rows to reposition
+         * @since 8.9
+         */
+        public void updateRowPositions(int index, int numberOfRows);
 
         /**
          * Sets a callback function that is executed when new rows are added to

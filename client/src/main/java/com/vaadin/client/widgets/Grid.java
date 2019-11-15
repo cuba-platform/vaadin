@@ -56,7 +56,11 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.*;
+import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.DeferredWorker;
+import com.vaadin.client.Focusable;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.WidgetUtil.Reference;
 import com.vaadin.client.data.DataChangeHandler;
 import com.vaadin.client.data.DataSource;
@@ -82,6 +86,8 @@ import com.vaadin.client.widget.escalator.Spacer;
 import com.vaadin.client.widget.escalator.SpacerUpdater;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedHandler;
+import com.vaadin.client.widget.escalator.events.SpacerIndexChangedEvent;
+import com.vaadin.client.widget.escalator.events.SpacerIndexChangedHandler;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedHandler;
 import com.vaadin.client.widget.grid.AutoScroller;
@@ -1906,6 +1912,15 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             editorOverlay.appendChild(messageAndButtonsWrapper);
 
             updateBufferedStyleName();
+
+            // Add class name with selected modifier if the editor is being
+            // opened on selected row, see #11634
+            String selectedStylename = styleName + "-selected";
+            if (grid.isSelected(grid.getDataSource().getRow(getRow()))) {
+                cellWrapper.addClassName(selectedStylename);
+            } else {
+                cellWrapper.removeClassName(selectedStylename);
+            }
 
             int frozenColumns = grid.getVisibleFrozenColumnCount();
             double frozenColumnsWidth = 0;
@@ -3818,7 +3833,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                  * height, but the spacer cell (td) has the borders, which
                  * should go on top of the previous row and next row.
                  */
-                double contentHeight;
+                final double contentHeight;
                 if (detailsGenerator instanceof HeightAwareDetailsGenerator) {
                     HeightAwareDetailsGenerator sadg = (HeightAwareDetailsGenerator) detailsGenerator;
                     contentHeight = sadg.getDetailsHeight(rowIndex);
@@ -3828,8 +3843,32 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 }
                 double borderTopAndBottomHeight = WidgetUtil
                         .getBorderTopAndBottomThickness(spacerElement);
-                double measuredHeight = contentHeight
-                        + borderTopAndBottomHeight;
+                double measuredHeight = 0d;
+                if (contentHeight > 0) {
+                    measuredHeight = contentHeight + borderTopAndBottomHeight;
+                } else {
+                    Scheduler.get().scheduleFinally(() -> {
+                        // make sure the spacer hasn't got removed
+                        if (spacer.getElement().getParentElement() != null) {
+                            // re-check the height
+                            double confirmedContentHeight = WidgetUtil
+                                    .getRequiredHeightBoundingClientRectDouble(
+                                            element);
+                            if (confirmedContentHeight > 0) {
+                                double confirmedMeasuredHeight = confirmedContentHeight
+                                        + WidgetUtil
+                                                .getBorderTopAndBottomThickness(
+                                                        spacer.getElement());
+                                escalator.getBody().setSpacer(spacer.getRow(),
+                                        confirmedMeasuredHeight);
+                                if (getHeightMode() == HeightMode.UNDEFINED) {
+                                    setHeightByRows(getEscalator().getBody()
+                                            .getRowCount());
+                                }
+                            }
+                        }
+                    });
+                }
                 assert getElement().isOrHasChild(
                         spacerElement) : "The spacer element wasn't in the DOM during measurement, but was assumed to be.";
                 spacerHeight = measuredHeight;
@@ -6438,6 +6477,15 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             }
         });
 
+        addSpacerIndexChangedHandler(new SpacerIndexChangedHandler() {
+            @Override
+            public void onSpacerIndexChanged(SpacerIndexChangedEvent event) {
+                // remove old index and add new index
+                visibleDetails.remove(event.getOldIndex());
+                visibleDetails.add(event.getNewIndex());
+            }
+        });
+
         // Sink header events and key events
         sinkEvents(getHeader().getConsumedEvents());
         sinkEvents(Arrays.asList(BrowserEvents.KEYDOWN, BrowserEvents.KEYUP,
@@ -7266,6 +7314,9 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
                     @Override
                     public void dataRemoved(int firstIndex, int numberOfItems) {
+                        for (int i = 0; i < numberOfItems; ++i) {
+                            visibleDetails.remove(firstIndex + i);
+                        }
                         escalator.getBody().removeRows(firstIndex,
                                 numberOfItems);
                         Range removed = Range.withLength(firstIndex,
@@ -7782,8 +7833,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             return;
         }
 
-        Element e = Element.as(target);
-        RowContainer container = escalator.findRowContainer(e);
+        Element element = Element.as(target);
+        RowContainer container = escalator.findRowContainer(element);
         Cell cell;
 
         if (container == null) {
@@ -7795,23 +7846,32 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             } else {
                 // Click might be in an editor cell, should still map.
                 if (editor.editorOverlay != null
-                        && editor.editorOverlay.isOrHasChild(e)) {
+                        && editor.editorOverlay.isOrHasChild(element)) {
                     container = escalator.getBody();
                     int rowIndex = editor.getRow();
-                    int colIndex = editor.getElementColumn(e);
+                    int colIndex = editor.getElementColumn(element);
 
                     if (colIndex < 0) {
                         // Click in editor, but not for any column.
                         return;
                     }
 
-                    TableCellElement cellElement = container
-                            .getRowElement(rowIndex).getCells()
-                            .getItem(colIndex);
+                    try {
+                        TableCellElement cellElement = container
+                                .getRowElement(rowIndex).getCells()
+                                .getItem(colIndex);
 
-                    cell = new Cell(rowIndex, colIndex, cellElement);
+                        cell = new Cell(rowIndex, colIndex, cellElement);
+                    } catch (IllegalStateException exception) {
+                        // IllegalStateException may occur if user has scrolled
+                        // Grid so
+                        // that Escalator has updated, and row under Editor is
+                        // no longer
+                        // there
+                        return;
+                    }
                 } else {
-                    if (escalator.getElement().isOrHasChild(e)) {
+                    if (escalator.getElement().isOrHasChild(element)) {
                         eventCell.set(new Cell(-1, -1, null), Section.BODY);
                         // Fire native events.
                         super.onBrowserEvent(event);
@@ -7820,7 +7880,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 }
             }
         } else {
-            cell = container.getCell(e);
+            cell = container.getCell(element);
             if (eventType.equals(BrowserEvents.MOUSEDOWN)) {
                 cellOnPrevMouseDown = cell;
             } else if (cell == null && eventType.equals(BrowserEvents.CLICK)) {
@@ -8031,7 +8091,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             if (!event.getCell().isHeader()) {
                 return;
             }
-            if (event.getCell().getColumnIndex() < getFrozenColumnCount()) {
+            int offset = 0; // apply offset depending on selection column, see
+                            // #10546
+            if (getSelectionColumn().isPresent()) {
+                offset = -1;
+            }
+            if (event.getCell().getColumnIndex()
+                    + offset < getFrozenColumnCount()) {
                 return;
             }
 
@@ -8853,6 +8919,19 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     }
 
     /**
+     * Adds a spacer index changed handler to the underlying escalator.
+     *
+     * @param handler
+     *            the handler to be called when a spacer's index changes
+     * @return the registration object with which the handler can be removed
+     * @since 8.9
+     */
+    public HandlerRegistration addSpacerIndexChangedHandler(
+            SpacerIndexChangedHandler handler) {
+        return escalator.addHandler(handler, SpacerIndexChangedEvent.TYPE);
+    }
+
+    /**
      * Adds a low-level DOM event handler to this Grid. The handler is inserted
      * into the given position in the list of handlers. The handlers are invoked
      * in order. If the
@@ -9274,17 +9353,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 recalculateColumnWidths();
             }
 
-            if (getEscalatorInnerHeight() != autoColumnWidthsRecalculator.lastCalculatedInnerHeight) {
-                Scheduler.get().scheduleFinally(() -> {
-                    // Trigger re-calculation of all row positions.
-                    RowContainer.BodyRowContainer body = getEscalator()
-                            .getBody();
-                    if (!body.isAutodetectingRowHeightLater()) {
-                        body.setDefaultRowHeight(body.getDefaultRowHeight());
-                    }
-                });
-            }
-
             // Vertical resizing could make editor positioning invalid so it
             // needs to be recalculated on resize
             if (isEditorActive()) {
@@ -9514,15 +9582,30 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
          * wrong.
          *
          * see GridSpacerUpdater.init for implementation details.
+         *
+         * The order of operations isn't entirely stable. Sometimes Escalator
+         * knows about the spacer visibility updates first and doesn't need
+         * updating again but Grid's visibleDetails set still does.
          */
 
         boolean isVisible = isDetailsVisible(rowIndex);
-        if (visible && !isVisible) {
-            escalator.getBody().setSpacer(rowIndex, DETAILS_ROW_INITIAL_HEIGHT);
-            visibleDetails.add(rowIndexInteger);
-        } else if (!visible && isVisible) {
-            escalator.getBody().setSpacer(rowIndex, -1);
-            visibleDetails.remove(rowIndexInteger);
+        boolean isVisibleInEscalator = escalator.getBody()
+                .spacerExists(rowIndex);
+        if (visible) {
+            if (!isVisibleInEscalator) {
+                escalator.getBody().setSpacer(rowIndex,
+                        DETAILS_ROW_INITIAL_HEIGHT);
+            }
+            if (!isVisible) {
+                visibleDetails.add(rowIndexInteger);
+            }
+        } else {
+            if (isVisibleInEscalator) {
+                escalator.getBody().setSpacer(rowIndex, -1);
+            }
+            if (isVisible) {
+                visibleDetails.remove(rowIndexInteger);
+            }
         }
     }
 

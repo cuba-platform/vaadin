@@ -104,6 +104,11 @@ public class EscalatorProxy extends Escalator {
         }
 
         @Override
+        public boolean spacerExists(int rowIndex) {
+            return rowContainer.spacerExists(rowIndex);
+        }
+
+        @Override
         public void setSpacerUpdater(SpacerUpdater spacerUpdater)
                 throws IllegalArgumentException {
             rowContainer.setSpacerUpdater(spacerUpdater);
@@ -119,6 +124,11 @@ public class EscalatorProxy extends Escalator {
                 Consumer<List<TableRowElement>> consumer) {
             throw new UnsupportedOperationException(
                     "setNewRowCallback is not supported");
+        }
+
+        @Override
+        public void updateRowPositions(int index, int numberOfRows) {
+            rowContainer.updateRowPositions(index, numberOfRows);
         }
     }
 

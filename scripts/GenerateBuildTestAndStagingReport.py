@@ -13,6 +13,7 @@ parser.add_argument("buildId", type=str, help="ID of the build to generate this 
 
 parser.add_argument("stagingRepoUrl", type=str, help="URL to the staging repository")
 args = parser.parse_args()
+print("stagingRepoURL" + args.stagingRepoUrl)
 
 buildResultUrl = "http://{}/viewLog.html?buildId={}&tab=buildResultsDiv&buildTypeId={}".format(args.teamcityUrl, args.buildId, args.buildTypeId)
 
@@ -96,6 +97,9 @@ def getAllowedArtifactPaths(allowedArtifacts):
 def checkStagingContents(url, allowedArtifacts):
     dirs = dirTree(url)
     allowedDirs = getAllowedArtifactPaths(allowedArtifacts)
+    print(dirs)
+    print("~~~~~~~~~~~~~")
+    print(allowedDirs)
     return set(dirs) == set(allowedDirs)
 
 def getStagingContentsHtml(repoUrl, allowedArtifacts):

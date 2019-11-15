@@ -93,6 +93,12 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         }
 
         @Override
+        public void updateValueWithDelay(String newDateString,
+                Map<String, Integer> resolutions) {
+            updateInternal(newDateString, resolutions);
+        }
+
+        @Override
         public void focus() {
             fireEvent(new FocusEvent(AbstractDateField.this));
         }
