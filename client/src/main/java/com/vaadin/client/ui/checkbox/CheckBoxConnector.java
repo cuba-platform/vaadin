@@ -89,9 +89,8 @@ public class CheckBoxConnector extends AbstractFieldConnector
         getWidget().setAriaInvalid(getState().errorMessage != null);
 
         getWidget().setAriaRequired(isRequiredIndicatorVisible());
-        if (isReadOnly()) {
-            getWidget().setEnabled(false);
-        }
+        // Haulmont API
+        updateWidgetReadOnlyState();
 
         if (getWidget().icon != null) {
             getWidget().getElement().removeChild(getWidget().icon.getElement());
@@ -146,6 +145,13 @@ public class CheckBoxConnector extends AbstractFieldConnector
             getRpcProxy(CheckBoxServerRpc.class).setChecked(getState().checked,
                     details);
             getConnection().sendPendingVariableChanges();
+        }
+    }
+
+    // Haulmont API
+    protected void updateWidgetReadOnlyState() {
+        if (isReadOnly()) {
+            getWidget().setEnabled(false);
         }
     }
 
