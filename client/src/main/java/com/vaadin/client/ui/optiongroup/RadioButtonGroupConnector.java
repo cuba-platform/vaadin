@@ -86,6 +86,12 @@ public class RadioButtonGroupConnector
 
     @OnStateChange("readOnly")
     void updateWidgetReadOnly() {
+        // Haulmont API
+        updateWidgetReadOnlyState();
+    }
+
+    // Haulmont API
+    protected void updateWidgetReadOnlyState() {
         getWidget().setEnabled(isEnabled() && !isReadOnly());
     }
 
