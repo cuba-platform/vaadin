@@ -6090,6 +6090,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                     break;
                 }
 
+                addAdditionalElementsAndStyles(staticRow, cell);
+
                 // XXX: Should add only once in preAttach/postAttach or when
                 // resizable status changes
                 // Only add resize handles to default header row for now
@@ -6267,7 +6269,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         // Haulmont API
         protected void addAdditionalData(StaticRow<?> staticRow,
                 FlyweightCell cell) {
+        }
 
+        // Haulmont API
+        protected void addAdditionalElementsAndStyles(StaticRow<?> staticRow,
+                FlyweightCell cell) {
         }
 
         private void addAriaLabelToHeaderRow(FlyweightCell cell) {
@@ -6320,9 +6326,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 cellElement.setAttribute("aria-sort", "descending");
             }
 
-            // Haulmont API
-            afterSortingIndicatorAdded(cell);
-
             int sortIndex = Grid.this.getSortOrder().indexOf(sortingOrder);
             if (sortIndex > -1 && Grid.this.getSortOrder().size() > 1) {
                 // Show sort order indicator if column is
@@ -6335,10 +6338,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
             if (!sortedBefore) {
                 verifyColumnWidth(column);
             }
-        }
-
-        // Haulmont API
-        protected void afterSortingIndicatorAdded(FlyweightCell cell) {
         }
 
         /**
@@ -8010,7 +8009,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
     };
 
-    private abstract class AbstractGridEventHandler
+    // Haulmont API dependency
+    protected abstract class AbstractGridEventHandler
             implements GridEventHandler<T> {
 
         @Override
