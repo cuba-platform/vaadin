@@ -629,6 +629,11 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         return widgetset;
     }
 
+    // Haulmont API
+    protected String getMainDivAdditionalClassName(BootstrapContext context) {
+        return null;
+    }
+
     /**
      * Method to write the div element into which that actual Vaadin application
      * is rendered.
@@ -660,6 +665,10 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         mainDiv.addClass(context.getThemeName());
         mainDiv.addClass(
                 context.getUIClass().getSimpleName().toLowerCase(Locale.ROOT));
+        String className = getMainDivAdditionalClassName(context);
+        if (className != null && !className.isEmpty()) {
+            mainDiv.addClass(className);
+        }
         if (style != null && !style.isEmpty()) {
             mainDiv.attr("style", style);
         }
