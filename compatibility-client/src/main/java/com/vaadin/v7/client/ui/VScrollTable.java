@@ -1432,6 +1432,10 @@ public class VScrollTable extends FlowPanel
                 if (firstvisibleOnLastPage > -1) {
                     scrollBodyPanel.setScrollPosition(
                             measureRowHeightOffset(firstvisibleOnLastPage));
+                // Haulmont API
+                } else if (isScrollToLastItem()) {
+                    scrollBodyPanel.setScrollPosition(
+                            measureRowHeightOffset(firstvisible + 1));
                 } else {
                     scrollBodyPanel.setScrollPosition(
                             measureRowHeightOffset(firstvisible));
@@ -1440,6 +1444,11 @@ public class VScrollTable extends FlowPanel
             disableLazyScroller();
         }
     };
+
+    // Haulmont API
+    protected boolean isScrollToLastItem() {
+        return false;
+    }
 
     /** For internal use only. May be removed or replaced in the future. */
     public void updateFirstVisibleAndScrollIfNeeded(UIDL uidl) {
