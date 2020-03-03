@@ -16,6 +16,8 @@
 
 package com.vaadin.client.ui;
 
+import static com.vaadin.client.DateTimeService.asTwoDigits;
+
 import com.google.gwt.aria.client.Id;
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.aria.client.SelectedValue;
@@ -62,8 +64,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.vaadin.client.DateTimeService.asTwoDigits;
 
 /**
  * Abstract calendar panel to show and select a date using a resolution. The
@@ -964,7 +964,14 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            resolution of the calendar is changed and no date has been
      *            selected.
      */
+    @SuppressWarnings("rawtypes")
     public void renderCalendar(boolean updateDate) {
+        // Haulmont API cherry-picked from #11879, #11895
+        if (parent instanceof VAbstractPopupCalendar
+                && !((VAbstractPopupCalendar) parent).popup.isShowing()) {
+            // a popup that isn't open cannot possibly need a focus change event
+            updateDate = false;
+        }
         doRenderCalendar(updateDate);
 
         initialRenderDone = true;
@@ -987,11 +994,16 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 getDateField().getStylePrimaryName() + "-calendarpanel");
 
         if (focusedDate == null) {
-            Date now = new Date();
+            // Haulmont API cherry-picked from #11879
+            Date date = getDate();
+            if (date == null) {
+                date = new Date();
+            }
             // focusedDate must have zero hours, mins, secs, millisecs
-            focusedDate = new FocusedDate(now.getYear(), now.getMonth(),
-                    now.getDate());
-            displayedMonth = new FocusedDate(now.getYear(), now.getMonth(), 1);
+            focusedDate = new FocusedDate(date.getYear(), date.getMonth(),
+                    date.getDate());
+            displayedMonth = new FocusedDate(date.getYear(), date.getMonth(),
+                    1);
         }
 
         if (updateDate && !isDay(getResolution())
