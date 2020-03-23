@@ -698,8 +698,6 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
             eventRangeStart = -1;
             cancelRangeSelect();
 
-            // Haulmont API
-            handleClick(event);
         }
     }
 
@@ -744,10 +742,6 @@ public class DateCell extends FocusableComplexPanel implements MouseDownHandler,
         }
 
         event.preventDefault();
-    }
-
-    // Haulmont API
-    protected void handleClick(MouseUpEvent event) {
     }
 
     public void cancelRangeSelect() {
