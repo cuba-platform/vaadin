@@ -491,7 +491,7 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
 
             } else if (calendar.getEventClickListener() != null) {
                 CalendarEvent e = getEventByWidget(mel);
-                calendar.getEventClickListener().eventClick(e);
+                fireEventClickEvent(e); //Haulmont API
             }
 
             moveEvent = null;
@@ -502,13 +502,25 @@ public class SimpleDayCell extends FocusableFlowPanel implements MouseUpHandler,
         } else if (w instanceof Label && labelMouseDown) {
             cleanMotionGrigSelection();  //Haulmont API
             String clickedDate = calendar.getDateFormat().format(date);
-            if (calendar.getDateClickListener() != null) {
-                calendar.getDateClickListener().dateClick(clickedDate);
-            }
+            fireDateClickEvent(clickedDate); //Haulmont API
         }
         monthEventMouseDown = false;
         labelMouseDown = false;
         clickedWidget = null;
+    }
+
+    //Haulmont API
+    protected void fireEventClickEvent(CalendarEvent event) {
+        if (calendar.getEventClickListener() != null) {
+            calendar.getEventClickListener().eventClick(event);
+        }
+    }
+
+    //Haulmont API
+    protected void fireDateClickEvent(String clickedDate) {
+        if (calendar.getDateClickListener() != null) {
+            calendar.getDateClickListener().dateClick(clickedDate);
+        }
     }
 
     //Haulmont API
