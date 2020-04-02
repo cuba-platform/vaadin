@@ -129,11 +129,16 @@ public class WeekGrid extends SimplePanel {
     }
 
     public void addDate(Date d) {
-        final DateCell dc = new DateCell(this, d);
+        final DateCell dc = createDateCell(this, d);
         dc.setDisabled(isDisabled());
         dc.setHorizontalSized(isHorizontalScrollable() || width < 0);
         dc.setVerticalSized(isVerticalScrollable());
         content.add(dc);
+    }
+
+    // Haulmont API
+    protected DateCell createDateCell(WeekGrid parent, Date date) {
+        return new DateCell(parent, date);
     }
 
     /**
