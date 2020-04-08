@@ -257,7 +257,8 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                         Widget widget = days.getWidget(i, j);
                         if (widget instanceof VAbstractCalendarPanel.Day) {
                             Day curday = (Day) widget;
-                            if (curday.getDate().equals(date)) {
+                            // Haulmont API
+                            if (isSameDay(curday.getDate(), date)) {
                                 curday.addStyleDependentName(CN_FOCUSED);
                                 focusedDay = curday;
 
@@ -374,7 +375,8 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 Widget widget = days.getWidget(i, j);
                 if (widget instanceof VAbstractCalendarPanel.Day) {
                     Day curday = (Day) widget;
-                    if (curday.getDate().equals(date)) {
+                    // Haulmont API
+                    if (isSameDay(curday.getDate(), date)) {
                         curday.addStyleDependentName(CN_SELECTED);
                         selectedDay = curday;
                         Roles.getGridcellRole().setAriaSelectedState(
@@ -384,6 +386,11 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 }
             }
         }
+    }
+
+    // Haulmont API
+    protected boolean isSameDay(Date currdayDate, Date date) {
+        return currdayDate.equals(date);
     }
 
     /**
@@ -880,16 +887,19 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                     day.addStyleDependentName(CN_OUTSIDE_RANGE);
                 }
 
-                if (curr.equals(selectedDate)) {
+                // Haulmont API
+                if (isSameDay(curr, selectedDate)) {
                     day.addStyleDependentName(CN_SELECTED);
                     Roles.getGridcellRole().setAriaSelectedState(
                             day.getElement(), SelectedValue.TRUE);
                     selectedDay = day;
                 }
-                if (curr.equals(today)) {
+                // Haulmont API
+                if (isSameDay(curr, today)) {
                     day.addStyleDependentName(CN_TODAY);
                 }
-                if (curr.equals(focusedDate)) {
+                // Haulmont API
+                if (isSameDay(curr, focusedDate)) {
                     focusedDay = day;
                     if (hasFocus) {
                         day.addStyleDependentName(CN_FOCUSED);
