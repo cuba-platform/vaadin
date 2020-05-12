@@ -4054,10 +4054,12 @@ public class VScrollTable extends FlowPanel
         public void onBrowserEvent(Event event) {
             if (enabled) {
                 if (event.getEventTarget().cast() == columnSelector) {
-                    final int left = DOM.getAbsoluteLeft(columnSelector);
-                    final int top = DOM.getAbsoluteTop(columnSelector)
+                    WidgetUtil.TextRectangle clientRect = WidgetUtil
+                            .getBoundingClientRect(columnSelector);
+                    final int left = (int) clientRect.getLeft();
+                    final int top = (int) (clientRect.getTop()
                             + DOM.getElementPropertyInt(columnSelector,
-                                    "offsetHeight");
+                                    "offsetHeight"));
                     final VContextMenu columnSelectorMenu = client.getContextMenu();
                     new ColumnSelectorMenuDetails(columnSelectorMenu);
                     columnSelectorMenu.showAt(this, left, top);
@@ -6645,15 +6647,15 @@ public class VScrollTable extends FlowPanel
 
                         if (targetCellOrRowFound) {
                             setRowFocus(this);
-                            ensureFocus();
                             if (dragmode != 0 && (event
                                     .getButton() == NativeEvent.BUTTON_LEFT)) {
+                                ensureFocus();
                                 startRowDrag(event, type, targetTdOrTr);
 
                             } else if (event.getCtrlKey() || event.getShiftKey()
                                     || event.getMetaKey()
                                             && isMultiSelectModeDefault()) {
-
+                                ensureFocus();
                                 // Prevent default text selection in Firefox
                                 event.preventDefault();
 

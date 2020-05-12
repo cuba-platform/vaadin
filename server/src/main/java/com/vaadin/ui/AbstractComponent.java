@@ -910,6 +910,26 @@ public abstract class AbstractComponent extends AbstractClientConnector
     /*
      * (non-Javadoc)
      *
+     * @see com.vaadin.server.Sizeable#setWidthFull()
+     */
+    @Override
+    public void setWidthFull() {
+        setWidth(100, Unit.PERCENTAGE);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.vaadin.server.Sizeable#setHeightFull()
+     */
+    @Override
+    public void setHeightFull() {
+        setHeight(100, Unit.PERCENTAGE);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see com.vaadin.server.Sizeable#setSizeUndefined()
      */
     @Override

@@ -49,7 +49,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.DateTimeService;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.aria.AriaHelper;
@@ -772,8 +771,18 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
             return true;
         }
 
+        // If dateStrResolution has more year digits than rangeEnd, we need
+        // to pad it in order to be lexicographically compatible
         String dateStrResolution = dateStrResolution(date, minResolution);
-        return rangeEnd.substring(0, dateStrResolution.length())
+        String paddedEnd = rangeEnd.substring(0);
+        int yearDigits = dateStrResolution.indexOf("-");
+        if (yearDigits == -1) {
+            yearDigits = dateStrResolution.length();
+        }
+        while (paddedEnd.indexOf("-") < yearDigits) {
+            paddedEnd = "0" + paddedEnd;
+        }
+        return paddedEnd.substring(0, dateStrResolution.length())
                 .compareTo(dateStrResolution) >= 0;
     }
 
@@ -976,7 +985,6 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      */
     @SuppressWarnings("rawtypes")
     public void renderCalendar(boolean updateDate) {
-        // Haulmont API cherry-picked from #11879, #11895
         if (parent instanceof VAbstractPopupCalendar
                 && !((VAbstractPopupCalendar) parent).popup.isShowing()) {
             // a popup that isn't open cannot possibly need a focus change event
@@ -1004,7 +1012,6 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 getDateField().getStylePrimaryName() + "-calendarpanel");
 
         if (focusedDate == null) {
-            // Haulmont API cherry-picked from #11879
             Date date = getDate();
             if (date == null) {
                 date = new Date();
@@ -2137,7 +2144,14 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      */
     public void setRangeEnd(String newRangeEnd) {
         if (!SharedUtil.equals(rangeEnd, newRangeEnd)) {
-            rangeEnd = newRangeEnd;
+            // Dates with year 10000 or more has + prefix, which is not
+            // compatible
+            // with format returned by dateStrResolution method
+            if (newRangeEnd.startsWith("+")) {
+                rangeEnd = newRangeEnd.substring(1);
+            } else {
+                rangeEnd = newRangeEnd;
+            }
             if (initialRenderDone) {
                 // Dynamic updates to the range needs to render the calendar to
                 // update the element stylenames

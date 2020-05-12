@@ -38,13 +38,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -738,6 +736,13 @@ public class VaadinServlet extends HttpServlet implements Constants {
     private static boolean scssCompileWarWarningEmitted = false;
 
     /**
+     * Pattern for matching request paths that start with /VAADIN/, multiple
+     * slashes allowed on either side.
+     */
+    private static Pattern staticFileRequestPathPatternVaadin = Pattern
+            .compile("^/+VAADIN/.*");
+
+    /**
      * Returns the default theme. Must never return null.
      *
      * @return
@@ -1326,16 +1331,44 @@ public class VaadinServlet extends HttpServlet implements Constants {
      * @since 8.0
      */
     protected String getStaticFilePath(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo();
-        if (pathInfo == null) {
+        if (request.getPathInfo() == null) {
             return null;
+        }
+        String decodedPath = null;
+        String contextPath = null;
+        try {
+            // pathInfo should be already decoded, but some containers do not
+            // decode it, hence we use getRequestURI instead.
+            decodedPath = URLDecoder.decode(request.getRequestURI(),
+                    StandardCharsets.UTF_8.name());
+            contextPath = URLDecoder.decode(request.getContextPath(),
+                    StandardCharsets.UTF_8.name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("An error occurred during decoding URL.",
+                    e);
+        }
+        // Possible context path needs to be removed
+        String filePath = decodedPath.substring(contextPath.length());
+        String servletPath = request.getServletPath();
+        // Possible servlet path needs to be removed
+        if (!servletPath.isEmpty() && !servletPath.equals("/VAADIN")
+                && filePath.startsWith(servletPath)) {
+            filePath = filePath.substring(servletPath.length());
         }
         // Servlet mapped as /* serves at /VAADIN
         // Servlet mapped as /foo/bar/* serves at /foo/bar/VAADIN
-        if (pathInfo.startsWith("/VAADIN/")) {
-            return pathInfo;
+
+        // Matches request paths /VAADIN/*, //VAADIN/* etc.
+        if (staticFileRequestPathPatternVaadin.matcher(filePath).matches()) {
+            // Remove any extra slashes from the beginning,
+            // later occurrences don't interfere
+            while (filePath.startsWith("//")) {
+                filePath = filePath.substring(1);
+            }
+            return filePath;
         }
-        String servletPrefixedPath = request.getServletPath() + pathInfo;
+
+        String servletPrefixedPath = servletPath + filePath;
         // Servlet mapped as /VAADIN/*
         if (servletPrefixedPath.startsWith("/VAADIN/")) {
             return servletPrefixedPath;

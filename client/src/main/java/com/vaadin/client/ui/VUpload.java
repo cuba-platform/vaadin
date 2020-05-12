@@ -33,6 +33,7 @@ import com.vaadin.client.ConnectorMap;
 import com.vaadin.client.StyleConstants;
 import com.vaadin.client.ui.upload.UploadConnector;
 import com.vaadin.client.ui.upload.UploadIFrameOnloadStrategy;
+import com.vaadin.shared.EventId;
 import com.vaadin.shared.ui.upload.UploadServerRpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -259,6 +260,16 @@ public class VUpload extends SimplePanel {
         if (isImmediateMode()) {
             fu.sinkEvents(Event.ONCHANGE);
         }
+        fu.addChangeHandler(event -> {
+            if (client != null) {
+                UploadConnector connector = ((UploadConnector) ConnectorMap
+                        .get(client).getConnector(VUpload.this));
+                if (connector.hasEventListener(EventId.CHANGE)) {
+                    connector.getRpcProxy(UploadServerRpc.class)
+                            .change(fu.getFilename());
+                }
+            }
+        });
     }
 
     /**
