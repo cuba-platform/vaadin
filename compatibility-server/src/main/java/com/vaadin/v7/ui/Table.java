@@ -2268,11 +2268,6 @@ public class Table extends AbstractSelect implements Action.Container,
             }
         }
 
-        GeneratedRow generatedRow = rowGenerator != null
-                ? rowGenerator.generateRow(this, id)
-                : null;
-        cells[CELL_GENERATED_ROW][i] = generatedRow;
-
         // Haulmont API dependency
         if (!isItemNeedsToRefreshRendered(id))
             return;
@@ -2285,7 +2280,7 @@ public class Table extends AbstractSelect implements Action.Container,
             }
             Property<?> p = null;
             Object value = "";
-            boolean isGeneratedRow = generatedRow != null;
+            boolean isGeneratedRow = rowGenerator != null;
             boolean isGeneratedColumn = columnGenerators.containsKey(colids[j]);
             boolean isGenerated = isGeneratedRow || isGeneratedColumn;
 
@@ -2298,83 +2293,90 @@ public class Table extends AbstractSelect implements Action.Container,
                 }
             }
 
-            if (isGeneratedRow) {
-                if (generatedRow.isSpanColumns() && j > 0) {
-                    value = null;
-                } else if (generatedRow.isSpanColumns() && j == 0
-                        && generatedRow.getValue() instanceof Component) {
-                    value = generatedRow.getValue();
-                } else if (generatedRow.getText().length > j) {
-                    value = generatedRow.getText()[j];
-                }
-            } else {
-                // check if current pageBuffer already has row
-                int index = firstIndex + i;
-                if (p != null || isGenerated) {
-                    int indexInOldBuffer = index - pageBufferFirstIndex;
-                    if (index < firstIndexNotInCache
-                            && index >= pageBufferFirstIndex
-                            && pageBuffer[CELL_GENERATED_ROW][indexInOldBuffer] == null
-                            && id.equals(
-                                    pageBuffer[CELL_ITEMID][indexInOldBuffer])) {
-                        // we already have data in our cache,
-                        // recycle it instead of fetching it via
-                        // getValue/getPropertyValue
-                        value = pageBuffer[CELL_FIRSTCOL + j][indexInOldBuffer];
-                        if (!isGeneratedColumn && iscomponent[j]
-                                || !(value instanceof Component)) {
+            // check if current pageBuffer already has row
+            int index = firstIndex + i;
+            if (p != null || isGenerated) {
+                int indexInOldBuffer = index - pageBufferFirstIndex;
+                if (index < firstIndexNotInCache
+                        && index >= pageBufferFirstIndex
+                        && id.equals(
+                                pageBuffer[CELL_ITEMID][indexInOldBuffer])) {
+                    // we already have data in our cache,
+                    // recycle it instead of fetching it via
+                    // getValue/getPropertyValue
+                    cells[CELL_GENERATED_ROW][i] = pageBuffer[CELL_GENERATED_ROW][indexInOldBuffer];
+                    value = pageBuffer[CELL_FIRSTCOL + j][indexInOldBuffer];
+                    if (!isGeneratedColumn && iscomponent[j]
+                            || !(value instanceof Component)) {
+                        listenProperty(p, oldListenedProperties);
+                    }
+                } else {
+                    if (isGeneratedRow) {
+                        GeneratedRow generatedRow = (GeneratedRow) cells[CELL_GENERATED_ROW][i];
+                        if (generatedRow == null) {
+                            generatedRow = rowGenerator.generateRow(this, cells[CELL_ITEMID][i]);
+                            cells[CELL_GENERATED_ROW][i] = generatedRow;
+                        }
+                        if (generatedRow.isSpanColumns()) {
+                            if (j == 0) {
+                                value = generatedRow.getValue();
+                            } else {
+                                value = null;
+                            }
+                        } else {
+                            String[] text = generatedRow.getText();
+                            if (text != null && text.length > j) {
+                                value = text[j];
+                            }
+                        }
+                    } else if (isGeneratedColumn) {
+                        ColumnGenerator cg = columnGenerators
+                                .get(colids[j]);
+                        try {
+                            value = cg.generateCell(this, id, colids[j]);
+                        } catch (Exception e) {
+                            exceptionsDuringCachePopulation.add(e);
+                            value = null;
+                        }
+                        if (value != null && !(value instanceof Component)
+                                && !(value instanceof String)) {
+                            // Avoid errors if a generator returns
+                            // something
+                            // other than a Component or a String
+                            value = value.toString();
+                        }
+                    } else if (iscomponent[j]) {
+                        try {
+                            value = p.getValue();
+                        } catch (Exception e) {
+                            exceptionsDuringCachePopulation.add(e);
+                            value = null;
+                        }
+                        listenProperty(p, oldListenedProperties);
+                    } else if (p != null) {
+                        try {
+                            value = getPropertyValue(id, colids[j], p);
+                        } catch (Exception e) {
+                            exceptionsDuringCachePopulation.add(e);
+                            value = null;
+                        }
+                        /*
+                         * If returned value is Component (via fieldfactory
+                         * or overridden getPropertyValue) we expect it to
+                         * listen property value changes. Otherwise if
+                         * property emits value change events, table will
+                         * start to listen them and refresh content when
+                         * needed.
+                         */
+                        if (!(value instanceof Component)) {
                             listenProperty(p, oldListenedProperties);
                         }
                     } else {
-                        if (isGeneratedColumn) {
-                            ColumnGenerator cg = columnGenerators
-                                    .get(colids[j]);
-                            try {
-                                value = cg.generateCell(this, id, colids[j]);
-                            } catch (Exception e) {
-                                exceptionsDuringCachePopulation.add(e);
-                                value = null;
-                            }
-                            if (value != null && !(value instanceof Component)
-                                    && !(value instanceof String)) {
-                                // Avoid errors if a generator returns
-                                // something
-                                // other than a Component or a String
-                                value = value.toString();
-                            }
-                        } else if (iscomponent[j]) {
-                            try {
-                                value = p.getValue();
-                            } catch (Exception e) {
-                                exceptionsDuringCachePopulation.add(e);
-                                value = null;
-                            }
-                            listenProperty(p, oldListenedProperties);
-                        } else if (p != null) {
-                            try {
-                                value = getPropertyValue(id, colids[j], p);
-                            } catch (Exception e) {
-                                exceptionsDuringCachePopulation.add(e);
-                                value = null;
-                            }
-                            /*
-                             * If returned value is Component (via fieldfactory
-                             * or overridden getPropertyValue) we expect it to
-                             * listen property value changes. Otherwise if
-                             * property emits value change events, table will
-                             * start to listen them and refresh content when
-                             * needed.
-                             */
-                            if (!(value instanceof Component)) {
-                                listenProperty(p, oldListenedProperties);
-                            }
-                        } else {
-                            try {
-                                value = getPropertyValue(id, colids[j], null);
-                            } catch (Exception e) {
-                                exceptionsDuringCachePopulation.add(e);
-                                value = null;
-                            }
+                        try {
+                            value = getPropertyValue(id, colids[j], null);
+                        } catch (Exception e) {
+                            exceptionsDuringCachePopulation.add(e);
+                            value = null;
                         }
                     }
                 }
@@ -4002,8 +4004,9 @@ public class Table extends AbstractSelect implements Action.Container,
             target.addAttribute("gen_html",
                     generatedRow.isHtmlContentAllowed());
             target.addAttribute("gen_span", generatedRow.isSpanColumns());
+            // todo: actually gen_widget is never used
             target.addAttribute("gen_widget",
-                    generatedRow.getValue() instanceof Component);
+                    cells[CELL_FIRSTCOL][indexInRowBuffer] instanceof Component);
         }
     }
 
