@@ -60,7 +60,7 @@ public class AbstractComponentState extends SharedState {
     public boolean captionAsHtml = false;
 
     // Haulmont API
-    public String cubaId = null;
+    public String jTestId = null;
 
     // Haulmont API
     public String contextHelpText = "";

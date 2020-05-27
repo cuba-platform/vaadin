@@ -675,7 +675,7 @@ public interface Component extends ClientConnector, Sizeable {
      * @param id
      *            An alphanumeric id
      */
-    public void setCubaId(String id);
+    public void setJTestId(String id);
 
     /**
      * Haulmont API
@@ -684,7 +684,7 @@ public interface Component extends ClientConnector, Sizeable {
      *
      * @return current id, null if not set
      */
-    public String getCubaId();
+    public String getJTestId();
 
     /**
      * <p>

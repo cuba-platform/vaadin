@@ -176,9 +176,9 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @see com.vaadin.ui.Component#setId(java.lang.String)
      */
     @Override
-    public void setCubaId(String cubaId) {
-        if (!Objects.equals(getState(false).cubaId, cubaId)) {
-            getState().cubaId = cubaId;
+    public void setJTestId(String jTestId) {
+        if (!Objects.equals(getState(false).jTestId, jTestId)) {
+            getState().jTestId = jTestId;
         }
     }
 
@@ -188,8 +188,8 @@ public abstract class AbstractComponent extends AbstractClientConnector
      * @see com.vaadin.ui.Component#getId()
      */
     @Override
-    public String getCubaId() {
-        return getState(false).cubaId;
+    public String getJTestId() {
+        return getState(false).jTestId;
     }
 
     /**

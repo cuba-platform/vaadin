@@ -1265,8 +1265,8 @@ public class VTabsheet extends VTabsheetBase
         tab.recalculateCaptionWidth();
 
         // Haulmont API
-        if (tabState.cubaId != null) {
-            tab.getElement().setAttribute("cuba-id", tabState.cubaId);
+        if (tabState.jTestId != null) {
+            tab.getElement().setAttribute("j-test-id", tabState.jTestId);
         }
     }
 

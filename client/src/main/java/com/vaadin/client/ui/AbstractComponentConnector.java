@@ -404,14 +404,14 @@ public abstract class AbstractComponentConnector extends AbstractConnector
                 getWidget().getElement().removeAttribute("id");
             }
         }
-        if (stateChangeEvent.hasPropertyChanged("cubaId")) {
+        if (stateChangeEvent.hasPropertyChanged("jTestId")) {
             // Haulmont API
             // Selenium UI Testing Support
-            if (getState().cubaId != null) {
-                getWidget().getElement().setAttribute("cuba-id",
-                        getState().cubaId);
+            if (getState().jTestId != null) {
+                getWidget().getElement().setAttribute("j-test-id",
+                        getState().jTestId);
             } else if (!stateChangeEvent.isInitialStateChange()) {
-                getWidget().getElement().removeAttribute("cuba-id");
+                getWidget().getElement().removeAttribute("j-test-id");
             }
         }
         Profiler.leave("AbstractComponentConnector.onStateChanged update id");
