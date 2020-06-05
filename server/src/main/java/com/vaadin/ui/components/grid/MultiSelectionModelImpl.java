@@ -431,13 +431,9 @@ public class MultiSelectionModelImpl<T> extends AbstractSelectionModel<T>
 
         DataProvider<T, ?> dataProvider = getGrid().getDataProvider();
 
-        addedItems.removeIf(item -> {
-            Object id = dataProvider.getId(item);
-            Optional<T> toRemove = removedItems.stream()
-                    .filter(i -> dataProvider.getId(i).equals(id)).findFirst();
-            toRemove.ifPresent(i -> removedItems.remove(i));
-            return toRemove.isPresent();
-        });
+        addedItems.removeIf(item ->
+        // Haulmont API
+        shouldRemoveAddedItem(item, dataProvider, removedItems));
 
         if (addedItems.stream().map(dataProvider::getId)
                 .allMatch(this::selectionContainsId)
@@ -468,6 +464,16 @@ public class MultiSelectionModelImpl<T> extends AbstractSelectionModel<T>
             removedItems.forEach(dataCommunicator::refresh);
             addedItems.forEach(dataCommunicator::refresh);
         }, userOriginated);
+    }
+
+    // Haulmont API
+    protected boolean shouldRemoveAddedItem(T item,
+            DataProvider<T, ?> dataProvider, Set<T> removedItems) {
+        Object id = dataProvider.getId(item);
+        Optional<T> toRemove = removedItems.stream()
+                .filter(i -> dataProvider.getId(i).equals(id)).findFirst();
+        toRemove.ifPresent(i -> removedItems.remove(i));
+        return toRemove.isPresent();
     }
 
     private void doUpdateSelection(Consumer<Collection<T>> handler,
