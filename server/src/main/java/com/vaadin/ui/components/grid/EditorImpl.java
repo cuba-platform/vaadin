@@ -154,12 +154,18 @@ public class EditorImpl<T> extends AbstractGridExtension<T>
                     return;
                 }
                 doClose();
-                rpc.confirmBind(true);
-                doEdit(getData(key));
+                // Haulmont API
+                doConfirmBind(rpc, key);
             }
         });
 
         setBinder(Binder.withPropertySet(propertySet));
+    }
+
+    // Haulmont API
+    protected void doConfirmBind(EditorClientRpc rpc, String key) {
+        rpc.confirmBind(true);
+        doEdit(getData(key));
     }
 
     @Override
