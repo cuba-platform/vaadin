@@ -3588,6 +3588,21 @@ public class VScrollTable extends FlowPanel
         public boolean isSorted() {
             return sorted;
         }
+
+        // Haulmont API
+        public Element getColResize() {
+            return colResizeWidget;
+        }
+
+        // Haulmont API
+        public Element getSortIndicator() {
+            return sortIndicator;
+        }
+
+        // Haulmont API
+        public Element getCaptionContainer() {
+            return captionContainer;
+        }
     }
 
     /**
@@ -3702,24 +3717,29 @@ public class VScrollTable extends FlowPanel
                      * column selector widget by shifting and resizing the
                      * caption.
                      */
-                    int offset = 0;
                     int diff = divOffset - columnTotalWidth;
-                    if (diff < columnSelectorOffset && diff > 0) {
-                        /*
-                         * If the difference is less than the column selectors
-                         * width then just offset by the difference
-                         */
-                        offset = columnSelectorOffset - diff;
-                    } else {
-                        // Else offset by the whole column selector
-                        offset = columnSelectorOffset;
-                    }
+                    // Haulmont API
+                    int offset = getOffsetForCaptionContainer(cell, diff, columnSelectorOffset);
                     lastcell.resizeCaptionContainer(offset);
                 } else {
                     cell.resizeCaptionContainer(0);
                 }
             } else {
                 cell.resizeCaptionContainer(0);
+            }
+        }
+
+        // Haulmont API
+        protected int getOffsetForCaptionContainer(HeaderCell cell, int diff, int columnSelectorOffset) {
+            if (diff < columnSelectorOffset && diff > 0) {
+                /*
+                 * If the difference is less than the column selectors
+                 * width then just offset by the difference
+                 */
+                return columnSelectorOffset - diff;
+            } else {
+                // Else offset by the whole column selector
+                return columnSelectorOffset;
             }
         }
 
