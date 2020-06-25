@@ -161,7 +161,8 @@ public class VListSelect extends Composite
         return selectedItemKeys;
     }
 
-    private void selectionEvent(Object source) {
+    // Haulmont API
+    protected void selectionEvent(Object source) {
         if (source == select) {
             // selection can change by adding and at the same time removing
             // previous keys, or by just adding (e.g. when modifier keys are
@@ -252,7 +253,8 @@ public class VListSelect extends Composite
         return enabled;
     }
 
-    private void updateEnabledState() {
+    // Haulmont API
+    protected void updateEnabledState() {
         select.setEnabled(isEnabled() && !isReadOnly());
     }
 
