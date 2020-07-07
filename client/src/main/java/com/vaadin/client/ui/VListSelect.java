@@ -262,4 +262,9 @@ public class VListSelect extends Composite
     public void focus() {
         select.setFocus(true);
     }
+
+    // Haulmont API
+    protected FastStringSet getSelectedItemKeys() {
+        return selectedItemKeys;
+    }
 }
