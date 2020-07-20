@@ -280,6 +280,12 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
     public void onKeyDown(KeyDownEvent event) {
         // delegate to closest shortcut action handler
         // throw event from the iframe forward to the shortcuthandler
+
+        // Haulmont API
+        if (!canHandleShortcut(event)) {
+            return;
+        }
+
         ShortcutActionHandler shortcutHandler = getShortcutHandlerOwner()
                 .getShortcutActionHandler();
         if (shortcutHandler != null) {
@@ -301,6 +307,11 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
             hasShortcutActionHandler = (ShortcutActionHandlerOwner) parent;
         }
         return hasShortcutActionHandler;
+    }
+
+    // Haulmont API
+    protected boolean canHandleShortcut(KeyDownEvent event) {
+        return true;
     }
 
     @Override
