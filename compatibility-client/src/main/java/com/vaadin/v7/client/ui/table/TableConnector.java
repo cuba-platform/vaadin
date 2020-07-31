@@ -439,8 +439,12 @@ public class TableConnector extends AbstractFieldConnector
 
                     // Haulmont API
                     getWidget().scheduleLayoutForChildWidgets();
+                    beforeLayout();
 
                     getLayoutManager().layoutNow();
+
+                    // Haulmont API
+                    afterLayout();
                 }
             });
         }
@@ -554,4 +558,11 @@ public class TableConnector extends AbstractFieldConnector
         return getWidget().getChildMeasurementHint();
     }
 
+    // Haulmont API
+    protected void beforeLayout() {
+    }
+
+    // Haulmont API
+    protected void afterLayout() {
+    }
 }

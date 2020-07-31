@@ -109,7 +109,8 @@ public class XhrConnection {
     public class XhrResponseHandler implements RequestCallback {
 
         private JsonObject payload;
-        private double requestStartTime;
+        // Haulmont API
+        protected double requestStartTime;
 
         public XhrResponseHandler() {
         }
@@ -160,6 +161,7 @@ public class XhrConnection {
 
             getConnectionStateHandler().xhrOk();
             getLogger().info("Received xhr message: " + responseText);
+            beforeHandlingMessage(json);
             getMessageHandler().handleMessage(json);
         }
 
@@ -173,6 +175,10 @@ public class XhrConnection {
         private void setRequestStartTime(double requestStartTime) {
             this.requestStartTime = requestStartTime;
 
+        }
+
+        // Haulmont API
+        protected void beforeHandlingMessage(ValueMap json) {
         }
     };
 
