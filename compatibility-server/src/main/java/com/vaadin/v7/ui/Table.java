@@ -1158,14 +1158,8 @@ public class Table extends AbstractSelect implements Action.Container,
         } else {
             // If the table item container does not have index, we have to
             // calculates the index by hand
-            Object id = firstItemId();
-            while (id != null && !id.equals(currentPageFirstItemId)) {
-                index++;
-                id = nextItemId(id);
-            }
-            if (id == null) {
-                index = -1;
-            }
+            // Haulmont API
+            index = findItemIndex(currentPageFirstItemId);
         }
 
         // If the search for item index was successful
@@ -1194,6 +1188,20 @@ public class Table extends AbstractSelect implements Action.Container,
         // Assures the visual refresh
         refreshRowCache();
 
+    }
+
+    // Haulmont API
+    protected int findItemIndex(Object currentPageFirstItemId) {
+        int index = -1;
+        Object id = firstItemId();
+        while (id != null && !id.equals(currentPageFirstItemId)) {
+            index++;
+            id = nextItemId(id);
+        }
+        if (id == null) {
+            index = -1;
+        }
+        return index;
     }
 
     protected int indexOfId(Object itemId) {
@@ -1524,6 +1532,9 @@ public class Table extends AbstractSelect implements Action.Container,
             newIndex = maxIndex;
         }
 
+        // Haulmont API
+        newIndex = updateNewIndexOnLastPage(newIndex, indexOnLastPage);
+
         // Refresh first item id
         if (items instanceof Container.Indexed) {
             try {
@@ -1611,6 +1622,11 @@ public class Table extends AbstractSelect implements Action.Container,
             // Assures the visual refresh
             refreshRowCache();
         }
+    }
+
+    // Haulmont API
+    protected int updateNewIndexOnLastPage(int newIndex, int indexOnLastPage) {
+        return newIndex;
     }
 
     /**
