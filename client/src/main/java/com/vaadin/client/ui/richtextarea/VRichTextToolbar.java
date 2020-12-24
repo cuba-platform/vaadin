@@ -181,7 +181,8 @@ public class VRichTextToolbar extends Composite {
      * We use an inner EventHandler class to avoid exposing event methods on the
      * RichTextToolbar itself.
      */
-    private class EventHandler
+    // Haulmont API dependency
+    protected class EventHandler
             implements ClickHandler, ChangeHandler, KeyUpHandler {
 
         @Override
@@ -283,7 +284,8 @@ public class VRichTextToolbar extends Composite {
 
     private final Images images = (Images) GWT.create(Images.class);
     private final Strings strings = (Strings) GWT.create(Strings.class);
-    private final EventHandler handler = new EventHandler();
+    // Haulmont API dependency
+    private final EventHandler handler = createEventHandler();
 
     private final RichTextArea richText;
     @SuppressWarnings("deprecation")
@@ -410,6 +412,11 @@ public class VRichTextToolbar extends Composite {
             richText.addKeyUpHandler(handler);
             richText.addClickHandler(handler);
         }
+    }
+
+    // Haulmont API dependency
+    protected EventHandler createEventHandler() {
+        return new EventHandler();
     }
 
     private ListBox createColorList(String caption) {

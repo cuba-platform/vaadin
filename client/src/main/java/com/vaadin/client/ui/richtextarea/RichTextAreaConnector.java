@@ -108,7 +108,8 @@ public class RichTextAreaConnector extends AbstractFieldConnector
         return (RichTextAreaState) super.getState();
     }
 
-    private boolean hasStateChanged(String widgetValue) {
+    // Haulmont API dependency
+    protected boolean hasStateChanged(String widgetValue) {
         return !widgetValue.equals(getState().value);
     }
 
