@@ -3368,7 +3368,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     /**
      * @see Grid#autoColumnWidthsRecalculator
      */
-    private class AutoColumnWidthsRecalculator {
+    // Haulmont API
+    protected class AutoColumnWidthsRecalculator {
         private double lastCalculatedInnerWidth = -1;
         private double lastCalculatedInnerHeight = -1;
 
@@ -3469,7 +3470,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         private boolean columnsAreGuaranteedToBeWiderThanGrid() {
-            double freeSpace = escalator.getInnerWidth();
+            // Haulmont API
+            double freeSpace = getFreeSpace();
             for (Column<?, ?> column : getVisibleColumns()) {
                 if (column.getWidth() >= 0) {
                     freeSpace -= column.getWidth();
@@ -3478,6 +3480,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 }
             }
             return freeSpace < 0;
+        }
+
+        // Haulmont API
+        protected double getFreeSpace() {
+            return escalator.getInnerWidth();
         }
 
         @SuppressWarnings("boxing")
@@ -4400,7 +4407,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      * that have calculated widths. Most probably called because
      * minwidth/maxwidth/expandratio has changed.
      */
-    private final AutoColumnWidthsRecalculator autoColumnWidthsRecalculator = new AutoColumnWidthsRecalculator();
+    // Haulmont API
+    private final AutoColumnWidthsRecalculator autoColumnWidthsRecalculator = createAutoColumnWidthsRecalculator();
+
+    // Haulmont API
+    protected AutoColumnWidthsRecalculator createAutoColumnWidthsRecalculator() {
+        return new AutoColumnWidthsRecalculator();
+    }
 
     private boolean enabled = true;
 
