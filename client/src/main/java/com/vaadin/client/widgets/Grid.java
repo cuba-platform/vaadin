@@ -5367,7 +5367,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         }
 
         // Haulmont API
-        public Column<C, T> __setHidden(boolean hidden, boolean userOriginated) {
+        public Column<C, T> setHiddenInternal(boolean hidden,
+                boolean userOriginated) {
             setHidden(hidden, userOriginated);
             return this;
         }
