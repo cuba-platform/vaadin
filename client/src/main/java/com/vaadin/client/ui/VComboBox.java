@@ -16,9 +16,18 @@
 
 package com.vaadin.client.ui;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.aria.client.Roles;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -26,17 +35,42 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.LoadEvent;
+import com.google.gwt.event.dom.client.LoadHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.i18n.client.HasDirection.Direction;
-import com.google.gwt.user.client.*;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.vaadin.client.*;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.ComputedStyle;
+import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.ui.aria.AriaHelper;
@@ -46,13 +80,13 @@ import com.vaadin.client.ui.aria.HandlesAriaRequired;
 import com.vaadin.client.ui.combobox.ComboBoxConnector;
 import com.vaadin.client.ui.menubar.MenuBar;
 import com.vaadin.client.ui.menubar.MenuItem;
+import com.vaadin.client.ui.orderedlayout.Slot;
 import com.vaadin.shared.AbstractComponentState;
 import com.vaadin.shared.ui.ComponentStateUtil;
 import com.vaadin.shared.util.SharedUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * Client side implementation of the ComboBox component.
@@ -397,10 +431,15 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
             // Add TT anchor point
             getElement().setId("VAADIN_COMBOBOX_OPTIONLIST");
 
-            leftPosition = getDesiredLeftPosition();
-            topPosition = getDesiredTopPosition();
+            // Set the default position if the popup isn't already visible,
+            // the setPopupPositionAndShow call later on can deal with any
+            // adjustments that might be needed
+            if (!popup.isShowing()) {
+                leftPosition = getDesiredLeftPosition();
+                topPosition = getDesiredTopPosition();
 
-            setPopupPosition(leftPosition, topPosition);
+                setPopupPosition(leftPosition, topPosition);
+            }
 
             int nullOffset = getNullSelectionItemShouldBeVisible() ? 1 : 0;
             boolean firstPage = currentPage == 0;
@@ -863,20 +902,89 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
                 }
             }
 
+            int comboBoxLeft = VComboBox.this.getAbsoluteLeft();
+            int comboBoxWidth = VComboBox.this.getOffsetWidth();
+            if (hasParentWithUnadjustedHorizontalPositioning()) {
+                // ComboBox itself may be incorrectly positioned, don't try to
+                // adjust horizontal popup position yet. Earlier width
+                // calculations must be performed anyway to avoid flickering.
+                if (top != getAbsoluteTop()) {
+                    // Variable 'left' still contains the original popupLeft,
+                    // 'top' has been updated, thus vertical position needs
+                    // adjusting.
+                    setPopupPosition(left, top);
+                }
+                return;
+            }
+            if (left > comboBoxLeft
+                    || offsetWidth + menuMarginBorderPaddingWidth
+                            + left < comboBoxLeft + comboBoxWidth) {
+                // Popup is positioned too far right or doesn't reach all the
+                // way to the end of the input field, filtering may have changed
+                // the popup width.
+                left = comboBoxLeft;
+            }
             if (offsetWidth + menuMarginBorderPaddingWidth + left > Window
                     .getClientWidth()) {
-                left = VComboBox.this.getAbsoluteLeft()
-                        + VComboBox.this.getOffsetWidth() - offsetWidth
+                // Popup doesn't fit the view, needs to be opened to the left
+                // instead.
+                left = comboBoxLeft + comboBoxWidth - offsetWidth
                         - (int) menuMarginBorderPaddingWidth;
-                if (left < 0) {
-                    left = 0;
-                    menu.setWidth(Window.getClientWidth() + "px");
-
-                }
+            }
+            if (left < 0) {
+                left = 0;
+                menu.setWidth(Window.getClientWidth() + "px");
             }
 
-            setPopupPosition(left, top);
+            // Only update the position if it has changed.
+            if (top != getAbsoluteTop() || left != getPopupLeft()) {
+                setPopupPosition(left, top);
+            }
             menu.scrollSelectionIntoView();
+        }
+
+        /**
+         * Checks whether there are any {@link VHorizontalLayout}s with
+         * incomplete internal position calculations among this VComboBox's
+         * parents.
+         *
+         * @return {@code true} if unadjusted parents found, {@code false}
+         *         otherwise
+         */
+        private boolean hasParentWithUnadjustedHorizontalPositioning() {
+            /*
+             * If there are any VHorizontalLayouts among this VComboBox's
+             * parents, any spacing or expand ratio may cause incorrect
+             * intermediate positioning. The status of the layout's internal
+             * positioning can be checked from the first slot's margin-left
+             * style, which will be set to 0px if no spacing or expand ratio
+             * adjustments are needed, and to a negative pixel amount if they
+             * are. If the style hasn't been set at all, calculations are still
+             * underway. Popup position shouldn't be adjusted before such
+             * calculations have been finished.
+             *
+             * VVerticalLayout has the same logic but it only affects the
+             * vertical positioning, which is irrelevant for the calculations
+             * here.
+             */
+            Widget toCheck = VComboBox.this;
+            while (toCheck != null && !(toCheck.getParent() instanceof VUI)) {
+                toCheck = toCheck.getParent();
+                if (toCheck instanceof VHorizontalLayout) {
+                    VHorizontalLayout hLayout = (VHorizontalLayout) toCheck;
+                    // because hLayout is a parent it must have at least one
+                    // child widget
+                    Widget slot = hLayout.getWidget(0);
+                    if (slot instanceof Slot && slot.getElement().getStyle()
+                            .getMarginLeft().isEmpty()) {
+                        // margin hasn't been set, layout's internal positioning
+                        // is still being adjusted and ComboBox's position may
+                        // not be final
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /**
@@ -1332,24 +1440,7 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
          * @since 7.6.4
          */
         public FilterSelectTextBox() {
-            /*-
-             * Stop the browser from showing its own suggestion popup.
-             *
-             * Using an invalid value instead of "off" as suggested by
-             * https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion
-             *
-             * Leaving the non-standard Safari options autocapitalize and
-             * autocorrect untouched since those do not interfere in the same
-             * way, and they might be useful in a combo box where new items are
-             * allowed.
-             */
-            if (BrowserInfo.get().isChrome()) {
-                // Chrome supports "off" and random number does not work with
-                // Chrome
-                getElement().setAttribute("autocomplete", "off");
-            } else {
-                getElement().setAttribute("autocomplete", Math.random() + "");
-            }
+            WidgetUtil.disableBrowserAutocomplete(this);
         }
 
         /**
@@ -1825,7 +1916,8 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
         if (event.getTypeInt() == Event.ONPASTE) {
             if (textInputEnabled && connector.isEnabled()
                     && !connector.isReadOnly()) {
-                filterOptions(currentPage);
+                Scheduler.get()
+                        .scheduleDeferred(() -> filterOptions(currentPage));
             }
         }
     }
@@ -1943,6 +2035,9 @@ public class VComboBox extends Composite implements Field, KeyDownHandler,
 
     /** For internal use only. May be removed or replaced in the future. */
     public void updateReadOnly() {
+        if (readonly) {
+            suggestionPopup.hide();
+        }
         debug("VComboBox: updateReadOnly()");
         tb.setReadOnly(readonly || !textInputEnabled);
     }

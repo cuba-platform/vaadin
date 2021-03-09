@@ -15,24 +15,6 @@
  */
 package com.vaadin.ui;
 
-import com.vaadin.event.MarkedAsDirtyConnectorEvent;
-import com.vaadin.event.MarkedAsDirtyListener;
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.ClientConnector;
-import com.vaadin.server.DragAndDropService;
-import com.vaadin.server.GlobalResourceHandler;
-import com.vaadin.server.LegacyCommunicationManager;
-import com.vaadin.server.StreamVariable;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.communication.ConnectorHierarchyWriter;
-import com.vaadin.shared.Registration;
-import elemental.json.Json;
-import elemental.json.JsonException;
-import elemental.json.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,6 +29,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import com.vaadin.event.MarkedAsDirtyConnectorEvent;
+import com.vaadin.event.MarkedAsDirtyListener;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.DragAndDropService;
+import com.vaadin.server.GlobalResourceHandler;
+import com.vaadin.server.LegacyCommunicationManager;
+import com.vaadin.server.StreamVariable;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.communication.ConnectorHierarchyWriter;
+import com.vaadin.shared.Registration;
+
+import elemental.json.Json;
+import elemental.json.JsonException;
+import elemental.json.JsonObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class which takes care of book keeping of {@link ClientConnector}s for a
@@ -859,10 +861,12 @@ public class ConnectorTracker implements Serializable {
         }
         Map<String, StreamVariable> nameToStreamVar = pidToNameToStreamVariable
                 .get(connectorId);
-        StreamVariable streamVar = nameToStreamVar.remove(variableName);
-        streamVariableToSeckey.remove(streamVar);
-        if (nameToStreamVar.isEmpty()) {
-            pidToNameToStreamVariable.remove(connectorId);
+        if (nameToStreamVar != null) {
+            StreamVariable streamVar = nameToStreamVar.remove(variableName);
+            streamVariableToSeckey.remove(streamVar);
+            if (nameToStreamVar.isEmpty()) {
+                pidToNameToStreamVariable.remove(connectorId);
+            }
         }
     }
 

@@ -15,11 +15,29 @@
  */
 package com.vaadin.client.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationHandle;
 import com.google.gwt.core.client.Duration;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
@@ -76,30 +94,19 @@ import com.vaadin.client.widget.escalator.SpacerUpdater;
 import com.vaadin.client.widget.escalator.events.RowHeightChangedEvent;
 import com.vaadin.client.widget.escalator.events.SpacerIndexChangedEvent;
 import com.vaadin.client.widget.escalator.events.SpacerVisibilityChangedEvent;
+import com.vaadin.client.widget.grid.events.EscalatorSizeChangeHandler;
+import com.vaadin.client.widget.grid.events.EscalatorSizeChangeHandler.EscalatorSizeChangeEvent;
 import com.vaadin.client.widget.grid.events.ScrollEvent;
 import com.vaadin.client.widget.grid.events.ScrollHandler;
+import com.vaadin.client.widget.grid.events.VerticalScrollbarVisibilityChangeHandler;
+import com.vaadin.client.widget.grid.events.VerticalScrollbarVisibilityChangeHandler.VerticalScrollbarVisibilityChangeEvent;
 import com.vaadin.client.widgets.Escalator.JsniUtil.TouchHandlerBundle;
 import com.vaadin.shared.Range;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.stream.Stream;
+import org.slf4j.LoggerFactory;
 
 /*-
 
@@ -863,8 +870,8 @@ public class Escalator extends Widget
             double headerHeight = header.getHeightOfSection();
             double vScrollbarHeight = Math.max(0,
                     tableWrapperHeight - footerHeight - headerHeight);
-            verticalScrollbar.setOffsetSize(vScrollbarHeight);
-            verticalScrollbar.setScrollSize(scrollContentHeight);
+            verticalScrollbar.setOffsetSizeAndScrollSize(vScrollbarHeight,
+                    scrollContentHeight);
 
             /*
              * If decreasing the amount of frozen columns, and scrolled to the
@@ -880,8 +887,8 @@ public class Escalator extends Widget
                             columnConfiguration.getColumnCount()));
             double frozenPixels = scrollContentWidth - unfrozenPixels;
             double hScrollOffsetWidth = tableWrapperWidth - frozenPixels;
-            horizontalScrollbar.setOffsetSize(hScrollOffsetWidth);
-            horizontalScrollbar.setScrollSize(unfrozenPixels);
+            horizontalScrollbar.setOffsetSizeAndScrollSize(hScrollOffsetWidth,
+                    unfrozenPixels);
             horizontalScrollbar.getElement().getStyle().setLeft(frozenPixels,
                     Unit.PX);
             horizontalScrollbar.setScrollPos(prevScrollPos);
@@ -1527,7 +1534,8 @@ public class Escalator extends Widget
                             Integer col = Integer.valueOf(i);
                             colWidths.put(col, width);
                         }
-                        getColumnConfiguration().setColumnWidths(colWidths);
+                        getColumnConfiguration().setColumnWidths(colWidths,
+                                true);
                     });
                 }
             }
@@ -2248,23 +2256,62 @@ public class Escalator extends Widget
 
             TableCellElement cellClone = TableCellElement
                     .as((Element) cell.cloneNode(withContent));
+            if (!withContent || columnConfiguration
+                    .getColumnWidth(cell.getCellIndex()) < 0) {
+                clearRelativeWidthContents(cellClone);
+            }
             cellClone.getStyle().clearHeight();
             cellClone.getStyle().clearWidth();
 
             cell.getParentElement().insertBefore(cellClone, cell);
             double requiredWidth = getBoundingWidth(cellClone);
-            if (BrowserInfo.get().isIE()) {
-                /*
-                 * IE browsers have some issues with subpixels. Occasionally
-                 * content is overflown even if not necessary. Increase the
-                 * counted required size by 0.01 just to be on the safe side.
-                 */
-                requiredWidth += 0.01;
+
+            if (requiredWidth > 0) {
+                // add one pixel to avoid subpixel issues
+                // (overflow, unnecessary ellipsis...)
+                requiredWidth += 1;
+                // round up to a fraction that the current browser can handle
+                requiredWidth = WidgetUtil.roundSizeUp(requiredWidth);
             }
 
             cellClone.removeFromParent();
 
             return requiredWidth;
+        }
+
+        /**
+         * Contents of an element that is configured to have relative width
+         * shouldn't be taken into consideration when measuring minimum widths.
+         * Thus any such contents within the element hierarchy need to be
+         * cleared out for accurate results. The element itself should remain,
+         * however, in case it has styles that affect the end results.
+         *
+         * @param elem
+         *            an element that might have unnecessary content that
+         *            interferes with minimum width calculations
+         */
+        private void clearRelativeWidthContents(Element elem) {
+            try {
+                String width = elem.getStyle().getWidth();
+                if (width != null && width.endsWith("%")) {
+                    if (elem.hasChildNodes()) {
+                        elem.removeAllChildren();
+                        // add a fake child so that :empty behavior doesn't
+                        // change
+                        elem.setInnerHTML("<a/>");
+                    } else {
+                        elem.setInnerHTML(null);
+                    }
+                }
+            } catch (JavaScriptException e) {
+                // no width set, move on
+            }
+            for (int i = 0; i < elem.getChildCount(); ++i) {
+                Node node = elem.getChild(i);
+                if (node instanceof Element) {
+                    clearRelativeWidthContents((Element) node);
+                }
+            }
         }
 
         /**
@@ -2450,7 +2497,7 @@ public class Escalator extends Widget
                  */
                 verticalScrollbar.setOffsetSize(
                         heightOfEscalator - header.getHeightOfSection()
-                                - footer.getHeightOfSection());
+                                - footer.getHeightOfSection() + 1);
 
                 body.verifyEscalatorCount();
                 body.spacerContainer.updateSpacerDecosVisibility();
@@ -2568,21 +2615,8 @@ public class Escalator extends Widget
 
         @Override
         protected void sectionHeightCalculated() {
-            double headerHeight = header.getHeightOfSection();
-            double footerHeight = footer.getHeightOfSection();
-            int vscrollHeight = (int) Math
-                    .floor(heightOfEscalator - headerHeight - footerHeight);
-
-            final boolean horizontalScrollbarNeeded = columnConfiguration
-                    .calculateRowWidth() > widthOfEscalator;
-            if (horizontalScrollbarNeeded) {
-                vscrollHeight -= horizontalScrollbar.getScrollbarThickness();
-            }
-
             footerDeco.getStyle().setHeight(footer.getHeightOfSection(),
                     Unit.PX);
-
-            verticalScrollbar.setOffsetSize(vscrollHeight);
         }
     }
 
@@ -4586,7 +4620,7 @@ public class Escalator extends Widget
                 // for a gap if a details row is later closed (e.g. by user)
                 final int addToBottom = Math.min(rowDiff,
                         getRowCount() - logicalTargetIndex);
-                final int addToTop = rowDiff - addToBottom;
+                final int addToTop = Math.max(rowDiff - addToBottom, 0);
 
                 if (addToTop > 0) {
                     fillAndPopulateEscalatorRowsIfNeeded(0,
@@ -4595,8 +4629,30 @@ public class Escalator extends Widget
                     updateTopRowLogicalIndex(-addToTop);
                 }
                 if (addToBottom > 0) {
-                    fillAndPopulateEscalatorRowsIfNeeded(visualTargetIndex,
-                            logicalTargetIndex, addToBottom);
+                    // take into account that rows may have got added to top as
+                    // well, affects visual but not logical indexing
+                    fillAndPopulateEscalatorRowsIfNeeded(
+                            visualTargetIndex + addToTop, logicalTargetIndex,
+                            addToBottom);
+
+                    // adding new rows due to resizing may have created a gap in
+                    // the middle, check whether the existing rows need moving
+                    double rowTop = getRowTop(oldTopRowLogicalIndex);
+                    if (rowTop > getRowTop(visualRowOrder.get(addToTop))) {
+                        for (int i = addToTop; i < visualTargetIndex; i++) {
+
+                            final TableRowElement tr = visualRowOrder.get(i);
+
+                            setRowPosition(tr, 0, rowTop);
+                            rowTop += getDefaultRowHeight();
+                            SpacerContainer.SpacerImpl spacer = spacerContainer
+                                    .getSpacer(oldTopRowLogicalIndex + i);
+                            if (spacer != null) {
+                                spacer.setPosition(0, rowTop);
+                                rowTop += spacer.getHeight();
+                            }
+                        }
+                    }
                 }
             } else if (rowDiff < 0) {
                 // rows need to be removed
@@ -5687,7 +5743,7 @@ public class Escalator extends Widget
                     Integer col = Integer.valueOf(i);
                     colWidths.put(col, width);
                 }
-                getColumnConfiguration().setColumnWidths(colWidths);
+                getColumnConfiguration().setColumnWidths(colWidths, true);
             }
 
             // Adjust scrollbar
@@ -5781,11 +5837,18 @@ public class Escalator extends Widget
         public void setColumnWidth(int index, double px)
                 throws IllegalArgumentException {
             setColumnWidths(Collections.singletonMap(Integer.valueOf(index),
-                    Double.valueOf(px)));
+                    Double.valueOf(px)), true);
         }
 
         @Override
         public void setColumnWidths(Map<Integer, Double> indexWidthMap)
+                throws IllegalArgumentException {
+            setColumnWidths(indexWidthMap, true);
+        }
+
+        @Override
+        public void setColumnWidths(Map<Integer, Double> indexWidthMap,
+                boolean recalculateElementSizes)
                 throws IllegalArgumentException {
 
             if (indexWidthMap == null) {
@@ -5816,7 +5879,9 @@ public class Escalator extends Widget
                 body.reapplyColumnWidths();
                 footer.reapplyColumnWidths();
 
-                recalculateElementSizes();
+                if (recalculateElementSizes) {
+                    recalculateElementSizes();
+                }
 
             } finally {
                 Profiler.leave(
@@ -7047,6 +7112,7 @@ public class Escalator extends Widget
 
     private final VerticalScrollbarBundle verticalScrollbar = new VerticalScrollbarBundle();
 
+    // Haulmont API
     public VerticalScrollbarBundle getVerticalScrollbar() {
         return verticalScrollbar;
     }
@@ -7251,6 +7317,29 @@ public class Escalator extends Widget
         root.appendChild(verticalScrollbar.getElement());
         verticalScrollbar.addScrollHandler(scrollHandler);
         verticalScrollbar.setScrollbarThickness(scrollbarThickness);
+        verticalScrollbar
+                .addVisibilityHandler(new ScrollbarBundle.VisibilityHandler() {
+
+                    private boolean queued = false;
+
+                    @Override
+                    public void visibilityChanged(
+                            ScrollbarBundle.VisibilityChangeEvent event) {
+                        if (queued) {
+                            return;
+                        }
+                        queued = true;
+
+                        /*
+                         * We either lost or gained a scrollbar. In either case,
+                         * we may need to update the column widths.
+                         */
+                        Scheduler.get().scheduleFinally(() -> {
+                            fireVerticalScrollbarVisibilityChangeEvent();
+                            queued = false;
+                        });
+                    }
+                });
 
         root.appendChild(horizontalScrollbar.getElement());
         horizontalScrollbar.addScrollHandler(scrollHandler);
@@ -7475,10 +7564,17 @@ public class Escalator extends Widget
 
     @Override
     public void setWidth(final String width) {
+        String oldWidth = getElement().getStyle().getProperty("width");
         if (width != null && !width.isEmpty()) {
             super.setWidth(width);
+            if (!width.equals(oldWidth)) {
+                fireEscalatorSizeChangeEvent();
+            }
         } else {
             super.setWidth(DEFAULT_WIDTH);
+            if (!DEFAULT_WIDTH.equals(oldWidth)) {
+                fireEscalatorSizeChangeEvent();
+            }
         }
 
         recalculateElementSizes();
@@ -7520,7 +7616,11 @@ public class Escalator extends Widget
         final int escalatorRowsBefore = body.visualRowOrder.size();
 
         if (height != null && !height.isEmpty()) {
+            String oldHeight = getElement().getStyle().getProperty("height");
             super.setHeight(height);
+            if (!height.equals(oldHeight)) {
+                fireEscalatorSizeChangeEvent();
+            }
         } else {
             if (getHeightMode() == HeightMode.UNDEFINED) {
                 int newHeightByRows = body.getRowCount();
@@ -7530,7 +7630,12 @@ public class Escalator extends Widget
                 }
                 return;
             } else {
+                String oldHeight = getElement().getStyle()
+                        .getProperty("height");
                 super.setHeight(DEFAULT_HEIGHT);
+                if (!DEFAULT_HEIGHT.equals(oldHeight)) {
+                    fireEscalatorSizeChangeEvent();
+                }
             }
         }
 
@@ -7737,14 +7842,11 @@ public class Escalator extends Widget
     public void scrollToRowAndSpacer(final int rowIndex,
             final ScrollDestination destination, final int padding)
             throws IllegalArgumentException {
-        // wait for the layout phase to finish
-        Scheduler.get().scheduleFinally(() -> {
-            if (rowIndex != -1) {
-                verifyValidRowIndex(rowIndex);
-            }
-            body.scrollToRowSpacerOrBoth(rowIndex, destination, padding,
-                    ScrollType.ROW_AND_SPACER);
-        });
+        if (rowIndex != -1) {
+            verifyValidRowIndex(rowIndex);
+        }
+        body.scrollToRowSpacerOrBoth(rowIndex, destination, padding,
+                ScrollType.ROW_AND_SPACER);
     }
 
     private static void validateScrollDestination(
@@ -7824,6 +7926,45 @@ public class Escalator extends Widget
         }
 
         return array;
+    }
+
+    /**
+     * FOR INTERNAL USE ONLY, MAY GET REMOVED OR MODIFIED AT ANY TIME!
+     * <p>
+     * Adds an event handler that gets notified when the visibility of the
+     * vertical scrollbar changes.
+     *
+     * @param verticalScrollbarVisibilityChangeHandler
+     *            the event handler
+     * @return a handler registration for the added handler
+     */
+    public HandlerRegistration addVerticalScrollbarVisibilityChangeHandler(
+            VerticalScrollbarVisibilityChangeHandler verticalScrollbarVisibilityChangeHandler) {
+        return addHandler(verticalScrollbarVisibilityChangeHandler,
+                VerticalScrollbarVisibilityChangeEvent.TYPE);
+    }
+
+    private void fireVerticalScrollbarVisibilityChangeEvent() {
+        fireEvent(new VerticalScrollbarVisibilityChangeEvent());
+    }
+
+    /**
+     * FOR INTERNAL USE ONLY, MAY GET REMOVED OR MODIFIED AT ANY TIME!
+     * <p>
+     * Adds an event handler that gets notified when the Escalator size changes.
+     *
+     * @param escalatorSizeChangeHandler
+     *            the event handler
+     * @return a handler registration for the added handler
+     */
+    public HandlerRegistration addEscalatorSizeChangeHandler(
+            EscalatorSizeChangeHandler escalatorSizeChangeHandler) {
+        return addHandler(escalatorSizeChangeHandler,
+                EscalatorSizeChangeEvent.TYPE);
+    }
+
+    private void fireEscalatorSizeChangeEvent() {
+        fireEvent(new EscalatorSizeChangeEvent());
     }
 
     /**

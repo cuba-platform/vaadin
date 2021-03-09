@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.vaadin</groupId>
     <artifactId>vaadin-test-widget-set-testutil</artifactId>
-    <version>8.9-SNAPSHOT</version>
+    <version>8.12-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <!-- 
-        This module does not inherit the vaadin-test on purpose. It is done 
-        so to allow installing this module as stand-alone and used when running any 
-        of the test modules without requiring everything to be installed. 
+    <!--
+        This module does not inherit the vaadin-test on purpose. It is done
+        so to allow installing this module as stand-alone and used when running any
+        of the test modules without requiring everything to be installed.
     -->
 
     <properties>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

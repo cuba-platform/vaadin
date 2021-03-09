@@ -38,6 +38,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -47,6 +48,7 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.EncodeResult;
@@ -209,7 +211,7 @@ public class Grid extends AbstractComponent
      * @since 7.5.0
      */
     @Deprecated
-    public interface ColumnVisibilityChangeListener extends Serializable {
+    public interface ColumnVisibilityChangeListener extends SerializableEventListener {
         /**
          * Called when a column has become hidden or unhidden.
          *
@@ -830,7 +832,7 @@ public class Grid extends AbstractComponent
      * @since 7.5.0
      */
     @Deprecated
-    public interface ColumnReorderListener extends Serializable {
+    public interface ColumnReorderListener extends SerializableEventListener {
 
         /**
          * Called when the columns of the grid have been reordered.
@@ -882,7 +884,7 @@ public class Grid extends AbstractComponent
      * @since 7.6
      */
     @Deprecated
-    public interface ColumnResizeListener extends Serializable {
+    public interface ColumnResizeListener extends SerializableEventListener {
 
         /**
          * Called when the columns of the grid have been resized.
@@ -3474,6 +3476,7 @@ public class Grid extends AbstractComponent
             if (caption == null) {
                 caption = ""; // Render null as empty
             }
+            caption = Jsoup.parse(caption).text();
             state.headerCaption = caption;
 
             HeaderRow row = grid.getHeader().getDefaultRow();

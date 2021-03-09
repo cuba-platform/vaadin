@@ -16,6 +16,19 @@
 
 package com.vaadin.ui;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.BlurNotifier;
@@ -24,6 +37,7 @@ import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.FieldEvents.FocusNotifier;
 import com.vaadin.event.HasUserOriginated;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.KeyMapper;
 import com.vaadin.server.Resource;
@@ -38,19 +52,6 @@ import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignException;
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * TabSheet component.
@@ -851,7 +852,8 @@ public class TabSheet extends AbstractComponentContainer
      * @since 3.0
      */
     @FunctionalInterface
-    public interface SelectedTabChangeListener extends Serializable {
+    public interface SelectedTabChangeListener
+            extends SerializableEventListener {
 
         /**
          * Selected (shown) tab in tab sheet has has been changed.

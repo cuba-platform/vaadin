@@ -381,7 +381,7 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
         BrowserInfo browser = BrowserInfo.get();
         String result = getValue();
         if (browser.isFirefox()) {
-            if ("<br>".equals(result)) {
+            if ("<br>".equals(result) || "<div><br></div>".equals(result)) {
                 result = "";
             }
         } else if (browser.isWebkit() || browser.isEdge()) {
@@ -389,7 +389,8 @@ public class VRichTextArea extends Composite implements Field, KeyPressHandler,
                 result = "";
             }
         } else if (browser.isIE()) {
-            if ("<P>&nbsp;</P>".equals(result)) {
+            if ("<P>&nbsp;</P>".equals(result)
+                    || "<p><br></p>".equals(result)) {
                 result = "";
             }
         } else if (browser.isOpera()) {

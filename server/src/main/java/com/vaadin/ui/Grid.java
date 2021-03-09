@@ -1950,13 +1950,19 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          * @param editable
          *            {@code true} if column is editable; {@code false} if not
          * @return this column
+         * @throws IllegalStateException
+         *             if editable is true and column has no editor binding or
+         *             component defined
          *
          * @see #setEditorComponent(HasValue, Setter)
          * @see #setEditorBinding(Binding)
          */
-        public Column<T, V> setEditable(boolean editable) {
-            Objects.requireNonNull(editorBinding,
-                    "Column has no editor binding or component defined");
+        public Column<T, V> setEditable(boolean editable)
+                throws IllegalStateException {
+            if (editable && editorBinding == null) {
+                throw new IllegalStateException(
+                        "Column has no editor binding or component defined");
+            }
             getState().editable = editable;
             return this;
         }
@@ -4014,6 +4020,28 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
         // The columns to remove are now at the end of the column list
         getColumns().stream().skip(columnIds.length)
                 .forEach(this::removeColumn);
+    }
+
+    /**
+     * Sets the columns and their order based on their column ids provided that
+     * collection supports preserving of the order. Columns currently in this
+     * grid that are not present in the collection of column ids are removed.
+     * This includes any column that has no id. Similarly, any new column in
+     * columns will be added to this grid. New columns can only be added for a
+     * <code>Grid</code> created using {@link Grid#Grid(Class)} or
+     * {@link #withPropertySet(PropertySet)}.
+     *
+     *
+     * @param columnIds
+     *            the column ids to set
+     *
+     * @see Column#setId(String)
+     * @see #setColumns(String...)
+     */
+    public void setColumns(Collection<String> columnIds) {
+        Objects.requireNonNull(columnIds, "columnIds can't be null");
+        String[] columns = columnIds.toArray(new String[columnIds.size()]);
+        setColumns(columns);
     }
 
     private String getGeneratedIdentifier() {

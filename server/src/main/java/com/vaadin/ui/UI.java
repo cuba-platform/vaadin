@@ -16,6 +16,24 @@
 
 package com.vaadin.ui;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.concurrent.Future;
+
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -28,14 +46,38 @@ import com.vaadin.event.UIEvents.PollListener;
 import com.vaadin.event.UIEvents.PollNotifier;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.PushStateNavigation;
-import com.vaadin.server.*;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.ComponentSizeValidator;
 import com.vaadin.server.ComponentSizeValidator.InvalidLayout;
+import com.vaadin.server.DefaultErrorHandler;
+import com.vaadin.server.ErrorHandler;
+import com.vaadin.server.ErrorHandlingRunnable;
+import com.vaadin.server.LocaleService;
+import com.vaadin.server.Page;
+import com.vaadin.server.PaintException;
+import com.vaadin.server.PaintTarget;
+import com.vaadin.server.UIProvider;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.server.VaadinSession.State;
 import com.vaadin.server.communication.PushConnection;
-import com.vaadin.shared.*;
+import com.vaadin.shared.ApplicationConstants;
+import com.vaadin.shared.Connector;
+import com.vaadin.shared.EventId;
+import com.vaadin.shared.MouseEventDetails;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.shared.ui.WindowOrderRpc;
-import com.vaadin.shared.ui.ui.*;
+import com.vaadin.shared.ui.ui.DebugWindowClientRpc;
+import com.vaadin.shared.ui.ui.DebugWindowServerRpc;
+import com.vaadin.shared.ui.ui.PageClientRpc;
+import com.vaadin.shared.ui.ui.ScrollClientRpc;
+import com.vaadin.shared.ui.ui.UIClientRpc;
+import com.vaadin.shared.ui.ui.UIConstants;
+import com.vaadin.shared.ui.ui.UIServerRpc;
+import com.vaadin.shared.ui.ui.UIState;
 import com.vaadin.ui.Component.Focusable;
 import com.vaadin.ui.Dependency.Type;
 import com.vaadin.ui.Window.WindowOrderChangeListener;
@@ -45,18 +87,9 @@ import com.vaadin.ui.dnd.DropTargetExtension;
 import com.vaadin.util.ConnectorHelper;
 import com.vaadin.util.CurrentInstance;
 import com.vaadin.util.ReflectTools;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.Future;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * The topmost component in any component hierarchy. There is one UI for every
@@ -1555,10 +1588,11 @@ public abstract class UI extends AbstractSingleComponentContainer
                          * accessSynchronously. Furthermore, there wasn't an
                          * ErrorHandlingRunnable that handled the exception.
                          */
-                        getLogger().warn(
-                                "access() task ignored because UI got detached after the task was enqueued."
-                                        + " To suppress this message, change the task to implement {} and make it handle {}."
-                                        + " Affected task: {}",
+                        getLogger().warn("access() task ignored "
+                                + "because UI got detached after the task was "
+                                + "enqueued. To suppress this message, change "
+                                + "the task to implement {} and make it handle "
+                                + "{}. Affected task: {}",
                                 new Object[] {
                                         ErrorHandlingRunnable.class.getName(),
                                         UIDetachedException.class.getName(),
@@ -1953,6 +1987,13 @@ public abstract class UI extends AbstractSingleComponentContainer
             getState().enableMobileHTML5DnD = enabled;
 
             if (isMobileHtml5DndEnabled()) {
+                if (VaadinService.getCurrentRequest() == null) {
+                    getState().enableMobileHTML5DnD = false;
+                    throw new IllegalStateException("HTML5 DnD cannot be "
+                            + "enabled for mobile devices when current "
+                            + "VaadinRequest cannot be accessed. Call this "
+                            + "method from init(VaadinRequest) to ensure access.");
+                }
                 loadMobileHtml5DndPolyfill();
             }
         }

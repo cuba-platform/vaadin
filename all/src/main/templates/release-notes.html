@@ -65,7 +65,7 @@
                 a number of new features and bug fixes, as listed in the <a
                 href="#enhancements">list of enhancements</a> and <a
                 href="#changelog">change log</a> below.
-		The API in this beta version is not considered final and may change based on your feedback.-->
+<!--		The API in this alpha version is not considered final and may change based on your feedback.-->
 	</p>
 
         <!-- ================================================================ -->
@@ -82,31 +82,35 @@
         <p>Vaadin Framework @version-minor@ includes many major and minor
             enhancements. Below is a list of the most notable changes:</p>
 
+        <h3>Enhancements</h3>
+
         <ul>
-            <li>Adds css class name to <tt>Grid.Editor</tt> on slected row</li>
-	        <li>Improves error handling on <tt>Upload</tt> handler</li>
-            <li>Improves support for detail row index handling on <tt>Escalator</tt></li>
-            <li>Improves support for OSGi</li>
-            <li>Updates <tt>Spring</tt> addon to 3.2.1</li>
+                <li>Recalculate column widths when vertical scrollbar hidden/shown</li>
+                <li>Add support for "ww" in date format</li>
+                <li>All updates to Escalator size should get reported to LayoutManager</li>
+                <li>Ensure type safety and serializable nature of all the listeners</li>
+                <li>Add convenience overloading for <tt>setColumn</tt></li>
+                <li>Add API to detect if <tt>GridMultiSelect</tt> select-all checkbox is checked</li>
+                <li>Added missing MIME types to <tt>FileTypeResolver</tt></li>
         </ul>
 
         </p>
 
         <p>
-            For enhancements introduced in Vaadin Framework 8.8, see the <a
-                href="http://vaadin.com/download/release/8.8/8.8.0/release-notes.html">Release
-                Notes for Vaadin Framework 8.8.0</a>.
+            For enhancements introduced in Vaadin Framework 8.11, see the <a
+                href="http://vaadin.com/download/release/8.11/8.11.0/release-notes.html">Release
+                Notes for Vaadin Framework 8.11.0</a>.
             For migrating from previous framework versions, see <a href="#incompatible">the list of incompatible changes</a> and <a href="#migrating">how to migrate
             to Vaadin Framework 8</a>.
         </p>
 
-        <h2 id="incompatible">No Incompatible or Behavior-altering Changes in @version-minor@</h2>
+        <h2 id="incompatible">Incompatible or Behavior-altering Changes in @version-minor@</h2>
 
         <ul>
-            <li></li>
+            <li>Fixed potential security issue related method used by framework by updating Hibernate dependency to version 5.3.6.</li>
         </ul>
 
-        <h2>For incompatible or behavior-altering changes in 8.8, please see <a href="https://vaadin.com/download/release/8.8/8.8.0/release-notes.html#incompatible">8.8 release notes</a></h2>
+        <h2>For incompatible or behavior-altering changes in 8.11, please see <a href="https://vaadin.com/download/release/8.11/8.11.0/release-notes.html#incompatible">8.11 release notes</a></h2>
 
         <h3 id="knownissues">Known Issues and Limitations</h3>
         <ul>

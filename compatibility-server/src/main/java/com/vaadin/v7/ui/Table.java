@@ -16,20 +16,47 @@
 
 package com.vaadin.v7.ui;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DragSource;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.DropTarget;
 import com.vaadin.event.dd.acceptcriteria.ServerSideCriterion;
-import com.vaadin.server.*;
+import com.vaadin.server.KeyMapper;
+import com.vaadin.server.LegacyCommunicationManager;
+import com.vaadin.server.LegacyPaint;
+import com.vaadin.server.PaintException;
+import com.vaadin.server.PaintTarget;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.MultiSelectMode;
 import com.vaadin.shared.util.SharedUtil;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HasChildMeasurementHint;
 import com.vaadin.ui.UniqueSerializable;
@@ -54,14 +81,6 @@ import com.vaadin.v7.shared.ui.table.TableConstants;
 import com.vaadin.v7.shared.ui.table.TableConstants.Section;
 import com.vaadin.v7.shared.ui.table.TableServerRpc;
 import com.vaadin.v7.shared.ui.table.TableState;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * <p>
@@ -575,6 +594,8 @@ public class Table extends AbstractSelect implements Action.Container,
     private DropHandler dropHandler;
 
     private MultiSelectMode multiSelectMode = MultiSelectMode.DEFAULT;
+
+    private boolean multiSelectTouchDetectionEnabled = true;
 
     private boolean rowCacheInvalidated;
 
@@ -2284,26 +2305,39 @@ public class Table extends AbstractSelect implements Action.Container,
             }
         }
 
-        GeneratedRow generatedRow = rowGenerator != null
-                ? rowGenerator.generateRow(this, id)
-                : null;
-        cells[CELL_GENERATED_ROW][i] = generatedRow;
+        int index = firstIndex + i;
+        int indexInOldBuffer = index - pageBufferFirstIndex;
+        boolean inPageBuffer = index < firstIndexNotInCache
+                && index >= pageBufferFirstIndex
+                && id.equals(pageBuffer[CELL_ITEMID][indexInOldBuffer]);
+
+        GeneratedRow generatedRow = null;
+        if (rowGenerator != null) {
+            if (inPageBuffer) {
+                generatedRow = (GeneratedRow) pageBuffer[CELL_GENERATED_ROW][indexInOldBuffer];
+            } else {
+                generatedRow = rowGenerator.generateRow(this, cells[CELL_ITEMID][i]);
+            }
+            cells[CELL_GENERATED_ROW][i] = generatedRow;
+        }
 
         // Haulmont API dependency
         if (!isItemNeedsToRefreshRendered(id))
             return;
 
+        int firstNotCollapsed = -1;
         for (int j = 0; j < cols; j++) {
             // Haulmont API dependency
             if (isColumnCollapsed(colids[j])
                     || !isColumnNeedsToRefreshRendered(colids[j])) {
                 continue;
+            } else if (firstNotCollapsed == -1) {
+                firstNotCollapsed = j;
             }
             Property<?> p = null;
             Object value = "";
-            boolean isGeneratedRow = generatedRow != null;
             boolean isGeneratedColumn = columnGenerators.containsKey(colids[j]);
-            boolean isGenerated = isGeneratedRow || isGeneratedColumn;
+            boolean isGenerated = isGeneratedColumn || generatedRow != null;
 
             if (!isGenerated) {
                 try {
@@ -2314,33 +2348,24 @@ public class Table extends AbstractSelect implements Action.Container,
                 }
             }
 
-            if (isGeneratedRow) {
-                if (generatedRow.isSpanColumns() && j > 0) {
-                    value = null;
-                } else if (generatedRow.isSpanColumns() && j == 0
-                        && generatedRow.getValue() instanceof Component) {
-                    value = generatedRow.getValue();
-                } else if (generatedRow.getText().length > j) {
-                    value = generatedRow.getText()[j];
-                }
-            } else {
-                // check if current pageBuffer already has row
-                int index = firstIndex + i;
-                if (p != null || isGenerated) {
-                    int indexInOldBuffer = index - pageBufferFirstIndex;
-                    if (index < firstIndexNotInCache
-                            && index >= pageBufferFirstIndex
-                            && pageBuffer[CELL_GENERATED_ROW][indexInOldBuffer] == null
-                            && id.equals(
-                                    pageBuffer[CELL_ITEMID][indexInOldBuffer])) {
-                        // we already have data in our cache,
-                        // recycle it instead of fetching it via
-                        // getValue/getPropertyValue
+            // check if current pageBuffer already has row
+            if (p != null || isGenerated) {
+                if (inPageBuffer) {
+                    // we already have data in our cache,
+                    // recycle it instead of fetching it via
+                    // getValue/getPropertyValue
+                    if (generatedRow != null) {
+                        value = extractGeneratedValue(generatedRow, j, j == firstNotCollapsed);
+                    } else {
                         value = pageBuffer[CELL_FIRSTCOL + j][indexInOldBuffer];
-                        if (!isGeneratedColumn && iscomponent[j]
-                                || !(value instanceof Component)) {
-                            listenProperty(p, oldListenedProperties);
-                        }
+                    }
+                    if (!isGeneratedColumn && iscomponent[j]
+                            || !(value instanceof Component)) {
+                        listenProperty(p, oldListenedProperties);
+                    }
+                } else {
+                    if (generatedRow != null) {
+                        value = extractGeneratedValue(generatedRow, j, j == firstNotCollapsed);
                     } else {
                         if (isGeneratedColumn) {
                             ColumnGenerator cg = columnGenerators
@@ -2401,6 +2426,35 @@ public class Table extends AbstractSelect implements Action.Container,
             }
             cells[CELL_FIRSTCOL + j][i] = value;
         }
+    }
+
+    /**
+     * Extracts cell value from generated row
+     *
+     * @param generatedRow generated row
+     * @param index column index
+     * @param firstVisibleColumn whether the column is first visible column in the table (i.e. previous columns are hidden)
+     * @return cell value
+     */
+    private Object extractGeneratedValue(GeneratedRow generatedRow, int index, boolean firstVisibleColumn) {
+        Object value = generatedRow.getValue();
+        String[] text = generatedRow.getText();
+        if (generatedRow.isSpanColumns()) {
+            if (firstVisibleColumn) {
+                if (value instanceof Component) {
+                    return value;
+                }
+                if (text != null && text.length > 0) {
+                    return text[0];
+                }
+            }
+            return null;
+        }
+
+        if (text != null && text.length > index) {
+            return text[index];
+        }
+        return null;
     }
 
     protected void registerComponent(Component component) {
@@ -3581,6 +3635,7 @@ public class Table extends AbstractSelect implements Action.Container,
         return getColumnHeaderMode() != ColumnHeaderMode.HIDDEN;
     }
 
+    // Haulmont API dependency
     protected void paintVisibleColumns(PaintTarget target) throws PaintException {
         target.startTag("visiblecolumns");
         if (rowHeadersAreEnabled()) {
@@ -3809,6 +3864,10 @@ public class Table extends AbstractSelect implements Action.Container,
         if (isSelectable()) {
             target.addAttribute("selectmode",
                     (isMultiSelect() ? "multi" : "single"));
+            if (isMultiSelect()) {
+                target.addAttribute("touchdetection",
+                        isMultiSelectTouchDetectionEnabled());
+            }
         } else {
             target.addAttribute("selectmode", "none");
         }
@@ -4018,8 +4077,9 @@ public class Table extends AbstractSelect implements Action.Container,
             target.addAttribute("gen_html",
                     generatedRow.isHtmlContentAllowed());
             target.addAttribute("gen_span", generatedRow.isSpanColumns());
+            // todo: actually gen_widget is never used
             target.addAttribute("gen_widget",
-                    generatedRow.getValue() instanceof Component);
+                    cells[CELL_FIRSTCOL][indexInRowBuffer] instanceof Component);
         }
     }
 
@@ -5233,7 +5293,10 @@ public class Table extends AbstractSelect implements Action.Container,
      * <p>
      * Note, that on some clients the mode may not be respected. E.g. on touch
      * based devices CTRL/SHIFT base selection method is invalid, so touch based
-     * browsers always use the {@link MultiSelectMode#SIMPLE}.
+     * browsers always use the {@link MultiSelectMode#SIMPLE} unless touch multi
+     * select is explicitly disabled.
+     *
+     * @see #setMultiSelectTouchDetectionEnabled(boolean)
      *
      * @param mode
      *            The select mode of the table
@@ -5250,6 +5313,31 @@ public class Table extends AbstractSelect implements Action.Container,
      */
     public MultiSelectMode getMultiSelectMode() {
         return multiSelectMode;
+    }
+
+    /**
+     * Default behavior on touch-reporting devices is to switch from CTRL/SHIFT
+     * based multi-selection to simple mode, but you can use this method to
+     * explicitly disable the touch device detection. Thus you can keep using
+     * keyboard-based multi selection on hybrid devices that have both a touch
+     * screen and a keyboard.
+     *
+     * @param multiSelectTouchDetectionEnabled
+     *            Whether to enable or disable touch screen detection
+     */
+    public void setMultiSelectTouchDetectionEnabled(
+            boolean multiSelectTouchDetectionEnabled) {
+        this.multiSelectTouchDetectionEnabled = multiSelectTouchDetectionEnabled;
+        markAsDirty();
+    }
+
+    /**
+     * Returns if touch screen detection is used to toggle multi select mode.
+     *
+     * @return If touch screen detection for multi select is enabled
+     */
+    public boolean isMultiSelectTouchDetectionEnabled() {
+        return multiSelectTouchDetectionEnabled;
     }
 
     /**
@@ -5441,7 +5529,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * headerClick method is called when the user presses a header column cell.
      */
     @Deprecated
-    public interface HeaderClickListener extends Serializable {
+    public interface HeaderClickListener extends SerializableEventListener {
 
         /**
          * Called when a user clicks a header column cell.
@@ -5458,7 +5546,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * footerClick method is called when the user presses a footer column cell.
      */
     @Deprecated
-    public interface FooterClickListener extends Serializable {
+    public interface FooterClickListener extends SerializableEventListener {
 
         /**
          * Called when a user clicks a footer column cell.
@@ -5695,7 +5783,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Interface for listening to column resize events.
      */
     @Deprecated
-    public interface ColumnResizeListener extends Serializable {
+    public interface ColumnResizeListener extends SerializableEventListener {
 
         /**
          * This method is triggered when the column has been resized.
@@ -5784,7 +5872,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * Interface for listening to column reorder events.
      */
     @Deprecated
-    public interface ColumnReorderListener extends Serializable {
+    public interface ColumnReorderListener extends SerializableEventListener {
 
         /**
          * This method is triggered when the column has been reordered.
@@ -5836,7 +5924,7 @@ public class Table extends AbstractSelect implements Action.Container,
      * @since 7.6
      */
     @Deprecated
-    public interface ColumnCollapseListener extends Serializable {
+    public interface ColumnCollapseListener extends SerializableEventListener {
 
         /**
          * This method is triggered when the collapse state for a column has

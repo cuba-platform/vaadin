@@ -15,18 +15,30 @@
  */
 package com.vaadin.ui.components.grid;
 
-import com.vaadin.data.provider.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.vaadin.data.provider.DataCommunicator;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.HierarchicalDataProvider;
+import com.vaadin.data.provider.HierarchicalQuery;
+import com.vaadin.data.provider.Query;
 import com.vaadin.event.selection.MultiSelectionEvent;
 import com.vaadin.event.selection.MultiSelectionListener;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.data.selection.GridMultiSelectServerRpc;
 import com.vaadin.shared.ui.grid.MultiSelectionModelState;
 import com.vaadin.ui.MultiSelect;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Multiselection model for grid.
@@ -119,23 +131,14 @@ public class MultiSelectionModelImpl<T> extends AbstractSelectionModel<T>
         return getState(false).selectAllCheckBoxVisible;
     }
 
-    /**
-     * Returns whether all items are selected or not.
-     * <p>
-     * This is only {@code true} if user has selected all rows with the select
-     * all checkbox on client side, or if {@link #selectAll()} has been used
-     * from server side.
-     *
-     * @return {@code true} if all selected, {@code false} if not
-     */
+    @Override
     public boolean isAllSelected() {
         return getState(false).allSelected;
     }
 
     @Override
     public boolean isSelected(T item) {
-        return isAllSelected()
-                || selectionContainsId(getGrid().getDataProvider().getId(item));
+        return selectionContainsId(getGrid().getDataProvider().getId(item));
     }
 
     /**

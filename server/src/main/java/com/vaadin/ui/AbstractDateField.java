@@ -15,32 +15,6 @@
  */
 package com.vaadin.ui;
 
-import com.googlecode.gentyref.GenericTypeReflector;
-import com.vaadin.data.Result;
-import com.vaadin.data.ValidationResult;
-import com.vaadin.data.Validator;
-import com.vaadin.data.ValueContext;
-import com.vaadin.data.validator.RangeValidator;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.event.FieldEvents.BlurNotifier;
-import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.FieldEvents.FocusNotifier;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.UserError;
-import com.vaadin.shared.Registration;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldServerRpc;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldState;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldState.AccessibleElement;
-import com.vaadin.shared.ui.datefield.DateResolution;
-import com.vaadin.ui.declarative.DesignAttributeHandler;
-import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.util.TimeZoneUtil;
-import elemental.json.Json;
-import org.jsoup.nodes.Element;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -62,6 +36,32 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.googlecode.gentyref.GenericTypeReflector;
+import org.jsoup.nodes.Element;
+import org.slf4j.LoggerFactory;
+
+import com.vaadin.data.Result;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
+import com.vaadin.data.validator.RangeValidator;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.BlurNotifier;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.FieldEvents.FocusNotifier;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.UserError;
+import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldServerRpc;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldState;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldState.AccessibleElement;
+import com.vaadin.shared.ui.datefield.DateResolution;
+import com.vaadin.ui.declarative.DesignAttributeHandler;
+import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.util.TimeZoneUtil;
 
 import elemental.json.Json;
 
@@ -88,13 +88,18 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         @Override
         public void update(String newDateString,
                 Map<String, Integer> resolutions) {
-            // Haulmont API - extracted method
-            updateInternal(newDateString, resolutions);
+            valueUpdate(newDateString, resolutions);
         }
 
         @Override
         public void updateValueWithDelay(String newDateString,
                 Map<String, Integer> resolutions) {
+            valueUpdate(newDateString, resolutions);
+        }
+
+        private void valueUpdate(String newDateString,
+                Map<String, Integer> resolutions) {
+            // Haulmont API - extracted method
             updateInternal(newDateString, resolutions);
         }
 
@@ -177,6 +182,30 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
             }
         }
     }
+
+    /**
+     * The default start year (inclusive) from which to calculate the
+     * daylight-saving time zone transition dates.
+     */
+    private static final int DEFAULT_START_YEAR = 1980;
+
+    /**
+     * The default value of the number of future years from the current date for
+     * which the daylight-saving time zone transition dates are calculated.
+     */
+    private static final int DEFAULT_YEARS_FROM_NOW = 20;
+
+    /**
+     * The optional user-supplied start year (inclusive) from which to calculate
+     * the daylight-saving time zone transition dates.
+     */
+    private Integer startYear;
+
+    /**
+     * The optional user-supplied end year (inclusive) until which to calculate
+     * the daylight-saving time zone transition dates.
+     */
+    private Integer endYear;
 
     /**
      * Value of the field.
@@ -297,6 +326,12 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      * date (taking the resolution into account), the component will not
      * validate. If {@code startDate} is set to {@code null}, any value before
      * {@code endDate} will be accepted by the range
+     * <p>
+     * Note: Negative, i.e. BC dates are not supported.
+     * <p>
+     * Note: It's usually recommended to use only one of the following at the
+     * same time: Range validator with Binder or DateField's setRangeStart
+     * check.
      *
      * @param startDate
      *            - the allowed range's start date
@@ -358,6 +393,9 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      * date (taking the resolution into account), the component will not
      * validate. If {@code endDate} is set to {@code null}, any value after
      * {@code startDate} will be accepted by the range.
+     * <p>
+     * Note: It's usually recommended to use only one of the following at the
+     * same time: Range validator with Binder or DateField's setRangeEnd check.
      *
      * @param endDate
      *            the allowed range's end date (inclusive, based on the current
@@ -482,7 +520,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
 
     /**
      * Sets the {@link ZoneId}, which is used when {@code z} is included inside
-     * the {@link #setDateFormat(String)}.
+     * the {@link #setDateFormat(String)} .
      *
      * @param zoneId
      *            the zone id
@@ -491,19 +529,73 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     public void setZoneId(ZoneId zoneId) {
         if (zoneId != this.zoneId
                 || (zoneId != null && !zoneId.equals(this.zoneId))) {
-            updateTimeZoneJSON(zoneId, getLocale());
+            updateTimeZoneJSON(zoneId, getLocale(), getStartYear(),
+                    getEndYear());
         }
         this.zoneId = zoneId;
     }
 
-    private void updateTimeZoneJSON(ZoneId zoneId, Locale locale) {
+    private void updateTimeZoneJSON(ZoneId zoneId, Locale locale, int startYear,
+            int endYear) {
         String timeZoneJSON;
         if (zoneId != null && locale != null) {
-            timeZoneJSON = TimeZoneUtil.toJSON(zoneId, locale);
+            timeZoneJSON = TimeZoneUtil.toJSON(zoneId, locale, startYear,
+                    endYear);
         } else {
             timeZoneJSON = null;
         }
         getState().timeZoneJSON = timeZoneJSON;
+    }
+
+    /**
+     * Sets {@link startYear} and {@link endYear}: the start and end years (both
+     * inclusive) between which to calculate the daylight-saving time zone
+     * transition dates. Both parameters are used when '{@code z}' is included
+     * inside the {@link #setDateFormat(String)}, they would have no effect
+     * otherwise. Specifically, these parameters determine the range of years in
+     * which zone names are are adjusted to show the daylight saving names.
+     *
+     * If no values are provided, by default {@link startYear} is set to
+     * {@value #DEFAULT_START_YEAR}, and {@link endYear} is set to
+     * {@value #DEFAULT_YEARS_FROM_NOW} years into the future from the current
+     * date.
+     *
+     * @param startYear
+     *            the start year of DST transitions
+     * @param endYear
+     *            the end year of DST transitions
+     * @since 8.11
+     */
+    public void setDaylightSavingTimeRange(int startYear, int endYear) {
+        if (startYear > endYear) {
+            throw new IllegalArgumentException(
+                    "The start year from which to begin calculating the "
+                            + "daylight-saving time zone transition dates must"
+                            + " be less than or equal to the end year.\n"
+                            + startYear + " is greater than " + endYear);
+        }
+        if (this.startYear == null || this.endYear == null
+                || startYear != this.startYear || endYear != this.endYear) {
+            updateTimeZoneJSON(getZoneId(), getLocale(), startYear, endYear);
+        }
+        this.startYear = startYear;
+        this.endYear = endYear;
+    }
+
+    private int getStartYear() {
+        if (startYear == null) {
+            return DEFAULT_START_YEAR;
+        } else {
+            return startYear;
+        }
+    }
+
+    private int getEndYear() {
+        if (endYear == null) {
+            return LocalDate.now().getYear() + DEFAULT_YEARS_FROM_NOW;
+        } else {
+            return endYear;
+        }
     }
 
     @Override
@@ -511,7 +603,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         Locale oldLocale = getLocale();
         if (locale != oldLocale
                 || (locale != null && !locale.equals(oldLocale))) {
-            updateTimeZoneJSON(getZoneId(), locale);
+            updateTimeZoneJSON(getZoneId(), locale, getStartYear(),
+                    getEndYear());
         }
         super.setLocale(locale);
     }
@@ -617,27 +710,38 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      *
      * @param value
      *            the new value, may be {@code null}
+     * @throws IllegalArgumentException
+     *             if the value is not within range bounds
      */
     @Override
     public void setValue(T value) {
-        currentErrorMessage = null;
-        /*
-         * First handle special case when the client side component have a date
-         * string but value is null (e.g. unparsable date string typed in by the
-         * user). No value changes should happen, but we need to do some
-         * internal housekeeping.
-         */
-        if (value == null && !getState(false).parsable) {
-            /*
-             * Side-effects of doSetValue clears possible previous strings and
-             * flags about invalid input.
-             */
-            doSetValue(null);
+        RangeValidator<T> validator = getRangeValidator();
+        ValidationResult result = validator.apply(value,
+                new ValueContext(this, this));
 
-            markAsDirty();
-            return;
+        if (result.isError()) {
+            throw new IllegalArgumentException(
+                    "value is not within acceptable range");
+        } else {
+            currentErrorMessage = null;
+            /*
+             * First handle special case when the client side component has a
+             * date string but value is null (e.g. unparsable date string typed
+             * in by the user). No value changes should happen, but we need to
+             * do some internal housekeeping.
+             */
+            if (value == null && !getState(false).parsable) {
+                /*
+                 * Side-effects of doSetValue clears possible previous strings
+                 * and flags about invalid input.
+                 */
+                doSetValue(null);
+
+                markAsDirty();
+                return;
+            }
+            super.setValue(value);
         }
-        super.setValue(value);
     }
 
     /**
@@ -783,8 +887,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     @Override
     protected void doSetValue(T value) {
 
-        this.value = value;
         // Also set the internal dateString
+        this.value = value;
         if (value == null) {
             value = getEmptyValue();
         }

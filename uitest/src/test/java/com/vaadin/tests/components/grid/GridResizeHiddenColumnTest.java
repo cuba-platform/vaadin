@@ -61,6 +61,7 @@ public class GridResizeHiddenColumnTest extends MultiBrowserTest {
                 sidebarPopup.findElements(By.className("gwt-MenuItem")));
         // Click on "Last Name" menu item
         action.click(visibilityToggle).perform();
+        waitUntilLoadingIndicatorNotVisible();
 
         // Check if column "Last Name" is visible
         headerCells = grid.getHeaderCells(0);
@@ -102,5 +103,6 @@ public class GridResizeHiddenColumnTest extends MultiBrowserTest {
                         getXOffset(headerCell, size.getWidth() + posX),
                         getYOffset(headerCell, size.getHeight() / 2))
                 .clickAndHold().moveByOffset(offset, 0).release().perform();
+        waitUntilLoadingIndicatorNotVisible();
     }
 }

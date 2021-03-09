@@ -572,11 +572,13 @@ public abstract class AbstractOrderedLayoutConnector
         }
 
         // Add all necessary listeners
+        boolean listenersAdded = false;
         if (needsFixedHeight()) {
             slot.setWidgetResizeListener(childComponentResizeListener);
             if (slot.hasCaption()) {
                 slot.setCaptionResizeListener(slotCaptionResizeListener);
             }
+            listenersAdded = true;
         } else if ((hasChildrenWithRelativeHeight
                 || hasChildrenWithRelativeWidth) && slot.hasCaption()) {
             /*
@@ -588,6 +590,7 @@ public abstract class AbstractOrderedLayoutConnector
              * as the relative size?
              */
             slot.setCaptionResizeListener(slotCaptionResizeListener);
+            listenersAdded = true;
         }
 
         if (needsExpand()) {
@@ -596,6 +599,13 @@ public abstract class AbstractOrderedLayoutConnector
             if (slot.hasSpacing()) {
                 slot.setSpacingResizeListener(spacingResizeListener);
             }
+            listenersAdded = true;
+        }
+
+        if (listenersAdded) {
+            // removing these listeners makes widget unmeasurable and resets the
+            // measured height, measure again if listeners got added back
+            getLayoutManager().setNeedsMeasure(child);
         }
     }
 

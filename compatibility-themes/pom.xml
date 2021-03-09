@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-root</artifactId>
-        <version>8.9-SNAPSHOT</version>
+        <version>8.12-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-compatibility-themes</artifactId>
     <name>vaadin-compatibility-themes</name>
@@ -281,7 +281,7 @@
 
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>

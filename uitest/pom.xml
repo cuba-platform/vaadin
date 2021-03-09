@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-root</artifactId>
-        <version>8.9-SNAPSHOT</version>
+        <version>8.12-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-uitest</artifactId>
     <name>vaadin-uitest</name>
@@ -50,7 +50,7 @@
         </dependency>
 
         <!-- jetty-servlets needed by ProxyTest, but not by jetty-runner -->
-        <!-- Jetty before vaadin-* on the classpath to make Eclipse use the 
+        <!-- Jetty before vaadin-* on the classpath to make Eclipse use the
             right version -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -314,14 +314,51 @@
                         <categories.exclude>${categories.exclude}</categories.exclude>
                         <browserstack.identifier>${browserstack.identifier}</browserstack.identifier>
                     </systemPropertyVariables>
-                    <includes>
-                        <include>**/AllTB3Tests.java</include>
-                    </includes>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>no-components</id>
+                        <configuration>
+                            <includes>
+                                <include>**/LimitedTB3TestsNonComponent.java</include>
+                            </includes>
+                        </configuration>
                         <goals>
                             <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>components-no-grid</id>
+                        <configuration>
+                            <includes>
+                                <include>**/LimitedTB3TestsComponentsNoGrid.java</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>grid-only</id>
+                        <configuration>
+                            <includes>
+                                <include>**/LimitedTB3TestsComponentsGridOnly.java</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <configuration>
+                            <includes>
+                                <include>**/LimitedTB3TestsNonComponent.java</include>
+                                <include>**/LimitedTB3TestsComponentsNoGrid.java</include>
+                                <include>**/LimitedTB3TestsComponentsGridOnly.java</include>
+                            </includes>
+                        </configuration>
+                        <goals>
                             <goal>verify</goal>
                         </goals>
                     </execution>
@@ -426,7 +463,7 @@
                             <artifactId>jetty-maven-plugin</artifactId>
 
                             <executions>
-                                <!-- start and stop jetty (running our app) 
+                                <!-- start and stop jetty (running our app)
                                     when running integration tests -->
                                 <execution>
                                     <id>start-jetty</id>
