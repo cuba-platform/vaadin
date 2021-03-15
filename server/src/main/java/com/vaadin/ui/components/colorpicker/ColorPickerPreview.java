@@ -180,6 +180,11 @@ public class ColorPickerPreview extends CssLayout implements HasValue<Color> {
         return readOnly;
     }
 
+    // Haulmont API dependency
+    public TextField getField() {
+        return field;
+    }
+
     private void updateColorComponents() {
         iterator().forEachRemaining(this::updateColorComponents);
     }

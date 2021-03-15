@@ -60,8 +60,10 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
      */
     protected final Button cancel = new Button("Cancel");
 
-    /** The resize button. */
-    private final Button resize = new Button("show/hide history");
+    /**
+     * The resize button. Haulmont API dependency
+     */
+    protected final Button resize = new Button("show/hide history");
 
     /** The previously selected color. */
     private Color previouslySelectedColor = Color.WHITE;
@@ -81,29 +83,45 @@ public class ColorPickerPopup extends Window implements HasValue<Color> {
     /** The hsv gradient. */
     private ColorPickerGradient hsvGradient;
 
-    /** The red slider. */
-    private Slider redSlider;
+    /**
+     * The red slider. Haulmont API dependency
+     */
+    protected Slider redSlider;
 
-    /** The green slider. */
-    private Slider greenSlider;
+    /**
+     * The green slider. Haulmont API dependency
+     */
+    protected Slider greenSlider;
 
-    /** The blue slider. */
-    private Slider blueSlider;
+    /**
+     * The blue slider. Haulmont API dependency
+     */
+    protected Slider blueSlider;
 
-    /** The hue slider. */
-    private Slider hueSlider;
+    /**
+     * The hue slider. Haulmont API dependency
+     */
+    protected Slider hueSlider;
 
-    /** The saturation slider. */
-    private Slider saturationSlider;
+    /**
+     * The saturation slider. Haulmont API dependency
+     */
+    protected Slider saturationSlider;
 
-    /** The value slider. */
-    private Slider valueSlider;
+    /**
+     * The value slider. Haulmont API dependency
+     */
+    protected Slider valueSlider;
 
-    /** The preview on the rgb tab. */
-    private ColorPickerPreview rgbPreview;
+    /**
+     * The preview on the rgb tab. Haulmont API dependency
+     */
+    protected ColorPickerPreview rgbPreview;
 
-    /** The preview on the hsv tab. */
-    private ColorPickerPreview hsvPreview;
+    /**
+     * The preview on the hsv tab. Haulmont API dependency
+     */
+    protected ColorPickerPreview hsvPreview;
 
     /**
      * The preview on the swatches tab. Haulmont API dependency
