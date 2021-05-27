@@ -1429,6 +1429,12 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                 .create(DefaultEditorEventHandler.class);
 
         private DivElement editorOverlay = DivElement.as(DOM.createDiv());
+
+        // Haulmont API
+        public DivElement getEditorOverlay() {
+            return editorOverlay;
+        }
+
         private DivElement cellWrapper = DivElement.as(DOM.createDiv());
         private DivElement frozenCellWrapper = DivElement.as(DOM.createDiv());
 
