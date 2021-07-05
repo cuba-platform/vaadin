@@ -5,13 +5,13 @@
     <groupId>com.vaadin</groupId>
     <artifactId>vaadin-test</artifactId>
     <name>vaadin-test</name>
-    <version>8.12-SNAPSHOT</version>
+    <version>8.13-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jetty.version>9.4.35.v20201120</jetty.version>
+        <jetty.version>9.4.38.v20210224</jetty.version>
         <phantomjs.version>2.1.1</phantomjs.version>
         <vaadin.version>${project.version}</vaadin.version>
         <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
@@ -21,10 +21,10 @@
         <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
         <selenium.version>3.14.0</selenium.version>
 
-        <!-- Don't care about coding style for tests -->
+        <!-- Don't care about coding style for tests. -->
         <sonar.skip>true</sonar.skip>
 
-        <!-- Allow installing for local testing purposes -->
+        <!-- Allow installing for local testing purposes. -->
         <install.skip>true</install.skip>
     </properties>
 
@@ -176,7 +176,7 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse
+                <!--This plugin's configuration is used to store Eclipse 
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -244,7 +244,7 @@
                     <stopKey>foo</stopKey>
                 </configuration>
                 <executions>
-                    <!-- start and stop jetty (running our app) when running
+                    <!-- start and stop jetty (running our app) when running 
                         integration tests -->
                     <execution>
                         <id>start-jetty</id>

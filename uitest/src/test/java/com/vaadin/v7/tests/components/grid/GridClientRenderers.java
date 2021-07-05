@@ -49,7 +49,7 @@ public class GridClientRenderers extends MultiBrowserTest {
         return path;
     }
 
-    @ServerClass("com.vaadin.tests.widgetset.server.grid.GridClientColumnRenderers.GridController")
+    @ServerClass("com.vaadin.tests.widgetset.server.v7.grid.GridClientColumnRenderers.GridController")
     public static class MyClientGridElement extends GridElement {
     }
 
@@ -137,7 +137,7 @@ public class GridClientRenderers extends MultiBrowserTest {
         // Chrome uses RGB instead of RGBA
         String colorRed = "rgba(255, 0, 0, 1)";
         String colorWhite = "rgba(255, 255, 255, 1)";
-        String colorDark = "rgba(239, 240, 241, 1)";
+        String colorDark = "rgba(245, 245, 245, 1)";
 
         openTestURL();
 
@@ -147,7 +147,7 @@ public class GridClientRenderers extends MultiBrowserTest {
 
         // Test initial renderering with contentVisible = False
         TestBenchElement cell = getGrid().getCell(51, 1);
-        String backgroundColor = cell.getCssValue("backgroundColor");
+        String backgroundColor = cell.getCssValue("background-color");
         assertEquals("Background color was not red.", colorRed,
                 backgroundColor);
 
@@ -156,7 +156,7 @@ public class GridClientRenderers extends MultiBrowserTest {
 
         // Content becomes visible
         cell = getGrid().getCell(51, 1);
-        backgroundColor = cell.getCssValue("backgroundColor");
+        backgroundColor = cell.getCssValue("background-color");
         assertNotEquals("Background color was red.", colorRed, backgroundColor);
 
         // scroll down, new cells becomes contentVisible = False
@@ -164,7 +164,7 @@ public class GridClientRenderers extends MultiBrowserTest {
 
         // Cell should be red (setContentVisible set cell red)
         cell = getGrid().getCell(55, 1);
-        backgroundColor = cell.getCssValue("backgroundColor");
+        backgroundColor = cell.getCssValue("background-color");
         assertEquals("Background color was not red.", colorRed,
                 backgroundColor);
 
@@ -172,8 +172,8 @@ public class GridClientRenderers extends MultiBrowserTest {
         sleep((int) (latency * SLEEP_MULTIPLIER));
 
         // Cell should no longer be red
-        backgroundColor = cell.getCssValue("backgroundColor");
-        assertTrue("Background color was not reset",
+        backgroundColor = cell.getCssValue("background-color");
+        assertTrue("Background color was not reset: " + backgroundColor,
                 backgroundColor.equals(colorWhite)
                         || backgroundColor.equals(colorDark));
     }

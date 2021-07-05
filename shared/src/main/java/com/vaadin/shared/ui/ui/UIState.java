@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -85,13 +85,22 @@ public class UIState extends AbstractSingleComponentContainerState {
         // Default is 1 for legacy reasons
         tabIndex = 1;
     }
-
     /**
      * Enable Mobile HTML5 DnD support.
      *
      * @since 8.1
      */
     public boolean enableMobileHTML5DnD = false;
+    /**
+     * Should the more thorough size check be in use in LayoutManager
+     * calculations. If this value is changed to {@code false}, the size
+     * calculations can result in incorrect values if they are triggered while a
+     * transform animation is ongoing. This can happen e.g. when a PopupView is
+     * opened.
+     *
+     * @since 8.13
+     */
+    public boolean thoroughSizeCheck = true;
 
     public static class LoadingIndicatorConfigurationState
             implements Serializable {

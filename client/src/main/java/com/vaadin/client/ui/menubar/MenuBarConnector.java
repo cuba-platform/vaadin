@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -59,13 +59,12 @@ public class MenuBarConnector extends AbstractComponentConnector
                 .hasAttribute(MenuBarConstants.HTML_CONTENT_ALLOWED);
 
         if (BrowserInfo.get().isAndroid() || BrowserInfo.get().isIOS()) {
-            // disable the auto-open on hover on devices that don't support
-            // hover.
+            // disable the auto-open on hover on devices that don't support hover.
             // fixes https://github.com/vaadin/framework/issues/5873
             widget.openRootOnHover = false;
         } else {
-            widget.openRootOnHover = uidl.getBooleanAttribute(
-                    MenuBarConstants.OPEN_ROOT_MENU_ON_HOWER);
+            widget.openRootOnHover = uidl
+                    .getBooleanAttribute(MenuBarConstants.OPEN_ROOT_MENU_ON_HOWER);
         }
 
         widget.enabled = isEnabled();
@@ -156,7 +155,7 @@ public class MenuBarConnector extends AbstractComponentConnector
 
                     String domId = getState().id;
                     if (domId != null && !domId.isEmpty()) {
-                        currentItem.getElement().setId(domId + "-" + itemId);
+                        currentItem.getElement().setId(domId+"-"+itemId);
                     }
 
                     if (item.getChildCount() > 0) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -1682,7 +1682,6 @@ public class Escalator extends Widget
          * @see #hasColumnAndRowData()
          */
         @Override
-        // overridden because of JavaDoc
         public void refreshRows(final int index, final int numberOfRows) {
             Range rowRange = Range.withLength(index, numberOfRows);
             Range colRange = Range.withLength(0,
@@ -4844,13 +4843,16 @@ public class Escalator extends Widget
              * Start at -1 to include a spacer that is rendered above the
              * viewport, but its parent row is still not shown
              */
+            int addedSpacers = 0;
             for (int i = -1; i < visualRowOrder.size(); i++) {
                 SpacerContainer.SpacerImpl spacer = spacers
                         .remove(Integer.valueOf(getTopRowLogicalIndex() + i));
 
                 if (spacer != null) {
-                    orderedBodyRows.add(i + 1, spacer.getRootElement());
+                    orderedBodyRows.add(i + 1 + addedSpacers,
+                            spacer.getRootElement());
                     spacer.show();
+                    ++addedSpacers;
                 }
             }
             /*
@@ -4972,6 +4974,11 @@ public class Escalator extends Widget
         @Override
         public boolean spacerExists(int rowIndex) {
             return spacerContainer.spacerExists(rowIndex);
+        }
+
+        @Override
+        public void resetSpacer(int rowIndex) {
+            spacerContainer.resetSpacer(rowIndex);
         }
 
         @Override
@@ -6386,6 +6393,14 @@ public class Escalator extends Widget
             return false;
         }
 
+        void resetSpacer(int rowIndex) {
+            if (spacerExists(rowIndex)) {
+                SpacerImpl spacer = getSpacer(rowIndex);
+                destroySpacerContent(spacer);
+                initSpacerContent(spacer);
+            }
+        }
+
         @SuppressWarnings("boxing")
         void scrollToSpacer(int spacerIndex, ScrollDestination destination,
                 int padding) {
@@ -7187,6 +7202,8 @@ public class Escalator extends Widget
 
     private final ElementPositionBookkeeper positions = new ElementPositionBookkeeper();
 
+    private Map<Element, ComputedStyle> computedStyleMap = new HashMap<>();
+
     /**
      * Creates a new Escalator widget instance.
      */
@@ -7276,14 +7293,28 @@ public class Escalator extends Widget
     private double getBoundingWidth(Element element) {
         // Gets the current width, including border and padding, for the element
         // while ignoring any transforms applied to the element (e.g. scale)
-        return new ComputedStyle(element).getWidthIncludingBorderPadding();
+        if (!computedStyleMap.containsKey(element)) {
+            if (computedStyleMap.isEmpty()) {
+                // ensure the next event loop calculates the sizes anew
+                Scheduler.get().scheduleDeferred(() -> clearComputedStyles());
+            }
+            computedStyleMap.put(element, new ComputedStyle(element));
+        }
+        return computedStyleMap.get(element).getWidthIncludingBorderPadding();
     }
 
     private double getBoundingHeight(Element element) {
         // Gets the current height, including border and padding, for the
         // element while ignoring any transforms applied to the element (e.g.
         // scale)
-        return new ComputedStyle(element).getHeightIncludingBorderPadding();
+        if (!computedStyleMap.containsKey(element)) {
+            if (computedStyleMap.isEmpty()) {
+                // ensure the next event loop calculates the sizes anew
+                Scheduler.get().scheduleDeferred(() -> clearComputedStyles());
+            }
+            computedStyleMap.put(element, new ComputedStyle(element));
+        }
+        return computedStyleMap.get(element).getHeightIncludingBorderPadding();
     }
 
     private int getBodyRowCount() {
@@ -8336,6 +8367,25 @@ public class Escalator extends Widget
      */
     public double getInnerWidth() {
         return getBoundingWidth(tableWrapper);
+    }
+
+    /**
+     * Gets the escalator's inner height. This is the entire height in pixels,
+     * without the horizontal scrollbar.
+     *
+     * @return escalator's inner height
+     */
+    public double getInnerHeight() {
+        return getBoundingHeight(tableWrapper);
+    }
+
+    /**
+     * FOR INTERNAL USE ONLY, MAY GET REMOVED OR MODIFIED AT ANY TIME!
+     * <p>
+     * Clears the computed styles.
+     */
+    void clearComputedStyles() {
+        computedStyleMap.clear();
     }
 
     /**

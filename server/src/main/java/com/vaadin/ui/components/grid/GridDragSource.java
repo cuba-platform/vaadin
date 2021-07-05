@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -87,8 +87,8 @@ public class GridDragSource<T> extends DragSourceExtension<Grid<T>> {
         // Create drag data generator
         dragDataGenerator = new DataGenerator<T>() {
             /**
-             * Drag data generator. Appends drag data to row data json if
-             * generator function(s) are set by the user of this extension.
+             * Drag data generator. Appends drag data to row data json if generator
+             * function(s) are set by the user of this extension.
              *
              * @param item
              *            Row item for data generation.
@@ -102,8 +102,7 @@ public class GridDragSource<T> extends DragSourceExtension<Grid<T>> {
                 generatorFunctions.forEach((type, generator) -> generatedValues
                         .put(type, generator.apply((T) item)));
 
-                jsonObject.put(GridDragSourceState.JSONKEY_DRAG_DATA,
-                        generatedValues);
+                jsonObject.put(GridDragSourceState.JSONKEY_DRAG_DATA, generatedValues);
             }
         };
 

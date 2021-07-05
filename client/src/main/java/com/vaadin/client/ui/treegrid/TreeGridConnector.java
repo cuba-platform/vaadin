@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -199,7 +199,7 @@ public class TreeGridConnector extends GridConnector {
                             .getVisibleRowRange();
                     getDataSource().ensureAvailability(
                             visibleRowRange.getStart(),
-                            visibleRowRange.getEnd());
+                            visibleRowRange.length());
                 }
                 checkExpand();
             }
@@ -213,7 +213,7 @@ public class TreeGridConnector extends GridConnector {
                             .getVisibleRowRange();
                     getDataSource().ensureAvailability(
                             visibleRowRange.getStart(),
-                            visibleRowRange.getEnd());
+                            visibleRowRange.length());
                 }
                 checkExpand();
             }

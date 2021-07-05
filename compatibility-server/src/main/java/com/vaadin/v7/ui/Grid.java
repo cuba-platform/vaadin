@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -46,6 +46,7 @@ import org.jsoup.select.Elements;
 import com.vaadin.event.ContextClickEvent;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.FocusAndBlurServerRpcDecorator;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.event.SerializableEventListener;
@@ -4815,6 +4816,8 @@ public class Grid extends AbstractComponent
      */
     private void initGrid() {
         setSelectionMode(getDefaultSelectionMode());
+
+        registerRpc(new FocusAndBlurServerRpcDecorator(this, this::fireEvent));
 
         registerRpc(new GridServerRpc() {
 

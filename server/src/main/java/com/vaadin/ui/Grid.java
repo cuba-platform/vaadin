@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -1261,6 +1261,18 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
          */
         public ValueProvider<T, V> getValueProvider() {
             return valueProvider;
+        }
+
+        /**
+         * Gets the function to get presentations from the value of data in this
+         * column, based on the row item.
+         *
+         * @return the presentation provider function
+         *
+         * @since 8.13
+         */
+        public ValueProvider<V, ?> getPresentationProvider() {
+            return presentationProvider;
         }
 
         /**
@@ -4752,7 +4764,8 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
             for (Column<T, ?> c : getColumns()) {
                 HeaderCell headerCell = getDefaultHeaderRow().getCell(c);
                 if (headerCell.getCellType() == GridStaticCellType.TEXT) {
-                    c.setCaption(headerCell.getText());
+                    String text = headerCell.getText();
+                    c.setCaption(text == null ? "" : text);
                 }
             }
         }
@@ -4986,7 +4999,17 @@ public class Grid<T> extends AbstractListing<T> implements HasComponents,
 
     @Override
     protected void internalSetDataProvider(DataProvider<T, ?> dataProvider) {
+        boolean newProvider = getDataProvider() != dataProvider;
         super.internalSetDataProvider(dataProvider);
+        if (newProvider) {
+            Set<T> oldVisibleDetails = new HashSet<>(
+                    detailsManager.visibleDetails);
+            oldVisibleDetails.forEach(item -> {
+                // close all old details even if the same item exists in the new
+                // provider
+                detailsManager.setDetailsVisible(item, false);
+            });
+        }
         for (Column<T, ?> column : getColumns()) {
             column.updateSortable();
         }

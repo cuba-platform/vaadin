@@ -10,7 +10,7 @@
     <artifactId>vaadin-root</artifactId>
     <name>vaadin-root</name>
     <packaging>pom</packaging>
-    <version>8.12-SNAPSHOT</version>
+    <version>8.13-SNAPSHOT</version>
 
     <prerequisites>
         <maven>3.1.0</maven>
@@ -27,7 +27,7 @@
         <liferay.portal-kernel.version>2.0.0</liferay.portal-kernel.version>
 
         <vaadin.gwt.version>2.8.2</vaadin.gwt.version>
-        <vaadin.plugin.version>8.12.3</vaadin.plugin.version>
+        <vaadin.plugin.version>8.13.1</vaadin.plugin.version>
 
         <!-- Used in OSGi manifests -->
         <javax.validation.version>2.0.1.Final</javax.validation.version>
@@ -49,8 +49,8 @@
 
         <!-- Dependency unpack directory -->
         <dependency.unpack.directory>${project.build.directory}/dependency-unpack</dependency.unpack.directory>
-
-        <jetty.version>9.4.35.v20201120</jetty.version>
+ 
+        <jetty.version>9.4.38.v20210224</jetty.version>
 
         <!-- Sonar properties -->
         <sonar.java.source>8</sonar.java.source>
@@ -139,7 +139,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.7</version>
             </dependency>
             <dependency>
                 <groupId>commons-cli</groupId>
@@ -166,7 +166,7 @@
                 <artifactId>vaadin-sass-compiler</artifactId>
                 <version>${vaadin.sass.version}</version>
                 <exclusions>
-                    <!-- No need to have the minifier included for development
+                    <!-- No need to have the minifier included for development 
                         mode on-the-fly compilation -->
                     <exclusion>
                         <groupId>com.yahoo.platform.yui</groupId>
@@ -203,7 +203,7 @@
                 <groupId>com.vaadin.external.atmosphere.client</groupId>
                 <artifactId>javascript</artifactId>
                 <type>war</type>
-                <version>2.3.2.vaadin1</version>
+                <version>2.3.2.vaadin2</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -392,7 +392,7 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.0</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>	
     </dependencies>
 
     <distributionManagement>
@@ -498,38 +498,6 @@
                     <version>${vaadin.plugin.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>net.revelc.code.formatter</groupId>
-                    <artifactId>formatter-maven-plugin</artifactId>
-                    <version>2.7.2</version>
-                    <configuration>
-                        <configFile>${project.basedir}/../eclipse/VaadinJavaConventions.xml</configFile>
-                        <skipJsFormatting>true</skipJsFormatting>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>format-source</id>
-                            <goals>
-                                <goal>format</goal>
-                            </goals>
-                            <phase>process-sources</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.dantwining.whitespace-maven-plugin</groupId>
-                    <artifactId>whitespace-maven-plugin</artifactId>
-                    <version>1.0.4</version>
-                    <executions>
-                        <execution>
-                            <id>trim-trailing-spaces-source</id>
-                            <goals>
-                                <goal>trim</goal>
-                            </goals>
-                            <phase>process-sources</phase>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>2.17</version>
@@ -576,44 +544,6 @@
                                         </versionRange>
                                         <goals>
                                             <goal>run</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            net.revelc.code.formatter
-                                        </groupId>
-                                        <artifactId>
-                                            formatter-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [2.7.2,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>format</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            com.github.dantwining.whitespace-maven-plugin
-                                        </groupId>
-                                        <artifactId>
-                                            whitespace-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.0.4,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>trim</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
@@ -721,7 +651,7 @@
             </modules>
         </profile>
         <profile>
-            <!-- Profile for running integration tests. Vaadin version to
+            <!-- Profile for running integration tests. Vaadin version to 
                 be tested can be defined with property vaadin.version -->
             <id>slowtest</id>
             <modules>
@@ -729,7 +659,7 @@
             </modules>
         </profile>
         <profile>
-            <!-- This profile builds the assembled parts of the Framework
+            <!-- This profile builds the assembled parts of the Framework 
                 for website release. Should be run after running the release profile -->
             <id>release-assemblies</id>
             <modules>
@@ -738,7 +668,7 @@
             </modules>
         </profile>
         <profile>
-            <!-- Release build only builds artifacts that are deployed or
+            <!-- Release build only builds artifacts that are deployed or 
                 needed by them -->
             <id>release</id>
             <properties>
@@ -804,7 +734,7 @@
             </build>
         </profile>
         <profile>
-            <!-- Pre-release build only builds artifacts that are deployed or
+            <!-- Pre-release build only builds artifacts that are deployed or 
                 needed by them -->
             <id>prerelease</id>
             <properties>
@@ -870,7 +800,7 @@
             </build>
         </profile>
         <profile>
-            <!-- Snapshot build only builds artifacts that are deployed or
+            <!-- Snapshot build only builds artifacts that are deployed or 
                 needed by them -->
             <id>snapshot</id>
             <properties>
@@ -942,10 +872,10 @@
             </build>
         </profile>
         <profile>
-            <!-- This profile is disjoint with default profile. It allows
-                to prevent running build for all available modules but restricts a number
-                of modules to specified here only (which allows to avoid long time compilation
-                for projects that are not needed since japicmp works with compiled classes).
+            <!-- This profile is disjoint with default profile. It allows 
+                to prevent running build for all available modules but restricts a number 
+                of modules to specified here only (which allows to avoid long time compilation 
+                for projects that are not needed since japicmp works with compiled classes). 
                 ! -->
             <id>apicmp</id>
             <modules>
@@ -1008,7 +938,7 @@
             </build>
         </profile>
         <profile>
-            <!-- Testing profile for measurement tests. Use along with default
+            <!-- Testing profile for measurement tests. Use along with default 
                 profile -->
             <id>measurements</id>
             <properties>

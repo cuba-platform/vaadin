@@ -52,8 +52,9 @@ public class GridEditRowTest extends MultiBrowserTest {
 
     private void assertEditorWithinGrid() {
         GridEditorElement editor = grid.getEditor();
-        assertThat(editor.getLocation().y + editor.getSize().height,
-                not(greaterThan(grid.getLocation().y + grid.getSize().height)));
+        // allow 1px leeway
+        assertThat(editor.getLocation().y + editor.getSize().height, not(
+                greaterThan(grid.getLocation().y + grid.getSize().height + 1)));
     }
 
     @Test
@@ -67,6 +68,8 @@ public class GridEditRowTest extends MultiBrowserTest {
         assertRowContents(0);
 
         waitForElementVisible(By.className("v-grid-editor"));
+        // wait for position corrections
+        sleep(100);
 
         assertEditorWithinGrid();
     }
@@ -80,6 +83,8 @@ public class GridEditRowTest extends MultiBrowserTest {
         editLastRow();
 
         waitForElementVisible(By.className("v-grid-editor"));
+        // wait for position corrections
+        sleep(100);
 
         assertRowContents(3);
         assertEditorWithinGrid();
@@ -94,6 +99,8 @@ public class GridEditRowTest extends MultiBrowserTest {
         editLastRow();
 
         waitForElementVisible(By.className("v-grid-editor"));
+        // wait for position corrections
+        sleep(100);
 
         assertRowContents(91);
         assertEditorWithinGrid();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,6 +14,15 @@
  * the License.
  */
 package com.vaadin.client.ui.ui;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
@@ -91,18 +100,10 @@ import com.vaadin.shared.ui.ui.UIServerRpc;
 import com.vaadin.shared.ui.ui.UIState;
 import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.ui.UI;
+
 import elemental.client.Browser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 @Connect(value = UI.class, loadStyle = LoadStyle.EAGER)
 public class UIConnector extends AbstractSingleComponentContainerConnector
@@ -929,6 +930,11 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
      */
     public void showServerDesign(ServerConnector connector) {
         getRpcProxy(DebugWindowServerRpc.class).showServerDesign(connector);
+    }
+
+    @OnStateChange("thoroughSizeCheck")
+    void onThoroughSizeChckChange() {
+        getLayoutManager().setThoroughSizeChck(getState().thoroughSizeCheck);
     }
 
     @OnStateChange("theme")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -75,7 +75,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.WidgetUtil;
@@ -1980,6 +1979,13 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                         // editor overlay since the original one is hidden by
                         // the overlay
                         final CheckBox checkBox = GWT.create(CheckBox.class);
+                        checkBox.setStylePrimaryName(grid.getStylePrimaryName()
+                                + "-selection-checkbox");
+
+                        // label of checkbox should only be visible for
+                        // assistive devices
+                        checkBox.addStyleName("v-assistive-device-only-label");
+
                         checkBox.setValue(
                                 grid.isSelected(pinnedRowHandle.getRow()));
                         checkBox.sinkEvents(Event.ONCLICK);
@@ -3470,7 +3476,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
             // Update latest width to prevent recalculate on height change.
             lastCalculatedInnerWidth = escalator.getInnerWidth();
-            lastCalculatedInnerHeight = getEscalatorInnerHeight();
+            lastCalculatedInnerHeight = escalator.getInnerHeight();
         }
 
         private boolean columnsAreGuaranteedToBeWiderThanGrid() {
@@ -9542,11 +9548,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         });
     }
 
-    private double getEscalatorInnerHeight() {
-        return new ComputedStyle(getEscalator().getTableWrapper())
-                .getHeightIncludingBorderPadding();
-    }
-
     /**
      * Grid does not support adding Widgets this way.
      * <p>
@@ -9796,6 +9797,17 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
      */
     public boolean isDetailsVisible(int rowIndex) {
         return visibleDetails.contains(Integer.valueOf(rowIndex));
+    }
+
+    /**
+     * Reset the details row with current contents.
+     *
+     * @since 8.13
+     * @param rowIndex
+     *            the index of the row for which details should be reset
+     */
+    public void resetVisibleDetails(int rowIndex) {
+        escalator.getBody().resetSpacer(rowIndex);
     }
 
     /**

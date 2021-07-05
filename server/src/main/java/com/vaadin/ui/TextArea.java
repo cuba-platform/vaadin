@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -136,13 +136,16 @@ public class TextArea extends AbstractTextField {
 
     /**
      * Sets the number of rows in the text area.
+     * <p>
+     * Note: it's not possible to display less than one row via this height
+     * setting method, so minimum number of rows has been set to 1.
      *
      * @param rows
      *            the number of rows for this text area.
      */
     public void setRows(int rows) {
-        if (rows < 0) {
-            rows = 0;
+        if (rows < 1) {
+            rows = 1;
         }
         getState().rows = rows;
     }

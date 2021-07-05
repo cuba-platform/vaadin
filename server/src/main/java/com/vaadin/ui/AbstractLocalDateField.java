@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -103,8 +103,8 @@ public abstract class AbstractLocalDateField
     @Override
     protected RangeValidator<LocalDate> getRangeValidator() {
         return new DateRangeValidator(getDateOutOfRangeMessage(),
-                getDate(getRangeStart(), getResolution()),
-                getDate(getRangeEnd(), getResolution()));
+                adjustToResolution(getRangeStart(), getResolution()),
+                adjustToResolution(getRangeEnd(), getResolution()));
     }
 
     @Override
@@ -134,7 +134,9 @@ public abstract class AbstractLocalDateField
         return Date.from(date.atStartOfDay(ZoneOffset.UTC).toInstant());
     }
 
-    private LocalDate getDate(LocalDate date, DateResolution forResolution) {
+    @Override
+    protected LocalDate adjustToResolution(LocalDate date,
+            DateResolution forResolution) {
         if (date == null) {
             return null;
         }
@@ -171,17 +173,16 @@ public abstract class AbstractLocalDateField
     protected Result<LocalDate> handleUnparsableDateString(String dateString) {
         // Handle possible week number, which cannot be parsed client side due
         // limitations in GWT
-        if (this.getDateFormat() != null
-                && this.getDateFormat().contains("w")) {
+        if (getDateFormat() != null && getDateFormat().contains("w")) {
             Date parsedDate;
-            SimpleDateFormat df = new SimpleDateFormat(this.getDateFormat(),
-                    this.getLocale());
+            SimpleDateFormat df = new SimpleDateFormat(getDateFormat(),
+                    getLocale());
             try {
                 parsedDate = df.parse(dateString);
             } catch (ParseException e) {
                 return super.handleUnparsableDateString(dateString);
             }
-            ZoneId zi = this.getZoneId();
+            ZoneId zi = getZoneId();
             if (zi == null) {
                 zi = ZoneId.systemDefault();
             }

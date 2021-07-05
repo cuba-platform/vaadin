@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -309,7 +309,7 @@ public class VTooltip extends VOverlay {
                         // Do not allow x to be zero, for otherwise the tooltip
                         // does not close when the mouse is moved (see
                         // isTooltipOpen()). #15129
-                        int minX = Window.getScrollLeft();
+                        int minX = Math.max(1, Window.getScrollLeft());
                         x = Math.max(x, minX);
                     }
                     return x;

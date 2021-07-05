@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -14,6 +14,27 @@
  * the License.
  */
 package com.vaadin.data;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 import com.vaadin.annotations.PropertyId;
@@ -37,27 +58,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.util.ReflectTools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Connects one or more {@code Field} components to properties of a backing data
@@ -257,11 +257,10 @@ public class Binder<BEAN> implements Serializable {
         public boolean isAsRequiredEnabled();
 
         /**
-         * Define whether validators are disabled or enabled for this specific
-         * binding.
+         * Define whether validators are disabled or enabled for this
+         * specific binding.
          *
-         * @param validatorsDisabled
-         *            A boolean value
+         * @param validatorsDisabled A boolean value
          *
          * @since 8.11
          */
@@ -275,6 +274,28 @@ public class Binder<BEAN> implements Serializable {
          * @since 8.11
          */
         public boolean isValidatorsDisabled();
+
+        /**
+         * Define whether the value should be converted back to the presentation
+         * in the field when a converter is used in binding.
+         *
+         * @param convertBackToPresentation
+         *            A boolean value
+         *
+         * @since 8.13
+         */
+        public void setConvertBackToPresentation(
+                boolean convertBackToPresentation);
+
+        /**
+         * Returns whether the value is converted back to the presentation in
+         * the field when a converter is used in binding.
+         *
+         * @return A boolean value
+         *
+         * @since 8.13
+         */
+        public boolean isConvertBackToPresentation();
     }
 
     /**
@@ -934,8 +955,8 @@ public class Binder<BEAN> implements Serializable {
             Objects.requireNonNull(validator, "validator cannot be null");
 
             Validator<? super TARGET> wrappedValidator = ((value, context) -> {
-                if (getBinder().isValidatorsDisabled() || (binding != null
-                        && binding.isValidatorsDisabled())) {
+                if (getBinder().isValidatorsDisabled() ||
+                        (binding != null && binding.isValidatorsDisabled())) {
                     return ValidationResult.ok();
                 } else {
                     return validator.apply(value, context);
@@ -1093,6 +1114,8 @@ public class Binder<BEAN> implements Serializable {
         private boolean asRequiredSet;
 
         private boolean validatorsDisabled = false;
+
+        private boolean convertBackToPresentation = true;
 
         public BindingImpl(BindingBuilderImpl<BEAN, FIELDVALUE, TARGET> builder,
                 ValueProvider<BEAN, TARGET> getter,
@@ -1274,10 +1297,12 @@ public class Binder<BEAN> implements Serializable {
 
         /**
          * Write the field value by invoking the setter function on the given
-         * bean, if the value passes all registered validators.
+         * bean, if the value passes all registered validators. Write value back
+         * to the field as well if {@code isConvertBackToPresentation()} is
+         * true.
          *
          * @param bean
-         *            the bean to set the property value to
+         *            the bean to set the property value to, not null
          */
         private BindingValidationStatus<TARGET> writeFieldValue(BEAN bean) {
             assert bean != null;
@@ -1286,9 +1311,9 @@ public class Binder<BEAN> implements Serializable {
             if (!isReadOnly()) {
                 result.ifOk(value -> {
                     setter.accept(bean, value);
-                    if (value != null) {
+                    if (convertBackToPresentation && value != null) {
                         FIELDVALUE converted = convertToFieldType(value);
-                        if (!field.getValue().equals(converted)) {
+                        if (!Objects.equals(field.getValue(), converted)) {
                             getField().setValue(converted);
                         }
                     }
@@ -1393,6 +1418,17 @@ public class Binder<BEAN> implements Serializable {
         @Override
         public boolean isValidatorsDisabled() {
             return validatorsDisabled;
+        }
+
+        @Override
+        public void setConvertBackToPresentation(
+                boolean convertBackToPresentation) {
+            this.convertBackToPresentation = convertBackToPresentation;
+        }
+
+        @Override
+        public boolean isConvertBackToPresentation() {
+            return convertBackToPresentation;
         }
     }
 
@@ -1917,13 +1953,13 @@ public class Binder<BEAN> implements Serializable {
      * @since 8.10
      */
     public void writeBeanAsDraft(BEAN bean) {
-        doWriteDraft(bean, new ArrayList<>(bindings), false);
+        doWriteDraft(bean, new ArrayList<>(bindings),false);
     }
 
     /**
-     * Writes successfully converted changes from the bound fields bypassing all
-     * the Validation, or all fields passing conversion if forced = true. If the
-     * conversion fails, the value written to the bean will be null.
+     * Writes successfully converted changes from the bound fields bypassing
+     * all the Validation, or all fields passing conversion if forced = true.
+     * If the conversion fails, the value written to the bean will be null.
      *
      * @see #writeBean(Object)
      * @see #writeBeanIfValid(Object)
@@ -1938,7 +1974,7 @@ public class Binder<BEAN> implements Serializable {
      * @since 8.11
      */
     public void writeBeanAsDraft(BEAN bean, boolean forced) {
-        doWriteDraft(bean, new ArrayList<>(bindings), forced);
+        doWriteDraft(bean, new ArrayList<>(bindings),forced);
     }
 
     /**
@@ -2039,12 +2075,12 @@ public class Binder<BEAN> implements Serializable {
      * @param forced
      *            disable validators during write if true
      */
-    private void doWriteDraft(BEAN bean, Collection<Binding<BEAN, ?>> bindings,
-            boolean forced) {
+    private void doWriteDraft(BEAN bean, 
+            Collection<Binding<BEAN, ?>> bindings, boolean forced) {
         Objects.requireNonNull(bean, "bean cannot be null");
 
         if (!forced) {
-            bindings.forEach(binding -> ((BindingImpl<BEAN, ?, ?>) binding)
+             bindings.forEach(binding -> ((BindingImpl<BEAN, ?, ?>) binding)
                     .writeFieldValue(bean));
         } else {
             boolean isDisabled = isValidatorsDisabled();
@@ -3128,11 +3164,10 @@ public class Binder<BEAN> implements Serializable {
     }
 
     /**
-     * Control whether validators including bean level validators are disabled
-     * or enabled globally for this Binder.
-     *
-     * @param validatorsDisabled
-     *            Boolean value
+     * Control whether validators including bean level validators are
+     * disabled or enabled globally for this Binder.
+     * 
+     * @param validatorsDisabled Boolean value
      *
      * @since 8.11
      */
@@ -3141,9 +3176,9 @@ public class Binder<BEAN> implements Serializable {
     }
 
     /**
-     * Returns if the validators including bean level validators are disabled or
-     * enabled for this Binder.
-     *
+     * Returns if the validators including bean level validators
+     * are disabled or enabled for this Binder.
+     * 
      * @return Boolean value
      *
      * @since 8.11

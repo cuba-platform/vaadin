@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-root</artifactId>
-        <version>8.12-SNAPSHOT</version>
+        <version>8.13-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-uitest</artifactId>
     <name>vaadin-uitest</name>
@@ -238,15 +238,6 @@
 
         <plugins>
             <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.github.dantwining.whitespace-maven-plugin</groupId>
-                <artifactId>whitespace-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-maven-plugin</artifactId>
                 <configuration>
@@ -317,6 +308,17 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>compatibility</id>
+                        <configuration>
+                            <includes>
+                                <include>**/LimitedTB3TestsCompatibility.java</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>no-components</id>
                         <configuration>
                             <includes>
@@ -353,6 +355,7 @@
                         <id>verify</id>
                         <configuration>
                             <includes>
+                                <include>**/LimitedTB3TestsCompatibility.java</include>
                                 <include>**/LimitedTB3TestsNonComponent.java</include>
                                 <include>**/LimitedTB3TestsComponentsNoGrid.java</include>
                                 <include>**/LimitedTB3TestsComponentsGridOnly.java</include>

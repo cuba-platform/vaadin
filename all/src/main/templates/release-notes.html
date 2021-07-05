@@ -65,7 +65,7 @@
                 a number of new features and bug fixes, as listed in the <a
                 href="#enhancements">list of enhancements</a> and <a
                 href="#changelog">change log</a> below.
-<!--		The API in this alpha version is not considered final and may change based on your feedback.-->
+<!--		The API in this version is not considered final and may change based on your feedback. -->
 	</p>
 
         <!-- ================================================================ -->
@@ -82,24 +82,19 @@
         <p>Vaadin Framework @version-minor@ includes many major and minor
             enhancements. Below is a list of the most notable changes:</p>
 
-        <h3>Enhancements</h3>
-
         <ul>
-                <li>Recalculate column widths when vertical scrollbar hidden/shown</li>
-                <li>Add support for "ww" in date format</li>
-                <li>All updates to Escalator size should get reported to LayoutManager</li>
-                <li>Ensure type safety and serializable nature of all the listeners</li>
-                <li>Add convenience overloading for <tt>setColumn</tt></li>
-                <li>Add API to detect if <tt>GridMultiSelect</tt> select-all checkbox is checked</li>
-                <li>Added missing MIME types to <tt>FileTypeResolver</tt></li>
+		<li>Optimize Grid performance, by re-using ComputedStyles in Escalator when possible.</li>
+		<li>Add API to prevent invalid input when integrated range validator is used in DateField</li>
+		<li>Add getter for presentationProvider in Grid.Column</li>
+		<li>Fixed LayoutManager size calculations during transform.</li>
         </ul>
 
         </p>
 
         <p>
-            For enhancements introduced in Vaadin Framework 8.11, see the <a
-                href="http://vaadin.com/download/release/8.11/8.11.0/release-notes.html">Release
-                Notes for Vaadin Framework 8.11.0</a>.
+            For enhancements introduced in Vaadin Framework 8.12, see the <a
+                href="http://vaadin.com/download/release/8.12/8.12.0/release-notes.html">Release
+                Notes for Vaadin Framework 8.12.0</a>.
             For migrating from previous framework versions, see <a href="#incompatible">the list of incompatible changes</a> and <a href="#migrating">how to migrate
             to Vaadin Framework 8</a>.
         </p>
@@ -107,10 +102,11 @@
         <h2 id="incompatible">Incompatible or Behavior-altering Changes in @version-minor@</h2>
 
         <ul>
-            <li>Fixed potential security issue related method used by framework by updating Hibernate dependency to version 5.3.6.</li>
+            <li>Fix: Updating Grid's item set when details rows are open.</li>
+            <li>DateField value now actively adjusts to the set resolution.</li>
         </ul>
 
-        <h2>For incompatible or behavior-altering changes in 8.11, please see <a href="https://vaadin.com/download/release/8.11/8.11.0/release-notes.html#incompatible">8.11 release notes</a></h2>
+        <h2>For incompatible or behavior-altering changes in 8.12, please see <a href="https://vaadin.com/download/release/8.12/8.12.0/release-notes.html#incompatible">8.11 release notes</a></h2>
 
         <h3 id="knownissues">Known Issues and Limitations</h3>
         <ul>
@@ -343,7 +339,7 @@
         <h2 id="supportedversions">Supported Technologies</h2>
 
         <p>
-           The server-side Vaadin Framework 8 is compatible with <b>Java 8 and 11</b>. Note, that the client-side Java code, compiled using GWT to be run as JS on the browser side, only supports language features up to Java 9 and a subset of JDK libraries.
+           The server-side Vaadin Framework 8 is compatible with <b>Java 8 and 11</b>. Note, that the client-side Java code, compiled using GWT to be run as JS on the browser side, only supports language features up to Java 9 and a subset of JDK libraries. 
 	Vaadin Framework 8 is developed and tested with Oracle JDK, but other
 		compliant Java distributions should work as well. More about Java support in <a href="https://vaadin.com/faq">
             FAQ</a>. Vaadin Framework

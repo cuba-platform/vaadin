@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -111,8 +111,8 @@ public abstract class AbstractLocalDateTimeField
     @Override
     protected RangeValidator<LocalDateTime> getRangeValidator() {
         return new DateTimeRangeValidator(getDateOutOfRangeMessage(),
-                getDate(getRangeStart(), getResolution()),
-                getDate(getRangeEnd(), getResolution()));
+                adjustToResolution(getRangeStart(), getResolution()),
+                adjustToResolution(getRangeEnd(), getResolution()));
     }
 
     @Override
@@ -143,7 +143,8 @@ public abstract class AbstractLocalDateTimeField
         return Date.from(date.toInstant(ZoneOffset.UTC));
     }
 
-    private LocalDateTime getDate(LocalDateTime date,
+    @Override
+    protected LocalDateTime adjustToResolution(LocalDateTime date,
             DateTimeResolution forResolution) {
         if (date == null) {
             return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -132,26 +132,43 @@ public class ShortcutActionHandler {
          * The focused component might have unpublished changes, try to
          * synchronize them before firing shortcut action.
          */
-        client.flushActiveConnector();
-        /*
-         * Legacy components don't have built-in logic for flushing, they need a
-         * workaround with blur and focus to trigger the value change.
-         */
+        boolean flushed = false;
         ComponentConnector activeConnector = getActiveConnector(client);
+
         if (activeConnector != null) {
             Class<?> clz = activeConnector.getClass();
             while (clz != null) {
                 if (clz.getName().equals(
+                        "com.vaadin.v7.client.ui.textfield.TextFieldConnector")) {
+                    /*
+                     * Legacy textfields support modern flushing.
+                     */
+                    client.flushActiveConnector();
+                    flushed = true;
+                    break;
+                }
+                if (clz.getName().equals(
                         "com.vaadin.v7.client.ui.AbstractLegacyComponentConnector")) {
+                    /*
+                     * Most of the legacy components don't have built-in logic
+                     * for flushing, they need a workaround with blur and focus
+                     * to trigger the value change.
+                     */
                     shakeTarget(et);
                     Scheduler.get().scheduleDeferred(() -> {
                         shakeTarget(et);
                     });
+                    flushed = true;
                     break;
                 }
                 clz = clz.getSuperclass();
             }
         }
+        if (!flushed) {
+            // Use V8 style flushing for the rest.
+            client.flushActiveConnector();
+        }
+
         Scheduler.get().scheduleDeferred(() -> {
             if (finalTarget != null) {
                 client.updateVariable(paintableId, "actiontarget", finalTarget,

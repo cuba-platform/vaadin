@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -84,6 +84,16 @@ public interface RowContainer {
          * @since 8.9
          */
         boolean spacerExists(int rowIndex);
+
+        /**
+         * Updates the spacer corresponding with the given rowIndex to currently
+         * provided contents.
+         *
+         * @since 8.13
+         * @param rowIndex
+         *            the row index for the spacer in need of updating
+         */
+        void resetSpacer(int rowIndex);
 
         /**
          * Sets a new spacer updater.

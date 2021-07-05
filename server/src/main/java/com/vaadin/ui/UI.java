@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -2019,6 +2019,40 @@ public abstract class UI extends AbstractSingleComponentContainer
                 vaadinLocation + ApplicationConstants.MOBILE_DND_POLYFILL_JS));
 
         getRpcProxy(PageClientRpc.class).initializeMobileHtml5DndPolyfill();
+    }
+
+    /**
+     * Returns whether LayoutManager uses thorough size check that evaluates the
+     * presence of the element and uses calculated size, or defaults to a
+     * slightly faster check that can result in incorrect size information if
+     * the check is triggered while a transform animation is ongoing. This can
+     * happen e.g. when a PopupView is opened.
+     * <p>
+     * By default, the thorough size check is enabled.
+     *
+     * @return {@code true} if thorough size check enabled, {@code false} if not
+     * @since 8.13
+     */
+    public boolean isUsingThoroughSizeCheck() {
+        return getState(false).thoroughSizeCheck;
+    }
+
+    /**
+     * Set whether LayoutManager should use thorough size check that evaluates
+     * the presence of the element and uses calculated size, or default to a
+     * slightly faster check that can result in incorrect size information if
+     * the check is triggered while a transform animation is ongoing. This can
+     * happen e.g. when a PopupView is opened.
+     * <p>
+     * By default, the thorough size check is enabled.
+     *
+     * @param thoroughSizeCheck
+     *            {@code true} if thorough size check enabled, {@code false} if
+     *            not
+     * @since 8.13
+     */
+    public void setUsingThoroughSizeCheck(boolean thoroughSizeCheck) {
+        getState().thoroughSizeCheck = thoroughSizeCheck;
     }
 
     /**

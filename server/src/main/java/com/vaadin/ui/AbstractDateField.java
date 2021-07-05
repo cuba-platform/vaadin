@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,10 +37,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.googlecode.gentyref.GenericTypeReflector;
 import org.jsoup.nodes.Element;
 import org.slf4j.LoggerFactory;
 
+import com.googlecode.gentyref.GenericTypeReflector;
 import com.vaadin.data.Result;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.Validator;
@@ -176,7 +176,14 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                             }
                         }
                     } else {
-                        setValue(newDate, true);
+                        RangeValidator<T> validator = getRangeValidator();
+                        ValidationResult result = validator.apply(newDate,
+                                new ValueContext());
+                        if (!isPreventInvalidInput() || !result.isError()) {
+                            setValue(newDate, true);
+                        } else {
+                            doSetValue(newDate);
+                        }
                     }
                 }
             }
@@ -184,7 +191,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     }
 
     /**
-     * The default start year (inclusive) from which to calculate the
+     * The default start year (inclusive) from which to calculate the 
      * daylight-saving time zone transition dates.
      */
     private static final int DEFAULT_START_YEAR = 1980;
@@ -234,6 +241,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     private String defaultParseErrorMessage = "Date format not recognized";
 
     private String dateOutOfRangeMessage = "Date is out of allowed range";
+
+    private boolean preventInvalidInput = false;
 
     /* Constructors */
 
@@ -384,8 +393,11 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      *            the resolution to set, not {@code null}
      */
     public void setResolution(R resolution) {
-        this.resolution = resolution;
-        updateResolutions();
+        if (!resolution.equals(this.resolution)) {
+            this.resolution = resolution;
+            setValue(adjustToResolution(getValue(), resolution));
+            updateResolutions();
+        }
     }
 
     /**
@@ -715,8 +727,9 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      */
     @Override
     public void setValue(T value) {
+        T adjusted = adjustToResolution(value, getResolution());
         RangeValidator<T> validator = getRangeValidator();
-        ValidationResult result = validator.apply(value,
+        ValidationResult result = validator.apply(adjusted,
                 new ValueContext(this, this));
 
         if (result.isError()) {
@@ -730,7 +743,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
              * in by the user). No value changes should happen, but we need to
              * do some internal housekeeping.
              */
-            if (value == null && !getState(false).parsable) {
+            if (adjusted == null && !getState(false).parsable) {
                 /*
                  * Side-effects of doSetValue clears possible previous strings
                  * and flags about invalid input.
@@ -740,9 +753,24 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                 markAsDirty();
                 return;
             }
-            super.setValue(value);
+            super.setValue(adjusted);
         }
     }
+
+    /**
+     * Adjusts the given date to the given resolution. Any values that are more
+     * specific than the given resolution are truncated to their default values.
+     *
+     * @param date
+     *            the date to adjust, can be {@code null}
+     * @param resolution
+     *            the resolution to be used in the adjustment, can be
+     *            {@code null}
+     * @return an adjusted date that matches the given resolution, or
+     *         {@code null} if the given date, resolution, or both were
+     *         {@code null}
+     */
+    protected abstract T adjustToResolution(T date, R resolution);
 
     /**
      * Checks whether ISO 8601 week numbers are shown in the date selector.
@@ -826,7 +854,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                     LoggerFactory.getLogger(AbstractDateField.class).info(
                             "cannot parse {} as date", design.attr("value"));
                 }
-                doSetValue(date);
+                doSetValue(adjustToResolution(date, getResolution()));
             } else {
                 throw new RuntimeException("Cannot detect resoluton type "
                         + Optional.ofNullable(dateType).map(Type::getTypeName)
@@ -1116,5 +1144,29 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      */
     public void getAssistiveLabel(AccessibleElement element) {
         getState(false).assistiveLabels.get(element);
+    }
+
+    /**
+     * Control whether value change event is emitted when user input value
+     * does not meet the integrated range validator.
+     *
+     * @param preventInvalidInput Set to false to disable the value change event.
+     *
+     * @since 8.13
+     */
+    public void setPreventInvalidInput(boolean preventInvalidInput) {
+        this.preventInvalidInput = preventInvalidInput;
+    }
+
+    /**
+     * Check whether value change is emitted when user input value does
+     * not meet integrated range validator. The default is false.
+     *
+     * @return a Boolean value
+     *
+     * @since 8.13
+     */
+    public boolean isPreventInvalidInput() {
+        return preventInvalidInput;
     }
 }
