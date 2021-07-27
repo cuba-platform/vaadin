@@ -4201,6 +4201,9 @@ public class VScrollTable extends FlowPanel
             private VScrollTableRow currentlyFocusedRow;
             private int columnActionId;
 
+            // Haulmont API
+            protected boolean immediateColumnAdjustment = true;
+
             public VisibleColumnAction(String colKey) {
                 super(VScrollTable.TableHead.this);
                 this.colKey = colKey;
@@ -4232,7 +4235,7 @@ public class VScrollTable extends FlowPanel
                 } else {
                     tHead.removeCell(colKey);
                     collapsedColumns.add(colKey);
-                    triggerLazyColumnAdjustment(true);
+                    triggerLazyColumnAdjustment(immediateColumnAdjustment);
                     className = "v-off";
                 }
 
@@ -4302,6 +4305,16 @@ public class VScrollTable extends FlowPanel
             // Haulmont API
             public String getColKey() {
                 return colKey;
+            }
+
+            // Haulmont API
+            public boolean isImmediateColumnAdjustment() {
+                return immediateColumnAdjustment;
+            }
+
+            // Haulmont API
+            public void setImmediateColumnAdjustment(boolean immediate) {
+                this.immediateColumnAdjustment = immediate;
             }
         }
 
