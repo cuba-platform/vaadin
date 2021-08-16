@@ -3191,7 +3191,9 @@ public class Table extends AbstractSelect implements Action.Container,
             }
             MouseEventDetails evt = MouseEventDetails
                     .deSerialize((String) variables.get("clickEvent"));
-            Item item = getItem(itemId);
+
+            // Haulmont API - check itemId before getting item
+            Item item = itemId == null ? null : getItem(itemId);
             if (item != null) {
                 fireEvent(new ItemClickEvent(this, item, itemId, propertyId,
                         evt));
