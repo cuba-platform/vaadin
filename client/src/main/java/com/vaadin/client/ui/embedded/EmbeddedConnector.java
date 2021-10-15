@@ -16,6 +16,8 @@
 
 package com.vaadin.client.ui.embedded;
 
+import java.util.Map;
+
 import com.google.gwt.dom.client.*;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -32,8 +34,11 @@ import com.vaadin.ui.Embedded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
+/**
+ * A connector class for the Embedded component.
+ *
+ * @author Vaadin Ltd
+ */
 @Connect(value = Embedded.class, loadStyle = Connect.LoadStyle.LAZY)
 public class EmbeddedConnector extends AbstractComponentConnector {
 
@@ -41,6 +46,7 @@ public class EmbeddedConnector extends AbstractComponentConnector {
     private ObjectElement objectElement;
     private String resourceUrl;
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
@@ -133,69 +139,7 @@ public class EmbeddedConnector extends AbstractComponentConnector {
                         .error("Unknown Embedded type '" + widget.type + "'");
             }
         } else if (state.mimeType != null) {
-            // remove old style name related to type
-            if (widget.type != null) {
-                widget.removeStyleName(VEmbedded.CLASSNAME + "-" + widget.type);
-            }
-            // remove old style name related to mime type
-            if (widget.mimetype != null) {
-                widget.removeStyleName(
-                        VEmbedded.CLASSNAME + "-" + widget.mimetype);
-            }
-            final String mime = state.mimeType;
-            if (mime.equals("application/x-shockwave-flash")) {
-                widget.mimetype = "flash";
-                // Handle embedding of Flash
-                widget.addStyleName(VEmbedded.CLASSNAME + "-flash");
-                widget.setHTML(
-                        widget.createFlashEmbed(state, getResourceUrl("src")));
-
-            } else if (mime.equals("image/svg+xml")) {
-                widget.mimetype = "svg";
-                widget.addStyleName(VEmbedded.CLASSNAME + "-svg");
-                String data;
-                Map<String, String> parameters = state.parameters;
-                ObjectElement obj = Document.get().createObjectElement();
-                resourceElement = null;
-                if (parameters.get("data") == null) {
-                    objectElement = obj;
-                    data = getResourceUrl("src");
-                    setResourceUrl(data);
-                } else {
-                    objectElement = null;
-                    data = "data:image/svg+xml," + parameters.get("data");
-                    obj.setData(data);
-                }
-                widget.setHTML("");
-                obj.setType(mime);
-                if (!isUndefinedWidth()) {
-                    obj.getStyle().setProperty("width", "100%");
-                }
-                if (!isUndefinedHeight()) {
-                    obj.getStyle().setProperty("height", "100%");
-                }
-                if (state.classId != null) {
-                    obj.setAttribute("classid", state.classId);
-                }
-                if (state.codebase != null) {
-                    obj.setAttribute("codebase", state.codebase);
-                }
-                if (state.codetype != null) {
-                    obj.setAttribute("codetype", state.codetype);
-                }
-                if (state.archive != null) {
-                    obj.setAttribute("archive", state.archive);
-                }
-                if (state.standby != null) {
-                    obj.setAttribute("standby", state.standby);
-                }
-                widget.getElement().appendChild(obj);
-                if (state.altText != null) {
-                    obj.setInnerText(state.altText);
-                }
-            } else {
-                getLogger().error("Unknown Embedded mimetype '" + mime + "'");
-            }
+            handleMimeType();
         } else {
             getLogger()
                     .error("Unknown Embedded; no type or mimetype attribute");
@@ -203,6 +147,74 @@ public class EmbeddedConnector extends AbstractComponentConnector {
 
         if (clearBrowserElement) {
             widget.browserElement = null;
+        }
+    }
+
+    private void handleMimeType() {
+        VEmbedded widget = getWidget();
+
+        // remove old style name related to type
+        if (widget.type != null) {
+            widget.removeStyleName(VEmbedded.CLASSNAME + "-" + widget.type);
+        }
+        // remove old style name related to mime type
+        if (widget.mimetype != null) {
+            widget.removeStyleName(VEmbedded.CLASSNAME + "-" + widget.mimetype);
+        }
+        EmbeddedState state = getState();
+        final String mime = state.mimeType;
+        if (mime.equals("application/x-shockwave-flash")) {
+            widget.mimetype = "flash";
+            // Handle embedding of Flash
+            widget.addStyleName(VEmbedded.CLASSNAME + "-flash");
+            widget.setHTML(
+                    widget.createFlashEmbed(state, getResourceUrl("src")));
+
+        } else if (mime.equals("image/svg+xml")) {
+            widget.mimetype = "svg";
+            widget.addStyleName(VEmbedded.CLASSNAME + "-svg");
+            String data;
+            Map<String, String> parameters = state.parameters;
+            ObjectElement obj = Document.get().createObjectElement();
+            resourceElement = null;
+            if (parameters.get("data") == null) {
+                objectElement = obj;
+                data = getResourceUrl("src");
+                setResourceUrl(data);
+            } else {
+                objectElement = null;
+                data = "data:image/svg+xml," + parameters.get("data");
+                obj.setData(data);
+            }
+            widget.setHTML("");
+            obj.setType(mime);
+            if (!isUndefinedWidth()) {
+                obj.getStyle().setProperty("width", "100%");
+            }
+            if (!isUndefinedHeight()) {
+                obj.getStyle().setProperty("height", "100%");
+            }
+            if (state.classId != null) {
+                obj.setAttribute("classid", state.classId);
+            }
+            if (state.codebase != null) {
+                obj.setAttribute("codebase", state.codebase);
+            }
+            if (state.codetype != null) {
+                obj.setAttribute("codetype", state.codetype);
+            }
+            if (state.archive != null) {
+                obj.setAttribute("archive", state.archive);
+            }
+            if (state.standby != null) {
+                obj.setAttribute("standby", state.standby);
+            }
+            widget.getElement().appendChild(obj);
+            if (state.altText != null) {
+                obj.setInnerText(state.altText);
+            }
+        } else {
+            getLogger().error("Unknown Embedded mimetype '" + mime + "'");
         }
     }
 
@@ -238,6 +250,7 @@ public class EmbeddedConnector extends AbstractComponentConnector {
         return (EmbeddedState) super.getState();
     }
 
+    /** Click event handler for sending click data to the server. */
     protected final ClickEventHandler clickEventHandler = new ClickEventHandler(
             this) {
 

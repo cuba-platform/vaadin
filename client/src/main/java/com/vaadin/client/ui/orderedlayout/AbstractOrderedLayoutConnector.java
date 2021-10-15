@@ -15,6 +15,8 @@
  */
 package com.vaadin.client.ui.orderedlayout;
 
+import java.util.List;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -45,8 +47,6 @@ import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.orderedlayout.AbstractOrderedLayoutServerRpc;
 import com.vaadin.shared.ui.orderedlayout.AbstractOrderedLayoutState;
 
-import java.util.List;
-
 /**
  * Base class for vertical and horizontal ordered layouts.
  */
@@ -60,6 +60,7 @@ public abstract class AbstractOrderedLayoutConnector
     private LayoutClickEventHandler clickEventHandler = new LayoutClickEventHandler(
             this) {
 
+        @SuppressWarnings("deprecation")
         @Override
         protected ComponentConnector getChildComponent(
                 com.google.gwt.user.client.Element element) {
@@ -238,6 +239,7 @@ public abstract class AbstractOrderedLayoutConnector
     }
 
     // Haulmont API dependency
+    @SuppressWarnings("deprecation")
     protected void updateCaptionInternal(ComponentConnector child) {
         Slot slot = getWidget().getSlot(child.getWidget());
 
@@ -362,6 +364,7 @@ public abstract class AbstractOrderedLayoutConnector
      * com.vaadin.client.ui.AbstractComponentConnector#onStateChanged(com.vaadin
      * .client.communication.StateChangeEvent)
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);

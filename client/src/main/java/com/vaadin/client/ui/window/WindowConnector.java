@@ -39,6 +39,12 @@ import com.vaadin.shared.ui.window.WindowServerRpc;
 import com.vaadin.shared.ui.window.WindowState;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A connector class for the Window component.
+ *
+ * @author Vaadin Ltd
+ */
+@SuppressWarnings("deprecation")
 @Connect(value = com.vaadin.ui.Window.class)
 public class WindowConnector extends AbstractSingleComponentContainerConnector
         implements Paintable, SimpleManagedLayout, PostLayoutListener,
@@ -443,6 +449,9 @@ public class WindowConnector extends AbstractSingleComponentContainerConnector
         }
     }
 
+    /**
+     * Initializes or updates position from state.
+     */
     protected void updateWindowPosition() {
         VWindow window = getWidget();
         WindowState state = getState();
@@ -460,6 +469,9 @@ public class WindowConnector extends AbstractSingleComponentContainerConnector
         }
     }
 
+    /**
+     * Updates the window state to match the current mode.
+     */
     protected void updateWindowMode() {
         VWindow window = getWidget();
         WindowState state = getState();
@@ -477,6 +489,9 @@ public class WindowConnector extends AbstractSingleComponentContainerConnector
         window.updateContentsSize();
     }
 
+    /**
+     * Maximizes or restores the window depending on the current mode.
+     */
     protected void onMaximizeRestore() {
         WindowState state = getState();
         if (state.resizable) {

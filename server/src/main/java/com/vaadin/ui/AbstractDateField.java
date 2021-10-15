@@ -139,7 +139,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
 
             boolean parseErrorWasSet = currentErrorMessage != null;
             hasChanges |= !Objects.equals(dateString, newDateString)
-                    || !Objects.equals(oldDate, newDate) || parseErrorWasSet;
+                    || !Objects.equals(oldDate, newDate)
+                    || parseErrorWasSet;
 
             if (hasChanges) {
                 dateString = newDateString;
@@ -191,7 +192,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     }
 
     /**
-     * The default start year (inclusive) from which to calculate the 
+     * The default start year (inclusive) from which to calculate the
      * daylight-saving time zone transition dates.
      */
     private static final int DEFAULT_START_YEAR = 1980;
@@ -433,7 +434,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     }
 
     /**
-     * Parses string representaion of date range limit into date type
+     * Parses string representation of date range limit into date type.
      *
      * @param temporalStr
      *            the string representation
@@ -1011,7 +1012,7 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
                         .orElse(null));
     }
 
-    private Iterable<R> getResolutionsHigherOrEqualTo(R resoution) {
+    private Iterable<R> getResolutionsHigherOrEqualTo(R resolution) {
         return getResolutions().skip(resolution.ordinal())
                 .collect(Collectors.toList());
     }
@@ -1147,10 +1148,11 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     }
 
     /**
-     * Control whether value change event is emitted when user input value
-     * does not meet the integrated range validator.
+     * Control whether value change event is emitted when user input value does
+     * not meet the integrated range validator.
      *
-     * @param preventInvalidInput Set to false to disable the value change event.
+     * @param preventInvalidInput
+     *            Set to false to disable the value change event.
      *
      * @since 8.13
      */
@@ -1159,8 +1161,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
     }
 
     /**
-     * Check whether value change is emitted when user input value does
-     * not meet integrated range validator. The default is false.
+     * Check whether value change is emitted when user input value does not meet
+     * integrated range validator. The default is false.
      *
      * @return a Boolean value
      *

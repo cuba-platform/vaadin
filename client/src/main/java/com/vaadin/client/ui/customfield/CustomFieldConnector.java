@@ -34,6 +34,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A connector class for the CustomField component.
+ *
+ * @author Vaadin Ltd
+ */
 @Connect(value = CustomField.class)
 public class CustomFieldConnector extends AbstractFieldConnector
         implements HasComponentsConnector, ConnectorHierarchyChangeHandler {

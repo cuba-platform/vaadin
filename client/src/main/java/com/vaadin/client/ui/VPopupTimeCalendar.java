@@ -28,8 +28,8 @@ import java.util.Map;
 import static com.vaadin.shared.ui.datefield.DateTimeResolution.*;
 
 /**
- * Represents a date-time selection component with a text field and a popup date
- * selector.
+ * Represents a date-time selection component with a text field and a pop-up
+ * date-and-time selector.
  *
  * @author Vaadin Ltd
  *
@@ -38,6 +38,11 @@ import static com.vaadin.shared.ui.datefield.DateTimeResolution.*;
 public class VPopupTimeCalendar extends
         VAbstractPopupCalendar<VDateTimeCalendarPanel, DateTimeResolution> {
 
+    /**
+     * Constructs a date-time selection component with a text field and a pop-up
+     * date-and-time selector. Uses a {@link VDateTimeCalendarPanel} as the
+     * pop-up content. Default resolution is {@link DateTimeResolution#MINUTE}.
+     */
     public VPopupTimeCalendar() {
         super(GWT.create(VDateTimeCalendarPanel.class), MINUTE);
     }
@@ -60,6 +65,14 @@ public class VPopupTimeCalendar extends
         super.setCurrentResolution(resolution == null ? MINUTE : resolution);
     }
 
+    /**
+     * Creates a date based on the provided date values map.
+     *
+     * @param dateValues
+     *            a map with date values to convert into a date
+     * @return the date based on the dateValues map
+     */
+    @SuppressWarnings("deprecation")
     public static Date makeDate(Map<DateTimeResolution, Integer> dateValues) {
         if (dateValues.get(YEAR) == null) {
             return null;
@@ -103,6 +116,7 @@ public class VPopupTimeCalendar extends
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     protected void updateBufferedResolutions() {
         super.updateBufferedResolutions();
         Date currentDate = getDate();

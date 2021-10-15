@@ -28,6 +28,11 @@ import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.accordion.AccordionState;
 import com.vaadin.ui.Accordion;
 
+/**
+ * A connector class for the Accordion component.
+ *
+ * @author Vaadin Ltd
+ */
 @Connect(Accordion.class)
 public class AccordionConnector extends TabsheetBaseConnector
         implements SimpleManagedLayout, MayScrollChildren {
@@ -51,6 +56,7 @@ public class AccordionConnector extends TabsheetBaseConnector
             StackItem selectedItem = widget
                     .getStackItem(widget.selectedItemIndex);
 
+            // Only the visible child widget is present in the collection.
             ComponentConnector contentConnector = getChildComponents().get(0);
             if (contentConnector != null) {
                 selectedItem.setContent(contentConnector.getWidget());

@@ -16,9 +16,26 @@
 
 package com.vaadin.server.communication;
 
-import com.vaadin.server.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.Constants;
+import com.vaadin.server.JsonCodec;
 import com.vaadin.server.LegacyCommunicationManager.InvalidUIDLSecurityKeyException;
+import com.vaadin.server.ServerRpcManager;
 import com.vaadin.server.ServerRpcManager.RpcInvocationException;
+import com.vaadin.server.ServerRpcMethodInvocation;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VariableOwner;
 import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.Connector;
 import com.vaadin.shared.Version;
@@ -30,19 +47,15 @@ import com.vaadin.shared.data.DataRequestRpc;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ConnectorTracker;
 import com.vaadin.ui.UI;
+
 import elemental.json.JsonArray;
 import elemental.json.JsonException;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 import elemental.json.impl.JsonUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * Handles a client-to-server message containing serialized {@link ServerRpc
@@ -51,6 +64,7 @@ import java.util.*;
  * @author Vaadin Ltd
  * @since 7.1
  */
+@SuppressWarnings("deprecation")
 public class ServerRpcHandler implements Serializable {
 
     /**
@@ -198,6 +212,7 @@ public class ServerRpcHandler implements Serializable {
      * @param reader
      *            The {@link Reader} used to read the JSON.
      * @param request
+     *            The {@link VaadinRequest} to handle.
      * @throws IOException
      *             If reading the message fails.
      * @throws InvalidUIDLSecurityKeyException
@@ -318,8 +333,7 @@ public class ServerRpcHandler implements Serializable {
             Set<Connector> enabledConnectors = new HashSet<>();
 
             List<MethodInvocation> invocations = parseInvocations(
-                    ui.getConnectorTracker(), invocationsData,
-                    lastSyncIdSeenByClient);
+                    ui.getConnectorTracker(), invocationsData);
             for (MethodInvocation invocation : invocations) {
                 final ClientConnector connector = connectorTracker
                         .getConnector(invocation.getConnectorId());
@@ -475,14 +489,10 @@ public class ServerRpcHandler implements Serializable {
      * @param invocationsJson
      *            JSON containing all information needed to execute all
      *            requested RPC calls.
-     * @param lastSyncIdSeenByClient
-     *            the most recent sync id the client has seen at the time the
-     *            request was sent
      * @return list of MethodInvocation to perform
      */
     private List<MethodInvocation> parseInvocations(
-            ConnectorTracker connectorTracker, JsonArray invocationsJson,
-            int lastSyncIdSeenByClient) {
+            ConnectorTracker connectorTracker, JsonArray invocationsJson) {
         int invocationCount = invocationsJson.length();
         List<MethodInvocation> invocations = new ArrayList<>(invocationCount);
 
@@ -493,8 +503,7 @@ public class ServerRpcHandler implements Serializable {
             JsonArray invocationJson = invocationsJson.getArray(i);
 
             MethodInvocation invocation = parseInvocation(invocationJson,
-                    previousInvocation, connectorTracker,
-                    lastSyncIdSeenByClient);
+                    previousInvocation, connectorTracker);
             if (invocation != null) {
                 // Can be null if the invocation was a legacy invocation and it
                 // was merged with the previous one or if the invocation was
@@ -508,7 +517,7 @@ public class ServerRpcHandler implements Serializable {
 
     private MethodInvocation parseInvocation(JsonArray invocationJson,
             MethodInvocation previousInvocation,
-            ConnectorTracker connectorTracker, long lastSyncIdSeenByClient) {
+            ConnectorTracker connectorTracker) {
         String connectorId = invocationJson.getString(0);
         String interfaceName = invocationJson.getString(1);
         String methodName = invocationJson.getString(2);
@@ -522,7 +531,6 @@ public class ServerRpcHandler implements Serializable {
             }
 
             return parseLegacyChangeVariablesInvocation(connectorId,
-                    interfaceName, methodName,
                     (LegacyChangeVariablesInvocation) previousInvocation,
                     parametersJson, connectorTracker);
         } else {
@@ -533,7 +541,7 @@ public class ServerRpcHandler implements Serializable {
     }
 
     private LegacyChangeVariablesInvocation parseLegacyChangeVariablesInvocation(
-            String connectorId, String interfaceName, String methodName,
+            String connectorId,
             LegacyChangeVariablesInvocation previousInvocation,
             JsonArray parametersJson, ConnectorTracker connectorTracker) {
         if (parametersJson.length() != 2) {
@@ -629,10 +637,12 @@ public class ServerRpcHandler implements Serializable {
     }
 
     /**
-     * Generates an error message when the client is trying to to something
+     * Generates an error message when the client is trying to do something
      * ('what') with a connector which is disabled or invisible.
      *
      * @since 7.1.8
+     * @param what
+     *            the ignored operation
      * @param connector
      *            the connector which is disabled (or invisible)
      * @return an error message

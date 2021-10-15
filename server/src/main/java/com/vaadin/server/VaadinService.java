@@ -678,14 +678,23 @@ public abstract class VaadinService implements Serializable {
     /**
      * Locks the given session for this service instance. Typically you want to
      * call {@link VaadinSession#lock()} instead of this method.
-     *
+     * <p>
+     * Note: The method and its signature has been changed to return lock 
+     * instance in Vaadin 8.14.0. If you have overriden this method, you need
+     * to update your implementation.
+     * <p>
+     * Note: Overriding this method is not recommended, for custom lock storage
+     * strategy override {@link #getSessionLock(WrappedSession)} and
+     * {@link #setSessionLock(WrappedSession,Lock)} instead.
+     * 
      * @param wrappedSession
      *            The session to lock
-     *
+     * @return Lock instance
+     * 
      * @throws IllegalStateException
      *             if the session is invalidated before it can be locked
      */
-    protected void lockSession(WrappedSession wrappedSession) {
+    protected Lock lockSession(WrappedSession wrappedSession) {
         Lock lock = getSessionLock(wrappedSession);
         if (lock == null) {
             /*
@@ -715,21 +724,30 @@ public abstract class VaadinService implements Serializable {
             lock.unlock();
             throw e;
         }
+        return lock;
     }
 
     /**
      * Releases the lock for the given session for this service instance.
      * Typically you want to call {@link VaadinSession#unlock()} instead of this
      * method.
+     * <p>
+     * Note: The method and its signature has been changed to get lock instance
+     * as parameter in Vaadin 8.14.0. If you have overriden this method, you need
+     * to update your implementation.
+     * <p>
+     * Note: Overriding this method is not recommended, for custom lock storage 
+     * strategy override {@link #getSessionLock(WrappedSession)} and
+     * {@link #setSessionLock(WrappedSession,Lock)} instead.
      *
      * @param wrappedSession
-     *            The session to unlock
+     *            The session to unlock, used only with assert
+     * @param lock
+     *            Lock instance to unlock
      */
-    protected void unlockSession(WrappedSession wrappedSession) {
-        assert getSessionLock(wrappedSession) != null;
-        assert ((ReentrantLock) getSessionLock(wrappedSession))
-                .isHeldByCurrentThread() : "Trying to unlock the session but it has not been locked by this thread";
-        getSessionLock(wrappedSession).unlock();
+    protected void unlockSession(WrappedSession wrappedSession, Lock lock) {
+        assert ((ReentrantLock) lock).isHeldByCurrentThread() : "Trying to unlock the session but it has not been locked by this thread";
+        lock.unlock();
     }
 
     private VaadinSession findOrCreateVaadinSession(VaadinRequest request)
@@ -738,8 +756,9 @@ public abstract class VaadinService implements Serializable {
         WrappedSession wrappedSession = getWrappedSession(request,
                 requestCanCreateSession);
 
+        final Lock lock;
         try {
-            lockSession(wrappedSession);
+            lock = lockSession(wrappedSession);
         } catch (IllegalStateException e) {
             throw new SessionExpiredException();
         }
@@ -748,7 +767,7 @@ public abstract class VaadinService implements Serializable {
             return doFindOrCreateVaadinSession(request,
                     requestCanCreateSession);
         } finally {
-            unlockSession(wrappedSession);
+            unlockSession(wrappedSession, lock);
         }
 
     }
@@ -1138,8 +1157,13 @@ public abstract class VaadinService implements Serializable {
             if (value instanceof VaadinSession) {
                 // set flag to avoid cleanup
                 VaadinSession serviceSession = (VaadinSession) value;
-                serviceSession.setAttribute(PRESERVE_UNBOUND_SESSION_ATTRIBUTE,
-                        Boolean.TRUE);
+                serviceSession.lock();
+                try {
+                    serviceSession.setAttribute(
+                            PRESERVE_UNBOUND_SESSION_ATTRIBUTE, Boolean.TRUE);
+                } finally {
+                    serviceSession.unlock();
+                }
             }
             attrs.put(name, value);
         }
@@ -1165,8 +1189,13 @@ public abstract class VaadinService implements Serializable {
                         serviceSession.getLockInstance());
 
                 service.storeSession(serviceSession, newSession);
-                serviceSession.setAttribute(PRESERVE_UNBOUND_SESSION_ATTRIBUTE,
-                        null);
+                serviceSession.lock();
+                try {
+                    serviceSession.setAttribute(
+                            PRESERVE_UNBOUND_SESSION_ATTRIBUTE, null);
+                } finally {
+                    serviceSession.unlock();
+                }
             }
         }
 

@@ -1,17 +1,18 @@
 package com.vaadin.tests.components.window;
 
-import com.vaadin.testbench.By;
-import com.vaadin.testbench.elements.ButtonElement;
-import com.vaadin.testbench.elements.TextFieldElement;
-import com.vaadin.tests.tb3.MultiBrowserTest;
+import static com.vaadin.tests.components.window.BackspaceKeyWithModalOpened.BTN_NEXT_ID;
+import static com.vaadin.tests.components.window.BackspaceKeyWithModalOpened.BTN_OPEN_MODAL_ID;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.Keys.BACK_SPACE;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
-import static com.vaadin.tests.components.window.BackspaceKeyWithModalOpened.BTN_NEXT_ID;
-import static com.vaadin.tests.components.window.BackspaceKeyWithModalOpened.BTN_OPEN_MODAL_ID;
-import static org.openqa.selenium.Keys.BACK_SPACE;
-import static org.openqa.selenium.Keys.TAB;
+import com.vaadin.testbench.By;
+import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.TextFieldElement;
+import com.vaadin.tests.tb3.MultiBrowserTest;
 
 public class BackspaceKeyWithModalOpenedTest extends MultiBrowserTest {
 

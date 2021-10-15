@@ -28,10 +28,19 @@ import com.vaadin.shared.ui.upload.UploadClientRpc;
 import com.vaadin.shared.ui.upload.UploadState;
 import com.vaadin.ui.Upload;
 
+/**
+ * A connector class for the Upload component.
+ *
+ * @author Vaadin Ltd
+ */
+@SuppressWarnings("deprecation")
 @Connect(value = Upload.class, loadStyle = Connect.LoadStyle.LAZY)
 public class UploadConnector extends AbstractComponentConnector
         implements Paintable {
 
+    /**
+     * Constructs a connector for an Upload component.
+     */
     public UploadConnector() {
         registerRpc(UploadClientRpc.class, () -> getWidget().submit());
     }

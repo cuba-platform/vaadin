@@ -27,19 +27,30 @@ import com.vaadin.shared.ui.slider.SliderServerRpc;
 import com.vaadin.shared.ui.slider.SliderState;
 import com.vaadin.ui.Slider;
 
+/**
+ * A connector class for the Slider component.
+ *
+ * @author Vaadin Ltd
+ */
 @Connect(Slider.class)
 public class SliderConnector extends AbstractFieldConnector
         implements ValueChangeHandler<Double> {
 
+    /**
+     * RPC instance for Slider's client-to-server calls.
+     */
     protected SliderServerRpc rpc = RpcProxy.create(SliderServerRpc.class,
             this);
 
     private final ElementResizeListener resizeListener = event -> getWidget()
             .iLayout();
 
+    @SuppressWarnings("deprecation")
     @Override
     public void init() {
         super.init();
+        // The widget no longer uses the connection, but the value is still set
+        // to ensure backwards compatibility.
         getWidget().setConnection(getConnection());
         getWidget().addValueChangeHandler(this);
 
@@ -70,10 +81,13 @@ public class SliderConnector extends AbstractFieldConnector
         rpc.valueChanged(event.getValue());
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onStateChanged(StateChangeEvent stateChangeEvent) {
         super.onStateChanged(stateChangeEvent);
 
+        // The widget no longer uses the connector id, but the value is still
+        // set to ensure backwards compatibility.
         getWidget().setId(getConnectorId());
         getWidget().setDisabled(!isEnabled());
         getWidget().setReadOnly(isReadOnly());

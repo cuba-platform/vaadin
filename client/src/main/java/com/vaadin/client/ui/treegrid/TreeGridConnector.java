@@ -54,6 +54,9 @@ public class TreeGridConnector extends GridConnector {
         NONE, COLLAPSE, EXPAND
     }
 
+    /**
+     * Constructs a connector for a TreeGrid component.
+     */
     public TreeGridConnector() {
         registerRpc(FocusRpc.class, (rowIndex, cellIndex) -> getWidget()
                 .focusCell(rowIndex, cellIndex));
@@ -85,6 +88,7 @@ public class TreeGridConnector extends GridConnector {
      * of the column is set in a state change handler, and might not be
      * available when this method is executed.
      */
+    @SuppressWarnings("unchecked")
     @OnStateChange("hierarchyColumnId")
     void updateHierarchyColumn() {
         if (hierarchyColumnUpdateScheduled) {
@@ -194,13 +198,12 @@ public class TreeGridConnector extends GridConnector {
             public void dataRemoved(int firstRowIndex, int numberOfRows) {
                 if (awaitingRowsState == AwaitingRowsState.COLLAPSE) {
                     awaitingRowsState = AwaitingRowsState.NONE;
-                    // make sure the cache stays up to date with the collapsing
-                    Range visibleRowRange = getWidget().getEscalator()
-                            .getVisibleRowRange();
-                    getDataSource().ensureAvailability(
-                            visibleRowRange.getStart(),
-                            visibleRowRange.length());
                 }
+                // make sure the cache stays up to date
+                Range visibleRowRange = getWidget().getEscalator()
+                        .getVisibleRowRange();
+                getDataSource().ensureAvailability(visibleRowRange.getStart(),
+                        visibleRowRange.length());
                 checkExpand();
             }
 
@@ -208,13 +211,12 @@ public class TreeGridConnector extends GridConnector {
             public void dataAdded(int firstRowIndex, int numberOfRows) {
                 if (awaitingRowsState == AwaitingRowsState.EXPAND) {
                     awaitingRowsState = AwaitingRowsState.NONE;
-                    // make sure the cache stays up to date with the expanding
-                    Range visibleRowRange = getWidget().getEscalator()
-                            .getVisibleRowRange();
-                    getDataSource().ensureAvailability(
-                            visibleRowRange.getStart(),
-                            visibleRowRange.length());
                 }
+                // make sure the cache stays up to date
+                Range visibleRowRange = getWidget().getEscalator()
+                        .getVisibleRowRange();
+                getDataSource().ensureAvailability(visibleRowRange.getStart(),
+                        visibleRowRange.length());
                 checkExpand();
             }
 
@@ -239,7 +241,7 @@ public class TreeGridConnector extends GridConnector {
             GridEventHandler<?> eventHandler)
     /*-{
         var browserEventHandlers = grid.@com.vaadin.client.widgets.Grid::browserEventHandlers;
-
+    
         // FocusEventHandler is initially 5th in the list of browser event handlers
         browserEventHandlers.@java.util.List::set(*)(5, eventHandler);
     }-*/;
@@ -389,6 +391,9 @@ public class TreeGridConnector extends GridConnector {
                             setCollapsed(cell.getRowIndex(), true);
                         }
                         break;
+                    default:
+                        // NOP
+                        break;
                     }
 
                 }
@@ -401,7 +406,7 @@ public class TreeGridConnector extends GridConnector {
     }
 
     private void checkExpand() {
-        Range cache = ((AbstractRemoteDataSource) getDataSource())
+        Range cache = ((AbstractRemoteDataSource<?>) getDataSource())
                 .getCachedRange();
         checkExpand(cache.getStart(), cache.length());
     }

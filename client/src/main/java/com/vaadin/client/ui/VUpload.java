@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Widget class for the Upload component.
  *
  * Note, we are not using GWT FormPanel as we want to listen submitcomplete
  * events even though the upload component is already detached.
@@ -75,6 +76,9 @@ public class VUpload extends SimplePanel {
         }
     }
 
+    /**
+     * Default classname for this widget.
+     */
     public static final String CLASSNAME = "v-upload";
 
     /**
@@ -143,6 +147,9 @@ public class VUpload extends SimplePanel {
     /** For internal use only. May be removed or replaced in the future. */
     public int nextUploadId;
 
+    /**
+     * Constructs the widget.
+     */
     public VUpload() {
         super(com.google.gwt.dom.client.Document.get().createFormElement());
 
@@ -402,7 +409,7 @@ public class VUpload extends SimplePanel {
         }
         // flush possibly pending variable changes, so they will be handled
         // before upload
-        client.sendPendingVariableChanges();
+        client.getServerRpcQueue().flush();
 
         // This is done as deferred because sendPendingVariableChanges is also
         // deferred and we want to start the upload only after the changes have
@@ -410,7 +417,14 @@ public class VUpload extends SimplePanel {
         Scheduler.get().scheduleDeferred(startUploadCmd);
     }
 
-    /** For internal use only. May be removed or replaced in the future. */
+    /**
+     * For internal use only. May be removed or replaced in the future.
+     *
+     * @param disable
+     *            {@code true} if the built-in browser-dependent tooltip should
+     *            be hidden in favor of a Vaadin tooltip, {@code false}
+     *            otherwise
+     */
     public void disableTitle(boolean disable) {
         if (disable) {
             // Disable title attribute for upload element.
@@ -481,6 +495,16 @@ public class VUpload extends SimplePanel {
         return LoggerFactory.getLogger(VUpload.class);
     }
 
+    /**
+     * Sets accepted mime types. If no mime types are given, all types should be
+     * accepted.
+     *
+     * @param acceptMimeTypes
+     *            a comma-separated list of content types that this component
+     *            will handle correctly, {@code null} or an empty String if all
+     *            types should be accepted
+     * @since 8.5.0
+     */
     public void setAcceptMimeTypes(String acceptMimeTypes) {
         if (acceptMimeTypes == null || acceptMimeTypes.isEmpty()) {
             InputElement.as(fu.getElement()).setAccept(null);

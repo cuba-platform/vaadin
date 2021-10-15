@@ -15,6 +15,9 @@
  */
 package com.vaadin.client.ui.combobox;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.vaadin.client.Profiler;
 import com.vaadin.client.annotations.OnStateChange;
 import com.vaadin.client.communication.StateChangeEvent;
@@ -36,13 +39,17 @@ import com.vaadin.shared.ui.combobox.ComboBoxConstants;
 import com.vaadin.shared.ui.combobox.ComboBoxServerRpc;
 import com.vaadin.shared.ui.combobox.ComboBoxState;
 import com.vaadin.ui.ComboBox;
+
 import elemental.json.JsonObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Objects;
-
+/**
+ * A connector class for the ComboBox component.
+ *
+ * @author Vaadin Ltd
+ */
 @Connect(ComboBox.class)
 public class ComboBoxConnector extends AbstractListingConnector
         implements SimpleManagedLayout {

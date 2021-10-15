@@ -15,21 +15,32 @@
  */
 package com.vaadin.v7.ui.components.colorpicker;
 
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.v7.data.Property.ValueChangeEvent;
 import com.vaadin.v7.data.Property.ValueChangeListener;
 import com.vaadin.v7.shared.ui.colorpicker.Color;
 import com.vaadin.v7.ui.AbstractColorPicker.Coordinates2Color;
 import com.vaadin.v7.ui.Slider;
 import com.vaadin.v7.ui.Slider.ValueOutOfBoundsException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * A component that represents color selection popup within a color picker.
@@ -190,6 +201,9 @@ public class ColorPickerPopup extends Window
 
     /**
      * Instantiates a new color picker popup.
+     *
+     * @param initialColor
+     *            initially selected color
      */
     public ColorPickerPopup(Color initialColor) {
         this();
@@ -237,11 +251,6 @@ public class ColorPickerPopup extends Window
         // Add the history
         history.setWidth("97%");
         history.setHeight("22px");
-
-        // Create the default colors
-        List<Color> defaultColors = new ArrayList<Color>();
-        defaultColors.add(Color.BLACK);
-        defaultColors.add(Color.WHITE);
 
         // Create the history
         VerticalLayout innerContainer = new VerticalLayout();

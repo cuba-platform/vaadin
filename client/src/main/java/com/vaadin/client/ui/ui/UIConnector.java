@@ -105,6 +105,12 @@ import elemental.client.Browser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A connector class for the UI component. Eagerly loaded.
+ *
+ * @author Vaadin Ltd
+ */
+@SuppressWarnings("deprecation")
 @Connect(value = UI.class, loadStyle = LoadStyle.EAGER)
 public class UIConnector extends AbstractSingleComponentContainerConnector
         implements Paintable, MayScrollChildren {
@@ -660,6 +666,11 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
         return connector;
     }
 
+    /**
+     * Ensure the position is calculated correctly. This method should be called
+     * whenever the content's height changes for any reason, in case the change
+     * has been between a relative and non-relative height to either direction.
+     */
     protected void onChildSizeChange() {
         ComponentConnector child = getContent();
         if (child == null) {
@@ -681,12 +692,14 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
     }
 
     /**
-     * Checks if the given sub window is a child of this UI Connector.
+     * Checks if the given sub-window is a child of this UI Connector.
      *
      * @deprecated Should be replaced by a more generic mechanism for getting
      *             non-ComponentConnector children
      * @param wc
-     * @return
+     *            the connector of the sub-window
+     * @return {@code true} if the connector is found among the sub-windows,
+     *         {@code false} otherwise
      */
     @Deprecated
     public boolean hasSubWindow(WindowConnector wc) {
@@ -694,10 +707,10 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
     }
 
     /**
-     * Return an iterator for current subwindows. This method is meant for
-     * testing purposes only.
+     * Return a list of current sub-windows. This method is meant for testing
+     * purposes only.
      *
-     * @return
+     * @return a list of sub-windows
      */
     public List<WindowConnector> getSubWindows() {
         List<WindowConnector> windows = new ArrayList<>();
@@ -1117,8 +1130,6 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
                     .removeClassName(activeTheme);
         }
 
-        String oldThemeBase = getConnection().translateVaadinUri("theme://");
-
         activeTheme = newTheme;
 
         if (newTheme != null) {
@@ -1140,11 +1151,14 @@ public class UIConnector extends AbstractSingleComponentContainerConnector
     }
 
     /**
-     * Force a full recursive recheck of every connector's state variables.
+     * Force a full recursive re-check of every connector's state variables.
      *
      * @see #forceStateChange()
      *
      * @since 7.3
+     *
+     * @param connector
+     *            the connector which should get recursive forced state change
      */
     protected static void forceStateChangeRecursively(
             AbstractConnector connector) {

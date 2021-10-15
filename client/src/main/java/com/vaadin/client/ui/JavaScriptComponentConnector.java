@@ -24,10 +24,15 @@ import com.vaadin.shared.ui.Connect;
 import com.vaadin.shared.ui.JavaScriptComponentState;
 import com.vaadin.ui.AbstractJavaScriptComponent;
 
+/**
+ * A connector class for JavaScript components.
+ *
+ * @author Vaadin Ltd
+ */
 // Haulmont API dependency
 @Connect(AbstractJavaScriptComponent.class)
-public class JavaScriptComponentConnector extends AbstractComponentConnector
-        implements HasJavaScriptConnectorHelper {
+public class JavaScriptComponentConnector extends
+        AbstractComponentConnector implements HasJavaScriptConnectorHelper {
 
     // Haulmont API dependency
     protected final JavaScriptConnectorHelper helper = createJavaScriptConnectorHelper();

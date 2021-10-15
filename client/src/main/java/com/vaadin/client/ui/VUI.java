@@ -37,6 +37,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Widget class for the UI.
+ *
+ * @author Vaadin Ltd
+ *
+ */
 public class VUI extends SimplePanel implements ResizeHandler,
         Window.ClosingHandler, ShortcutActionHandlerOwner, Focusable,
         com.google.gwt.user.client.ui.Focusable, HasResizeHandlers,
@@ -92,6 +98,9 @@ public class VUI extends SimplePanel implements ResizeHandler,
 
     private Element storedFocus;
 
+    /**
+     * Constructs a widget for an UI.
+     */
     public VUI() {
         super();
         // Allow focusing the view by using the focus() method, the view
@@ -314,6 +323,14 @@ public class VUI extends SimplePanel implements ResizeHandler,
         Profiler.leave("VUI.sendClientResized");
     }
 
+    /**
+     *
+     * Opens the given URL in the current browser window. If this UI needs to be
+     * closed as a result it should be handled separately.
+     *
+     * @param url
+     *            the URL to navigate to
+     */
     public static native void goTo(String url)
     /*-{
        $wnd.location = url;
