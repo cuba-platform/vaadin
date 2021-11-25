@@ -17,7 +17,6 @@ package com.vaadin.client.connectors.grid;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import com.google.gwt.core.client.Scheduler;
@@ -683,7 +682,7 @@ public class DetailsManagerConnector extends AbstractExtensionConnector {
 
     private void detachDetailsIfFound(String connectorId) {
         if (indexToDetailConnectorId.containsValue(connectorId)) {
-            for (Entry<Integer, String> entry : indexToDetailConnectorId
+            for (Map.Entry<Integer, String> entry : indexToDetailConnectorId
                     .entrySet()) {
                 if (connectorId.equals(entry.getValue())) {
                     detachDetails(entry.getKey());
@@ -726,7 +725,6 @@ public class DetailsManagerConnector extends AbstractExtensionConnector {
 
                 indexToDetailConnectorId.put(rowIndex, id);
                 newOrUpdatedDetails = true;
-                getWidget().resetVisibleDetails(rowIndex);
             }
         } else {
             // new Details content, listeners will get attached to the connector

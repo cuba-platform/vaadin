@@ -15,32 +15,6 @@
  */
 package com.vaadin.ui;
 
-import com.googlecode.gentyref.GenericTypeReflector;
-import com.vaadin.data.Result;
-import com.vaadin.data.ValidationResult;
-import com.vaadin.data.Validator;
-import com.vaadin.data.ValueContext;
-import com.vaadin.data.validator.RangeValidator;
-import com.vaadin.event.FieldEvents.BlurEvent;
-import com.vaadin.event.FieldEvents.BlurListener;
-import com.vaadin.event.FieldEvents.BlurNotifier;
-import com.vaadin.event.FieldEvents.FocusEvent;
-import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.event.FieldEvents.FocusNotifier;
-import com.vaadin.server.ErrorMessage;
-import com.vaadin.server.UserError;
-import com.vaadin.shared.Registration;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldServerRpc;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldState;
-import com.vaadin.shared.ui.datefield.AbstractDateFieldState.AccessibleElement;
-import com.vaadin.shared.ui.datefield.DateResolution;
-import com.vaadin.ui.declarative.DesignAttributeHandler;
-import com.vaadin.ui.declarative.DesignContext;
-import com.vaadin.util.TimeZoneUtil;
-import elemental.json.Json;
-import org.jsoup.nodes.Element;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -62,6 +36,32 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.googlecode.gentyref.GenericTypeReflector;
+import org.jsoup.nodes.Element;
+
+import com.vaadin.data.Result;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.Validator;
+import com.vaadin.data.ValueContext;
+import com.vaadin.data.validator.RangeValidator;
+import com.vaadin.event.FieldEvents.BlurEvent;
+import com.vaadin.event.FieldEvents.BlurListener;
+import com.vaadin.event.FieldEvents.BlurNotifier;
+import com.vaadin.event.FieldEvents.FocusEvent;
+import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.FieldEvents.FocusNotifier;
+import com.vaadin.server.ErrorMessage;
+import com.vaadin.server.UserError;
+import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldServerRpc;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldState;
+import com.vaadin.shared.ui.datefield.AbstractDateFieldState.AccessibleElement;
+import com.vaadin.shared.ui.datefield.DateResolution;
+import com.vaadin.ui.declarative.DesignAttributeHandler;
+import com.vaadin.ui.declarative.DesignContext;
+import com.vaadin.util.TimeZoneUtil;
+import org.slf4j.LoggerFactory;
 
 import elemental.json.Json;
 
@@ -297,6 +297,8 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
      * date (taking the resolution into account), the component will not
      * validate. If {@code startDate} is set to {@code null}, any value before
      * {@code endDate} will be accepted by the range
+     * <p>
+     * Note: Negative, i.e. BC dates are not supported
      *
      * @param startDate
      *            - the allowed range's start date

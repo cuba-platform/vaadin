@@ -100,15 +100,13 @@ public class ValoTheme {
 
     /**
      * Success notification style. Adds a border around the notification and an
-     * icon next to the title. Can be combined with any other Notification
-     * style.
+     * icon next to the title. Can be combined with any other Notification style.
      */
     public static final String NOTIFICATION_SUCCESS = "success";
 
     /**
      * Failure notification style. Adds a border around the notification and an
-     * icon next to the title. Can be combined with any other Notification
-     * style.
+     * icon next to the title. Can be combined with any other Notification style.
      */
     public static final String NOTIFICATION_FAILURE = "failure";
 
@@ -382,6 +380,11 @@ public class ValoTheme {
     /**
      * Move the default caption icon inside the text field. Can be combined with
      * any other TextField style.
+     * <p>
+     * Note: Does not apply in FormLayout
+     * <p>
+     * Note: TextFields with inlined icons in Grid header need to be wrapped into
+     * e.g. HorizontalLayout
      */
     public static final String TEXTFIELD_INLINE_ICON = "inline-icon";
 

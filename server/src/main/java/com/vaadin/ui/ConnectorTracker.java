@@ -15,24 +15,6 @@
  */
 package com.vaadin.ui;
 
-import com.vaadin.event.MarkedAsDirtyConnectorEvent;
-import com.vaadin.event.MarkedAsDirtyListener;
-import com.vaadin.server.AbstractClientConnector;
-import com.vaadin.server.ClientConnector;
-import com.vaadin.server.DragAndDropService;
-import com.vaadin.server.GlobalResourceHandler;
-import com.vaadin.server.LegacyCommunicationManager;
-import com.vaadin.server.StreamVariable;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.communication.ConnectorHierarchyWriter;
-import com.vaadin.shared.Registration;
-import elemental.json.Json;
-import elemental.json.JsonException;
-import elemental.json.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -47,6 +29,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
+
+import com.vaadin.event.MarkedAsDirtyConnectorEvent;
+import com.vaadin.event.MarkedAsDirtyListener;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.server.ClientConnector;
+import com.vaadin.server.DragAndDropService;
+import com.vaadin.server.GlobalResourceHandler;
+import com.vaadin.server.LegacyCommunicationManager;
+import com.vaadin.server.StreamVariable;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.communication.ConnectorHierarchyWriter;
+import com.vaadin.shared.Registration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import elemental.json.Json;
+import elemental.json.JsonException;
+import elemental.json.JsonObject;
 
 /**
  * A class which takes care of book keeping of {@link ClientConnector}s for a
@@ -69,6 +71,15 @@ import java.util.UUID;
  *
  */
 public class ConnectorTracker implements Serializable {
+    /**
+     * Cache whether FINE messages are loggable. This is done to avoid
+     * excessively calling getLogger() which might be slightly slow in some
+     * specific environments. Please note that we're not caching the logger
+     * instance itself because of
+     * https://github.com/vaadin/framework/issues/2092.
+     */
+    private static final boolean fineLogging = getLogger()
+            .isDebugEnabled();
 
     private final Map<String, ClientConnector> connectorIdToConnector = new HashMap<>();
     private final Set<ClientConnector> dirtyConnectors = new HashSet<>();
@@ -859,10 +870,12 @@ public class ConnectorTracker implements Serializable {
         }
         Map<String, StreamVariable> nameToStreamVar = pidToNameToStreamVariable
                 .get(connectorId);
-        StreamVariable streamVar = nameToStreamVar.remove(variableName);
-        streamVariableToSeckey.remove(streamVar);
-        if (nameToStreamVar.isEmpty()) {
-            pidToNameToStreamVariable.remove(connectorId);
+        if (nameToStreamVar != null) {
+            StreamVariable streamVar = nameToStreamVar.remove(variableName);
+            streamVariableToSeckey.remove(streamVar);
+            if (nameToStreamVar.isEmpty()) {
+                pidToNameToStreamVariable.remove(connectorId);
+            }
         }
     }
 

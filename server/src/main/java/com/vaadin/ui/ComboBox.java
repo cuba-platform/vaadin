@@ -16,10 +16,29 @@
 
 package com.vaadin.ui;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import com.vaadin.data.provider.CallbackDataProvider;
+import com.vaadin.data.provider.DataChangeEvent;
+import com.vaadin.data.provider.DataCommunicator;
+import com.vaadin.data.provider.DataGenerator;
+import com.vaadin.data.provider.DataKeyMapper;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.InMemoryDataProvider;
+import com.vaadin.data.provider.ListDataProvider;
+import org.jsoup.nodes.Element;
+
 import com.vaadin.data.HasFilterableDataProvider;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValueProvider;
-import com.vaadin.data.provider.*;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -43,20 +62,10 @@ import com.vaadin.shared.ui.combobox.ComboBoxState;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.ui.declarative.DesignFormatter;
-import elemental.json.JsonObject;
-import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
+import elemental.json.JsonObject;
 
 /**
  * A filtering dropdown single-select. Items are filtered based on user input.

@@ -1,7 +1,5 @@
 package com.vaadin.tests.components.grid;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -13,6 +11,8 @@ import org.openqa.selenium.WebElement;
 import com.vaadin.testbench.parallel.BrowserUtil;
 import com.vaadin.testbench.parallel.TestCategory;
 import com.vaadin.tests.tb3.MultiBrowserTest;
+
+import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("boxing")
 @TestCategory("grid")
@@ -50,6 +50,7 @@ public abstract class AbstractGridColumnAutoWidthTest extends MultiBrowserTest {
                 bodyWidth);
         assertEquals("column should've been roughly as wide as the header",
                 headerWidth, colWidth, tolerance);
+
     }
 
     @Test

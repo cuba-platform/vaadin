@@ -16,6 +16,25 @@
 
 package com.vaadin.ui;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.function.Supplier;
+
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Element;
+
 import com.vaadin.data.HasValue;
 import com.vaadin.event.ActionManager;
 import com.vaadin.event.ConnectorActionManager;
@@ -50,24 +69,6 @@ import com.vaadin.shared.util.SharedUtil;
 import com.vaadin.ui.declarative.DesignAttributeHandler;
 import com.vaadin.ui.declarative.DesignContext;
 import com.vaadin.util.ReflectTools;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.Element;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.function.Supplier;
 
 /**
  * An abstract class that defines default implementation for the
@@ -904,6 +905,26 @@ public abstract class AbstractComponent extends AbstractClientConnector
     @Override
     public void setSizeFull() {
         setWidth(100, Unit.PERCENTAGE);
+        setHeight(100, Unit.PERCENTAGE);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.vaadin.server.Sizeable#setWidthFull()
+     */
+    @Override
+    public void setWidthFull() {
+        setWidth(100, Unit.PERCENTAGE);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.vaadin.server.Sizeable#setHeightFull()
+     */
+    @Override
+    public void setHeightFull() {
         setHeight(100, Unit.PERCENTAGE);
     }
 
