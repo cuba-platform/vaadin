@@ -16,6 +16,19 @@
 
 package com.vaadin.server.communication;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Collection;
+import java.util.logging.Level;
+
+import org.atmosphere.cpr.AtmosphereRequest;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.AtmosphereResourceImpl;
+
 import com.vaadin.server.ErrorEvent;
 import com.vaadin.server.ErrorHandler;
 import com.vaadin.server.LegacyCommunicationManager.InvalidUIDLSecurityKeyException;
@@ -32,20 +45,11 @@ import com.vaadin.shared.ApplicationConstants;
 import com.vaadin.shared.JsonConstants;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.ui.UI;
-import elemental.json.JsonException;
-import org.atmosphere.cpr.AtmosphereRequest;
-import org.atmosphere.cpr.AtmosphereResource;
-import org.atmosphere.cpr.AtmosphereResource.TRANSPORT;
-import org.atmosphere.cpr.AtmosphereResourceEvent;
-import org.atmosphere.cpr.AtmosphereResourceImpl;
+import com.vaadin.util.CurrentInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Collection;
+import elemental.json.JsonException;
 
 /**
  * Handles incoming push connections and messages and dispatches them to the
@@ -196,18 +200,16 @@ public class PushHandler {
      *            the atmosphere resource for the current request
      * @param callback
      *            the push callback to call when a UI is found and locked
-     * @param websocket
-     *            true if this is a websocket message (as opposed to a HTTP
-     *            request)
      */
     private void callWithUi(final AtmosphereResource resource,
-            final PushEventCallback callback, boolean websocket) {
+            final PushEventCallback callback) {
         AtmosphereRequest req = resource.getRequest();
         VaadinServletRequest vaadinRequest = new VaadinServletRequest(req,
                 service);
         VaadinSession session = null;
 
-        if (websocket) {
+        boolean isWebsocket = resource.transport() == TRANSPORT.WEBSOCKET;
+        if (isWebsocket) {
             // For any HTTP request we have already started the request in the
             // servlet
             service.requestStart(vaadinRequest, null);
@@ -278,7 +280,7 @@ public class PushHandler {
             }
         } finally {
             try {
-                if (websocket) {
+                if (isWebsocket) {
                     service.requestEnd(vaadinRequest, null, session);
                 }
             } catch (Exception e) {
@@ -315,12 +317,28 @@ public class PushHandler {
     }
 
     void connectionLost(AtmosphereResourceEvent event) {
+        VaadinSession session = null;
+        try {
+            session = handleConnectionLost(event);
+        } finally {
+            if (session != null) {
+                session.access(new Runnable() {
+                    @Override
+                    public void run() {
+                        CurrentInstance.clearAll();
+                    }
+                });
+            }
+        }
+    }
+
+    private VaadinSession handleConnectionLost(AtmosphereResourceEvent event) {
         // We don't want to use callWithUi here, as it assumes there's a client
         // request active and does requestStart and requestEnd among other
         // things.
         if (event == null) {
             getLogger().error("Could not get event. This should never happen.");
-            return;
+            return null;
         }
 
         AtmosphereResource resource = event.getResource();
@@ -328,7 +346,7 @@ public class PushHandler {
         if (resource == null) {
             getLogger()
                     .error("Could not get resource. This should never happen.");
-            return;
+            return null;
         }
 
         VaadinServletRequest vaadinRequest = new VaadinServletRequest(
@@ -340,7 +358,7 @@ public class PushHandler {
         } catch (ServiceException e) {
             getLogger().error("Could not get session. This should never happen",
                     e);
-            return;
+            return null;
         } catch (SessionExpiredException e) {
             // This happens at least if the server is restarted without
             // preserving the session. After restart the client reconnects, gets
@@ -349,7 +367,7 @@ public class PushHandler {
             getLogger().trace(
                     "Session expired before push disconnect event was received",
                     e);
-            return;
+            return session;
         }
 
         UI ui = null;
@@ -373,13 +391,13 @@ public class PushHandler {
                     getLogger()
                             .debug("Could not get UI. This should never happen,"
                                     + " except when reloading in Firefox and Chrome -"
-                                    + " see http://dev.vaadin.com/ticket/14251.");
-                    return;
+                                    + " see https://github.com/vaadin/framework/issues/5449.");
+                    return session;
                 } else {
                     getLogger().info(
                             "No UI was found based on data in the request,"
                                     + " but a slower lookup based on the AtmosphereResource succeeded."
-                                    + " See http://dev.vaadin.com/ticket/14251 for more details.");
+                                    + " See https://github.com/vaadin/framework/issues/5449 for more details.");
                 }
             }
 
@@ -422,6 +440,7 @@ public class PushHandler {
                 // can't call ErrorHandler, we (hopefully) don't have a lock
             }
         }
+        return session;
     }
 
     private static UI findUiUsingResource(AtmosphereResource resource,
@@ -520,7 +539,7 @@ public class PushHandler {
      *            The related atmosphere resources
      */
     void onConnect(AtmosphereResource resource) {
-        callWithUi(resource, establishCallback, false);
+        callWithUi(resource, establishCallback);
     }
 
     /**
@@ -531,8 +550,7 @@ public class PushHandler {
      *            The related atmosphere resources
      */
     void onMessage(AtmosphereResource resource) {
-        callWithUi(resource, receiveCallback,
-                resource.transport() == TRANSPORT.WEBSOCKET);
+        callWithUi(resource, receiveCallback);
     }
 
     /**

@@ -284,7 +284,7 @@ public class VRichTextToolbar extends Composite {
             if (wnd.getSelection) {
                 selectedText = wnd.getSelection().toString();
             }
-        
+
             wnd.focus();
             if (selectedText) {
                 // Add url as the href property of the highlighted text

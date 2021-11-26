@@ -144,7 +144,8 @@ public class GridRowDraggerOneGridTest {
 
         verifyDataProvider("1", "2", "0");
 
-        Assert.assertArrayEquals("DataProvider should be invoked only once", new int[] { 1 }, times);
+        Assert.assertArrayEquals("DataProvider should be invoked only once",
+                new int[] { 1 }, times);
     }
 
     @Test

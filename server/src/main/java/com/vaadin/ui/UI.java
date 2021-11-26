@@ -1588,10 +1588,11 @@ public abstract class UI extends AbstractSingleComponentContainer
                          * accessSynchronously. Furthermore, there wasn't an
                          * ErrorHandlingRunnable that handled the exception.
                          */
-                        getLogger().warn(
-                                "access() task ignored because UI got detached after the task was enqueued."
-                                        + " To suppress this message, change the task to implement {} and make it handle {}."
-                                        + " Affected task: {}",
+                        getLogger().warn("access() task ignored "
+                                + "because UI got detached after the task was "
+                                + "enqueued. To suppress this message, change "
+                                + "the task to implement {} and make it handle "
+                                + "{}. Affected task: {}",
                                 new Object[] {
                                         ErrorHandlingRunnable.class.getName(),
                                         UIDetachedException.class.getName(),

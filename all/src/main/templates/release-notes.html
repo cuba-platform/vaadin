@@ -61,11 +61,11 @@
             Vaadin Framework @version@ is a
             maintenance release that includes a number of bug fixes, as listed in the <a href="#changelog">change log</a> below.
 <!--            feature release that includes -->
-<!--            pre-release for evaluating -->
+<!--            pre-release for evaluating
                 a number of new features and bug fixes, as listed in the <a
                 href="#enhancements">list of enhancements</a> and <a
-                href="#changelog">change log</a> below.
-<!--		The API in this beta version is not considered final and may change based on your feedback. -->
+                href="#changelog">change log</a> below.-->
+<!--		The API in this alpha version is not considered final and may change based on your feedback.-->
 	</p>
 
         <!-- ================================================================ -->
@@ -83,20 +83,21 @@
             enhancements. Below is a list of the most notable changes:</p>
 
         <ul>
-		<li>Added helper methods for setting only <tt>height</tt> or <tt>width full</tt></li>
-                <li>Allowed using <tt>BeanValidationBinder</tt> with scanNestedDefinitions.</li>
-	        <li>Allowed conditional asRequired in <tt>Binder</tt>.</li>
-	        <li>Allowed <tt>Binder</tt> to save partial data to a bean.</li>
-	        <li>Improved access to triggering session cleanup.</li>
-		<li>Making <tt>Grid::setEditable</tt> friendlier</li>
+            <li>Added Upload button caption HTML content support</li>
+            <li>Added Tree#asMultiSelect() so that Tree can be used as multiselect field e.g. with Binder</li>
+            <li>Added methods in Binder to enable / disable binding and binder level Validators on the fly</li>
+            <li>Added Binder#writeBeanAsDraft method version to write all values passing conversion to the bean</li>
+            <li>Allow AbstractDateField to provide DST zone names over custom ranges</li>
+            <li>Updated Hibernate dependency to newer version. Old version caused false positive warning in dependency security check.</li>
+            <li>Added support for javax.validation @NotEmpty annotation.</li>
         </ul>
 
         </p>
 
         <p>
-            For enhancements introduced in Vaadin Framework 8.9, see the <a
-                href="http://vaadin.com/download/release/8.9/8.9.0/release-notes.html">Release
-                Notes for Vaadin Framework 8.9.0</a>.
+            For enhancements introduced in Vaadin Framework 8.10, see the <a
+                href="http://vaadin.com/download/release/8.10/8.10.0/release-notes.html">Release
+                Notes for Vaadin Framework 8.10.0</a>.
             For migrating from previous framework versions, see <a href="#incompatible">the list of incompatible changes</a> and <a href="#migrating">how to migrate
             to Vaadin Framework 8</a>.
         </p>
@@ -104,12 +105,12 @@
         <h2 id="incompatible">Incompatible or Behavior-altering Changes in @version-minor@</h2>
 
         <ul>
-                <li>Ensured that value change happens before shortcuts in compatibility components</li>
-		<li>Ensured that <tt>TreeDataProvider</tt> filters also take into account child items</li>
-                <li>Improved <tt>Binder</tt> handling of null values.</li>
-	</ul>
+            <li>Changed DateField setValue() to throw exception if date is not meeting range check. This also prevents server and client state sync issue.</li>
+	        <li>Upload is now prevented if there is no file selected</li>
+	        <li>Determining Push transport before re-connect should improve Push stability when there is hand over e.g. from WiFi to cable and vice versa</li>
+        </ul>
 
-        <h2>For incompatible or behavior-altering changes in 8.9, please see <a href="https://vaadin.com/download/release/8.9/8.9.0/release-notes.html#incompatible">8.9 release notes</a></h2>
+        <h2>For incompatible or behavior-altering changes in 8.10, please see <a href="https://vaadin.com/download/release/8.10/8.10.0/release-notes.html#incompatible">8.10 release notes</a></h2>
 
         <h3 id="knownissues">Known Issues and Limitations</h3>
         <ul>

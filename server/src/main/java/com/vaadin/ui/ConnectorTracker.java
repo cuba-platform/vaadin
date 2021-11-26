@@ -78,8 +78,7 @@ public class ConnectorTracker implements Serializable {
      * instance itself because of
      * https://github.com/vaadin/framework/issues/2092.
      */
-    private static final boolean fineLogging = getLogger()
-            .isDebugEnabled();
+    private static final boolean fineLogging = getLogger().isDebugEnabled();
 
     private final Map<String, ClientConnector> connectorIdToConnector = new HashMap<>();
     private final Set<ClientConnector> dirtyConnectors = new HashSet<>();

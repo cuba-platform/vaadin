@@ -189,8 +189,8 @@ public class VaadinPortletServiceTest {
 
             WrappedPortletSession emptyWrappedSession = Mockito
                     .mock(WrappedPortletSession.class);
-            when(emptyWrappedSession.getAttribute("null.lock",PortletSession.APPLICATION_SCOPE))
-                    .thenReturn(mockLock);
+            when(emptyWrappedSession.getAttribute("null.lock",
+                    PortletSession.APPLICATION_SCOPE)).thenReturn(mockLock);
             VaadinRequest requestWithUIIDSet = Mockito
                     .mock(VaadinRequest.class);
             when(requestWithUIIDSet.getParameter(UIConstants.UI_ID_PARAMETER))

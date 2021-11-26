@@ -38,6 +38,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -3474,6 +3475,7 @@ public class Grid extends AbstractComponent
             if (caption == null) {
                 caption = ""; // Render null as empty
             }
+            caption = Jsoup.parse(caption).text();
             state.headerCaption = caption;
 
             HeaderRow row = grid.getHeader().getDefaultRow();

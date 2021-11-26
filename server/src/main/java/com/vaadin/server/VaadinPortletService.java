@@ -383,15 +383,13 @@ public class VaadinPortletService extends VaadinService {
                 || currentSessionLock == lock) : "Changing the lock for a session is not allowed";
 
         getWrappedPortletSession(wrappedSession).setAttribute(
-                getLockAttributeName(), lock,
-                PortletSession.APPLICATION_SCOPE);
+                getLockAttributeName(), lock, PortletSession.APPLICATION_SCOPE);
     }
 
     @Override
     protected Lock getSessionLock(WrappedSession wrappedSession) {
-        Object lock = getWrappedPortletSession(wrappedSession)
-                .getAttribute(getLockAttributeName(),
-                        PortletSession.APPLICATION_SCOPE);
+        Object lock = getWrappedPortletSession(wrappedSession).getAttribute(
+                getLockAttributeName(), PortletSession.APPLICATION_SCOPE);
 
         if (lock instanceof ReentrantLock) {
             return (ReentrantLock) lock;

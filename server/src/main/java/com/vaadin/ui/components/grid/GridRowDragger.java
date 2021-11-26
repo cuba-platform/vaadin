@@ -382,7 +382,8 @@ public class GridRowDragger<T> implements Serializable {
 
         sourceItems.removeAll(droppedItems);
 
-        // if reordering the same grid, DataProvider's refresh will be done later
+        // if reordering the same grid, DataProvider's refresh will be done
+        // later
         if (getGridDragSource().getGrid() != getGridDropTarget().getGrid()) {
             listDataProvider.refreshAll();
         }

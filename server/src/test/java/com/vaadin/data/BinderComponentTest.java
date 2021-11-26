@@ -66,7 +66,8 @@ public class BinderComponentTest
 
     private <T> void testFieldNullRepresentation(T initialValue,
             HasValue<T> field) {
-        binder.bind(field, t -> null, (str, val) -> {});
+        binder.bind(field, t -> null, (str, val) -> {
+        });
         field.setValue(initialValue);
         assertEquals("Initial value of field unexpected", initialValue,
                 field.getValue());

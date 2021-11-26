@@ -65,7 +65,7 @@ public class BeanValidationBinder<BEAN> extends Binder<BEAN> {
      *            the bean type to use, not {@code null}
      * @param scanNestedDefinitions
      *            if {@code true}, scan for nested property definitions as well
-     * 
+     *
      * @since 8.10
      */
     public BeanValidationBinder(Class<BEAN> beanType,
