@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -313,7 +313,7 @@ public class BeanPropertySet<T> implements PropertySet<T> {
                     .map(descriptor -> new BeanPropertyDefinition<>(this,
                             instanceKey.type, descriptor))
                     .collect(Collectors.toMap(PropertyDefinition::getName,
-                            Function.identity()));
+                            Function.identity(), (pd1, pd2) -> pd2));
         } catch (IntrospectionException e) {
             throw new IllegalArgumentException(
                     "Cannot find property descriptors for "

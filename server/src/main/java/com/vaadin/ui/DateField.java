@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -47,6 +47,17 @@ public class DateField extends AbstractLocalDateField {
      */
     public DateField(String caption, LocalDate value) {
         super(caption, value);
+    }
+
+    /**
+     * Constructs a new <code>DateField</code> with initial date value.
+     *
+     * @param value
+     *            the LocalDate value.
+     */
+    public DateField(LocalDate value) {
+        super();
+        setValue(value);
     }
 
     /**

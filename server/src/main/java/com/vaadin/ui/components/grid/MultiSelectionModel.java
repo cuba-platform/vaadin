@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -135,4 +135,16 @@ public interface MultiSelectionModel<T>
      * @see #setSelectAllCheckBoxVisibility(SelectAllCheckBoxVisibility)
      */
     public boolean isSelectAllCheckBoxVisible();
+
+    /**
+     * Returns whether all items are selected or not.
+     * <p>
+     * This is only {@code true} if user has selected all rows with the select
+     * all checkbox on client side, or if {@link #selectAll()} has been used
+     * from server side.
+     *
+     * @return {@code true} if all selected, {@code false} if not
+     * @since 8.12.0
+     */
+    boolean isAllSelected();
 }

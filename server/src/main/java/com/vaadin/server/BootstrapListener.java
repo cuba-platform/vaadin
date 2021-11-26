@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,10 +16,9 @@
 
 package com.vaadin.server;
 
-import java.io.Serializable;
-import java.util.EventListener;
-
 import javax.portlet.RenderResponse;
+
+import com.vaadin.event.SerializableEventListener;
 
 /**
  * Event listener notified when the bootstrap HTML is about to be generated and
@@ -30,7 +29,7 @@ import javax.portlet.RenderResponse;
  * @author Vaadin Ltd
  * @since 7.0.0
  */
-public interface BootstrapListener extends EventListener, Serializable {
+public interface BootstrapListener extends SerializableEventListener {
     /**
      * Lets this listener make changes to the fragment that makes up the actual
      * Vaadin application. In a typical Servlet deployment, this is the contents

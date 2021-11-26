@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.EventObject;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import com.vaadin.event.SerializableEventListener;
 
 /**
  * An event that specifies what in a selection has changed, and where the
@@ -100,7 +102,7 @@ public class SelectionEvent extends EventObject {
      * SelectionEvents}.
      */
     @Deprecated
-    public interface SelectionListener extends Serializable {
+    public interface SelectionListener extends SerializableEventListener {
         /**
          * Notifies the listener that the selection state has changed.
          *

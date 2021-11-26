@@ -1,5 +1,7 @@
 package com.vaadin.tests.components.grid;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -7,8 +9,6 @@ import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.tests.tb3.MultiBrowserTest;
-
-import static org.junit.Assert.assertTrue;
 
 public class DateFieldHeaderScrollWithFrozenTest extends MultiBrowserTest {
 
@@ -24,8 +24,7 @@ public class DateFieldHeaderScrollWithFrozenTest extends MultiBrowserTest {
         GridCellElement frozenElement = gridElement.getHeaderCell(1, 1);
 
         gridElement.getHorizontalScroller().scrollLeft(60);
-        //be sure that the scroll has happened
-        sleep(100);
+        sleep(100); // wait for scrolling to finish
 
         int buttonRight = buttonElement.getLocation().getX()
                 + buttonElement.getRect().getWidth();

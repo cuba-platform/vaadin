@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,8 +15,7 @@
  */
 package com.vaadin.ui.components.grid;
 
-import java.io.Serializable;
-
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.ui.Grid;
 
 /**
@@ -26,7 +25,8 @@ import com.vaadin.ui.Grid;
  * @since 8.0
  */
 @FunctionalInterface
-public interface ColumnVisibilityChangeListener extends Serializable {
+public interface ColumnVisibilityChangeListener
+        extends SerializableEventListener {
 
     /**
      * Called when a column has become hidden or unhidden.

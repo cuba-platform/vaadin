@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -85,7 +85,27 @@ public class GridDragSource<T> extends DragSourceExtension<Grid<T>> {
         super(target);
 
         // Create drag data generator
-        dragDataGenerator = this::generateDragData;
+        dragDataGenerator = new DataGenerator<T>() {
+            /**
+             * Drag data generator. Appends drag data to row data json if
+             * generator function(s) are set by the user of this extension.
+             *
+             * @param item
+             *            Row item for data generation.
+             * @param jsonObject
+             *            Row data in json format.
+             */
+            @Override
+            public void generateData(Object item, JsonObject jsonObject) {
+                JsonObject generatedValues = Json.createObject();
+
+                generatorFunctions.forEach((type, generator) -> generatedValues
+                        .put(type, generator.apply((T) item)));
+
+                jsonObject.put(GridDragSourceState.JSONKEY_DRAG_DATA,
+                        generatedValues);
+            }
+        };
 
         // Add drag data generator to Grid
         target.getDataCommunicator().addDataGenerator(dragDataGenerator);
@@ -146,24 +166,6 @@ public class GridDragSource<T> extends DragSourceExtension<Grid<T>> {
         return draggedItemKeys.stream()
                 .map(key -> grid.getDataCommunicator().getKeyMapper().get(key))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Drag data generator. Appends drag data to row data json if generator
-     * function(s) are set by the user of this extension.
-     *
-     * @param item
-     *            Row item for data generation.
-     * @param jsonObject
-     *            Row data in json format.
-     */
-    private void generateDragData(T item, JsonObject jsonObject) {
-        JsonObject generatedValues = Json.createObject();
-
-        generatorFunctions.forEach((type, generator) -> generatedValues
-                .put(type, generator.apply(item)));
-
-        jsonObject.put(GridDragSourceState.JSONKEY_DRAG_DATA, generatedValues);
     }
 
     /**

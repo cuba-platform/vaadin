@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -1987,6 +1987,13 @@ public abstract class UI extends AbstractSingleComponentContainer
             getState().enableMobileHTML5DnD = enabled;
 
             if (isMobileHtml5DndEnabled()) {
+                if (VaadinService.getCurrentRequest() == null) {
+                    getState().enableMobileHTML5DnD = false;
+                    throw new IllegalStateException("HTML5 DnD cannot be "
+                            + "enabled for mobile devices when current "
+                            + "VaadinRequest cannot be accessed. Call this "
+                            + "method from init(VaadinRequest) to ensure access.");
+                }
                 loadMobileHtml5DndPolyfill();
             }
         }

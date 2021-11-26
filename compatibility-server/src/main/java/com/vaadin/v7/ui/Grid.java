@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -48,6 +48,7 @@ import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.server.AbstractClientConnector;
 import com.vaadin.server.AbstractExtension;
 import com.vaadin.server.EncodeResult;
@@ -210,7 +211,7 @@ public class Grid extends AbstractComponent
      * @since 7.5.0
      */
     @Deprecated
-    public interface ColumnVisibilityChangeListener extends Serializable {
+    public interface ColumnVisibilityChangeListener extends SerializableEventListener {
         /**
          * Called when a column has become hidden or unhidden.
          *
@@ -831,7 +832,7 @@ public class Grid extends AbstractComponent
      * @since 7.5.0
      */
     @Deprecated
-    public interface ColumnReorderListener extends Serializable {
+    public interface ColumnReorderListener extends SerializableEventListener {
 
         /**
          * Called when the columns of the grid have been reordered.
@@ -883,7 +884,7 @@ public class Grid extends AbstractComponent
      * @since 7.6
      */
     @Deprecated
-    public interface ColumnResizeListener extends Serializable {
+    public interface ColumnResizeListener extends SerializableEventListener {
 
         /**
          * Called when the columns of the grid have been resized.

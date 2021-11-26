@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -290,18 +290,22 @@ public abstract class StaticSection<ROW extends StaticSection.StaticRow<?>>
                                     + columnIdsString + "'");
                 }
 
-                Stream.of(columnIds).forEach(this::addCell);
-
-                Stream<String> idsStream = Stream.of(columnIds);
+                CELL cell;
                 if (colspan > 1) {
-                    CELL newCell = createCell();
-                    addMergedCell(createCell(),
-                            idsStream.collect(Collectors.toSet()));
-                    newCell.readDesign(element, designContext);
+                    Set<String> columnGroup = new HashSet<>();
+                    for (String columnId : columnIds) {
+                        addCell(columnId);
+                        // convert the public columnIds into internal columnIds
+                        columnGroup.add(getCell(columnId).getColumnId());
+                    }
+                    cell = createCell();
+                    addMergedCell(cell, columnGroup);
                 } else {
-                    idsStream.map(this::getCell).forEach(
-                            cell -> cell.readDesign(element, designContext));
+                    String columnId = columnIds[0];
+                    addCell(columnId);
+                    cell = getCell(columnId);
                 }
+                cell.readDesign(element, designContext);
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,7 +15,7 @@
  */
 package com.vaadin.data.provider;
 
-import java.io.Serializable;
+import com.vaadin.event.SerializableEventListener;
 
 /**
  * Interface for listening for a data change events fired by a
@@ -28,7 +28,7 @@ import java.io.Serializable;
  *            the data type
  */
 @FunctionalInterface
-public interface DataProviderListener<T> extends Serializable {
+public interface DataProviderListener<T> extends SerializableEventListener {
 
     /**
      * Invoked when this listener receives a data change event from a data

@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,6 +30,7 @@ import java.util.List;
 import com.vaadin.annotations.HtmlImport;
 import com.vaadin.annotations.StyleSheet;
 import com.vaadin.event.EventRouter;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.BorderStyle;
 import com.vaadin.shared.ui.ui.PageClientRpc;
@@ -54,7 +55,8 @@ public class Page implements Serializable {
      * @see #addBrowserWindowResizeListener(BrowserWindowResizeListener)
      */
     @FunctionalInterface
-    public interface BrowserWindowResizeListener extends Serializable {
+    public interface BrowserWindowResizeListener
+            extends SerializableEventListener {
         /**
          * Invoked when the browser window containing a UI has been resized.
          *
@@ -259,7 +261,8 @@ public class Page implements Serializable {
      */
     @Deprecated
     @FunctionalInterface
-    public interface UriFragmentChangedListener extends Serializable {
+    public interface UriFragmentChangedListener
+            extends SerializableEventListener {
         /**
          * Event handler method invoked when the URI fragment of the page
          * changes. Please note that the initial URI fragment has already been
@@ -286,7 +289,7 @@ public class Page implements Serializable {
      * @since 8.0
      */
     @FunctionalInterface
-    public interface PopStateListener extends Serializable {
+    public interface PopStateListener extends SerializableEventListener {
         /**
          * Event handler method invoked when the URI fragment of the page
          * changes. Please note that the initial URI fragment has already been
@@ -566,18 +569,18 @@ public class Page implements Serializable {
         this.state = state;
     }
 
-    private Registration addListener(Class<?> eventType, Object target,
-            Method method) {
+    private Registration addListener(Class<?> eventType,
+            SerializableEventListener listener, Method method) {
         if (!hasEventRouter()) {
             eventRouter = new EventRouter();
         }
-        return eventRouter.addListener(eventType, target, method);
+        return eventRouter.addListener(eventType, listener, method);
     }
 
-    private void removeListener(Class<?> eventType, Object target,
-            Method method) {
+    private void removeListener(Class<?> eventType,
+            SerializableEventListener listener, Method method) {
         if (hasEventRouter()) {
-            eventRouter.removeListener(eventType, target, method);
+            eventRouter.removeListener(eventType, listener, method);
         }
     }
 

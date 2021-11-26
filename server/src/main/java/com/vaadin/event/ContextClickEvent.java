@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -46,7 +46,7 @@ public class ContextClickEvent extends ClickEvent {
      * Listener for {@link ContextClickEvent ContextClickEvents}.
      */
     @FunctionalInterface
-    public interface ContextClickListener extends Serializable {
+    public interface ContextClickListener extends SerializableEventListener {
 
         /**
          * Called when the context click happens.

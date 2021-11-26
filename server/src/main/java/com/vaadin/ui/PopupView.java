@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -24,6 +24,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.popupview.PopupViewServerRpc;
 import com.vaadin.shared.ui.popupview.PopupViewState;
@@ -400,7 +401,7 @@ public class PopupView extends AbstractComponent implements HasComponents {
      *
      */
     @FunctionalInterface
-    public interface PopupVisibilityListener extends Serializable {
+    public interface PopupVisibilityListener extends SerializableEventListener {
         /**
          * Pass to {@link PopupView.PopupVisibilityEvent} to start listening for
          * popup visibility changes.

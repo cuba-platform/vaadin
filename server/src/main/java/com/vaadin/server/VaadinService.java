@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,35 +16,30 @@
 
 package com.vaadin.server;
 
-import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.server.VaadinSession.FutureAccess;
-import com.vaadin.server.VaadinSession.State;
-import com.vaadin.server.communication.*;
-import com.vaadin.shared.ApplicationConstants;
-import com.vaadin.shared.JsonConstants;
-import com.vaadin.shared.Registration;
-import com.vaadin.shared.ui.ui.UIConstants;
-import com.vaadin.ui.UI;
-import com.vaadin.util.CurrentInstance;
-import elemental.json.Json;
-import elemental.json.JsonException;
-import elemental.json.JsonObject;
-import elemental.json.impl.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.portlet.Portlet;
-import javax.portlet.PortletContext;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
@@ -52,8 +47,36 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import javax.portlet.Portlet;
+import javax.portlet.PortletContext;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
+import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.server.VaadinSession.FutureAccess;
+import com.vaadin.server.VaadinSession.State;
+import com.vaadin.server.communication.AtmospherePushConnection;
+import com.vaadin.server.communication.FileUploadHandler;
+import com.vaadin.server.communication.HeartbeatHandler;
+import com.vaadin.server.communication.PublishedFileHandler;
+import com.vaadin.server.communication.SessionRequestHandler;
+import com.vaadin.server.communication.UidlRequestHandler;
+import com.vaadin.shared.ApplicationConstants;
+import com.vaadin.shared.JsonConstants;
+import com.vaadin.shared.Registration;
+import com.vaadin.shared.ui.ui.UIConstants;
+import com.vaadin.ui.UI;
+import com.vaadin.util.CurrentInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import elemental.json.Json;
+import elemental.json.JsonException;
+import elemental.json.JsonObject;
+import elemental.json.impl.JsonUtil;
 
 /**
  * Provide deployment specific settings that are required outside terminal
@@ -125,7 +148,7 @@ public abstract class VaadinService implements Serializable {
     private Iterable<DependencyFilter> dependencyFilters;
     private ConnectorIdGenerator connectorIdGenerator;
 
-    private boolean atmosphereAvailable = checkAtmosphereSupport();
+    private Boolean atmosphereAvailable = null;
 
     /**
      * Keeps track of whether a warning about missing push support has already
@@ -1831,7 +1854,7 @@ public abstract class VaadinService implements Serializable {
      *         is not available.
      */
     public boolean ensurePushAvailable() {
-        if (atmosphereAvailable) {
+        if (isAtmosphereAvailable()) {
             return true;
         } else {
             if (!pushWarningEmitted) {
@@ -1842,7 +1865,7 @@ public abstract class VaadinService implements Serializable {
         }
     }
 
-    private static boolean checkAtmosphereSupport() {
+    private boolean checkAtmosphereSupport() {
         String rawVersion = AtmospherePushConnection.getAtmosphereVersion();
         if (rawVersion == null) {
             return false;
@@ -1862,6 +1885,9 @@ public abstract class VaadinService implements Serializable {
      * @return true if Atmosphere is available, false otherwise
      */
     protected boolean isAtmosphereAvailable() {
+        if (atmosphereAvailable == null) {
+            atmosphereAvailable = checkAtmosphereSupport();
+        }
         return atmosphereAvailable;
     }
 

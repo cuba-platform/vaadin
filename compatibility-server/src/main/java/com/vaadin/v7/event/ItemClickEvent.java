@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.ui.Component;
 import com.vaadin.v7.data.Container;
@@ -94,7 +95,7 @@ public class ItemClickEvent extends ClickEvent {
     }
 
     @Deprecated
-    public interface ItemClickListener extends Serializable {
+    public interface ItemClickListener extends SerializableEventListener {
         public void itemClick(ItemClickEvent event);
     }
 

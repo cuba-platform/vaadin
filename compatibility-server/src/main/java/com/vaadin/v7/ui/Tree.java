@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -36,6 +36,7 @@ import org.jsoup.nodes.Element;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ContextClickEvent;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.event.Transferable;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DragSource;
@@ -1066,7 +1067,7 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
      * @since 3.0
      */
     @Deprecated
-    public interface ExpandListener extends Serializable {
+    public interface ExpandListener extends SerializableEventListener {
 
         public static final Method EXPAND_METHOD = ReflectTools.findMethod(
                 ExpandListener.class, "nodeExpand", ExpandEvent.class);
@@ -1171,7 +1172,7 @@ public class Tree extends AbstractSelect implements Container.Hierarchical,
      * @since 3.0
      */
     @Deprecated
-    public interface CollapseListener extends Serializable {
+    public interface CollapseListener extends SerializableEventListener {
 
         public static final Method COLLAPSE_METHOD = ReflectTools.findMethod(
                 CollapseListener.class, "nodeCollapse", CollapseEvent.class);

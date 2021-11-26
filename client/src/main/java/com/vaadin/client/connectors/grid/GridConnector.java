@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2018 Vaadin Ltd.
+ * Copyright 2000-2021 Vaadin Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -375,6 +375,15 @@ public class GridConnector extends AbstractListingConnector
         grid.addRowHeightChangedHandler(event -> {
             getLayoutManager().setNeedsMeasureRecursively(GridConnector.this);
             getLayoutManager().layoutNow();
+        });
+
+        // Handling Escalator size changes
+        grid.getEscalator().addEscalatorSizeChangeHandler(event -> {
+            getLayoutManager().setNeedsMeasure(GridConnector.this);
+            if (!getConnection().getMessageHandler().isUpdatingState()
+                    && !getLayoutManager().isLayoutRunning()) {
+                getLayoutManager().layoutNow();
+            }
         });
 
         /* Item click events */

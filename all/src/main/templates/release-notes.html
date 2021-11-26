@@ -59,12 +59,12 @@
 
         <p>
             Vaadin Framework @version@ is a
-            maintenance release that includes a number of bug fixes, as listed in the <a href="#changelog">change log</a> below.
+                maintenance release that includes a number of bug fixes, as listed in the <a href="#changelog">change log</a> below.
 <!--            feature release that includes -->
-<!--            pre-release for evaluating
+<!--            pre-release for evaluating -->
                 a number of new features and bug fixes, as listed in the <a
                 href="#enhancements">list of enhancements</a> and <a
-                href="#changelog">change log</a> below.-->
+                href="#changelog">change log</a> below.
 <!--		The API in this alpha version is not considered final and may change based on your feedback.-->
 	</p>
 
@@ -82,22 +82,24 @@
         <p>Vaadin Framework @version-minor@ includes many major and minor
             enhancements. Below is a list of the most notable changes:</p>
 
+        <h3>Enhancements</h3>
+
         <ul>
-            <li>Added Upload button caption HTML content support</li>
-            <li>Added Tree#asMultiSelect() so that Tree can be used as multiselect field e.g. with Binder</li>
-            <li>Added methods in Binder to enable / disable binding and binder level Validators on the fly</li>
-            <li>Added Binder#writeBeanAsDraft method version to write all values passing conversion to the bean</li>
-            <li>Allow AbstractDateField to provide DST zone names over custom ranges</li>
-            <li>Updated Hibernate dependency to newer version. Old version caused false positive warning in dependency security check.</li>
-            <li>Added support for javax.validation @NotEmpty annotation.</li>
+                <li>Recalculate column widths when vertical scrollbar hidden/shown</li>
+                <li>Add support for "ww" in date format</li>
+                <li>All updates to Escalator size should get reported to LayoutManager</li>
+                <li>Ensure type safety and serializable nature of all the listeners</li>
+                <li>Add convenience overloading for <tt>setColumn</tt></li>
+                <li>Add API to detect if <tt>GridMultiSelect</tt> select-all checkbox is checked</li>
+                <li>Added missing MIME types to <tt>FileTypeResolver</tt></li>
         </ul>
 
         </p>
 
         <p>
-            For enhancements introduced in Vaadin Framework 8.10, see the <a
-                href="http://vaadin.com/download/release/8.10/8.10.0/release-notes.html">Release
-                Notes for Vaadin Framework 8.10.0</a>.
+            For enhancements introduced in Vaadin Framework 8.11, see the <a
+                href="http://vaadin.com/download/release/8.11/8.11.0/release-notes.html">Release
+                Notes for Vaadin Framework 8.11.0</a>.
             For migrating from previous framework versions, see <a href="#incompatible">the list of incompatible changes</a> and <a href="#migrating">how to migrate
             to Vaadin Framework 8</a>.
         </p>
@@ -105,12 +107,10 @@
         <h2 id="incompatible">Incompatible or Behavior-altering Changes in @version-minor@</h2>
 
         <ul>
-            <li>Changed DateField setValue() to throw exception if date is not meeting range check. This also prevents server and client state sync issue.</li>
-	        <li>Upload is now prevented if there is no file selected</li>
-	        <li>Determining Push transport before re-connect should improve Push stability when there is hand over e.g. from WiFi to cable and vice versa</li>
+            <li>Fixed potential security issue related method used by framework by updating Hibernate dependency to version 5.3.6.</li>
         </ul>
 
-        <h2>For incompatible or behavior-altering changes in 8.10, please see <a href="https://vaadin.com/download/release/8.10/8.10.0/release-notes.html#incompatible">8.10 release notes</a></h2>
+        <h2>For incompatible or behavior-altering changes in 8.11, please see <a href="https://vaadin.com/download/release/8.11/8.11.0/release-notes.html#incompatible">8.11 release notes</a></h2>
 
         <h3 id="knownissues">Known Issues and Limitations</h3>
         <ul>
