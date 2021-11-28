@@ -53,7 +53,7 @@ public class PushHandlerTest {
             @Override
             public com.vaadin.server.VaadinSession findVaadinSession(
                     VaadinRequest request) throws SessionExpiredException {
-                return session;
+                 return session;
             }
 
             @Override

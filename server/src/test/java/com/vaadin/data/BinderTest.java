@@ -29,6 +29,7 @@ import org.junit.rules.ExpectedException;
 import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.Binder.BindingBuilder;
 import com.vaadin.data.converter.StringToBigDecimalConverter;
+import com.vaadin.data.converter.StringToDoubleConverter;
 import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.validator.IntegerRangeValidator;
 import com.vaadin.data.validator.NotEmptyValidator;
@@ -42,6 +43,8 @@ import org.apache.commons.lang.StringUtils;
 import org.hamcrest.CoreMatchers;
 
 public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
+
+    private int count;
 
     @Rule
     /*
@@ -276,13 +279,15 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
     @Test
     public void save_bound_beanAsDraft() {
         Binder<Person> binder = new Binder<>();
-        binder.forField(nameField).withValidator((value, context) -> {
-            if (value.equals("Mike")) {
-                return ValidationResult.ok();
-            } else {
-                return ValidationResult.error("value must be Mike");
-            }
-        }).bind(Person::getFirstName, Person::setFirstName);
+        binder.forField(nameField)
+            .withValidator((value,context) -> {
+                if (value.equals("Mike")) {
+                    return ValidationResult.ok();
+                } else {
+                    return ValidationResult.error("value must be Mike");
+                }
+            })
+            .bind(Person::getFirstName, Person::setFirstName);
         binder.forField(ageField)
                 .withConverter(new StringToIntegerConverter(""))
                 .bind(Person::getAge, Person::setAge);
@@ -306,23 +311,23 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
         // fails
         assertEquals(age, person.getAge());
 
-        binder.writeBeanAsDraft(person, true);
+        binder.writeBeanAsDraft(person,true);
         // name is now written despite validation as write was forced
         assertEquals(fieldValue, person.getFirstName());
     }
 
     @Test
-    public void save_bound_bean_disable_validation_binding()
-            throws ValidationException {
+    public void save_bound_bean_disable_validation_binding() throws ValidationException {
         Binder<Person> binder = new Binder<>();
         Binding<Person, String> nameBinding = binder.forField(nameField)
-                .withValidator((value, context) -> {
-                    if (value.equals("Mike")) {
-                        return ValidationResult.ok();
-                    } else {
-                        return ValidationResult.error("value must be Mike");
-                    }
-                }).bind(Person::getFirstName, Person::setFirstName);
+            .withValidator((value,context) -> {
+                if (value.equals("Mike")) {
+                    return ValidationResult.ok();
+                } else {
+                    return ValidationResult.error("value must be Mike");
+                }
+            })
+            .bind(Person::getFirstName, Person::setFirstName);
         binder.forField(ageField)
                 .withConverter(new StringToIntegerConverter(""))
                 .bind(Person::getAge, Person::setAge);
@@ -346,16 +351,17 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
     }
 
     @Test
-    public void save_bound_bean_disable_validation_binder()
-            throws ValidationException {
+    public void save_bound_bean_disable_validation_binder() throws ValidationException {
         Binder<Person> binder = new Binder<>();
-        binder.forField(nameField).withValidator((value, context) -> {
-            if (value.equals("Mike")) {
-                return ValidationResult.ok();
-            } else {
-                return ValidationResult.error("value must be Mike");
-            }
-        }).bind(Person::getFirstName, Person::setFirstName);
+        binder.forField(nameField)
+            .withValidator((value,context) -> {
+                if (value.equals("Mike")) {
+                    return ValidationResult.ok();
+                } else {
+                    return ValidationResult.error("value must be Mike");
+                }
+            })
+            .bind(Person::getFirstName, Person::setFirstName);
         binder.forField(ageField)
                 .withConverter(new StringToIntegerConverter(""))
                 .bind(Person::getAge, Person::setAge);
@@ -515,6 +521,21 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
     }
 
     @Test
+    public void withConverter_writeBackValueDisabled() {
+        TextField rentField = new TextField();
+        rentField.setValue("");
+        Binding<Person, BigDecimal> binding = binder.forField(rentField)
+                .withConverter(new EuroConverter(""))
+                .withNullRepresentation(BigDecimal.valueOf(0d))
+                .bind(Person::getRent, Person::setRent);
+        binder.setBean(item);
+        binding.setConvertBackToPresentation(false);
+        rentField.setValue("10");
+
+        assertNotEquals("€ 10.00", rentField.getValue());
+    }
+
+    @Test
     public void beanBinder_nullRepresentationIsNotDisabled() {
         Binder<Person> binder = new Binder<>(Person.class);
         binder.forField(nameField).bind("firstName");
@@ -562,15 +583,13 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
         TextField textField = new TextField();
         assertFalse(textField.isRequiredIndicatorVisible());
 
-        BindingBuilder<Person, String> bindingBuilder = binder
-                .forField(textField);
+        BindingBuilder<Person, String> bindingBuilder = binder.forField(textField);
         assertFalse(textField.isRequiredIndicatorVisible());
 
         bindingBuilder.asRequired("foobar");
         assertTrue(textField.isRequiredIndicatorVisible());
 
-        Binding<Person, String> binding = bindingBuilder
-                .bind(Person::getFirstName, Person::setFirstName);
+        Binding<Person, String> binding = bindingBuilder.bind(Person::getFirstName, Person::setFirstName);
         binder.setBean(item);
         assertNull(textField.getErrorMessage());
 
@@ -1441,6 +1460,7 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
         binder.readBean(new AtomicReference<>());
     }
 
+
     @Test
     public void nullRejetingField_otherRejectedValue_originalExceptionIsThrown() {
         TextField field = createNullAnd42RejectingFieldWithEmptyValue("");
@@ -1468,6 +1488,34 @@ public class BinderTest extends BinderTestBase<Binder<Person>, Person> {
                 field);
 
         binder.readBean(new AtomicReference<>(null));
+    }
+
+    // See: https://github.com/vaadin/framework/issues/12356
+    @Test
+    public void validationShouldNotRunTwice() {
+        TextField salaryField = new TextField();
+        count = 0;
+        item.setSalaryDouble(100d);
+        binder.forField(salaryField)
+            .withConverter(new StringToDoubleConverter(""))
+            .bind(Person::getSalaryDouble, Person::setSalaryDouble);
+        binder.setBean(item);
+        binder.addValueChangeListener(event -> {
+        	count++;
+        });
+
+        salaryField.setValue("1000");
+        assertTrue(binder.isValid());
+
+        salaryField.setValue("salary");
+        assertFalse(binder.isValid());
+
+        salaryField.setValue("2000");
+
+        // Without fix for #12356 count will be 5
+        assertEquals(3, count);
+
+        assertEquals(new Double(2000), item.getSalaryDouble());
     }
 
     private TextField createNullAnd42RejectingFieldWithEmptyValue(

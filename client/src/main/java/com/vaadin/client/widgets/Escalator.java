@@ -766,13 +766,13 @@ public class Escalator extends Widget
         /*-{
             var vScroll = esc.@com.vaadin.client.widgets.Escalator::verticalScrollbar;
             var vScrollElem = vScroll.@com.vaadin.client.widget.escalator.ScrollbarBundle::getElement()();
-
+        
             var hScroll = esc.@com.vaadin.client.widgets.Escalator::horizontalScrollbar;
             var hScrollElem = hScroll.@com.vaadin.client.widget.escalator.ScrollbarBundle::getElement()();
-
+        
             return $entry(function(e) {
                 var target = e.target;
-
+        
                 // in case the scroll event was native (i.e. scrollbars were dragged, or
                 // the scrollTop/Left was manually modified), the bundles have old cache
                 // values. We need to make sure that the caches are kept up to date.
@@ -793,29 +793,29 @@ public class Escalator extends Widget
             return $entry(function(e) {
                 var deltaX = e.deltaX ? e.deltaX : -0.5*e.wheelDeltaX;
                 var deltaY = e.deltaY ? e.deltaY : -0.5*e.wheelDeltaY;
-
+        
                 // Delta mode 0 is in pixels; we don't need to do anything...
-
+        
                 // A delta mode of 1 means we're scrolling by lines instead of pixels
                 // We need to scale the number of lines by the default line height
                 if (e.deltaMode === 1) {
                     var brc = esc.@com.vaadin.client.widgets.Escalator::body;
                     deltaY *= brc.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::getDefaultRowHeight()();
                 }
-
+        
                 // Other delta modes aren't supported
                 if ((e.deltaMode !== undefined) && (e.deltaMode >= 2 || e.deltaMode < 0)) {
                     var msg = "Unsupported wheel delta mode \"" + e.deltaMode + "\"";
-
+        
                     // Print warning message
                     esc.@com.vaadin.client.widgets.Escalator::logWarning(*)(msg);
                 }
-
+        
                 // IE8 has only delta y
                 if (isNaN(deltaY)) {
                     deltaY = -0.5*e.wheelDelta;
                 }
-
+        
                 @com.vaadin.client.widgets.Escalator.JsniUtil::moveScrollFromEvent(*)(esc, deltaX, deltaY, e);
             });
         }-*/;
@@ -1681,7 +1681,6 @@ public class Escalator extends Widget
          * @see #hasColumnAndRowData()
          */
         @Override
-        // overridden because of JavaDoc
         public void refreshRows(final int index, final int numberOfRows) {
             Range rowRange = Range.withLength(index, numberOfRows);
             Range colRange = Range.withLength(0,
@@ -4843,13 +4842,16 @@ public class Escalator extends Widget
              * Start at -1 to include a spacer that is rendered above the
              * viewport, but its parent row is still not shown
              */
+            int addedSpacers = 0;
             for (int i = -1; i < visualRowOrder.size(); i++) {
                 SpacerContainer.SpacerImpl spacer = spacers
                         .remove(Integer.valueOf(getTopRowLogicalIndex() + i));
 
                 if (spacer != null) {
-                    orderedBodyRows.add(i + 1, spacer.getRootElement());
+                    orderedBodyRows.add(i + 1 + addedSpacers,
+                            spacer.getRootElement());
                     spacer.show();
+                    ++addedSpacers;
                 }
             }
             /*
@@ -6125,12 +6127,8 @@ public class Escalator extends Widget
                 root.getStyle().setHeight(height + defaultCellBorderBottomSize,
                         Unit.PX);
 
-                // // move the visible spacers getRow row onwards.
-                // shiftSpacerPositionsAfterRow(getRow(), heightDiff);
-                if (!delayRepositioning) {
-                    // move the visible spacers getRow row onwards.
-                    shiftSpacerPositionsAfterRow(getRow(), heightDiff);
-                }
+                // move the visible spacers getRow row onwards.
+                shiftSpacerPositionsAfterRow(getRow(), heightDiff);
 
                 /*
                  * If we're growing, we'll adjust the scroll size first, then
@@ -6196,7 +6194,7 @@ public class Escalator extends Widget
                             tBodyScrollTop + moveDiff);
                     verticalScrollbar.setScrollPosByDelta(moveDiff);
 
-                } else if (!delayRepositioning) {
+                } else {
                     body.shiftRowPositions(getRow(), heightDiff);
                 }
 
@@ -6354,8 +6352,6 @@ public class Escalator extends Widget
         /** Width of the spacers' decos. Calculated once then cached. */
         private double spacerDecoWidth = 0.0D;
 
-        private boolean delayRepositioning = false;
-
         public void setSpacer(int rowIndex, double height)
                 throws IllegalArgumentException {
 
@@ -6398,18 +6394,9 @@ public class Escalator extends Widget
 
         void resetSpacer(int rowIndex) {
             if (spacerExists(rowIndex)) {
-                delayRepositioning = true;
-                double oldHeight = getSpacer(rowIndex).getHeight();
-                removeSpacer(rowIndex);
-                // real height will be determined later
-                insertNewSpacer(rowIndex, 0);
-                // reposition content below this point to match lack of height,
-                // otherwise later repositioning will fail
-                if (oldHeight > 0) {
-                    shiftSpacerPositionsAfterRow(rowIndex, -oldHeight);
-                    body.shiftRowPositions(rowIndex, -oldHeight);
-                }
-                delayRepositioning = false;
+                SpacerImpl spacer = getSpacer(rowIndex);
+                destroySpacerContent(spacer);
+                initSpacerContent(spacer);
             }
         }
 
@@ -7213,6 +7200,8 @@ public class Escalator extends Widget
 
     private final ElementPositionBookkeeper positions = new ElementPositionBookkeeper();
 
+    private Map<Element, ComputedStyle> computedStyleMap = new HashMap<>();
+
     /**
      * Creates a new Escalator widget instance.
      */
@@ -7302,14 +7291,28 @@ public class Escalator extends Widget
     private double getBoundingWidth(Element element) {
         // Gets the current width, including border and padding, for the element
         // while ignoring any transforms applied to the element (e.g. scale)
-        return new ComputedStyle(element).getWidthIncludingBorderPadding();
+        if (!computedStyleMap.containsKey(element)) {
+            if (computedStyleMap.isEmpty()) {
+                // ensure the next event loop calculates the sizes anew
+                Scheduler.get().scheduleDeferred(() -> clearComputedStyles());
+            }
+            computedStyleMap.put(element, new ComputedStyle(element));
+        }
+        return computedStyleMap.get(element).getWidthIncludingBorderPadding();
     }
 
     private double getBoundingHeight(Element element) {
         // Gets the current height, including border and padding, for the
         // element while ignoring any transforms applied to the element (e.g.
         // scale)
-        return new ComputedStyle(element).getHeightIncludingBorderPadding();
+        if (!computedStyleMap.containsKey(element)) {
+            if (computedStyleMap.isEmpty()) {
+                // ensure the next event loop calculates the sizes anew
+                Scheduler.get().scheduleDeferred(() -> clearComputedStyles());
+            }
+            computedStyleMap.put(element, new ComputedStyle(element));
+        }
+        return computedStyleMap.get(element).getHeightIncludingBorderPadding();
     }
 
     private int getBodyRowCount() {
@@ -8362,6 +8365,25 @@ public class Escalator extends Widget
      */
     public double getInnerWidth() {
         return getBoundingWidth(tableWrapper);
+    }
+
+    /**
+     * Gets the escalator's inner height. This is the entire height in pixels,
+     * without the horizontal scrollbar.
+     *
+     * @return escalator's inner height
+     */
+    public double getInnerHeight() {
+        return getBoundingHeight(tableWrapper);
+    }
+
+    /**
+     * FOR INTERNAL USE ONLY, MAY GET REMOVED OR MODIFIED AT ANY TIME!
+     * <p>
+     * Clears the computed styles.
+     */
+    void clearComputedStyles() {
+        computedStyleMap.clear();
     }
 
     /**

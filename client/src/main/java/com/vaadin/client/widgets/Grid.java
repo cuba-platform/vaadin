@@ -77,7 +77,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.BrowserInfo;
-import com.vaadin.client.ComputedStyle;
 import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Focusable;
 import com.vaadin.client.WidgetUtil;
@@ -3472,7 +3471,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
             // Update latest width to prevent recalculate on height change.
             lastCalculatedInnerWidth = escalator.getInnerWidth();
-            lastCalculatedInnerHeight = getEscalatorInnerHeight();
+            lastCalculatedInnerHeight = escalator.getInnerHeight();
         }
 
         private boolean columnsAreGuaranteedToBeWiderThanGrid() {
@@ -8038,10 +8037,8 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
 
                         cell = new Cell(rowIndex, colIndex, cellElement);
                     } catch (IllegalStateException exception) {
-                        // IllegalStateException may occur if user has scrolled
-                        // Grid so
-                        // that Escalator has updated, and row under Editor is
-                        // no longer
+                        // IllegalStateException may occur if user has scrolled Grid so
+                        // that Escalator has updated, and row under Editor is no longer
                         // there
                         return;
                     }
@@ -9544,11 +9541,6 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
         });
     }
 
-    private double getEscalatorInnerHeight() {
-        return new ComputedStyle(getEscalator().getTableWrapper())
-                .getHeightIncludingBorderPadding();
-    }
-
     /**
      * Grid does not support adding Widgets this way.
      * <p>
@@ -9803,7 +9795,7 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
     /**
      * Reset the details row with current contents.
      *
-     * @since
+     * @since 8.13
      * @param rowIndex
      *            the index of the row for which details should be reset
      */

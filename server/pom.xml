@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-root</artifactId>
-        <version>8.12-SNAPSHOT</version>
+        <version>8.13-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-server</artifactId>
     <name>vaadin-server</name>
@@ -151,14 +151,6 @@
         </resources>
 
         <plugins>
-            <plugin>
-                <groupId>net.revelc.code.formatter</groupId>
-                <artifactId>formatter-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.github.dantwining.whitespace-maven-plugin</groupId>
-                <artifactId>whitespace-maven-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
