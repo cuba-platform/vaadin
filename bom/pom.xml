@@ -11,7 +11,7 @@
     <groupId>com.vaadin</groupId>
     <artifactId>vaadin-bom</artifactId>
     <packaging>pom</packaging>
-    <version>8.13-SNAPSHOT</version>
+    <version>8.14-SNAPSHOT</version>
     <name>Vaadin Framework (Bill of Materials)</name>
     <description>Vaadin Framework (Bill of Materials)</description>
     <url>http://vaadin.com</url>
@@ -25,8 +25,11 @@
 
     <repositories>
         <repository>
-            <id>vaadin-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots</url>
+            <id>vaadin-prereleases</id>
+            <url>https://maven.vaadin.com/vaadin-prereleases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

@@ -126,8 +126,7 @@ public class DragAndDropService implements VariableOwner, ClientConnector {
          * operation based on the info passed from the client widgets (drag
          * source for Transferable, drop target for DragDropDetails).
          */
-        Transferable transferable = constructTransferable(dropTarget,
-                variables);
+        Transferable transferable = constructTransferable(variables);
         TargetDetails dropData = constructDragDropDetails(dropTarget,
                 variables);
         DragAndDropEvent dropEvent = new DragAndDropEvent(transferable,
@@ -154,8 +153,7 @@ public class DragAndDropService implements VariableOwner, ClientConnector {
          * operation based on the info passed from the client widgets (drag
          * source for Transferable, current target for DragDropDetails).
          */
-        Transferable transferable = constructTransferable(dropTarget,
-                variables);
+        Transferable transferable = constructTransferable(variables);
         TargetDetails dragDropDetails = constructDragDropDetails(dropTarget,
                 variables);
 
@@ -200,8 +198,7 @@ public class DragAndDropService implements VariableOwner, ClientConnector {
     }
 
     @SuppressWarnings("unchecked")
-    private Transferable constructTransferable(DropTarget dropHandlerOwner,
-            Map<String, Object> variables) {
+    private Transferable constructTransferable(Map<String, Object> variables) {
         final Component sourceComponent = (Component) variables
                 .get("component");
 

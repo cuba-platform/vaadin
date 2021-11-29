@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
+ * A connector class for the DragAndDropWrapper.
  *
  * @author Vaadin Ltd
  * @deprecated Replaced in 8.1 with {@link DragSourceExtensionConnector} and

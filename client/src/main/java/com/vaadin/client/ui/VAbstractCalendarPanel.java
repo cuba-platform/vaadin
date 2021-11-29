@@ -73,12 +73,17 @@ import org.slf4j.LoggerFactory;
  *            the resolution type which this field is based on (day, month, ...)
  * @since 8.0
  */
-@SuppressWarnings("deprecation")
 public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         extends FocusableFlexTable implements KeyDownHandler, KeyPressHandler,
         MouseOutHandler, MouseDownHandler, MouseUpHandler, BlurHandler,
         FocusHandler, SubPartAware {
 
+    /**
+     * Interface for updating date field value based on the current calendar
+     * panel data or canceling the update.
+     *
+     * @author Vaadin Ltd
+     */
     public interface SubmitListener {
 
         /**
@@ -98,16 +103,24 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      */
     public interface FocusOutListener {
         /**
+         * @param event
+         *            dom event
          * @return true if the calendar panel is not used after focus moves out
          */
         boolean onFocusOut(DomEvent<?> event);
     }
 
     /**
-     * FocusChangeListener is notified when the panel changes its _focused_
-     * value.
+     * FocusChangeListener is notified when the panel changes its
+     * {@code focused} value.
      */
     public interface FocusChangeListener {
+        /**
+         * Called when focused date has changed in the calendar panel.
+         *
+         * @param focusedDate
+         *            the currently focused date in the panel
+         */
         void focusChanged(Date focusedDate);
     }
 
@@ -184,6 +197,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Represents a click handler for when a user selects a value by using the
      * mouse
      */
+    @SuppressWarnings({ "unchecked", "deprecation" })
     private ClickHandler dayClickHandler = event -> {
         if (!isEnabled() || isReadonly()) {
             return;
@@ -210,6 +224,9 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     private Map<String, String> dateStyles = new HashMap<String, String>();
     private DateTimeFormat df = DateTimeFormat.getFormat("yyyy-MM-dd");
 
+    /**
+     * Constructs a calendar panel widget for displaying and selecting a date.
+     */
     public VAbstractCalendarPanel() {
         getElement().setId(DOM.createUniqueId());
         setStyleName(VDateField.CLASSNAME + "-calendarpanel");
@@ -220,6 +237,12 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         addBlurHandler(this);
     }
 
+    /**
+     * Sets the parent date field widget.
+     *
+     * @param parent
+     *            the parent widget
+     */
     public void setParentField(VDateField<R> parent) {
         this.parent = parent;
     }
@@ -232,6 +255,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            A Date representing the day of month to be focused. Must be
      *            one of the days currently visible.
      */
+    @SuppressWarnings("unchecked")
     private void focusDay(Date date) {
         // Only used when calendar body is present
         if (acceptDayFocus()) {
@@ -352,6 +376,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            one of the days currently visible.
      *
      */
+    @SuppressWarnings("unchecked")
     private void selectDate(Date date) {
         if (selectedDay != null) {
             selectedDay.removeStyleDependentName(CN_SELECTED);
@@ -387,6 +412,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Updates year, month, day from focusedDate to value
      */
+    @SuppressWarnings("deprecation")
     private void selectFocused() {
         if (focusedDate != null
                 && isDateInsideRange(focusedDate, getResolution())) {
@@ -421,14 +447,30 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
     }
 
+    /**
+     * @deprecated This method is not used by the framework code anymore.
+     * @return {@code false}
+     */
+    @Deprecated
     protected boolean onValueChange() {
         return false;
     }
 
+    /**
+     * Returns the current date resolution.
+     *
+     * @return the resolution
+     */
     public R getResolution() {
         return resolution;
     }
 
+    /**
+     * Sets the current date resolution.
+     *
+     * @param resolution
+     *            the new resolution
+     */
     public void setResolution(R resolution) {
         this.resolution = resolution;
     }
@@ -569,9 +611,11 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
 
         updateAssistiveLabels();
 
+        @SuppressWarnings("deprecation")
         final String monthName = needsMonth
                 ? getDateTimeService().getMonth(displayedMonth.getMonth())
                 : "";
+        @SuppressWarnings("deprecation")
         final int year = displayedMonth.getYear() + 1900;
 
         getFlexCellFormatter().setStyleName(0, 2,
@@ -613,6 +657,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void updateControlButtonRangeStyles(boolean needsMonth) {
 
         if (focusedDate == null) {
@@ -677,6 +722,12 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         return parent;
     }
 
+    /**
+     * Sets date time service for the widget.
+     *
+     * @param dateTimeService
+     *            date time service
+     */
     public void setDateTimeService(DateTimeService dateTimeService) {
         this.dateTimeService = dateTimeService;
     }
@@ -686,12 +737,22 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * selector or not. ISO 8601 defines that a week always starts with a Monday
      * so the week numbers are only shown if this is the case.
      *
-     * @return true if week number should be shown, false otherwise
+     * @return {@code true} if week number should be shown, {@code false}
+     *         otherwise
      */
     public boolean isShowISOWeekNumbers() {
         return showISOWeekNumbers;
     }
 
+    /**
+     * Sets whether ISO 8601 week numbers should be shown in the value selector
+     * or not. ISO 8601 defines that a week always starts with a Monday so the
+     * week numbers are only shown if this is the case.
+     *
+     * @param showISOWeekNumbers
+     *            {@code true} if week number should be shown, {@code false}
+     *            otherwise
+     */
     public void setShowISOWeekNumbers(boolean showISOWeekNumbers) {
         this.showISOWeekNumbers = showISOWeekNumbers;
         if (initialRenderDone && isBelowMonth(resolution)) {
@@ -737,6 +798,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 .compareTo(dateStrResolution) <= 0;
     }
 
+    @SuppressWarnings("deprecation")
     private String dateStrResolution(Date date, R minResolution) {
         String dateStrResolution = (1900 + date.getYear()) + "";
         while (dateStrResolution.length() < 4) {
@@ -773,7 +835,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         // If dateStrResolution has more year digits than rangeEnd, we need
         // to pad it in order to be lexicographically compatible
         String dateStrResolution = dateStrResolution(date, minResolution);
-        String paddedEnd = rangeEnd.substring(0);
+        String paddedEnd = rangeEnd;
         int yearDigits = dateStrResolution.indexOf("-");
         if (yearDigits == -1) {
             yearDigits = dateStrResolution.length();
@@ -785,24 +847,10 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                 .compareTo(dateStrResolution) >= 0;
     }
 
-    private static Date clearDateBelowMonth(Date date) {
-        date.setDate(1);
-        return clearDateBelowDay(date);
-    }
-
-    private static Date clearDateBelowDay(Date date) {
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
-        // Clearing milliseconds
-        long time = date.getTime() / 1000;
-        date = new Date(time * 1000);
-        return date;
-    }
-
     /**
      * Builds the day and time selectors of the calendar.
      */
+    @SuppressWarnings("deprecation")
     private void buildCalendarBody() {
 
         final int weekColumn = 0;
@@ -963,9 +1011,12 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     }
 
     /**
-     * Returns the value of initialRenderDone
+     * Returns the value of initialRenderDone.
      *
      * @since 8.7
+     *
+     * @return {@code true} if the initial render has been marked as done,
+     *         {@code false} otherwise
      */
     public boolean isInitialRenderDone() {
         return initialRenderDone;
@@ -1006,6 +1057,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            resolution of the calendar is changed and no date has been
      *            selected.
      */
+    @SuppressWarnings("deprecation")
     protected void doRenderCalendar(boolean updateDate) {
         super.setStylePrimaryName(
                 getDateField().getStylePrimaryName() + "-calendarpanel");
@@ -1039,6 +1091,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Moves the focus forward the given number of days.
      */
+    @SuppressWarnings("deprecation")
     private void focusNextDay(int days) {
         if (focusedDate == null) {
             return;
@@ -1078,6 +1131,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Selects the next month
      */
+    @SuppressWarnings("deprecation")
     private void focusNextMonth() {
 
         if (focusedDate == null) {
@@ -1093,8 +1147,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
 
         // Now also checking whether the day is inside the range or not. If not
-        // inside,
-        // correct it
+        // inside, correct it
         if (!isDateInsideRange(requestedNextMonthDate,
                 getResolution(this::isDay))) {
             requestedNextMonthDate = adjustDateToFitInsideRange(
@@ -1107,6 +1160,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         renderCalendar();
     }
 
+    @SuppressWarnings("deprecation")
     private static void addOneMonth(Date date) {
         int currentMonth = date.getMonth();
         int requestedMonth = (currentMonth + 1) % 12;
@@ -1123,6 +1177,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
     }
 
+    @SuppressWarnings("deprecation")
     private static void removeOneMonth(Date date) {
         int currentMonth = date.getMonth();
 
@@ -1141,6 +1196,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Selects the previous month
      */
+    @SuppressWarnings("deprecation")
     private void focusPreviousMonth() {
 
         if (focusedDate == null) {
@@ -1168,6 +1224,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Selects the previous year
      */
+    @SuppressWarnings("deprecation")
     private void focusPreviousYear(int years) {
 
         if (focusedDate == null) {
@@ -1210,6 +1267,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     /**
      * Selects the next year
      */
+    @SuppressWarnings("deprecation")
     private void focusNextYear(int years) {
 
         if (focusedDate == null) {
@@ -1397,7 +1455,8 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            Was the ctrl key pressed?
      * @param shift
      *            Was the shift key pressed?
-     * @return
+     * @return {@code true} if the navigation was handled successfully,
+     *         {@code false} otherwise
      */
     protected boolean handleNavigationMonthMode(int keycode, boolean ctrl,
             boolean shift) {
@@ -1456,6 +1515,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * @return Return true if the key press was handled by the method, else
      *         return false.
      */
+    @SuppressWarnings("deprecation")
     protected boolean handleNavigationDayMode(int keycode, boolean ctrl,
             boolean shift) {
 
@@ -1583,7 +1643,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * selection. By default this is backspace but it can be overridden to
      * change the key to whatever you want.
      *
-     * @return
+     * @return the reset key
      */
     protected int getResetKey() {
         return KeyCodes.KEY_BACKSPACE;
@@ -1594,7 +1654,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * enter key but it can be changed to whatever you like by overriding this
      * method.
      *
-     * @return
+     * @return the select key
      */
     protected int getSelectKey() {
         return KeyCodes.KEY_ENTER;
@@ -1605,7 +1665,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Else this does nothing. By default this is the Escape key but you can
      * change the key to whatever you want by overriding this method.
      *
-     * @return
+     * @return the closing key
      */
     protected int getCloseKey() {
         return KeyCodes.KEY_ESCAPE;
@@ -1616,7 +1676,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * right arrow key but by overriding this method it can be changed to
      * whatever you like.
      *
-     * @return
+     * @return the forward key
      */
     protected int getForwardKey() {
         return KeyCodes.KEY_RIGHT;
@@ -1627,7 +1687,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * the left arrow key but by overriding this method it can be changed to
      * whatever you like.
      *
-     * @return
+     * @return the backward key
      */
     protected int getBackwardKey() {
         return KeyCodes.KEY_LEFT;
@@ -1638,7 +1698,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * the down arrow key but by overriding this method it can be changed to
      * whatever you like.
      *
-     * @return
+     * @return the next week key
      */
     protected int getNextKey() {
         return KeyCodes.KEY_DOWN;
@@ -1649,7 +1709,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * is the up arrow key but by overriding this method it can be changed to
      * whatever you like.
      *
-     * @return
+     * @return the previous week key
      */
     protected int getPreviousKey() {
         return KeyCodes.KEY_UP;
@@ -1676,6 +1736,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * com.google.gwt.event.dom.client.MouseDownHandler#onMouseDown(com.google
      * .gwt.event.dom.client.MouseDownEvent)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void onMouseDown(MouseDownEvent event) {
         // Click-n-hold the left mouse button for fast-forward or fast-rewind.
@@ -1731,9 +1792,11 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         return date;
     }
 
+    @SuppressWarnings("deprecation")
     private Date parseRangeString(String dateStr) {
-        if (dateStr == null || "".equals(dateStr))
+        if (dateStr == null || "".equals(dateStr)) {
             return null;
+        }
         int year = Integer.parseInt(dateStr.substring(0, 4)) - 1900;
         int month = parsePart(dateStr, 5, 2, 1) - 1;
         int day = parsePart(dateStr, 8, 2, 1);
@@ -1746,8 +1809,9 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
 
     private int parsePart(String dateStr, int beginIndex, int length,
             int defValue) {
-        if (dateStr.length() < beginIndex + length)
+        if (dateStr.length() < beginIndex + length) {
             return defValue;
+        }
         return Integer
                 .parseInt(dateStr.substring(beginIndex, beginIndex + length));
     }
@@ -1778,6 +1842,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      *            an additional action which will be executed in case
      *            rerendering is not required
      */
+    @SuppressWarnings("deprecation")
     protected void doSetDate(Date currentDate, boolean needRerender,
             Runnable focusAction) {
         // Check that we are not re-rendering an already active date
@@ -1812,13 +1877,13 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
                         dateThatFitsInsideRange.getMonth(), 1);
                 // value was adjusted. Set selected to null to not cause
                 // confusion, but this is only needed (and allowed) when we have
-                // a day
-                // resolution
+                // a day resolution
                 if (isDay(getResolution())) {
                     value = null;
                 }
             } else {
-                focusedDate = displayedMonth = null;
+                displayedMonth = null;
+                focusedDate = null;
             }
         } else {
             focusedDate = new FocusedDate(value.getYear(), value.getMonth(),
@@ -1849,6 +1914,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     private class Day extends InlineHTML {
         private final Date date;
 
+        @SuppressWarnings("deprecation")
         Day(Date date) {
             super("" + date.getDate());
             this.date = date;
@@ -1860,16 +1926,22 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         }
     }
 
+    /**
+     * Returns the current date value.
+     *
+     * @return current date value
+     */
     public Date getDate() {
         return value;
     }
 
     /**
-     * If true should be returned if the panel will not be used after this
-     * event.
+     * True should be returned if the panel will not be used after this event.
      *
      * @param event
-     * @return
+     *            dom event
+     * @return {@code true} if the panel will not be used after this event,
+     *         {@code false} otherwise
      */
     protected boolean onTabOut(DomEvent<?> event) {
         if (focusOutListener != null) {
@@ -1960,10 +2032,6 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
 
     private static final String SUBPART_NEXT_YEAR = "nexty";
     private static final String SUBPART_PREV_YEAR = "prevy";
-    private static final String SUBPART_HOUR_SELECT = "h";
-    private static final String SUBPART_MINUTE_SELECT = "m";
-    private static final String SUBPART_SECS_SELECT = "s";
-    private static final String SUBPART_AMPM_SELECT = "ampm";
     private static final String SUBPART_DAY = "day";
     private static final String SUBPART_MONTH_YEAR_HEADER = "header";
 
@@ -1971,6 +2039,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
 
     private String rangeEnd;
 
+    @SuppressWarnings("deprecation")
     @Override
     public String getSubPartName(
             com.google.gwt.user.client.Element subElement) {
@@ -2010,8 +2079,11 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      * Checks if subElement is inside the widget DOM hierarchy.
      *
      * @param w
+     *            the widget to investigate
      * @param subElement
-     * @return true if {@code w} is a parent of subElement, false otherwise.
+     *            the element to search for
+     * @return {@code true} if the given widget is a parent of the given
+     *         element, {@code false} otherwise.
      */
     protected boolean contains(Widget w, Element subElement) {
         if (w == null || w.getElement() == null) {
@@ -2021,6 +2093,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
         return w.getElement().isOrHasChild(subElement);
     }
 
+    @SuppressWarnings({ "unchecked", "deprecation" })
     @Override
     public com.google.gwt.user.client.Element getSubPartElement(
             String subPart) {
@@ -2076,6 +2149,20 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
      */
     public class FocusedDate extends Date {
 
+        /**
+         * Constructs a date instance that keeps track of the currently selected
+         * date within the calendar panel and updates the related text field
+         * accordingly if there is one.
+         *
+         * @param year
+         *            the year value
+         * @param month
+         *            the month value between 0-11
+         * @param date
+         *            the day of the month value between 1-31
+         * @see FocusedDate
+         */
+        @SuppressWarnings("deprecation")
         public FocusedDate(int year, int month, int date) {
             super(year, month, date);
         }
@@ -2144,8 +2231,7 @@ public abstract class VAbstractCalendarPanel<R extends Enum<R>>
     public void setRangeEnd(String newRangeEnd) {
         if (!SharedUtil.equals(rangeEnd, newRangeEnd)) {
             // Dates with year 10000 or more has + prefix, which is not
-            // compatible
-            // with format returned by dateStrResolution method
+            // compatible with format returned by dateStrResolution method
             if (newRangeEnd.startsWith("+")) {
                 rangeEnd = newRangeEnd.substring(1);
             } else {

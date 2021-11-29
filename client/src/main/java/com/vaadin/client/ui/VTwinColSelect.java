@@ -38,7 +38,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -393,8 +392,9 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         if (scheduledScrollToItem == -1) {
             scheduledScrollToItem = i;
             Scheduler.get().scheduleDeferred(() -> {
-                Element el = (Element) listBox.getElement()
-                        .getChild(scheduledScrollToItem);
+                @SuppressWarnings("deprecation")
+                com.google.gwt.user.client.Element el = (com.google.gwt.user.client.Element) listBox
+                        .getElement().getChild(scheduledScrollToItem);
                 el.scrollIntoView();
                 scheduledScrollToItem = -1;
             });
@@ -717,6 +717,7 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
 
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public com.google.gwt.user.client.Element getSubPartElement(
             String subPart) {
@@ -748,6 +749,7 @@ public class VTwinColSelect extends Composite implements MultiSelectWidget,
         return null;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String getSubPartName(
             com.google.gwt.user.client.Element subElement) {

@@ -34,6 +34,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Base class for various DateField connectors.
+ *
+ * @author Vaadin Ltd
+ *
+ * @param <R>
+ *            the resolution type which this field is based on (day, month, ...)
+ */
 public abstract class AbstractDateFieldConnector<R extends Enum<R>>
         extends AbstractFieldConnector {
 
@@ -136,6 +144,7 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
         widget.setDefaultDate(getDefaultValues());
     }
 
+    @SuppressWarnings("rawtypes")
     @OnStateChange("assistiveLabels")
     private void updateAssistiveLabels() {
         if (getWidget() instanceof VAbstractPopupCalendar) {
@@ -152,6 +161,7 @@ public abstract class AbstractDateFieldConnector<R extends Enum<R>>
      *            the calendar panel for which to set the assistive labels
      * @since 8.4
      */
+    @SuppressWarnings("rawtypes")
     protected void setAndUpdateAssistiveLabels(
             VAbstractCalendarPanel calendar) {
         calendar.setAssistiveLabelPreviousMonth(getState().assistiveLabels

@@ -424,6 +424,23 @@ public class Page implements Serializable {
             target.addText(css);
             target.endTag("css-string");
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            } else if (obj instanceof InjectedStyleString) {
+                InjectedStyleString that = (InjectedStyleString) obj;
+                return css.equals(that.css);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return css.hashCode();
+        }
     }
 
     private static class InjectedStyleResource implements InjectedStyle {
@@ -468,9 +485,11 @@ public class Page implements Serializable {
      */
     public static class Styles implements Serializable {
 
-        private LinkedHashSet<InjectedStyle> injectedStyles = new LinkedHashSet<>();
+        // For internal use only, visibility is package for enabling testing
+        LinkedHashSet<InjectedStyle> injectedStyles = new LinkedHashSet<>();
 
-        private LinkedHashSet<InjectedStyle> pendingInjections = new LinkedHashSet<>();
+        // For internal use only, visibility is package for enabling testing
+        LinkedHashSet<InjectedStyle> pendingInjections = new LinkedHashSet<>();
 
         private final UI ui;
 
@@ -490,8 +509,12 @@ public class Page implements Serializable {
                         "Cannot inject null CSS string");
             }
 
-            pendingInjections.add(new InjectedStyleString(css));
-            ui.markAsDirty();
+            InjectedStyleString injectedStyleString = new InjectedStyleString(
+                    css);
+            if (!injectedStyles.contains(injectedStyleString)
+                    && pendingInjections.add(injectedStyleString)) {
+                ui.markAsDirty();
+            }
         }
 
         /**
@@ -1350,8 +1373,8 @@ public class Page implements Serializable {
      * Sets the page title. The page title is displayed by the browser e.g. as
      * the title of the browser window or as the title of the tab.
      * <p>
-     * If the title is set to null, it will not left as-is. Set to empty string
-     * to clear the title.
+     * If this value is set to null, the previously set page title will be left
+     * as-is. Set to empty string to clear the title.
      *
      * @param title
      *            the page title to set

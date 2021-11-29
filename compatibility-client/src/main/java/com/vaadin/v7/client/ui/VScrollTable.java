@@ -5945,7 +5945,9 @@ public class VScrollTable extends FlowPanel
                 Element cell = DOM.getChild(getElement(), cellIx);
                 ComputedStyle cs = new ComputedStyle(cell);
 
-                return cs.getWidth() + cs.getPaddingWidth() + cs.getBorderWidth();
+                // Since PR #12449, the table cell has "border-box" sizing
+                // therefore width has already included paddings and borders.
+                return cs.getWidth();
             }
 
             protected void setCellWidth(int cellIx, int width) {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-test-karaf</artifactId>
-        <version>8.13-SNAPSHOT</version>
+        <version>8.14-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-karaf-bundle1</artifactId>
     <packaging>jar</packaging>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-osgi-integration</artifactId>
-            <version>8.1.0.beta1</version>
+            <version>${vaadin.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -135,13 +135,6 @@
                 <repository>
                     <id>vaadin-prereleases</id>
                     <url>https://maven.vaadin.com/vaadin-prereleases</url>
-                </repository>
-                <repository>
-                    <id>vaadin-snapshots</id>
-                    <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
@@ -151,13 +144,6 @@
                 <pluginRepository>
                     <id>vaadin-prereleases</id>
                     <url>https://maven.vaadin.com/vaadin-prereleases</url>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>vaadin-snapshots</id>
-                    <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-                    <releases>
-                        <enabled>false</enabled>
-                    </releases>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>

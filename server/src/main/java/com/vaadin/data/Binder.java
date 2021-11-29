@@ -1240,8 +1240,7 @@ public class Binder<BEAN> implements Serializable {
 
         /**
          * Sets the field value by invoking the getter function on the given
-         * bean. The default listener attached to the field will be removed for
-         * the duration of this update.
+         * bean.
          *
          * @param bean
          *            the bean to fetch the property value from
@@ -1253,13 +1252,12 @@ public class Binder<BEAN> implements Serializable {
          */
         private void initFieldValue(BEAN bean, boolean writeBackChangedValues) {
             assert bean != null;
-            assert onValueChange != null;
             valueInit = true;
             try {
                 TARGET originalValue = getter.apply(bean);
                 convertAndSetFieldValue(originalValue);
 
-                if (writeBackChangedValues && setter != null) {
+                if (writeBackChangedValues && setter != null && !readOnly) {
                     doConversion().ifOk(convertedValue -> {
                         if (!Objects.equals(originalValue, convertedValue)) {
                             setter.accept(bean, convertedValue);
@@ -1892,7 +1890,6 @@ public class Binder<BEAN> implements Serializable {
         if (bean == null) {
             clearFields();
         } else {
-            changedBindings.clear();
             getBindings().forEach(binding -> {
                 // Some bindings may have been removed from binder
                 // during readBean. We should skip those bindings to
@@ -1903,6 +1900,7 @@ public class Binder<BEAN> implements Serializable {
                     binding.initFieldValue(bean, false);
                 }
             });
+            changedBindings.clear();
             getValidationStatusHandler().statusChange(
                     BinderValidationStatus.createUnresolvedStatus(this));
             fireStatusChangeEvent(false);
@@ -2002,7 +2000,7 @@ public class Binder<BEAN> implements Serializable {
      *         updated, {@code false} otherwise
      */
     public boolean writeBeanIfValid(BEAN bean) {
-        return doWriteIfValid(bean, new ArrayList<>(bindings)).isOk();
+        return doWriteIfValid(bean, bindings).isOk();
     }
 
     /**
@@ -2025,19 +2023,26 @@ public class Binder<BEAN> implements Serializable {
         Objects.requireNonNull(bean, "bean cannot be null");
         List<ValidationResult> binderResults = Collections.emptyList();
 
+        // make a copy of the incoming bindings to avoid their modifications
+        // during validation
+        Collection<Binding<BEAN, ?>> currentBindings = new ArrayList<>(
+                bindings);        
+
         // First run fields level validation, if no validation errors then
         // update bean
-        List<BindingValidationStatus<?>> bindingResults = bindings.stream()
-                .map(b -> b.validate(false)).collect(Collectors.toList());
+        List<BindingValidationStatus<?>> bindingResults = currentBindings
+                .stream().map(b -> b.validate(false))
+                .collect(Collectors.toList());
 
         if (bindingResults.stream()
                 .noneMatch(BindingValidationStatus::isError)) {
             // Store old bean values so we can restore them if validators fail
             Map<Binding<BEAN, ?>, Object> oldValues = getBeanState(bean,
-                    bindings);
+                    currentBindings);
 
-            bindings.forEach(binding -> ((BindingImpl<BEAN, ?, ?>) binding)
-                    .writeFieldValue(bean));
+            currentBindings
+                    .forEach(binding -> ((BindingImpl<BEAN, ?, ?>) binding)
+                            .writeFieldValue(bean));
             // Now run bean level validation against the updated bean
             binderResults = validateBean(bean);
             if (binderResults.stream().anyMatch(ValidationResult::isError)) {
@@ -2048,7 +2053,7 @@ public class Binder<BEAN> implements Serializable {
                  * Changes have been successfully saved. The set is only cleared
                  * when the changes are stored in the currently set bean.
                  */
-                bindings.clear();
+                changedBindings.clear();
             } else if (getBean() == null) {
                 /*
                  * When using readBean and writeBean there is no knowledge of

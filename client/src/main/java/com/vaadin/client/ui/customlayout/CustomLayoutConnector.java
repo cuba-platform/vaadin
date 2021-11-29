@@ -28,6 +28,12 @@ import com.vaadin.ui.CustomLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A connector class for CustomLayout.
+ *
+ * @author Vaadin Ltd
+ */
+@SuppressWarnings("deprecation")
 @Connect(CustomLayout.class)
 public class CustomLayoutConnector extends AbstractLayoutConnector
         implements SimpleManagedLayout, Paintable {

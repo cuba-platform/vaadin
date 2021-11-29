@@ -5,14 +5,14 @@
     <parent>
         <groupId>com.vaadin</groupId>
         <artifactId>vaadin-servlet-containers-test</artifactId>
-        <version>8.13-SNAPSHOT</version>
+        <version>8.14-SNAPSHOT</version>
     </parent>
     <artifactId>vaadin-test-jetty9-server</artifactId>
     <name>Vaadin Jetty 9 Test</name>
     <packaging>war</packaging>
     <properties>
         <jetty.skip>false</jetty.skip>
-        <jetty.version>9.3.21.v20170918</jetty.version>
+        <jetty.version>9.4.38.v20210224</jetty.version>
         <server.name>jetty9</server.name>
     </properties>
 

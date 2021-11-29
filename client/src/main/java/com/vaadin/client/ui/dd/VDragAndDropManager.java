@@ -15,9 +15,15 @@
  */
 package com.vaadin.client.ui.dd;
 
+import java.util.Locale;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
@@ -26,7 +32,13 @@ import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.*;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.ComponentConnector;
+import com.vaadin.client.MouseEventDetailsBuilder;
+import com.vaadin.client.Profiler;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.ValueMap;
+import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.extensions.DragSourceExtensionConnector;
 import com.vaadin.client.extensions.DropTargetExtensionConnector;
 import com.vaadin.client.ui.VOverlay;
@@ -35,8 +47,6 @@ import com.vaadin.shared.MouseEventDetails;
 import com.vaadin.shared.ui.dd.DragEventType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Locale;
 
 /**
  * Helper class to manage the state of drag and drop event on Vaadin client
@@ -56,6 +66,7 @@ import java.util.Locale;
 @Deprecated
 public class VDragAndDropManager {
 
+    /** Style name for the active drag source. */
     public static final String ACTIVE_DRAG_SOURCE_STYLENAME = "v-active-drag-source";
 
     /**
@@ -68,11 +79,15 @@ public class VDragAndDropManager {
     public interface DDManagerMediator {
         /**
          * Returns DnD manager instance.
+         *
+         * @return the manager
          */
         VDragAndDropManager getManager();
 
         /**
          * Returns current drag event.
+         *
+         * @return the event
          */
         VDragEvent getDragEvent();
 
@@ -155,7 +170,7 @@ public class VDragAndDropManager {
         }
     }
 
-    /*
+    /**
      * #13381, #14796. The drag only actually starts when the mouse move or
      * touch move event is more than 3 pixel away.
      */
@@ -186,10 +201,16 @@ public class VDragAndDropManager {
     private DDEventHandleStrategy eventHandleStrategy;
 
     /**
-     * If dragging is currently on a drophandler, this field has reference to it
+     * If dragging is currently on a drophandler, this field has reference to
+     * it.
      */
     private VDropHandler currentDropHandler;
 
+    /**
+     * Returns the current drop handler.
+     *
+     * @return current drop handler, or {@code null} if one doesn't exist
+     */
     public VDropHandler getCurrentDropHandler() {
         return currentDropHandler;
     }
@@ -200,6 +221,7 @@ public class VDragAndDropManager {
      * .
      *
      * @param currentDropHandler
+     *            the current drop handler
      */
     public void setCurrentDropHandler(VDropHandler currentDropHandler) {
         this.currentDropHandler = currentDropHandler;
@@ -209,6 +231,12 @@ public class VDragAndDropManager {
 
     private HandlerRegistration deferredStartRegistration;
 
+    /**
+     * Returns the current drag and drop manager instance. If one doesn't exist
+     * yet, it's created.
+     *
+     * @return the current drag and drop manager
+     */
     public static VDragAndDropManager get() {
         if (instance == null) {
             instance = GWT.create(VDragAndDropManager.class);
@@ -216,7 +244,7 @@ public class VDragAndDropManager {
         return instance;
     }
 
-    /* Singleton */
+    /** Singleton. */
     protected VDragAndDropManager() {
     }
 
@@ -246,11 +274,14 @@ public class VDragAndDropManager {
      * methods on it called automatically.
      *
      * @param transferable
-     * @param nativeEvent
+     *            the VTransferable instance that represents the original
+     *            dragged element
+     * @param startEvent
+     *            the native event that starts the drag
      * @param handleDragEvents
      *            if true, {@link VDragAndDropManager} handles the drag and drop
      *            operation GWT event preview.
-     * @return
+     * @return the drag event
      */
     public VDragEvent startDrag(VTransferable transferable,
             final NativeEvent startEvent, final boolean handleDragEvents) {
@@ -432,6 +463,14 @@ public class VDragAndDropManager {
                                                             return false;
                                                             }-*/;
 
+    /**
+     * Updates drag image position.
+     *
+     * @param gwtEvent
+     *            the event whose coordinates should be used
+     * @param dragImage
+     *            the image to position
+     */
     protected void updateDragImagePosition(NativeEvent gwtEvent,
             Element dragImage) {
         if (gwtEvent != null && dragImage != null) {
@@ -448,7 +487,9 @@ public class VDragAndDropManager {
      * implement HasDropHandler. Returns DropHandler from that.
      *
      * @param element
-     * @return
+     *            the topmost element that is a potential drag target
+     * @return the drop handler from the given element or its closest ancestor
+     *         that has one, or {@code null} if there is no such thing
      */
     protected VDropHandler findDragTarget(Element element) {
         try {
@@ -604,6 +645,8 @@ public class VDragAndDropManager {
      * interrupted() method for cleanup.
      *
      * @param acceptCallback
+     *            the callback that should handle the matching server response
+     *            when it arrives
      */
     public void visitServer(VDragEventServerCallback acceptCallback) {
         doRequest(DragEventType.ENTER);
@@ -665,6 +708,12 @@ public class VDragAndDropManager {
 
     }
 
+    /**
+     * Handle the server response for drag and drop.
+     *
+     * @param valueMap
+     *            DnD value map from the response
+     */
     public void handleServerResponse(ValueMap valueMap) {
         if (serverCallback == null) {
             return;
@@ -755,6 +804,12 @@ public class VDragAndDropManager {
         return serverCallback != null;
     }
 
+    /**
+     * Returns the application connection for the current drag source. If there
+     * is no current drag source, returns {@code null} instead.
+     *
+     * @return the application connection, or {@code null} if not found
+     */
     protected ApplicationConnection getCurrentDragApplicationConnection() {
         if (currentDrag == null) {
             return null;
@@ -788,6 +843,7 @@ public class VDragAndDropManager {
      * command in queue here.
      *
      * @param command
+     *            the command to execute
      */
     public void executeWhenReady(Command command) {
         if (isBusy()) {

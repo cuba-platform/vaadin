@@ -36,7 +36,7 @@ import java.util.*;
  * @author Vaadin Ltd.
  * @since 5.0
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({ "deprecation", "serial" })
 public class JsonPaintTarget implements PaintTarget {
 
     /* Document type declarations */
@@ -73,6 +73,7 @@ public class JsonPaintTarget implements PaintTarget {
      * Creates a new JsonPaintTarget.
      *
      * @param manager
+     *            communication manager
      * @param outWriter
      *            A character-output stream.
      * @param cachingRequired
@@ -115,6 +116,8 @@ public class JsonPaintTarget implements PaintTarget {
      *
      * @param tagName
      *            the name of the start tag.
+     * @param isChildNode
+     *            {@code true} if child node, {@code false} otherwise
      * @throws PaintException
      *             if the paint operation failed.
      *
@@ -172,9 +175,7 @@ public class JsonPaintTarget implements PaintTarget {
         if (!openJsonTags.isEmpty()) {
             final JsonTag parent = openJsonTags.pop();
 
-            String lastTag = "";
-
-            lastTag = mOpenTags.pop();
+            String lastTag = mOpenTags.pop();
             if (!tagName.equalsIgnoreCase(lastTag)) {
                 throw new PaintException("Invalid UIDL: wrong ending tag: '"
                         + tagName + "' expected: '" + lastTag + "'.");
