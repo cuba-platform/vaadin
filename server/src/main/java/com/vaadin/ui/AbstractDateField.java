@@ -728,7 +728,9 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
         ValidationResult result = validator.apply(adjusted,
                 new ValueContext(this, this));
 
-        if (result.isError()) {
+        if (result.isError()
+                // Haulmont API
+                && !isValueInRange(adjusted)) {
             throw new IllegalArgumentException(
                     "value is not within acceptable range");
         } else {
@@ -751,6 +753,11 @@ public abstract class AbstractDateField<T extends Temporal & TemporalAdjuster & 
             }
             super.setValue(adjusted);
         }
+    }
+
+    // Haulmont API
+    protected boolean isValueInRange(T value) {
+        return false;
     }
 
     /**
