@@ -4050,6 +4050,16 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
                  * GridEditRow test.
                  */
 
+
+                // Haulmont API
+                /* If recalculation is not done we should update header cells
+                 * because in this stage part of header cells is not updated
+                 * after hiding columns.
+                 */
+                if (pixelsToDistribute > 0) {
+                    afterApplyingFixedWidthColumns();
+                }
+
                 return;
             }
 
@@ -4294,6 +4304,11 @@ public class Grid<T> extends ResizeComposite implements HasSelectionHandlers<T>,
          */
         public boolean isScheduled() {
             return isScheduled;
+        }
+
+        // Haulmont API
+        protected void afterApplyingFixedWidthColumns() {
+            // is used in inheritors
         }
     }
 
