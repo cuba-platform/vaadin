@@ -16,11 +16,30 @@ public class GridReorderMergedTest extends MultiBrowserTest {
         openTestURL();
         GridElement grid = $(GridElement.class).first();
         GridCellElement headerCell0_0 = grid.getHeaderCell(0, 0);
-        GridCellElement headerCell0_4 = grid.getHeaderCell(0, 4);
-        new Actions(driver).dragAndDrop(headerCell0_0, headerCell0_4).perform();
+        // dragAndDrop(headerCell0_0, headerCell0_4) isn't enough for Firefox
+        new Actions(driver).clickAndHold(headerCell0_0)
+                .moveByOffset(headerCell0_0.getSize().getWidth() + 5, 5)
+                .release().perform();
 
         // ensure the first merged block got dragged over the entire second
         // merged block
+        assertEquals("Unexpected column order,", "6",
+                grid.getHeaderCell(1, 1).getText());
+    }
+
+    @Test
+    public void dragMergedReverse() {
+        openTestURL();
+        GridElement grid = $(GridElement.class).first();
+        GridCellElement headerCell0_0 = grid.getHeaderCell(0, 0);
+        GridCellElement headerCell0_4 = grid.getHeaderCell(0, 4);
+        new Actions(driver).clickAndHold(headerCell0_4)
+                .moveByOffset(-headerCell0_0.getSize().getWidth(),
+                        headerCell0_0.getSize().getHeight() / 2)
+                .release().perform();
+
+        // ensure the second merged block got dragged over the first merged
+        // block entirely
         assertEquals("Unexpected column order,", "6",
                 grid.getHeaderCell(1, 1).getText());
     }
