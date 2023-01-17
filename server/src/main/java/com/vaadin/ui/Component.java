@@ -16,7 +16,6 @@
 
 package com.vaadin.ui;
 
-import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
@@ -28,6 +27,7 @@ import org.jsoup.nodes.Element;
 import com.vaadin.event.ConnectorEvent;
 import com.vaadin.event.ConnectorEventListener;
 import com.vaadin.event.FieldEvents;
+import com.vaadin.event.SerializableEventListener;
 import com.vaadin.server.ClientConnector;
 import com.vaadin.server.ErrorMessage;
 import com.vaadin.server.Resource;
@@ -1220,7 +1220,7 @@ public interface Component extends ClientConnector, Sizeable {
         /**
          * Listener for context help icon click events.
          */
-        interface ContextHelpIconClickListener extends Serializable {
+        interface ContextHelpIconClickListener extends SerializableEventListener {
             Method CONTEXT_HELP_ICON_CLICK_METHOD = ReflectTools.findMethod(
                     ContextHelpIconClickListener.class, "iconClick",
                     ContextHelpIconClickEvent.class);
