@@ -3725,7 +3725,8 @@ public class VScrollTable extends FlowPanel
         // Haulmont API
         protected Element tr = DOM.createTR();
 
-        private final Element columnSelector = DOM.createDiv();
+        // Haulmont API
+        protected final Element columnSelector = DOM.createDiv();
 
         private int focusedSlot = -1;
 
