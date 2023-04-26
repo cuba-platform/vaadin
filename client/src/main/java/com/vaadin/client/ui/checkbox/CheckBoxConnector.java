@@ -92,16 +92,19 @@ public class CheckBoxConnector extends AbstractFieldConnector
         // Haulmont API
         updateWidgetReadOnlyState();
 
-        if (getWidget().icon != null) {
-            getWidget().getElement().removeChild(getWidget().icon.getElement());
-            getWidget().icon = null;
-        }
-        Icon icon = getIcon();
-        if (icon != null) {
-            getWidget().icon = icon;
-            DOM.insertChild(getWidget().getElement(), icon.getElement(), 1);
-            icon.sinkEvents(VTooltip.TOOLTIP_EVENTS);
-            icon.sinkEvents(Event.ONCLICK);
+        // Haulmont API
+        if (!isCaptionManagedByLayout()) {
+            if (getWidget().icon != null) {
+                getWidget().getElement().removeChild(getWidget().icon.getElement());
+                getWidget().icon = null;
+            }
+            Icon icon = getIcon();
+            if (icon != null) {
+                getWidget().icon = icon;
+                DOM.insertChild(getWidget().getElement(), icon.getElement(), 1);
+                icon.sinkEvents(VTooltip.TOOLTIP_EVENTS);
+                icon.sinkEvents(Event.ONCLICK);
+            }
         }
 
         // Set text
@@ -184,5 +187,10 @@ public class CheckBoxConnector extends AbstractFieldConnector
             }
 
         }
+    }
+
+    // Haulmont API
+    protected boolean isCaptionManagedByLayout() {
+        return false;
     }
 }
