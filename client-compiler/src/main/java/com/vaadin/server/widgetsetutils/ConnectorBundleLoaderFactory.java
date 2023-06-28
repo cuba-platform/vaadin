@@ -222,7 +222,9 @@ public class ConnectorBundleLoaderFactory extends Generator {
     }
 
     static {
-        ReportUsage.checkForUpdatesInBackgroundThread();
+        // Do not check updates (Vaadin 8 is EOL). Probably it increases execution
+        // time of compile widgets task in Jmix.
+        //ReportUsage.checkForUpdatesInBackgroundThread();
     }
 
     private CvalAddonsChecker cvalChecker = new CvalAddonsChecker();
