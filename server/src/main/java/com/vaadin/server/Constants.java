@@ -103,6 +103,26 @@ public interface Constants {
             + "NullPointerExceptions will be thrown later."
             + "=================================================================";
 
+    static final String UNMAINTAINED_VERSION_WARNING = "\n"
+            + " .:::::::::::::::::::::::  WARNING  :::::::::::::::::::::::. \n"
+            + "::'                                                       '::\n"
+            + "::                                                         ::\n"
+            + "::                  P L E A S E   N O T E                  ::\n"
+            + "::                                                         ::\n"
+            + "::                                                         ::\n"
+            + "::   This is an unmaintained version of Vaadin Framework   ::\n"
+            + "::               with known security issues.               ::\n"
+            + "::                                                         ::\n"
+            + "::        To upgrade to a maintained version, go to        ::\n"
+            + "::                                                         ::\n"
+            + "::     https://vaadin.com/vaadin-8-extended-maintenance    ::\n"
+            + "::                                                         ::\n"
+            + "::                                                         ::\n"
+            + "::.                                                       .::\n"
+            + " ':::::::::::::::::::::::  WARNING  :::::::::::::::::::::::' \n"
+            + "\n";
+
+
     static final String URL_PARAMETER_THEME = "theme";
 
     static final String SERVLET_PARAMETER_PRODUCTION_MODE = "productionMode";

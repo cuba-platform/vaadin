@@ -266,6 +266,8 @@ public class DefaultDeploymentConfiguration
 
     /**
      * Log a warning if Vaadin is not running in production mode.
+     *
+     * Also show a warning about unmaintained version.
      */
     private void checkProductionMode() {
         productionMode = getApplicationOrSystemProperty(
