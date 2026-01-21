@@ -20,6 +20,8 @@ import java.io.Serializable;
 
 import com.vaadin.server.Resource;
 import com.vaadin.shared.Registration;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 /**
  * Implements the action framework. This class contains subinterfaces for action
@@ -49,7 +51,7 @@ public class Action implements Serializable {
      *            the caption for the new action.
      */
     public Action(String caption) {
-        this.caption = caption;
+        setCaption(caption);
     }
 
     /**
@@ -61,7 +63,7 @@ public class Action implements Serializable {
      *            the icon for the new action.
      */
     public Action(String caption, Resource icon) {
-        this.caption = caption;
+        setCaption(caption);
         this.icon = icon;
     }
 
@@ -202,7 +204,9 @@ public class Action implements Serializable {
      *            the caption to set.
      */
     public void setCaption(String caption) {
-        this.caption = caption;
+        this.caption = caption != null
+                ? Jsoup.clean(caption, Safelist.simpleText())
+                : null;
     }
 
     /**
